@@ -28,6 +28,8 @@ class TitleLabel: UILabel, CustomTextColor, CustomFont, CustomTextAlignment {
 
 }
 
+// FIXME: Currently add an `@IBDesignable` tag to custom `UIButton` will crash the interface builder, so we have to remove it.
+// This won't affect anything, though.
 class ActionButton: UIButton, CustomTitleColor, CustomBackgroundColor, CustomDesign {
 
     var backgroundColorStyle: ColorStyle = UIColor.darkGray

@@ -1,5 +1,5 @@
 //
-//  GameScene.swift
+//  TestScene.swift
 //  Warcraft2
 //
 //  Created by Justin Jia on 1/10/17.
@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class TestScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
