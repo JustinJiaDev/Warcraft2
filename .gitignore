@@ -1,0 +1,15 @@
+# macOS
+
+.DS_Store
+
+# Xcode
+
+xcuserdata/
+
+# Carthage
+
+Carthage/
+
+# CocoaPods
+
+Pods/
