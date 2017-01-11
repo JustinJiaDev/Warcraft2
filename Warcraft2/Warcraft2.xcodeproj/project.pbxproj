@@ -15,6 +15,7 @@
 		D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA581E26015E00D92DA5 /* Main.storyboard */; };
 		D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */; };
 		D0D6FA5F1E26015E00D92DA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */; };
+		D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D0D6FA5E1E26015E00D92DA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D0D6FA601E26015E00D92DA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,17 +62,58 @@
 		D0D6FA4D1E26015E00D92DA5 /* Warcraft2 */ = {
 			isa = PBXGroup;
 			children = (
-				D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */,
-				D0D6FA501E26015E00D92DA5 /* GameScene.sks */,
-				D0D6FA521E26015E00D92DA5 /* Actions.sks */,
-				D0D6FA541E26015E00D92DA5 /* GameScene.swift */,
-				D0D6FA561E26015E00D92DA5 /* GameViewController.swift */,
-				D0D6FA581E26015E00D92DA5 /* Main.storyboard */,
-				D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */,
-				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
-				D0D6FA601E26015E00D92DA5 /* Info.plist */,
+				D0D6FA6A1E26029500D92DA5 /* AppDelegate */,
+				D0D6FA681E26028000D92DA5 /* ViewControllers */,
+				D0D6FA691E26028B00D92DA5 /* Views */,
+				D0D6FA6C1E2602C200D92DA5 /* Scenes */,
+				D0D6FA6B1E2602AE00D92DA5 /* Resources */,
 			);
 			path = Warcraft2;
+			sourceTree = "<group>";
+		};
+		D0D6FA681E26028000D92DA5 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				D0D6FA561E26015E00D92DA5 /* GameViewController.swift */,
+				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		D0D6FA691E26028B00D92DA5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D0D6FA501E26015E00D92DA5 /* GameScene.sks */,
+				D0D6FA581E26015E00D92DA5 /* Main.storyboard */,
+				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		D0D6FA6A1E26029500D92DA5 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */,
+			);
+			name = AppDelegate;
+			sourceTree = "<group>";
+		};
+		D0D6FA6B1E2602AE00D92DA5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D0D6FA521E26015E00D92DA5 /* Actions.sks */,
+				D0D6FA601E26015E00D92DA5 /* Info.plist */,
+				D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		D0D6FA6C1E2602C200D92DA5 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				D0D6FA541E26015E00D92DA5 /* GameScene.swift */,
+			);
+			name = Scenes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,6 +193,7 @@
 				D0D6FA551E26015E00D92DA5 /* GameScene.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
+				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
