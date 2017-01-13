@@ -158,6 +158,7 @@
 				D0D6FA491E26015E00D92DA5 /* Resources */,
 				B292469F8C13EF959A2351A9 /* [CP] Embed Pods Frameworks */,
 				77A47F88FF4C6E32D9B3EC83 /* [CP] Copy Pods Resources */,
+				D0C00E0C1E28620400501EC8 /* Swift Format */,
 			);
 			buildRules = (
 			);
@@ -262,6 +263,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		D0C00E0C1E28620400501EC8 /* Swift Format */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Swift Format";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "swiftformat .";
 		};
 /* End PBXShellScriptBuildPhase section */
 
