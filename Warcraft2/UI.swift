@@ -12,11 +12,10 @@ import Overlay
 class SplashImageView: UIImageView, CustomBackgroundColor, CustomDesign {
 
     var backgroundColorStyle: ColorStyle = UIColor.black
-    var design: (DesignCustomizable) -> () = {
+    var design: (DesignCustomizable) -> Void = {
         let imageView = $0 as! UIImageView
         imageView.contentMode = .scaleAspectFit
     }
-
 }
 
 @IBDesignable
@@ -25,7 +24,6 @@ class TitleLabel: UILabel, CustomTextColor, CustomFont, CustomTextAlignment {
     var textColorStyle: ColorStyle = UIColor.white
     var fontStyle: FontStyle = UIFont.preferredFont(forTextStyle: .title1)
     var textAlignmentStyle: TextAlignmentStyle = NSTextAlignment.center
-
 }
 
 // FIXME: Currently add an `@IBDesignable` tag to custom `UIButton` will crash the interface builder, so we have to remove it.
@@ -34,9 +32,8 @@ class ActionButton: UIButton, CustomTitleColor, CustomBackgroundColor, CustomDes
 
     var backgroundColorStyle: ColorStyle = UIColor.darkGray
     var titleColorStyle: ColorStyle = UIColor.white
-    var design: (DesignCustomizable) -> () = {
+    var design: (DesignCustomizable) -> Void = {
         let button = $0 as! UIButton
         button.layer.cornerRadius = 16
     }
-
 }
