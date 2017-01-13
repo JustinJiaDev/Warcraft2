@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		116E2B86C47EE406F3468948 /* Pods_Warcraft2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */; };
-		D037B93F1E26077F00831CFF /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D037B93E1E26077F00831CFF /* UI.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
 		D0D6FA511E26015E00D92DA5 /* TestScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA501E26015E00D92DA5 /* TestScene.sks */; };
 		D0D6FA531E26015E00D92DA5 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA521E26015E00D92DA5 /* Actions.sks */; };
@@ -23,7 +22,6 @@
 /* Begin PBXFileReference section */
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D037B93E1E26077F00831CFF /* UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,7 +112,6 @@
 				D0D6FA501E26015E00D92DA5 /* TestScene.sks */,
 				D0D6FA581E26015E00D92DA5 /* Main.storyboard */,
 				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
-				D037B93E1E26077F00831CFF /* UI.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -288,7 +285,6 @@
 				D0D6FA551E26015E00D92DA5 /* TestScene.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
-				D037B93F1E26077F00831CFF /* UI.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,7 +408,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -427,7 +422,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

@@ -1,12 +1,12 @@
 PODS:
-  - Overlay (0.6.1)
+  - Alamofire (4.2.0)
 
 DEPENDENCIES:
-  - Overlay (~> 0.6)
+  - Alamofire (~> 4.0)
 
 SPEC CHECKSUMS:
-  Overlay: 25a704569d9b9a09ba831637516da356d366495c
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
 
-PODFILE CHECKSUM: 6c38b3f5cbf1e158a75b4beb3831617534130ee8
+PODFILE CHECKSUM: a4c3571e938dfb2f9a4b74cbf3f6afb5965d8d08
 
 COCOAPODS: 1.1.1
