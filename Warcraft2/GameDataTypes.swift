@@ -115,9 +115,9 @@ enum EDirection: Int {
         dWest,
         dNorthWest,
         dMax
-    
+
     static func DirectionOpposite(dir: EDirection) -> EDirection {
-        let opDir = (dir.rawValue + EDirection.dMax.rawValue/2) % EDirection.dMax.rawValue
-        return EDirection(rawValue: opDir)!;
+        let opDir = (dir.rawValue + EDirection.dMax.rawValue / 2) % EDirection.dMax.rawValue
+        return EDirection(rawValue: opDir)!
     }
 }
