@@ -10,7 +10,7 @@ import Foundation
 
 enum EPlayerColor: Int {
     case
-        pcNone = 0,
+        pcNone,
         pcBlue,
         pcRed,
         pcGreen,
@@ -24,7 +24,7 @@ enum EPlayerColor: Int {
 
 enum EAssetAction: Int {
     case
-        aaNone = 0,
+        aaNone,
         aaConstruct,
         aaBuild,
         aaRepair,
@@ -42,7 +42,7 @@ enum EAssetAction: Int {
 
 enum EAssetCapabilityType: Int {
     case
-        actNone = 0,
+        actNone,
         actBuildPeasant,
         actBuildFootman,
         actBuildArcher,
@@ -85,7 +85,7 @@ enum EAssetCapabilityType: Int {
 
 enum EAssetType: Int {
     case
-        atNone = 0,
+        atNone,
         atPeasant,
         atFootman,
         atArcher,
@@ -116,7 +116,7 @@ enum EDirection: Int {
         dNorthWest,
         dMax
 
-    static func DirectionOpposite(dir: EDirection) -> EDirection {
+    static func directionOpposite(dir: EDirection) -> EDirection {
         let opDir = (dir.rawValue + EDirection.dMax.rawValue / 2) % EDirection.dMax.rawValue
         return EDirection(rawValue: opDir)!
     }
