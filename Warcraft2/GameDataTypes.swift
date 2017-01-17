@@ -8,116 +8,109 @@
 
 import Foundation
 
-enum EPlayerColor: Int {
-    case
-        pcNone = 0,
-        pcBlue,
-        pcRed,
-        pcGreen,
-        pcPurple,
-        pcOrange,
-        pcYellow,
-        pcBlack,
-        pcWhite,
-        pcMax
+enum PlayerColor {
+    case none
+    case blue
+    case red
+    case green
+    case purple
+    case orange
+    case yellow
+    case black
+    case white
+    case max
 }
 
-enum EAssetAction: Int {
-    case
-        aaNone = 0,
-        aaConstruct,
-        aaBuild,
-        aaRepair,
-        aaWalk,
-        aaStandGround,
-        aaAttack,
-        aaHarvestLumber,
-        aaMineGold,
-        aaConveyLumber,
-        aaConveyGold,
-        aaDeath,
-        aaDecay,
-        aaCapability
+enum AssetAction {
+    case none
+    case construct
+    case build
+    case repair
+    case walk
+    case standGround
+    case attack
+    case harvestLumber
+    case mineGold
+    case conveyLumber
+    case conveyGold
+    case death
+    case decay
+    case capability
 }
 
-enum EAssetCapabilityType: Int {
-    case
-        actNone = 0,
-        actBuildPeasant,
-        actBuildFootman,
-        actBuildArcher,
-        actBuildRanger,
-        actBuildFarm,
-        actBuildTownHall,
-        actBuildBarracks,
-        actBuildLumberMill,
-        actBuildBlacksmith,
-        actBuildKeep,
-        actBuildCastle,
-        actBuildScoutTower,
-        actBuildGuardTower,
-        actBuildCannonTower,
-        actMove,
-        actRepair,
-        actMine,
-        actBuildSimple,
-        actBuildAdvanced,
-        actConvey,
-        actCancel,
-        actBuildWall,
-        actAttack,
-        actStandGround,
-        actPatrol,
-        actWeaponUpgrade1,
-        actWeaponUpgrade2,
-        actWeaponUpgrade3,
-        actArrowUpgrade1,
-        actArrowUpgrade2,
-        actArrowUpgrade3,
-        actArmorUpgrade1,
-        actArmorUpgrade2,
-        actArmorUpgrade3,
-        actLongbow,
-        actRangerScouting,
-        actMarksmanship,
-        actMax
+enum AssetCapabilityType {
+    case none
+    case buildPeasant
+    case buildFootman
+    case buildArcher
+    case buildRanger
+    case buildFarm
+    case buildTownHall
+    case buildBarracks
+    case buildLumberMill
+    case buildBlacksmith
+    case buildKeep
+    case buildCastle
+    case buildScoutTower
+    case buildGuardTower
+    case buildCannonTower
+    case move
+    case repair
+    case mine
+    case buildSimple
+    case buildAdvanced
+    case convey
+    case cancel
+    case buildWall
+    case attack
+    case standGround
+    case patrol
+    case weaponUpgrade1
+    case weaponUpgrade2
+    case weaponUpgrade3
+    case arrowUpgrade1
+    case arrowUpgrade2
+    case arrowUpgrade3
+    case armorUpgrade1
+    case armorUpgrade2
+    case armorUpgrade3
+    case longbow
+    case rangerScouting
+    case marksmanship
+    case max
 }
 
-enum EAssetType: Int {
-    case
-        atNone = 0,
-        atPeasant,
-        atFootman,
-        atArcher,
-        atRanger,
-        atGoldMine,
-        atTownHall,
-        atKeep,
-        atCastle,
-        atFarm,
-        atBarracks,
-        atLumberMill,
-        atBlacksmith,
-        atScoutTower,
-        atGuardTower,
-        atCannonTower,
-        atMax
+enum AssetType {
+    case none
+    case peasant
+    case footman
+    case archer
+    case ranger
+    case goldMine
+    case townHall
+    case keep
+    case castle
+    case farm
+    case barracks
+    case lumberMill
+    case blacksmith
+    case scoutTower
+    case guardTower
+    case cannonTower
+    case max
 }
 
-enum EDirection: Int {
-    case
-        dNorth = 0,
-        dNorthEast,
-        dEast,
-        dSouthEast,
-        dSouth,
-        dSouthWest,
-        dWest,
-        dNorthWest,
-        dMax
+enum Direction: Int {
+    case north = 0
+    case northEast = 45
+    case east = 90
+    case southEast = 135
+    case south = 180
+    case southWest = 225
+    case west = 270
+    case northWest = 315
 
-    static func DirectionOpposite(dir: EDirection) -> EDirection {
-        let opDir = (dir.rawValue + EDirection.dMax.rawValue / 2) % EDirection.dMax.rawValue
-        return EDirection(rawValue: opDir)!
+    var opposite: Direction {
+        return Direction(rawValue: (rawValue + 180) % 360)!
     }
 }
