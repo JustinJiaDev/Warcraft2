@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<Any>, _ source: UInt32) -> UInt32
+typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<UInt8>, _ source: UInt32) -> UInt32
 
 class GraphicSurface {
 

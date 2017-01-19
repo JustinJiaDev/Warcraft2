@@ -10,7 +10,7 @@ import Foundation
 
 class DataSource {
 
-    func read(data _: UnsafeMutablePointer<Any>, length _: Int) {
+    func read(data _: UnsafeMutablePointer<UInt8>, length _: Int) -> Int {
         fatalError("You need to override this method.")
     }
 

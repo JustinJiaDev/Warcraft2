@@ -14,6 +14,7 @@
 		8E1B51651E2DC0D7008E968C /* PeriodicTimeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B51641E2DC0D7008E968C /* PeriodicTimeout.swift */; };
 		D0BFE5961E3054FB0041BE52 /* GraphicResourceContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BFE5951E3054FB0041BE52 /* GraphicResourceContext.swift */; };
 		D0BFE5981E3057D50041BE52 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BFE5971E3057D50041BE52 /* GraphicSurface.swift */; };
+		D0BFE59C1E305D660041BE52 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BFE59B1E305D660041BE52 /* Tokenizer.swift */; };
 		D0C5F8611E304F4100469DBE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8601E304F4100469DBE /* DataContainer.swift */; };
 		D0C5F8631E304F8100469DBE /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8621E304F8100469DBE /* DataSource.swift */; };
 		D0C5F8651E30536400469DBE /* DataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8641E30536400469DBE /* DataSink.swift */; };
@@ -39,6 +40,7 @@
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0BFE5951E3054FB0041BE52 /* GraphicResourceContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicResourceContext.swift; sourceTree = "<group>"; };
 		D0BFE5971E3057D50041BE52 /* GraphicSurface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicSurface.swift; sourceTree = "<group>"; };
+		D0BFE59B1E305D660041BE52 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		D0C5F8601E304F4100469DBE /* DataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		D0C5F8621E304F8100469DBE /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		D0C5F8641E30536400469DBE /* DataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSink.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				D0C5F8641E30536400469DBE /* DataSink.swift */,
 				D0BFE5951E3054FB0041BE52 /* GraphicResourceContext.swift */,
 				D0BFE5971E3057D50041BE52 /* GraphicSurface.swift */,
+				D0BFE59B1E305D660041BE52 /* Tokenizer.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				8E1B51611E2D694C008E968C /* Position.swift in Sources */,
 				D0C5F8651E30536400469DBE /* DataSink.swift in Sources */,
 				D0BFE5981E3057D50041BE52 /* GraphicSurface.swift in Sources */,
+				D0BFE59C1E305D660041BE52 /* Tokenizer.swift in Sources */,
 				8E1B51651E2DC0D7008E968C /* PeriodicTimeout.swift in Sources */,
 				D0C5F8611E304F4100469DBE /* DataContainer.swift in Sources */,
 				D0D6FA551E26015E00D92DA5 /* TestScene.swift in Sources */,
