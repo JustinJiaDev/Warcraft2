@@ -109,6 +109,7 @@ enum Direction: Int {
     case southWest = 225
     case west = 270
     case northWest = 315
+    case max = 360
 
     var opposite: Direction {
         return Direction(rawValue: (rawValue + 180) % 360)!
