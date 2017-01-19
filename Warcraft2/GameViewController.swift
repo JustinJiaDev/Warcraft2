@@ -29,6 +29,8 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
             skView.showsFPS = true
             skView.showsNodeCount = true
 
+            scene.parentViewController = self
+
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true
 
@@ -41,14 +43,13 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
         self.view = mainGameView
     }
 
-    func scrollViewDidScroll(_: UIScrollView) {
-        // print("did scroll")
+    func resizeMap(width: Int, height: Int) {
+        myScrollView.contentSize = CGSize(width: CGFloat(width), height: CGFloat(height))
+        gameSceneView.frame = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
     }
 
-    override func viewDidAppear(_: Bool) {
-
-        myScrollView.contentSize = CGSize(width: 1000, height: 1000)
-        gameSceneView.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
+    func scrollViewDidScroll(_: UIScrollView) {
+        // print("did scroll")
     }
 
     //    @IBAction func tapTest(_: Any) {
