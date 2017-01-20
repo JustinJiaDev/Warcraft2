@@ -12,31 +12,8 @@ import SpriteKit
 class MapManager {
 
     var mapFileName = ".map"
-    var mapTileTypes: [[TerrainManager.ETileType]] = [
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-        [.ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass, .ttGrass],
-    ]
-
-    var mapWidth = 20 // Set in loadMap
-    var mapHeight = 20 // Set in loadMap
+    var mapTileTypes: [[TerrainManager.ETileType]] =
+        Array(repeating: Array(repeating: .ttGrass, count: 20), count: 20)
 
     func loadMap() {
 

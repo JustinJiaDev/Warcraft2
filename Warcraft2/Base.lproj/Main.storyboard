@@ -55,7 +55,7 @@
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTt-r2-zUA" customClass="SKView">
                                 <rect key="frame" x="200" y="50" width="467" height="325"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.92361005283511932" green="0.63466840509117084" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.13780047240000001" green="0.13780047240000001" blue="0.13780047240000001" alpha="0.93999999759999997" colorSpace="custom" customColorSpace="sRGB"/>
