@@ -237,8 +237,8 @@ class PlayerAssetType {
 struct AssetCommand {
     var action: AssetAction
     var capability: AssetCapabilityType
-    var assetTarget: PlayerAsset
-    var activatedCapability: ActivatedPlayerCapability
+    var assetTarget: PlayerAsset?
+    var activatedCapability: ActivatedPlayerCapability?
 }
 
 class PlayerAsset {
@@ -252,9 +252,9 @@ class PlayerAsset {
     private(set) var moveRemainderY: Int
     private(set) var tilePosition: Position
     private(set) var position: Position
-    private(set) var direction: Direction
+    var direction: Direction
     private(set) var commands: [AssetCommand]
-    private(set) var type: PlayerAssetType
+    private(set) var assetType: PlayerAssetType
     private(set) static var updateFrequency: Int = 0
     private(set) static var updateDivisor: Int = 0
 
@@ -266,6 +266,130 @@ class PlayerAsset {
         return position.TileAligned
     }
 
+    var commandCount: Int {
+        return commands.count
+    }
+
+    var maxHitPoints: Int {
+        return assetType.hitPoints
+    }
+
+    var type: AssetType {
+        return assetType.type
+    }
+
+    var action: AssetAction {
+        return commands.last?.action ?? .none
+    }
+
+    var armor: Int {
+        return assetType.armor
+    }
+
+    var sight: Int {
+        return action == .construct ? assetType.constructionSight : assetType.sight
+    }
+
+    var size: Int {
+        return assetType.size
+    }
+
+    var speed: Int {
+        return assetType.speed
+    }
+
+    var goldCost: Int {
+        return assetType.goldCost
+    }
+
+    var lumberCost: Int {
+        return assetType.lumberCost
+    }
+
+    var foodConsumption: Int {
+        return assetType.foodConsumption
+    }
+
+    var buildTime: Int {
+        return assetType.buildTime
+    }
+
+    var attackSteps: Int {
+        return assetType.attackSteps
+    }
+
+    var reloadSteps: Int {
+        return assetType.reloadSteps
+    }
+
+    var basicDamage: Int {
+        return assetType.basicDamage
+    }
+
+    var piercingDamage: Int {
+        return assetType.piercingDamage
+    }
+
+    var range: Int {
+        return assetType.range
+    }
+
+    var armorUpgrade: Int {
+        return assetType.armorUpgrade()
+    }
+
+    var sightUpgrade: Int {
+        return assetType.sightUpgrade()
+    }
+
+    var speedUpgrade: Int {
+        return assetType.speedUpgrade()
+    }
+
+    var basicDamageUpgrade: Int {
+        return assetType.basicDamageUpgrade()
+    }
+
+    var piercingDamageUpgrade: Int {
+        return assetType.piercingDamageUpgrade()
+    }
+
+    var rangeUpgrade: Int {
+        return assetType.rangeUpgrade()
+    }
+
+    var effectiveArmor: Int {
+        return armor + armorUpgrade
+    }
+
+    var effectiveSight: Int {
+        return sight + sightUpgrade
+    }
+
+    var effectiveSpeed: Int {
+        return speed + speedUpgrade
+    }
+
+    var effectiveBasicDamage: Int {
+        return basicDamage + basicDamageUpgrade
+    }
+
+    var effectivePiercingDamage: Int {
+        return piercingDamage + piercingDamageUpgrade
+    }
+
+    var effectiveRange: Int {
+        return range + rangeUpgrade
+    }
+
+    var capabilities: [AssetCapabilityType] {
+        return assetType.capabilities.filter { _, isIncluded in
+            return isIncluded
+        }.map { key, _ in
+            return key
+        }
+    }
+
     init(playerAsset: PlayerAssetType) {
         fatalError("You need to override this method.")
     }
@@ -274,13 +398,9 @@ class PlayerAsset {
         fatalError("You need to override this method.")
     }
 
-    func maxHitPoints() -> Int {
-        fatalError("You need to override this method.")
-    }
-
     func incrementHitPoints(_ increments: Int) -> Int {
         hitPoints += increments
-        hitPoints = min(hitPoints, maxHitPoints())
+        hitPoints = min(hitPoints, maxHitPoints)
         return hitPoints
     }
 
@@ -355,6 +475,71 @@ class PlayerAsset {
     }
 
     func setPositionY(_: Int) {
+        fatalError("You need to override this method.")
+    }
+
+    func closestPosition(_ position: Position) -> Position {
+        fatalError("You need to override this method.")
+    }
+
+    func clearCommand() {
+        commands.removeAll()
+    }
+
+    func pushCommand(command: AssetCommand) {
+        commands.append(command)
+    }
+
+    func enqueueCommand(command: AssetCommand) {
+        commands.insert(command, at: 0)
+    }
+
+    func popCommand() {
+        guard !commands.isEmpty else {
+            return
+        }
+        commands.removeLast()
+    }
+
+    func currentCommand() -> AssetCommand {
+        guard let last = commands.last else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return last
+    }
+
+    func nextCommand() -> AssetCommand {
+        guard commands.count > 1 else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return commands[commands.count - 2]
+    }
+
+    func hasAction(_ action: AssetAction) -> Bool {
+        return commands.first { command in
+            return command.action == action
+        } != nil
+    }
+
+    func hasActiveCapability(_ capability: AssetCapabilityType) -> Bool {
+        return commands.first { command in
+            return command.action == .capability && command.capability == capability
+        } != nil
+    }
+
+    func interruptible() -> Bool {
+        fatalError("You need to override this method.")
+    }
+
+    func changeType(_ type: PlayerAssetType) {
+        assetType = type
+    }
+
+    func hasCapability(_ capability: AssetCapabilityType) -> Bool {
+        return assetType.hasCapability(capability)
+    }
+
+    func moveStep(occupancyMap _: [[PlayerAsset]], diagonals _: [[Bool]]) {
         fatalError("You need to override this method.")
     }
 }

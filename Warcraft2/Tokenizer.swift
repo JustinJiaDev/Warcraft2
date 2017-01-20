@@ -24,7 +24,7 @@ class Tokenizer {
 
     func read(token: inout String) -> Bool {
         let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-        token = ""
+        token.removeAll()
         while true {
             if dataSource.read(data: pointer, length: 1) > 0 {
                 let readCharacter = String(UnicodeScalar(pointer.pointee))
@@ -52,7 +52,7 @@ class Tokenizer {
                 currentToken += String(character)
             } else if currentToken.characters.count > 0 {
                 tokens.append(currentToken)
-                currentToken = ""
+                currentToken.removeAll()
             }
         }
         if currentToken.characters.count > 0 {
