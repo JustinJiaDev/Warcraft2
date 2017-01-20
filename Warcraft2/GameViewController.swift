@@ -16,12 +16,9 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var resourceBar: UIView!
     @IBOutlet weak var statsActionsView: UIView!
     @IBOutlet weak var gameSceneView: SKView!
-    @IBOutlet weak var myScrollView: UIScrollView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        myScrollView.delegate = self
 
         if let scene = GameScene(fileNamed: "GameScene") {
             // Configure the view.
@@ -47,15 +44,6 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
         print("resizeMap")
         print(width)
         print(height)
-        myScrollView.contentSize = CGSize(width: CGFloat(width), height: CGFloat(height))
         gameSceneView.frame = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
     }
-
-    func scrollViewDidScroll(_: UIScrollView) {
-        // print("did scroll")
-    }
-
-    //    @IBAction func tapTest(_: Any) {
-    //        print("Hello")
-    //    }
 }

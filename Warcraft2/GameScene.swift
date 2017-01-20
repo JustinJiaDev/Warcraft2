@@ -37,8 +37,20 @@ class GameScene: SKScene {
         // Resize content view and SKView of GameViewController to match the size of the map contained in MapManager
         parentViewController!.resizeMap(width: mapWidth * terrainTileSize, height: mapHeight * terrainTileSize)
 
-        self.anchorPoint.x = 0
-        self.anchorPoint.y = 0.25
+        let camera = SKCameraNode()
+        self.camera = camera
+        self.addChild(camera)
+        if let cam = self.camera {
+            //            cam.xScale = 10
+            //            cam.yScale = 2
+            cam.position = CGPoint(x: -mapWidth * terrainTileSize / 2, y: 0)
+            print("cam exists")
+        } else {
+            print("cam doesn't exist")
+        }
+
+        //        self.anchorPoint.x = 0
+        //        self.anchorPoint.y = 0.25
 
         // Draw map tiles
         for i in 0 ..< mapWidth {
