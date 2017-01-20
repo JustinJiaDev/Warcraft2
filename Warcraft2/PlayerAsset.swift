@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: Port this class (GameModel.h)
 class PlayerData {
 }
 
