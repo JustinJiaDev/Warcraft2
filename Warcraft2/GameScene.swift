@@ -17,9 +17,8 @@ class GameScene: SKScene {
     override func didMove(to _: SKView) {
 
         /* Setup your scene here */
-        
-        drawMap()
 
+        drawMap()
     }
 
     // Draws all map tiles contained in MapManager to the scene, in a grid format
@@ -32,11 +31,14 @@ class GameScene: SKScene {
 
         let mapWidth = mapManager.mapWidth
         let mapHeight = mapManager.mapHeight
-        
+
         let terrainTileSize = 32
 
         // Resize content view and SKView of GameViewController to match the size of the map contained in MapManager
-        parentViewController?.resizeMap(width: mapWidth * terrainTileSize, height: mapHeight * terrainTileSize)
+        parentViewController!.resizeMap(width: mapWidth * terrainTileSize, height: mapHeight * terrainTileSize)
+
+        self.anchorPoint.x = 0
+        self.anchorPoint.y = 0.25
 
         // Draw map tiles
         for i in 0 ..< mapWidth {
@@ -44,21 +46,20 @@ class GameScene: SKScene {
                 let currentTerrainType = mapManager.mapTileTypes[i][j]
                 let index = terrainManager.terrainTypes.index(of: currentTerrainType)
                 let spriteNode = SKSpriteNode(texture: terrainManager.terrainTiles[index!])
+                spriteNode.size.width = 32
+                spriteNode.size.height = 32
+                spriteNode.anchorPoint.x = 0
+                spriteNode.anchorPoint.y = 0
                 spriteNode.xScale = 1
                 spriteNode.yScale = 1
-                spriteNode.position = CGPoint(x: i * terrainTileSize - (mapWidth * terrainTileSize / 2), y: j * terrainTileSize - (mapHeight * terrainTileSize / 2))
+                spriteNode.position = CGPoint(
+                    x: 0.5, // CGFloat(i * terrainTileSize), // - (self.frame.width / 2),
+                    y: 0.5 // CGFloat(j * terrainTileSize) // - (self.frame.height / 2)
+                )
                 self.addChild(spriteNode)
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
     //    func hypot(_ p1: CGPoint, _ p2: CGPoint) -> CGFloat {
     //        return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2))

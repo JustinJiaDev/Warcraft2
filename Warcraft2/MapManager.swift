@@ -43,7 +43,7 @@ class MapManager {
         // In future, will load .map file
 
         // Load map width and height
-        
+
         // Load map tile types
     }
 }

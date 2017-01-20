@@ -15,7 +15,7 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet var mainGameView: UIView!
     @IBOutlet weak var resourceBar: UIView!
     @IBOutlet weak var statsActionsView: UIView!
-    @IBOutlet weak var gameSceneView: UIView!
+    @IBOutlet weak var gameSceneView: SKView!
     @IBOutlet weak var myScrollView: UIScrollView!
 
     override func viewDidLoad() {
@@ -25,7 +25,7 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
         if let scene = GameScene(fileNamed: "GameScene") {
             // Configure the view.
-            let skView = self.gameSceneView as! SKView
+            let skView: SKView = gameSceneView
             skView.showsFPS = true
             skView.showsNodeCount = true
 
@@ -44,6 +44,9 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     }
 
     func resizeMap(width: Int, height: Int) {
+        print("resizeMap")
+        print(width)
+        print(height)
         myScrollView.contentSize = CGSize(width: CGFloat(width), height: CGFloat(height))
         gameSceneView.frame = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
     }

@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 class TerrainManager {
-    
+
     // MARK: Tile Type Enum
 
     enum ETileType {
@@ -31,13 +31,11 @@ class TerrainManager {
 
     var terrainTiles = [SKTexture]() // Array of terrain textures, can be identified using terrainTypes
     var terrainTypes = [ETileType]() // Array of terrain types, used to identify terrainTextures
-    
+
     private var terrainDataFileName = "./data/img/Terrain.dat"
 
-    
     // MARK: Public Functions
-    
-    
+
     // This function loads the possible terrain types and the location of the terrain.png file from terrain.dat, and then loads the textures from terrain.png.  It stores the textures and types in member variables terrainTiles and terrainTypes
     func loadTerrainTextures() {
 
@@ -48,9 +46,9 @@ class TerrainManager {
         let terrainSpriteSheet = UIImage(named: pngFileName)
         self.terrainTiles = splitVerticalSpriteSheet(image: terrainSpriteSheet!, numSprites: numSprites)
     }
-    
+
     // MARK: Private Functions
-    
+
     // For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [SKTexture]
     private func splitVerticalSpriteSheet(image: UIImage, numSprites: Int) -> [SKTexture] {
 
@@ -100,7 +98,6 @@ class TerrainManager {
             } else {
                 assert(false)
             }
-
 
             // Read remaining lines, interpreting each as an ETileType
             let numLines = numSprites + 2
