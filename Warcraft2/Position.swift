@@ -9,8 +9,8 @@
 import Foundation
 
 class Position {
-    var x: Int
-    var y: Int
+    private(set) var x: Int
+    private(set) var y: Int
 
     private(set) static var tileWidth = 1
     private(set) static var tileHeight = 1
@@ -22,6 +22,11 @@ class Position {
         [.west, .max, .east],
         [.southWest, .south, .southEast],
     ]
+
+    var TileAligned: Bool {
+        return ((x % Position.tileWidth) == Position.halfTileWidth)
+            && ((y % Position.tileHeight) == Position.halfTileHeight)
+    }
 
     init() {
         x = 0

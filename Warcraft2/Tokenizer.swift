@@ -10,8 +10,8 @@ import Foundation
 
 class Tokenizer {
 
-    var dataSource: DataSource
-    var delimiters: String
+    private var dataSource: DataSource
+    private var delimiters: String
 
     init(source: DataSource, delimiters: String = "") {
         dataSource = source
