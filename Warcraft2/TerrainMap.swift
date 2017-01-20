@@ -107,8 +107,63 @@ class TerrainMap {
         changeTileType(x: position.x, y: position.y, to: type)
     }
 
-    // TODO: Port this method
     func loadMap(source: DataSource) -> Bool {
-        fatalError("You need to override this method.")
+        let lineSource = LineDataSource(source: source)
+        map.removeAll()
+        guard lineSource.read(line: &mapName) else {
+            print("Failed to read map name.")
+            return false
+        }
+
+        var currentLine = ""
+        guard lineSource.read(line: &currentLine) else {
+            print("Failed to read map dimensions.")
+            return false
+        }
+
+        let tokens = Tokenizer.tokenize(data: currentLine)
+        guard tokens.count == 2, let widthString = tokens.first, let heightString = tokens.last else {
+            print("Invalid map dimensions.")
+            return false
+        }
+        guard let mapWidth = Int(widthString), let mapHeight = Int(heightString), mapWidth > 8 && mapHeight > 8 else {
+            print("Invalid map dimensions.")
+            return false
+        }
+
+        while stringMap.count < mapHeight + 2 {
+            guard lineSource.read(line: &currentLine) else {
+                print("Failed to read map line.")
+                return false
+            }
+            stringMap.append(currentLine)
+            if stringMap.last!.characters.count < mapWidth + 2 {
+                print("Map line \(stringMap.count) too short!")
+                return false
+            }
+        }
+        if stringMap.count < mapHeight + 2 {
+            print("Map has too few lines!")
+            return false
+        }
+
+        for i in 0 ..< map.count {
+            for j in 0 ... (mapWidth + 2) {
+                let line = stringMap[i].characters
+                switch line[line.index(line.startIndex, offsetBy: j)] {
+                case "G": map[i][j] = .grass
+                case "F": map[i][j] = .tree
+                case "D": map[i][j] = .dirt
+                case "W": map[i][j] = .wall
+                case "w": map[i][j] = .wallDamaged
+                case "R": map[i][j] = .rock
+                case " ": map[i][j] = .water
+                default:
+                    print("Unknown tile type \(line[line.index(line.startIndex, offsetBy: j)]) on line \(i + 2)!")
+                    return false
+                }
+            }
+        }
+        return true
     }
 }

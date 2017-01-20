@@ -39,16 +39,12 @@ class Tokenizer {
         }
     }
 
-    func tokenize(data: String, delimiters: String) -> [String] {
-        if delimiters.characters.count > 0 {
-            self.delimiters = delimiters
-        } else {
-            self.delimiters = " \t\r\n"
-        }
+    static func tokenize(data: String, delimiters: String = "") -> [String] {
+        let delimiters = delimiters.characters.count > 0 ? delimiters : " \t\r\n"
         var tokens: [String] = []
         var currentToken = ""
         for character in data.characters {
-            if !self.delimiters.contains(String(character)) {
+            if !delimiters.contains(String(character)) {
                 currentToken += String(character)
             } else if currentToken.characters.count > 0 {
                 tokens.append(currentToken)
