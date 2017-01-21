@@ -25,6 +25,39 @@ class TerrainManager {
         case ttWallDamaged
         case ttRubble
         case ttMax
+
+        static func getType(fromString str: String) -> ETileType {
+            if str.hasPrefix("grass") { return .ttGrass }
+            else if str.hasPrefix("dirt") { return .ttDirt }
+            else if str.hasPrefix("tree") { return .ttTree }
+            else if str.hasPrefix("water") { return .ttWater }
+            else if str.hasPrefix("rock") { return .ttRock }
+            else if str.hasPrefix("wall") { return .ttWall }
+            else if str.hasPrefix("wall-damaged") { return .ttWallDamaged }
+            else if str.hasPrefix("rubble") { return .ttRubble }
+            else { return .ttMax }
+        }
+
+        static func getType(fromTileCharCode tileCharCode: Character) -> ETileType {
+            switch tileCharCode {
+            case "G":
+                return .ttGrass
+            case "F":
+                return .ttTree
+            case "D":
+                return .ttDirt
+            case "W":
+                return .ttWall
+            case "w":
+                return .ttWallDamaged
+            case "R":
+                return .ttRock
+            case " ":
+                return .ttWater
+            default:
+                return .ttMax
+            }
+        }
     }
 
     // MARK: Member Variables
@@ -96,42 +129,19 @@ class TerrainManager {
             if let integerCastTemp = Int(fileLines[1]) {
                 numSprites = integerCastTemp
             } else {
-                assert(false)
+                fatalError("Error in \(fileName). Expecting integer.")
             }
 
             // Read remaining lines, interpreting each as an ETileType
             let numLines = numSprites + 2
             for index in 2 ..< numLines {
-
-                // Split each line of the file using the "-" character
-                let splitLine = fileLines[index].components(separatedBy: "-")
-
-                // Use the first half of the split line to identify the terrain types
-                switch splitLine[0] {
-                case "grass":
-                    terrainTypesTemp.append(.ttGrass)
-                case "dirt":
-                    terrainTypesTemp.append(.ttDirt)
-                case "tree":
-                    terrainTypesTemp.append(.ttTree)
-                case "water":
-                    terrainTypesTemp.append(.ttWater)
-                case "rock":
-                    terrainTypesTemp.append(.ttRock)
-                case "wall":
-                    if splitLine[1] == "damaged" {
-                        terrainTypesTemp.append(.ttWallDamaged)
-                    } else {
-                        terrainTypesTemp.append(.ttWall)
-                    }
-                case "rubble":
-                    terrainTypesTemp.append(.ttRubble)
-                default:
-                    terrainTypesTemp.append(.ttMax)
-                }
+                let tileType = TerrainManager.ETileType.getType(fromString: fileLines[index])
+                terrainTypesTemp.append(tileType)
             }
 
-        } else { assert(false) }
+        } else {
+            fatalError("Could not get file path for Terrain")
+        }
 
         return terrainTypesTemp
     }

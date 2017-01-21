@@ -23,57 +23,27 @@ class GameScene: SKScene {
 
     // Draws all map tiles contained in MapManager to the scene, in a grid format
     func drawMap() {
-
-        self.backgroundColor = UIColor.blue
-
-        print("scene width \(self.size.width) height \(self.size.height)")
-
         let terrainManager = TerrainManager()
         terrainManager.loadTerrainTextures()
 
         let mapManager = MapManager()
         mapManager.loadMap()
 
-        let mapWidth = mapManager.mapTileTypes.count
-        let mapHeight = mapManager.mapTileTypes[0].count
-
         let terrainTileSize = 32
 
-        // Resize content view and SKView of GameViewController to match the size of the map contained in MapManager
-        // parentViewController!.resizeMap(width: mapWidth * terrainTileSize, height: mapHeight * terrainTileSize)
+        let mapWidth2 = CGFloat(mapManager.mapXCount() * terrainTileSize)
+        let mapHeight2 = CGFloat(mapManager.mapYCount() * terrainTileSize)
 
-        self.size = CGSize(width: terrainTileSize * mapWidth, height: terrainTileSize * mapHeight)
-        print("scene width \(self.size.width) height \(self.size.height)")
+        self.size = CGSize(width: mapWidth2, height: mapHeight2)
 
         let camera = SKCameraNode()
-        let gameSceneView = self.parentViewController!.gameSceneView!
-        gameSceneView.backgroundColor = UIColor.blue
         self.camera = camera
-        //        self.camera?.xScale = self.frame.width / CGFloat(terrainTileSize * mapWidth)
-        let yScale = (self.size.height) / gameSceneView.frame.height
-        print(yScale)
-        //        self.camera?.xScale = (self.size.width) / gameSceneView.frame.width * 0.9
         self.camera?.setScale(1.0)
-
-        print("view width \(gameSceneView.frame.width) height \(gameSceneView.frame.height)")
-        //        self.camera?.yScale = 2
-
         self.addChild(camera)
-        if let cam = self.camera {
-            //            cam.xScale = 10
-            //            cam.yScale = 2
-            cam.position = CGPoint(x: CGFloat(terrainTileSize * mapWidth) / 2, y: CGFloat(terrainTileSize * mapHeight) / 2)
-            print("cam exists")
-        } else {
-            print("cam doesn't exist")
-        }
-
-        //        self.anchorPoint.x = 0
-        //        self.anchorPoint.y = 0
-
+        self.camera!.position = CGPoint(x: mapWidth2 / 2, y: mapHeight2 / 2)
         // Draw map tiles
-        for i in 0 ..< mapWidth {
-            for j in 0 ..< mapHeight {
+        for i in 0 ..< mapManager.mapXCount() {
+            for j in 0 ..< mapManager.mapYCount() {
                 let currentTerrainType = mapManager.mapTileTypes[i][j]
                 let index = terrainManager.terrainTypes.index(of: currentTerrainType)
                 let spriteNode = SKSpriteNode(texture: terrainManager.terrainTiles[index!])
@@ -84,8 +54,8 @@ class GameScene: SKScene {
                 spriteNode.xScale = 1
                 spriteNode.yScale = 1
                 spriteNode.position = CGPoint(
-                    x: CGFloat(i * terrainTileSize), // - (self.frame.width / 2),
-                    y: CGFloat(j * terrainTileSize) // - (self.frame.height / 2)
+                    x: CGFloat(i * terrainTileSize),
+                    y: CGFloat(j * terrainTileSize)
                 )
                 self.addChild(spriteNode)
             }
