@@ -8,56 +8,56 @@
 
 import Foundation
 
-class CPosition {
-    // Originally protected, may need to be public
-    var dx: Int
-    var dy: Int
-    private static var dTileWidth = 1
-    private static var dTileHeight = 1
-    private static var dHalfTileWidth = 0
-    private static var dHalfTileHeight = 0
-    private static var dOctant = [[EDirection.dMax]]
-    private static let dTileDirections: [[EDirection]] = [
-        [.dNorthWest, .dNorth, .dNorthEast],
-        [.dWest, .dMax, .dEast],
-        [.dSouthWest, .dSouth, .dSouthEast],
+class Position {
+    var x: Int
+    var y: Int
+
+    private(set) static var tileWidth = 1
+    private(set) static var tileHeight = 1
+    private(set) static var halfTileWidth = 0
+    private(set) static var halfTileHeight = 0
+    private static var octant = [[Direction.max]]
+    private static let tileDirections: [[Direction]] = [
+        [.northWest, .north, .northEast],
+        [.west, .max, .east],
+        [.southWest, .south, .southEast],
     ]
 
     init() {
-        dx = 0
-        dy = 0
+        x = 0
+        y = 0
     }
 
     init(x: Int, y: Int) {
-        dx = x
-        dy = y
+        self.x = x
+        self.y = y
     }
 
-    init(from pos: CPosition) {
-        dx = pos.dx
-        dy = pos.dy
+    init(from position: Position) {
+        x = position.x
+        y = position.y
     }
 
-    static func == (left: CPosition, right: CPosition) -> Bool {
-        return left.dx == right.dx && left.dy == right.dy
+    static func ==(left: Position, right: Position) -> Bool {
+        return left.x == right.x && left.y == right.y
     }
 
-    static func != (left: CPosition, right: CPosition) -> Bool {
-        return !(left == right)
+    static func !=(left: Position, right: Position) -> Bool {
+        return left != right
     }
 
     static func setTileDimensions(width: Int, height: Int) {
         if 0 < width && 0 < height {
-            dTileWidth = width
-            dTileHeight = height
-            dHalfTileWidth = width / 2
-            dHalfTileHeight = height / 2
+            tileWidth = width
+            tileHeight = height
+            halfTileWidth = width / 2
+            halfTileHeight = height / 2
 
-            dOctant = Array(repeating: Array(repeating: EDirection.dMax, count: dTileWidth), count: dTileHeight)
-            for y in 0 ..< dTileHeight {
-                for x in 0 ..< dTileWidth {
-                    var xDistance = x - dHalfTileWidth
-                    var yDistance = y - dHalfTileHeight
+            octant = Array(repeating: Array(repeating: Direction.max, count: tileWidth), count: tileHeight)
+            for y in 0 ..< tileHeight {
+                for x in 0 ..< tileWidth {
+                    var xDistance = x - halfTileWidth
+                    var yDistance = y - halfTileHeight
                     let negativeX = xDistance < 0
                     let negativeY = yDistance > 0
 
@@ -65,37 +65,37 @@ class CPosition {
                     yDistance *= yDistance
 
                     if 0 == xDistance + yDistance {
-                        dOctant[y][x] = .dMax
+                        octant[y][x] = .max
                     } else {
                         let sinSquared = Double(yDistance) / Double(xDistance + yDistance)
                         if 0.1464466094 > sinSquared {
                             // East or West
                             if negativeX {
-                                dOctant[y][x] = .dWest
+                                octant[y][x] = .west
                             } else {
-                                dOctant[y][x] = .dEast
+                                octant[y][x] = .east
                             }
                         } else if 0.85355339059 > sinSquared {
                             // NE, SE, SW, NW
                             if negativeY {
                                 if negativeX {
-                                    dOctant[y][x] = .dSouthWest
+                                    octant[y][x] = .southWest
                                 } else {
-                                    dOctant[y][x] = .dSouthEast
+                                    octant[y][x] = .southEast
                                 }
                             } else {
                                 if negativeX {
-                                    dOctant[y][x] = .dNorthWest
+                                    octant[y][x] = .northWest
                                 } else {
-                                    dOctant[y][x] = .dNorthEast
+                                    octant[y][x] = .northEast
                                 }
                             }
                         } else {
                             // North or South
                             if negativeY {
-                                dOctant[y][x] = .dSouth
+                                octant[y][x] = .south
                             } else {
-                                dOctant[y][x] = .dNorth
+                                octant[y][x] = .north
                             }
                         }
                     }
@@ -104,123 +104,107 @@ class CPosition {
         }
     }
 
-    static func tileWidth() -> Int {
-        return CPosition.dTileWidth
-    }
-
-    static func tileHeight() -> Int {
-        return CPosition.dTileWidth
-    }
-
-    static func halfTileWidth() -> Int {
-        return dHalfTileWidth
-    }
-
-    static func halfTileHeight() -> Int {
-        return dHalfTileHeight
-    }
-
-    func setFromTile(_ pos: CPosition) {
-        dx = pos.dx * CPosition.dTileWidth + CPosition.dHalfTileWidth
-        dy = pos.dy * CPosition.dTileHeight + CPosition.dHalfTileHeight
+    func setFromTile(_ position: Position) {
+        x = position.x * Position.tileWidth + Position.halfTileWidth
+        y = position.y * Position.tileHeight + Position.halfTileHeight
     }
 
     func setXFromTile(_ x: Int) {
-        dx = x * CPosition.dTileWidth + CPosition.dHalfTileWidth
+        self.x = x * Position.tileWidth + Position.halfTileWidth
     }
 
     func setYFromTile(_ y: Int) {
-        dy = y * CPosition.dTileHeight + CPosition.dHalfTileHeight
+        self.y = y * Position.tileHeight + Position.halfTileHeight
     }
 
-    func setToTile(_ pos: CPosition) {
-        dx = pos.dx / CPosition.dTileWidth
-        dy = pos.dy / CPosition.dTileHeight
+    func setToTile(_ position: Position) {
+        x = position.x / Position.tileWidth
+        y = position.y / Position.tileHeight
     }
 
     func setXToTile(_ x: Int) {
-        dx = x / CPosition.dTileWidth
+        self.x = x / Position.tileWidth
     }
 
     func setYToTile(_ y: Int) {
-        dy = y / CPosition.dTileHeight
+        self.y = y / Position.tileHeight
     }
 
-    func tileOctant() -> EDirection {
-        return CPosition.dOctant[dy % CPosition.dTileHeight][dx % CPosition.dTileWidth]
+    func tileOctant() -> Direction {
+        return Position.octant[y % Position.tileHeight][x % Position.tileWidth]
     }
 
-    func adjacentTileDirection(pos: CPosition, objSize: Int) -> EDirection {
+    func adjacentTileDirection(position: Position, objSize: Int) -> Direction {
         if 1 == objSize {
-            let deltaX = pos.dx - dx
-            let deltaY = pos.dy - dy
+            let deltaX = position.x - x
+            let deltaY = position.y - y
 
             if 1 < (deltaX * deltaX) || 1 < (deltaY * deltaY) {
-                return EDirection.dMax
+                return Direction.max
             }
 
-            return CPosition.dTileDirections[deltaY + 1][deltaX + 1]
+            return Position.tileDirections[deltaY + 1][deltaX + 1]
         } else {
-            let thisPosition = CPosition()
-            let targetPosition = CPosition()
+            let thisPosition = Position()
+            let targetPosition = Position()
 
             thisPosition.setFromTile(self)
-            targetPosition.setFromTile(pos)
+            targetPosition.setFromTile(position)
 
             targetPosition.setToTile(thisPosition.closestPosition(targetPosition, objSize: objSize))
-            return adjacentTileDirection(pos: targetPosition, objSize: 1)
+            return adjacentTileDirection(position: targetPosition, objSize: 1)
         }
     }
 
-    func closestPosition(_ pos: CPosition, objSize: Int) -> CPosition {
-        let curPosition = CPosition(from: pos)
-        var bestPosition = CPosition()
+    func closestPosition(_ position: Position, objSize: Int) -> Position {
+        let curPosition = Position(from: position)
+        var bestPosition = Position()
         var bestDistance = -1
         for _ in 0 ..< objSize {
             for _ in 0 ..< objSize {
-                let curDistance = curPosition.distanceSquaredFrom(pos: self)
+                let curDistance = curPosition.distanceSquaredFrom(position: self)
                 if -1 == bestDistance || curDistance < bestDistance {
                     bestDistance = curDistance
                     bestPosition = curPosition
                 }
-                curPosition.dx += CPosition.dTileWidth
+                curPosition.x += Position.tileWidth
             }
-            curPosition.dx = pos.dx
-            curPosition.dy += CPosition.dTileHeight
+            curPosition.x = position.x
+            curPosition.y += Position.tileHeight
         }
         return bestPosition
     }
 
-    func directionTo(_ pos: CPosition) -> EDirection {
-        let delta = CPosition(x: pos.dx - dx, y: pos.dy - dy)
-        let divX: Int = abs(delta.dx / CPosition.halfTileWidth())
-        let divY: Int = abs(delta.dy / CPosition.halfTileHeight())
+    func directionTo(_ position: Position) -> Direction {
+        let delta = Position(x: position.x - x, y: position.y - y)
+        let divX: Int = abs(delta.x / Position.halfTileWidth)
+        let divY: Int = abs(delta.y / Position.halfTileHeight)
         let div = max(divX, divY)
         if div != 0 {
-            delta.dx /= div
-            delta.dy /= div
+            delta.x /= div
+            delta.y /= div
         }
-        delta.dx += CPosition.halfTileWidth()
-        delta.dy += CPosition.halfTileHeight()
-        delta.dx = max(delta.dx, 0)
-        delta.dy = max(delta.dy, 0)
-        if CPosition.tileWidth() <= delta.dx {
-            delta.dx = CPosition.tileWidth() - 1
+        delta.x += Position.halfTileWidth
+        delta.y += Position.halfTileHeight
+        delta.x = max(delta.x, 0)
+        delta.y = max(delta.y, 0)
+        if Position.tileWidth <= delta.x {
+            delta.x = Position.tileWidth - 1
         }
-        if CPosition.tileHeight() <= delta.dy {
-            delta.dy = CPosition.tileHeight() - 1
+        if Position.tileHeight <= delta.y {
+            delta.y = Position.tileHeight - 1
         }
         return delta.tileOctant()
     }
 
-    func distanceSquaredFrom(pos: CPosition) -> Int {
-        let deltaX = pos.dx - dx
-        let deltaY = pos.dy - dy
+    func distanceSquaredFrom(position: Position) -> Int {
+        let deltaX = position.x - x
+        let deltaY = position.y - y
         return deltaX * deltaX + deltaY * deltaY
     }
 
-    func distance(pos: CPosition) -> Int {
+    func distance(position: Position) -> Int {
         // Not as efficient as original implementation
-        return Int(sqrt(Double(self.distanceSquaredFrom(pos: pos))))
+        return Int(sqrt(Double(self.distanceSquaredFrom(position: position))))
     }
 }

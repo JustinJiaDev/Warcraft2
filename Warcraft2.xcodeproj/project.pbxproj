@@ -104,6 +104,8 @@
 		8E1B51611E2D694C008E968C /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B51601E2D694C008E968C /* Position.swift */; };
 		8EA067681E3023880059CEC2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067671E3023880059CEC2 /* GameScene.swift */; };
 		8EA0676A1E3026CC0059CEC2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067691E3026CC0059CEC2 /* GameScene.sks */; };
+		8EA067721E3310470059CEC2 /* generalsoundfont.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */; };
+		8EA067731E3310470059CEC2 /* intro.mid in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067711E3310470059CEC2 /* intro.mid */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
 		D0D6FA511E26015E00D92DA5 /* TestScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA501E26015E00D92DA5 /* TestScene.sks */; };
 		D0D6FA531E26015E00D92DA5 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA521E26015E00D92DA5 /* Actions.sks */; };
@@ -214,6 +216,8 @@
 		8E1B51601E2D694C008E968C /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		8EA067671E3023880059CEC2 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		8EA067691E3026CC0059CEC2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = generalsoundfont.sf2; sourceTree = "<group>"; };
+		8EA067711E3310470059CEC2 /* intro.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = intro.mid; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
@@ -368,6 +372,15 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		8EA0676F1E33102E0059CEC2 /* Music */ = {
+			isa = PBXGroup;
+			children = (
+				8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */,
+				8EA067711E3310470059CEC2 /* intro.mid */,
+			);
+			name = Music;
+			sourceTree = "<group>";
+		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,6 +452,7 @@
 		D0D6FA6B1E2602AE00D92DA5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8EA0676F1E33102E0059CEC2 /* Music */,
 				498584511E311B5500F6766C /* Game Data Files */,
 				4985844E1E303F0300F6766C /* Images */,
 				D0D6FA521E26015E00D92DA5 /* Actions.sks */,
@@ -492,7 +506,6 @@
 				TargetAttributes = {
 					D0D6FA4A1E26015E00D92DA5 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 5KPAFRAJ2Y;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -520,6 +533,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EA067731E3310470059CEC2 /* intro.mid in Resources */,
 				493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */,
 				D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */,
 				493C06F31E3130F600C1C9E6 /* GuardTower.png in Resources */,
@@ -531,6 +545,7 @@
 				493C072D1E3130F600C1C9E6 /* Splash.dat in Resources */,
 				493C07281E3130F600C1C9E6 /* MiniIcons.dat in Resources */,
 				493C06DF1E3130F600C1C9E6 /* ButtonColors.png in Resources */,
+				8EA067721E3310470059CEC2 /* generalsoundfont.sf2 in Resources */,
 				493C06D81E3130F600C1C9E6 /* Archer.png in Resources */,
 				493C06E41E3130F600C1C9E6 /* Colors.png in Resources */,
 				493C07381E3136A100C1C9E6 /* Terrain.dat in Resources */,
@@ -820,7 +835,7 @@
 			baseConfigurationReference = D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 5KPAFRAJ2Y;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -835,7 +850,7 @@
 			baseConfigurationReference = 1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 5KPAFRAJ2Y;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

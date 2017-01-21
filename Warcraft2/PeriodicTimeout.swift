@@ -24,7 +24,7 @@ class PeriodicTimeout {
 
     func milliSecondsUntilDeadline() -> Int {
         let currTime = Date().timeIntervalSince1970
-        var timeDelta: TimeInterval
+        var timeDelta: TimeInterval = 0
         while true {
             timeDelta = nextDeadline - currTime
             if timeDelta > 0 { break }
