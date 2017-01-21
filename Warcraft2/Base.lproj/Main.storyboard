@@ -8,6 +8,24 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--View Controller-->
+        <scene sceneID="bkc-om-z4v">
+            <objects>
+                <viewController id="wcZ-S5-Xs2" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2xL-QV-jfP"/>
+                        <viewControllerLayoutGuide type="bottom" id="twx-6l-Ygk"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ueu-kg-DEg">
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hhk-Mp-Sqb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="546" y="-340"/>
+        </scene>
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
@@ -16,15 +34,59 @@
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
-                    <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
+                    <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
                         <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r9S-La-SCN">
+                                <rect key="frame" x="0.0" y="40" width="170" height="335"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="170" id="qbV-qe-lma"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VmD-aX-6ap">
+                                <rect key="frame" x="0.0" y="0.0" width="667" height="40"/>
+                                <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="tGV-Mc-54m"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTt-r2-zUA" customClass="SKView">
+                                <rect key="frame" x="170" y="40" width="497" height="335"/>
+                                <color key="backgroundColor" red="0.92361005283511932" green="0.63466840509117084" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.13780047240000001" green="0.13780047240000001" blue="0.13780047240000001" alpha="0.93999999759999997" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="r9S-La-SCN" firstAttribute="top" secondItem="VmD-aX-6ap" secondAttribute="bottom" id="4Ox-pP-u3V"/>
+                            <constraint firstAttribute="trailing" secondItem="VmD-aX-6ap" secondAttribute="trailing" id="Aji-gy-Gjc"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="r9S-La-SCN" secondAttribute="bottom" id="EV6-Xu-czJ"/>
+                            <constraint firstItem="VmD-aX-6ap" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" id="HFx-ip-FWv"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="jTt-r2-zUA" secondAttribute="bottom" id="O9B-BP-rQL"/>
+                            <constraint firstItem="jTt-r2-zUA" firstAttribute="leading" secondItem="r9S-La-SCN" secondAttribute="trailing" id="h0p-KP-nSu"/>
+                            <constraint firstAttribute="trailing" secondItem="jTt-r2-zUA" secondAttribute="trailing" id="lDS-pi-4aO"/>
+                            <constraint firstItem="jTt-r2-zUA" firstAttribute="top" secondItem="VmD-aX-6ap" secondAttribute="bottom" id="w8P-q1-oDX"/>
+                            <constraint firstItem="r9S-La-SCN" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="z2k-Wv-5aq"/>
+                            <constraint firstItem="VmD-aX-6ap" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="zhT-Kb-fsO"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="gameSceneView" destination="jTt-r2-zUA" id="4H2-ub-5rP"/>
+                        <outlet property="mainGameView" destination="3se-qz-xqx" id="u4U-zM-Xqo"/>
+                        <outlet property="resourceBar" destination="VmD-aX-6ap" id="vms-GT-APn"/>
+                        <outlet property="statsActionsView" destination="r9S-La-SCN" id="CBo-8i-VVm"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Tp4-NY-i0P">
+                    <connections>
+                        <action selector="tapTest:" destination="BV1-FR-VrT" id="eOZ-DY-dAL"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="546" y="521"/>
+            <point key="canvasLocation" x="545.57721139430294" y="520.79999999999995"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="QYi-ZE-SG3">
