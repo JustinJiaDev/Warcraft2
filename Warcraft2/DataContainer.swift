@@ -8,38 +8,16 @@
 
 import Foundation
 
-class DataContainerIterator {
-    func name() -> String {
-        fatalError("You need to override this method.")
-    }
-
-    func isContainer() -> Bool {
-        fatalError("You need to override this method.")
-    }
-
-    func isValid() -> Bool {
-        fatalError("You need to override this method.")
-    }
-
-    func next() {
-        fatalError("You need to override this method.")
-    }
+protocol DataContainerIterator {
+    func name() -> String
+    func isContainer() -> Bool
+    func isValid() -> Bool
+    func next()
 }
 
-class DataContainer {
-    func first() -> DataContainerIterator {
-        fatalError("You need to override this method.")
-    }
-
-    func dataSource(name: String) -> DataSource {
-        fatalError("You need to override this method.")
-    }
-
-    func dataSink(name: String) -> DataSink {
-        fatalError("You need to override this method.")
-    }
-
-    func dataContainer(name: String) -> DataContainer {
-        fatalError("You need to override this method.")
-    }
+protocol DataContainer {
+    func first() -> DataContainerIterator
+    func dataSource(name: String) -> DataSource
+    func dataSink(name: String) -> DataSink
+    func dataContainer(name: String) -> DataContainer
 }

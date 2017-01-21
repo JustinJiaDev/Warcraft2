@@ -8,6 +8,17 @@
 
 import Foundation
 
+enum TerrainMapError: Error {
+
+    case failedToReadMapName
+    case failedToReadMapDimensions
+    case invalidMapDimensions
+    case failedToReadMapLine
+    case mapLineToShort(line: Int)
+    case mapHasTwoFewLines(lineCount: Int)
+    case unknownTileType(type: Character, at: (Int, Int))
+}
+
 class TerrainMap {
     enum TileType {
         case none, grass, dirt, rock, tree, stump, water, wall, wallDamaged, rubble, max
@@ -107,50 +118,45 @@ class TerrainMap {
         changeTileType(x: position.x, y: position.y, to: type)
     }
 
-    func loadMap(source: DataSource) -> Bool {
-        let lineSource = LineDataSource(source: source)
+    func loadMap(source: DataSource) throws {
         map.removeAll()
-        guard lineSource.read(line: &mapName) else {
-            print("Failed to read map name.")
-            return false
-        }
 
-        var currentLine = ""
-        guard lineSource.read(line: &currentLine) else {
-            print("Failed to read map dimensions.")
-            return false
-        }
+        let lineSource = LineDataSource(dataSource: source)
 
-        let tokens = Tokenizer.tokenize(data: currentLine)
+        guard let mapName = lineSource.readLine() else {
+            throw TerrainMapError.failedToReadMapName
+        }
+        self.mapName = mapName
+
+        guard let dimensionsLine = lineSource.readLine() else {
+            throw TerrainMapError.failedToReadMapDimensions
+        }
+        let tokens = Tokenizer.tokenize(data: dimensionsLine)
         guard tokens.count == 2, let widthString = tokens.first, let heightString = tokens.last else {
-            print("Invalid map dimensions.")
-            return false
+            throw TerrainMapError.invalidMapDimensions
         }
         guard let mapWidth = Int(widthString), let mapHeight = Int(heightString), mapWidth > 8 && mapHeight > 8 else {
-            print("Invalid map dimensions.")
-            return false
+            throw TerrainMapError.invalidMapDimensions
         }
 
         while stringMap.count < mapHeight + 2 {
-            guard lineSource.read(line: &currentLine) else {
-                print("Failed to read map line.")
-                return false
+            guard let currentLine = lineSource.readLine() else {
+                throw TerrainMapError.failedToReadMapLine
             }
             stringMap.append(currentLine)
             if stringMap.last!.characters.count < mapWidth + 2 {
-                print("Map line \(stringMap.count) too short!")
-                return false
+                throw TerrainMapError.mapLineToShort(line: stringMap.count)
             }
         }
+
         if stringMap.count < mapHeight + 2 {
-            print("Map has too few lines!")
-            return false
+            throw TerrainMapError.mapHasTwoFewLines(lineCount: stringMap.count)
         }
 
         for i in 0 ..< map.count {
             for j in 0 ... (mapWidth + 2) {
-                let line = stringMap[i].characters
-                switch line[line.index(line.startIndex, offsetBy: j)] {
+                let line = stringMap[i].characters, tileType = line[line.index(line.startIndex, offsetBy: j)]
+                switch tileType {
                 case "G": map[i][j] = .grass
                 case "F": map[i][j] = .tree
                 case "D": map[i][j] = .dirt
@@ -159,11 +165,9 @@ class TerrainMap {
                 case "R": map[i][j] = .rock
                 case " ": map[i][j] = .water
                 default:
-                    print("Unknown tile type \(line[line.index(line.startIndex, offsetBy: j)]) on line \(i + 2)!")
-                    return false
+                    throw TerrainMapError.unknownTileType(type: tileType, at: (i + 2, j))
                 }
             }
         }
-        return true
     }
 }
