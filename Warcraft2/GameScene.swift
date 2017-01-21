@@ -32,6 +32,7 @@ class GameScene: SKScene {
         terrainManager.loadTerrainTextures()
 
         let mapManager = MapManager()
+        mapManager.loadMap()
 
         let mapWidth = mapManager.mapTileTypes.count
         let mapHeight = mapManager.mapTileTypes[0].count
