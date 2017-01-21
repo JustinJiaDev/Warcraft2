@@ -8,13 +8,7 @@
 
 import Foundation
 
-class DataSource {
-
-    func read(data _: UnsafeMutablePointer<UInt8>, length _: Int) -> Int {
-        fatalError("You need to override this method.")
-    }
-
-    func container() -> DataContainer? {
-        return nil
-    }
+protocol DataSource {
+    func readData(ofLength length: Int) -> Data
+    func container() -> DataContainer?
 }

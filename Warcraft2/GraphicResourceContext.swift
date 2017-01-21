@@ -18,7 +18,7 @@ class GraphicResourceContext {
         case miter, round, bevel
     }
 
-    func setSourceRGB(rgb _: UInt32) {
+    func setSourceRGB(_: UInt32) {
         fatalError("You need to override this method.")
     }
 
@@ -26,7 +26,7 @@ class GraphicResourceContext {
         fatalError("You need to override this method.")
     }
 
-    func setSourceRGBA(rgb _: UInt32) {
+    func setSourceRGBA(_: UInt32) {
         fatalError("You need to override this method.")
     }
 
@@ -34,19 +34,19 @@ class GraphicResourceContext {
         fatalError("You need to override this method.")
     }
 
-    func setSourceSurface(surface _: GraphicSurface, xPosition _: Int, yPosition _: Int) {
+    func setSourceSurface(_ surface: GraphicSurface, xPosition _: Int, yPosition _: Int) {
         fatalError("You need to override this method.")
     }
 
-    func setLineWidth(width _: Double) {
+    func setLineWidth(_: Double) {
         fatalError("You need to override this method.")
     }
 
-    func setLineCap(cap _: LineCap) {
+    func setLineCap(_: LineCap) {
         fatalError("You need to override this method.")
     }
 
-    func setLineJoin(join _: LineJoin) {
+    func setLineJoin(_: LineJoin) {
         fatalError("You need to override this method.")
     }
 
