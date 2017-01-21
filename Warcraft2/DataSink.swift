@@ -8,13 +8,7 @@
 
 import Foundation
 
-class DataSink {
-
-    func write(data _: UnsafeMutablePointer<UInt8>, length _: Int) -> Int {
-        fatalError("You need to override this method.")
-    }
-
-    func container() -> DataContainer? {
-        return nil
-    }
+protocol DataSink {
+    func write(data: Data)
+    func container() -> DataContainer?
 }

@@ -18,6 +18,10 @@
 		D0C5F8611E304F4100469DBE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8601E304F4100469DBE /* DataContainer.swift */; };
 		D0C5F8631E304F8100469DBE /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8621E304F8100469DBE /* DataSource.swift */; };
 		D0C5F8651E30536400469DBE /* DataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C5F8641E30536400469DBE /* DataSink.swift */; };
+		D0C75F741E31D9D1004FC85C /* PlayerAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C75F731E31D9D1004FC85C /* PlayerAsset.swift */; };
+		D0C75F761E321775004FC85C /* TerrainMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C75F751E321775004FC85C /* TerrainMap.swift */; };
+		D0C75F781E3223E0004FC85C /* LineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C75F771E3223E0004FC85C /* LineDataSource.swift */; };
+		D0C75F7C1E32CF1D004FC85C /* FileDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C75F7B1E32CF1D004FC85C /* FileDataSource.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
 		D0D6FA511E26015E00D92DA5 /* TestScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA501E26015E00D92DA5 /* TestScene.sks */; };
 		D0D6FA531E26015E00D92DA5 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA521E26015E00D92DA5 /* Actions.sks */; };
@@ -44,6 +48,10 @@
 		D0C5F8601E304F4100469DBE /* DataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		D0C5F8621E304F8100469DBE /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		D0C5F8641E30536400469DBE /* DataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSink.swift; sourceTree = "<group>"; };
+		D0C75F731E31D9D1004FC85C /* PlayerAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAsset.swift; sourceTree = "<group>"; };
+		D0C75F751E321775004FC85C /* TerrainMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainMap.swift; sourceTree = "<group>"; };
+		D0C75F771E3223E0004FC85C /* LineDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineDataSource.swift; sourceTree = "<group>"; };
+		D0C75F7B1E32CF1D004FC85C /* FileDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataSource.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,18 +90,46 @@
 		8E1B515A1E2D58CA008E968C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
-				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
-				8E1B51601E2D694C008E968C /* Position.swift */,
+				D014A0611E33185200698218 /* Data */,
+				D014A0621E33186B00698218 /* Map */,
+				D014A0631E33188000698218 /* Graphic */,
+				D0BFE59B1E305D660041BE52 /* Tokenizer.swift */,
 				8E1B51641E2DC0D7008E968C /* PeriodicTimeout.swift */,
+				D0C75F731E31D9D1004FC85C /* PlayerAsset.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		D014A0611E33185200698218 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
 				D0C5F8601E304F4100469DBE /* DataContainer.swift */,
 				D0C5F8621E304F8100469DBE /* DataSource.swift */,
 				D0C5F8641E30536400469DBE /* DataSink.swift */,
+				D0C75F7B1E32CF1D004FC85C /* FileDataSource.swift */,
+				D0C75F771E3223E0004FC85C /* LineDataSource.swift */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		D014A0621E33186B00698218 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				D0C75F751E321775004FC85C /* TerrainMap.swift */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		D014A0631E33188000698218 /* Graphic */ = {
+			isa = PBXGroup;
+			children = (
+				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
+				8E1B51601E2D694C008E968C /* Position.swift */,
 				D0BFE5951E3054FB0041BE52 /* GraphicResourceContext.swift */,
 				D0BFE5971E3057D50041BE52 /* GraphicSurface.swift */,
-				D0BFE59B1E305D660041BE52 /* Tokenizer.swift */,
 			);
-			name = Models;
+			name = Graphic;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
@@ -331,10 +367,14 @@
 				D0D6FA551E26015E00D92DA5 /* TestScene.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
+				D0C75F781E3223E0004FC85C /* LineDataSource.swift in Sources */,
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
+				D0C75F7C1E32CF1D004FC85C /* FileDataSource.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
 				D0C5F8631E304F8100469DBE /* DataSource.swift in Sources */,
+				D0C75F741E31D9D1004FC85C /* PlayerAsset.swift in Sources */,
 				D0BFE5961E3054FB0041BE52 /* GraphicResourceContext.swift in Sources */,
+				D0C75F761E321775004FC85C /* TerrainMap.swift in Sources */,
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

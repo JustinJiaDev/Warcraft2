@@ -9,50 +9,38 @@
 import Foundation
 
 class Tokenizer {
+    private var dataSource: DataSource
+    private var delimiters: String
 
-    var dataSource: DataSource
-    var delimiters: String
-
-    init(source: DataSource, delimiters: String = "") {
-        dataSource = source
-        if delimiters.characters.count > 0 {
-            self.delimiters = delimiters
-        } else {
-            self.delimiters = " \t\r\n"
-        }
+    init(dataSource: DataSource, delimiters: String = "") {
+        self.dataSource = dataSource
+        self.delimiters = delimiters.characters.count > 0 ? delimiters : " \t\r\n"
     }
 
-    func read(token: inout String) -> Bool {
-        let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-        token = ""
-        while true {
-            if dataSource.read(data: pointer, length: 1) > 0 {
-                let readCharacter = String(UnicodeScalar(pointer.pointee))
-                if delimiters.contains(readCharacter) {
-                    token += readCharacter
-                } else if token.characters.count > 0 {
-                    return true
-                }
-            } else {
-                return token.characters.count > 0
+    func readToken() -> String? {
+        var token = ""
+        var data = dataSource.readData(ofLength: 1)
+        while data.count > 0 {
+            let character = String(UnicodeScalar(data[0]))
+            guard !delimiters.contains(character) else {
+                break
             }
+            token.append(character)
+            data = dataSource.readData(ofLength: 1)
         }
+        return token.characters.count > 0 ? token : nil
     }
 
-    func tokenize(data: String, delimiters: String) -> [String] {
-        if delimiters.characters.count > 0 {
-            self.delimiters = delimiters
-        } else {
-            self.delimiters = " \t\r\n"
-        }
+    static func tokenize(data: String, delimiters: String = "") -> [String] {
+        let delimiters = delimiters.characters.count > 0 ? delimiters : " \t\r\n"
         var tokens: [String] = []
         var currentToken = ""
         for character in data.characters {
-            if !self.delimiters.contains(String(character)) {
+            if !delimiters.contains(String(character)) {
                 currentToken += String(character)
             } else if currentToken.characters.count > 0 {
                 tokens.append(currentToken)
-                currentToken = ""
+                currentToken.removeAll()
             }
         }
         if currentToken.characters.count > 0 {
