@@ -878,6 +878,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Warcraft2/Info.plist;
@@ -893,6 +894,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Warcraft2/Info.plist;
