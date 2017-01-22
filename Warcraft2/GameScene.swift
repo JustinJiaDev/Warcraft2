@@ -11,16 +11,14 @@ import SpriteKit
 
 class GameScene: SKScene {
 
-    var mapScale = CGFloat(0.25)
+    let mapScale = CGFloat(0.25)
     var mapWidth: CGFloat = 0
     var mapHeight: CGFloat = 0
     var parentViewController: GameViewController?
     let mainCamera = SKCameraNode()
 
+    // Called when transitioning to the view
     override func didMove(to _: SKView) {
-
-        /* Setup your scene here */
-
         drawMap()
     }
 
@@ -38,11 +36,12 @@ class GameScene: SKScene {
         mapHeight = CGFloat(mapManager.mapYCount() * terrainTileSize)
         self.size = CGSize(width: mapWidth, height: mapHeight)
 
-        self.camera = mainCamera
-        self.mainCamera.setScale(mapScale)
         self.scaleMode = .aspectFill
+
+        self.camera = mainCamera
+        mainCamera.setScale(mapScale)
         self.addChild(mainCamera)
-        self.mainCamera.position = CGPoint(x: mapWidth / 2, y: mapHeight / 2)
+        moveCameraTo(centerX: mapWidth / 2, centerY: mapHeight / 2)
         // Draw map tiles
         for i in (0 ..< mapManager.mapYCount()).reversed() {
             for j in 0 ..< mapManager.mapXCount() {
@@ -53,8 +52,6 @@ class GameScene: SKScene {
                 spriteNode.size.height = 32
                 spriteNode.anchorPoint.x = 0
                 spriteNode.anchorPoint.y = 0
-                spriteNode.xScale = 1
-                spriteNode.yScale = 1
                 spriteNode.position = CGPoint(
                     x: CGFloat(j * terrainTileSize),
                     y: CGFloat(i * terrainTileSize)
@@ -76,21 +73,21 @@ class GameScene: SKScene {
     }
 
     func moveCameraBy(_ deltaX: CGFloat, _ deltaY: CGFloat) {
-        moveCameraTo(mainCamera.position.x - deltaX, mainCamera.position.y - deltaY)
+        moveCameraTo(centerX: mainCamera.position.x - deltaX, centerY: mainCamera.position.y - deltaY)
     }
 
-    func moveCameraTo(_ centerX: CGFloat, _ centerY: CGFloat) {
+    func moveCameraTo(centerX: CGFloat, centerY: CGFloat) {
         // The game bounds will be applied to these variables
         var constrainedCenterX = centerX
         var constrainedCenterY = centerY
         // Apply x bounds
-        let minX = centerX - mapWidth / 2 * self.camera!.xScale
-        let maxX = centerX + mapWidth / 2 * self.camera!.xScale
+        let minX = centerX - mapWidth / 2 * mainCamera.xScale
+        let maxX = centerX + mapWidth / 2 * mainCamera.xScale
         if minX < 0 { constrainedCenterX -= minX /* minX is negative */ }
         if maxX > mapWidth { constrainedCenterX -= maxX - mapWidth }
         // Apply y bounds
-        let minY = centerY - mapHeight / 2 * self.camera!.yScale
-        let maxY = centerY + mapHeight / 2 * self.camera!.yScale
+        let minY = centerY - mapHeight / 2 * mainCamera.yScale
+        let maxY = centerY + mapHeight / 2 * mainCamera.yScale
         if minY < 0 { constrainedCenterY -= minY /* minY is negative */ }
         if maxY > mapHeight { constrainedCenterY -= maxY - mapHeight }
         // Scroll to the as close to the desired position as possible
