@@ -21,7 +21,52 @@ enum TerrainMapError: Error {
 
 class TerrainMap {
     enum TileType {
-        case none, grass, dirt, rock, tree, stump, water, wall, wallDamaged, rubble, max
+        case none
+        case grass
+        case dirt
+        case rock
+        case tree
+        case stump
+        case water
+        case wall
+        case wallDamaged
+        case rubble
+        case max
+
+        // MARK: Static Functions
+
+        static func getType(fromString str: String) -> TileType {
+            if str.hasPrefix("grass") { return .grass }
+            else if str.hasPrefix("dirt") { return .dirt }
+            else if str.hasPrefix("tree") { return .tree }
+            else if str.hasPrefix("water") { return .water }
+            else if str.hasPrefix("rock") { return .rock }
+            else if str.hasPrefix("wall-damaged") { return .wallDamaged }
+            else if str.hasPrefix("wall") { return .wall }
+            else if str.hasPrefix("rubble") { return .rubble }
+            else { return .max }
+        }
+
+        static func getType(fromTileCharCode tileCharCode: Character) -> TileType? {
+            switch tileCharCode {
+            case "G":
+                return .grass
+            case "F":
+                return .tree
+            case "D":
+                return .dirt
+            case "W":
+                return .wall
+            case "w":
+                return .wallDamaged
+            case "R":
+                return .rock
+            case " ":
+                return .water
+            default:
+                return nil
+            }
+        }
     }
 
     private(set) var map: [[TileType]] = []
@@ -155,17 +200,23 @@ class TerrainMap {
 
         for i in 0 ..< map.count {
             for j in 0 ... (mapWidth + 2) {
-                let line = stringMap[i].characters, tileType = line[line.index(line.startIndex, offsetBy: j)]
-                switch tileType {
-                case "G": map[i][j] = .grass
-                case "F": map[i][j] = .tree
-                case "D": map[i][j] = .dirt
-                case "W": map[i][j] = .wall
-                case "w": map[i][j] = .wallDamaged
-                case "R": map[i][j] = .rock
-                case " ": map[i][j] = .water
-                default:
-                    throw TerrainMapError.unknownTileType(type: tileType, at: (i + 2, j))
+                let line = stringMap[i] // .characters,
+                let tileCharCode = line[line.index(line.startIndex, offsetBy: j)]
+                //                switch tileType {
+                //                case "G": map[i][j] = .grass
+                //                case "F": map[i][j] = .tree
+                //                case "D": map[i][j] = .dirt
+                //                case "W": map[i][j] = .wall
+                //                case "w": map[i][j] = .wallDamaged
+                //                case "R": map[i][j] = .rock
+                //                case " ": map[i][j] = .water
+                //                default:
+                //                    throw TerrainMapError.unknownTileType(type: tileType, at: (i + 2, j))
+                //                }
+                if let tileType = TileType.getType(fromTileCharCode: tileCharCode) {
+                    map[i][j] = tileType
+                } else {
+                    throw TerrainMapError.unknownTileType(type: tileCharCode, at: (i + 2, j))
                 }
             }
         }

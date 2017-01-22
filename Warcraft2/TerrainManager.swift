@@ -13,59 +13,10 @@ class TerrainManager {
 
     // MARK: Tile Type Enum
 
-    enum ETileType {
-        case ttNone
-        case ttGrass
-        case ttDirt
-        case ttRock
-        case ttTree
-        case ttStump
-        case ttWater
-        case ttWall
-        case ttWallDamaged
-        case ttRubble
-        case ttMax
-
-        // MARK: Static Functions
-
-        static func getType(fromString str: String) -> ETileType {
-            if str.hasPrefix("grass") { return .ttGrass }
-            else if str.hasPrefix("dirt") { return .ttDirt }
-            else if str.hasPrefix("tree") { return .ttTree }
-            else if str.hasPrefix("water") { return .ttWater }
-            else if str.hasPrefix("rock") { return .ttRock }
-            else if str.hasPrefix("wall-damaged") { return .ttWallDamaged }
-            else if str.hasPrefix("wall") { return .ttWall }
-            else if str.hasPrefix("rubble") { return .ttRubble }
-            else { return .ttMax }
-        }
-
-        static func getType(fromTileCharCode tileCharCode: Character) -> ETileType {
-            switch tileCharCode {
-            case "G":
-                return .ttGrass
-            case "F":
-                return .ttTree
-            case "D":
-                return .ttDirt
-            case "W":
-                return .ttWall
-            case "w":
-                return .ttWallDamaged
-            case "R":
-                return .ttRock
-            case " ":
-                return .ttWater
-            default:
-                return .ttMax
-            }
-        }
-    }
-
     // MARK: Member Variables
 
     var terrainTiles = [SKTexture]() // Array of terrain textures, can be identified using terrainTypes
-    var terrainTypes = [ETileType]() // Array of terrain types, used to identify terrainTextures
+    var terrainTypes: [TerrainMap.TileType] = [] // Array of terrain types, used to identify terrainTextures
 
     private var terrainDataFileName = "./data/img/Terrain.dat"
 
@@ -105,11 +56,11 @@ class TerrainManager {
         return imageSegments
     }
 
-    // Reads .dat file to match textures in the png file to their correct ETileTypes
-    func loadTerrainDataFile(datFileName: String, numSprites: inout Int, fileName: inout String) -> [ETileType] {
+    // Reads .dat file to match textures in the png file to their correct TileTypes
+    func loadTerrainDataFile(datFileName: String, numSprites: inout Int, fileName: inout String) -> [TerrainMap.TileType] {
 
         var fullFileText: String = ""
-        var terrainTypesTemp: [ETileType] = []
+        var terrainTypesTemp: [TerrainMap.TileType] = []
 
         if let filePath = Bundle.main.path(forResource: "Terrain", ofType: "dat") {
 
@@ -134,10 +85,10 @@ class TerrainManager {
                 fatalError("Error in \(fileName). Expecting integer.")
             }
 
-            // Read remaining lines, interpreting each as an ETileType
+            // Read remaining lines, interpreting each as an TileType
             let numLines = numSprites + 2
             for index in 2 ..< numLines {
-                let tileType = TerrainManager.ETileType.getType(fromString: fileLines[index])
+                let tileType = TerrainMap.TileType.getType(fromString: fileLines[index])
                 terrainTypesTemp.append(tileType)
             }
 
