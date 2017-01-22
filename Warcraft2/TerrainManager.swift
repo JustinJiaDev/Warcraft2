@@ -26,14 +26,16 @@ class TerrainManager {
         case ttRubble
         case ttMax
 
+        // MARK: Static Functions
+
         static func getType(fromString str: String) -> ETileType {
             if str.hasPrefix("grass") { return .ttGrass }
             else if str.hasPrefix("dirt") { return .ttDirt }
             else if str.hasPrefix("tree") { return .ttTree }
             else if str.hasPrefix("water") { return .ttWater }
             else if str.hasPrefix("rock") { return .ttRock }
-            else if str.hasPrefix("wall") { return .ttWall }
             else if str.hasPrefix("wall-damaged") { return .ttWallDamaged }
+            else if str.hasPrefix("wall") { return .ttWall }
             else if str.hasPrefix("rubble") { return .ttRubble }
             else { return .ttMax }
         }

@@ -11,8 +11,11 @@ import SpriteKit
 
 class GameScene: SKScene {
 
-    var spriteNode = SKSpriteNode()
+    var mapScale = CGFloat(0.25)
+    var mapWidth: CGFloat = 0
+    var mapHeight: CGFloat = 0
     var parentViewController: GameViewController?
+    let mainCamera = SKCameraNode()
 
     override func didMove(to _: SKView) {
 
@@ -31,19 +34,18 @@ class GameScene: SKScene {
 
         let terrainTileSize = 32
 
-        let mapWidth2 = CGFloat(mapManager.mapXCount() * terrainTileSize)
-        let mapHeight2 = CGFloat(mapManager.mapYCount() * terrainTileSize)
+        mapWidth = CGFloat(mapManager.mapXCount() * terrainTileSize)
+        mapHeight = CGFloat(mapManager.mapYCount() * terrainTileSize)
+        self.size = CGSize(width: mapWidth, height: mapHeight)
 
-        self.size = CGSize(width: mapWidth2, height: mapHeight2)
-
-        let camera = SKCameraNode()
-        self.camera = camera
-        self.camera?.setScale(1.0)
-        self.addChild(camera)
-        self.camera!.position = CGPoint(x: mapWidth2 / 2, y: mapHeight2 / 2)
+        self.camera = mainCamera
+        self.mainCamera.setScale(mapScale)
+        self.scaleMode = .aspectFill
+        self.addChild(mainCamera)
+        self.mainCamera.position = CGPoint(x: mapWidth / 2, y: mapHeight / 2)
         // Draw map tiles
-        for i in 0 ..< mapManager.mapXCount() {
-            for j in 0 ..< mapManager.mapYCount() {
+        for i in (0 ..< mapManager.mapYCount()).reversed() {
+            for j in 0 ..< mapManager.mapXCount() {
                 let currentTerrainType = mapManager.mapTileTypes[i][j]
                 let index = terrainManager.terrainTypes.index(of: currentTerrainType)
                 let spriteNode = SKSpriteNode(texture: terrainManager.terrainTiles[index!])
@@ -54,47 +56,54 @@ class GameScene: SKScene {
                 spriteNode.xScale = 1
                 spriteNode.yScale = 1
                 spriteNode.position = CGPoint(
-                    x: CGFloat(i * terrainTileSize),
-                    y: CGFloat(j * terrainTileSize)
+                    x: CGFloat(j * terrainTileSize),
+                    y: CGFloat(i * terrainTileSize)
                 )
                 self.addChild(spriteNode)
             }
         }
     }
 
-    //    func hypot(_ p1: CGPoint, _ p2: CGPoint) -> CGFloat {
-    //        return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2))
-    //    }
+    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            let previousLocation = touch.previousLocation(in: self)
+            let deltaY = location.y - previousLocation.y
+            let deltaX = location.x - previousLocation.x
 
-    //    override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
-    //        /* Called when a touch begins */
+            mainCamera.position.x -= deltaX
+            mainCamera.position.y -= deltaY
+        }
+    }
+    
+    
+    // Code below was an old attempt at limiting camera movement to map.  NOT WORKING
+    
+    //    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
+    //        for touch in touches {
+    //            let location = touch.location(in: self)
+    //            let previousLocation = touch.previousLocation(in: self)
+    //            let deltaY = location.y - previousLocation.y
+    //            let deltaX = location.x - previousLocation.x
     //
-    //        let touch = touches.first!
-    //        let location = touch.location(in: self)
-    //        // self.stickMan.position = location
-    //        let dist = hypot(stickMan.position, location)
-    //        let duration = TimeInterval(dist * self.STICK_MAN_SPEED)
-    //        print(duration)
-    //        print(location)
-    //        let moveAction = SKAction.move(to: location, duration: duration)
-    //        moveAction.timingMode = .easeOut
-    //        stickMan.run(moveAction)
+    //            if (mainCamera.position.x - deltaX) < mapWidth * mapScale * 0.5 {
+    //                mainCamera.position.x = mapWidth * mapScale * 0.5
+    //            } else if mainCamera.position.x - deltaX > mapWidth - mapWidth * mapScale * 0.5 {
+    //                mainCamera.position.x = mapWidth - mapWidth * mapScale * 0.5
+    //            } else {
+    //                mainCamera.position.x -= deltaX
+    //            }
     //
-    //        //        for touch in touches {
-    //        //            let location = touch.locationInNode(self)
-    //        //
-    //        //            let sprite = SKSpriteNode(imageNamed:"WalkingStickMan")
-    //        //
-    //        //            sprite.xScale = 0.1
-    //        //            sprite.yScale = 0.1
-    //        //            sprite.position = location
-    //        //
-    //        //            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-    //        //
-    //        //            sprite.runAction(SKAction.repeatActionForever(action))
-    //        //
-    //        //            self.addChild(sprite)
-    //        //        }
+    //
+    //            // Percentage of the height covered by the camera / 2, at both ends
+    //            if (mainCamera.position.y - deltaY) < mapHeight * mapScale * 0.5 {
+    //                mainCamera.position.y = mapHeight * mapScale * 0.5
+    //            } else if mainCamera.position.y - deltaY > mapHeight - mapHeight * mapScale * 0.5 {
+    //                mainCamera.position.y = mapHeight - mapHeight * mapScale * 0.5
+    //            } else {
+    //                mainCamera.position.y -= deltaY
+    //            }
+    //        }
     //    }
 
     //    override func update(_: TimeInterval) {

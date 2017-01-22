@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		116E2B86C47EE406F3468948 /* Pods_Warcraft2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */; };
 		493C06D81E3130F600C1C9E6 /* Archer.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C067F1E3130F600C1C9E6 /* Archer.png */; };
 		493C06D91E3130F600C1C9E6 /* Arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06801E3130F600C1C9E6 /* Arrow.png */; };
 		493C06DA1E3130F600C1C9E6 /* AssetColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06811E3130F600C1C9E6 /* AssetColor.png */; };
@@ -126,6 +125,7 @@
 		D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */; };
 		D0D6FA5F1E26015E00D92DA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */; };
 		D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */; };
+		F9A93CCBDD3B6E1591845090 /* Pods_Warcraft2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -257,11 +257,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		D0D6FA481E26015E00D92DA5 /* Frameworks */ = {
+		DDEE025B1B5AE70FFE49E98F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				116E2B86C47EE406F3468948 /* Pods_Warcraft2.framework in Frameworks */,
+				F9A93CCBDD3B6E1591845090 /* Pods_Warcraft2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,8 +397,6 @@
 				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
 				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
 				8E1B51601E2D694C008E968C /* Position.swift */,
-				8EA067671E3023880059CEC2 /* GameScene.swift */,
-				8EA067691E3026CC0059CEC2 /* GameScene.sks */,
 				4985844F1E303F6B00F6766C /* TerrainManager.swift */,
 				497337981E31552100962763 /* MapManager.swift */,
 			);
@@ -467,7 +465,6 @@
 		D0D6FA691E26028B00D92DA5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D0D6FA501E26015E00D92DA5 /* TestScene.sks */,
 				D0D6FA581E26015E00D92DA5 /* Main.storyboard */,
 				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
 			);
@@ -498,6 +495,9 @@
 		D0D6FA6C1E2602C200D92DA5 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				8EA067671E3023880059CEC2 /* GameScene.swift */,
+				8EA067691E3026CC0059CEC2 /* GameScene.sks */,
+				D0D6FA501E26015E00D92DA5 /* TestScene.sks */,
 				D0D6FA541E26015E00D92DA5 /* TestScene.swift */,
 			);
 			name = Scenes;
@@ -510,13 +510,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0D6FA631E26015E00D92DA5 /* Build configuration list for PBXNativeTarget "Warcraft2" */;
 			buildPhases = (
-				6FC3FFB747B9DC12715C0CB7 /* [CP] Check Pods Manifest.lock */,
+				B536F43B3AE49DCFEF926339 /* [CP] Check Pods Manifest.lock */,
 				D0D6FA471E26015E00D92DA5 /* Sources */,
-				D0D6FA481E26015E00D92DA5 /* Frameworks */,
 				D0D6FA491E26015E00D92DA5 /* Resources */,
-				B292469F8C13EF959A2351A9 /* [CP] Embed Pods Frameworks */,
-				77A47F88FF4C6E32D9B3EC83 /* [CP] Copy Pods Resources */,
 				D0C00E0C1E28620400501EC8 /* Swift Format */,
+				DDEE025B1B5AE70FFE49E98F /* Frameworks */,
+				FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */,
+				35014607D933153BF4C15C38 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -669,22 +669,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6FC3FFB747B9DC12715C0CB7 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		77A47F88FF4C6E32D9B3EC83 /* [CP] Copy Pods Resources */ = {
+		35014607D933153BF4C15C38 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -699,19 +684,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B292469F8C13EF959A2351A9 /* [CP] Embed Pods Frameworks */ = {
+		B536F43B3AE49DCFEF926339 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D0C00E0C1E28620400501EC8 /* Swift Format */ = {
@@ -727,6 +712,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "swiftformat .";
+		};
+		FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
