@@ -65,46 +65,39 @@ class GameScene: SKScene {
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
-        for touch in touches {
+        if touches.count == 1 {
+            let touch = touches.first!
             let location = touch.location(in: self)
             let previousLocation = touch.previousLocation(in: self)
             let deltaY = location.y - previousLocation.y
             let deltaX = location.x - previousLocation.x
-
-            mainCamera.position.x -= deltaX
-            mainCamera.position.y -= deltaY
+            moveCameraBy(deltaX, deltaY)
         }
     }
-    
-    
-    // Code below was an old attempt at limiting camera movement to map.  NOT WORKING
-    
-    //    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
-    //        for touch in touches {
-    //            let location = touch.location(in: self)
-    //            let previousLocation = touch.previousLocation(in: self)
-    //            let deltaY = location.y - previousLocation.y
-    //            let deltaX = location.x - previousLocation.x
-    //
-    //            if (mainCamera.position.x - deltaX) < mapWidth * mapScale * 0.5 {
-    //                mainCamera.position.x = mapWidth * mapScale * 0.5
-    //            } else if mainCamera.position.x - deltaX > mapWidth - mapWidth * mapScale * 0.5 {
-    //                mainCamera.position.x = mapWidth - mapWidth * mapScale * 0.5
-    //            } else {
-    //                mainCamera.position.x -= deltaX
-    //            }
-    //
-    //
-    //            // Percentage of the height covered by the camera / 2, at both ends
-    //            if (mainCamera.position.y - deltaY) < mapHeight * mapScale * 0.5 {
-    //                mainCamera.position.y = mapHeight * mapScale * 0.5
-    //            } else if mainCamera.position.y - deltaY > mapHeight - mapHeight * mapScale * 0.5 {
-    //                mainCamera.position.y = mapHeight - mapHeight * mapScale * 0.5
-    //            } else {
-    //                mainCamera.position.y -= deltaY
-    //            }
-    //        }
-    //    }
+
+    func moveCameraBy(_ deltaX: CGFloat, _ deltaY: CGFloat) {
+        moveCameraTo(mainCamera.position.x - deltaX, mainCamera.position.y - deltaY)
+    }
+
+    func moveCameraTo(_ centerX: CGFloat, _ centerY: CGFloat) {
+        // The game bounds will be applied to these variables
+        var constrainedCenterX = centerX
+        var constrainedCenterY = centerY
+        // Apply x bounds
+        let minX = centerX - mapWidth / 2 * self.camera!.xScale
+        let maxX = centerX + mapWidth / 2 * self.camera!.xScale
+        if minX < 0 { constrainedCenterX -= minX /* minX is negative */ }
+        if maxX > mapWidth { constrainedCenterX -= maxX - mapWidth }
+        // Apply y bounds
+        let minY = centerY - mapHeight / 2 * self.camera!.yScale
+        let maxY = centerY + mapHeight / 2 * self.camera!.yScale
+        if minY < 0 { constrainedCenterY -= minY /* minY is negative */ }
+        if maxY > mapHeight { constrainedCenterY -= maxY - mapHeight }
+        // Scroll to the as close to the desired position as possible
+        // within the bounds of the game board
+        mainCamera.position.x = constrainedCenterX
+        mainCamera.position.y = constrainedCenterY
+    }
 
     //    override func update(_: TimeInterval) {
     //        /* Called before each frame is rendered */
