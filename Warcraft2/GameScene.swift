@@ -37,8 +37,8 @@ class GameScene: SKScene {
 
             let terrainTileSize = 32
 
-            mapWidth = CGFloat(terrainMap.width * terrainTileSize)
-            mapHeight = CGFloat(terrainMap.height * terrainTileSize)
+            mapWidth = CGFloat((terrainMap.width + 2) * terrainTileSize)
+            mapHeight = CGFloat((terrainMap.height + 2) * terrainTileSize)
 
             self.size = CGSize(width: mapWidth, height: mapHeight)
             self.scaleMode = .aspectFill
