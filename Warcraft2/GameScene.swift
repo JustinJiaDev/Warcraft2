@@ -40,7 +40,7 @@ class GameScene: SKScene {
             mapHeight = CGFloat((terrainMap.height + 2) * terrainTileSize)
 
             self.size = CGSize(width: mapWidth, height: mapHeight)
-            self.scaleMode = .aspectFill
+            self.scaleMode = .fill
 
             self.camera = mainCamera
             mainCamera.setScale(mapScale)
@@ -59,6 +59,8 @@ class GameScene: SKScene {
             }.reversed()
 
             for i in 0 ..< nodes.count {
+                print(i)
+                print(mapWidth)
                 for j in 0 ..< nodes[0].count {
                     nodes[i][j].position = CGPoint(x: j * terrainTileSize, y: i * terrainTileSize)
                     self.addChild(nodes[i][j])
