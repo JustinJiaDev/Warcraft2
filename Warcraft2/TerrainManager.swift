@@ -88,7 +88,7 @@ class TerrainManager {
             // Read remaining lines, interpreting each as an TileType
             let numLines = numSprites + 2
             for index in 2 ..< numLines {
-                let tileType = TerrainMap.TileType.getType(fromString: fileLines[index])
+                let tileType = TerrainMap.TileType.from(string: fileLines[index])
                 terrainTypesTemp.append(tileType)
             }
 

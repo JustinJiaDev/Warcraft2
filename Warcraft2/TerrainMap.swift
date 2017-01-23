@@ -10,13 +10,14 @@ import Foundation
 
 enum TerrainMapError: Error {
 
+    case unknownMapFile
     case failedToReadMapName
     case failedToReadMapDimensions
     case invalidMapDimensions
     case failedToReadMapLine
     case mapLineToShort(line: Int)
     case mapHasTwoFewLines(lineCount: Int)
-    case unknownTileType(type: Character, at: (Int, Int))
+    case unknownTileType
 }
 
 class TerrainMap {
@@ -35,36 +36,30 @@ class TerrainMap {
 
         // MARK: Static Functions
 
-        static func getType(fromString str: String) -> TileType {
-            if str.hasPrefix("grass") { return .grass }
-            else if str.hasPrefix("dirt") { return .dirt }
-            else if str.hasPrefix("tree") { return .tree }
-            else if str.hasPrefix("water") { return .water }
-            else if str.hasPrefix("rock") { return .rock }
-            else if str.hasPrefix("wall-damaged") { return .wallDamaged }
-            else if str.hasPrefix("wall") { return .wall }
-            else if str.hasPrefix("rubble") { return .rubble }
-            else { return .max }
+        static func from(string: String) -> TileType {
+            switch string {
+            case string where string.hasPrefix("grass"): return .grass
+            case string where string.hasPrefix("dirt"): return .dirt
+            case string where string.hasPrefix("tree"): return .tree
+            case string where string.hasPrefix("water"): return .water
+            case string where string.hasPrefix("rock"): return .rock
+            case string where string.hasPrefix("wall-damaged"): return .wallDamaged
+            case string where string.hasPrefix("wall"): return .wall
+            case string where string.hasPrefix("rubble"): return .rubble
+            default: return .max
+            }
         }
 
-        static func getType(fromTileCharCode tileCharCode: Character) -> TileType? {
-            switch tileCharCode {
-            case "G":
-                return .grass
-            case "F":
-                return .tree
-            case "D":
-                return .dirt
-            case "W":
-                return .wall
-            case "w":
-                return .wallDamaged
-            case "R":
-                return .rock
-            case " ":
-                return .water
-            default:
-                return nil
+        static func from(charCode: Character) -> TileType {
+            switch charCode {
+            case "G": return .grass
+            case "F": return .tree
+            case "D": return .dirt
+            case "W": return .wall
+            case "w": return .wallDamaged
+            case "R": return .rock
+            case " ": return .water
+            default: return .max
             }
         }
     }
@@ -73,6 +68,9 @@ class TerrainMap {
     private(set) var stringMap: [String] = []
     private(set) var playerCount: Int = 0
     private(set) var mapName: String = ""
+
+    init() {
+    }
 
     init(terrainMap: TerrainMap) {
         map = terrainMap.map
@@ -165,7 +163,6 @@ class TerrainMap {
 
     func loadMap(source: DataSource) throws {
         map.removeAll()
-
         let lineSource = LineDataSource(dataSource: source)
 
         guard let mapName = lineSource.readLine() else {
@@ -198,26 +195,15 @@ class TerrainMap {
             throw TerrainMapError.mapHasTwoFewLines(lineCount: stringMap.count)
         }
 
-        for i in 0 ..< map.count {
-            for j in 0 ... (mapWidth + 2) {
-                let line = stringMap[i] // .characters,
-                let tileCharCode = line[line.index(line.startIndex, offsetBy: j)]
-                //                switch tileType {
-                //                case "G": map[i][j] = .grass
-                //                case "F": map[i][j] = .tree
-                //                case "D": map[i][j] = .dirt
-                //                case "W": map[i][j] = .wall
-                //                case "w": map[i][j] = .wallDamaged
-                //                case "R": map[i][j] = .rock
-                //                case " ": map[i][j] = .water
-                //                default:
-                //                    throw TerrainMapError.unknownTileType(type: tileType, at: (i + 2, j))
-                //                }
-                if let tileType = TileType.getType(fromTileCharCode: tileCharCode) {
-                    map[i][j] = tileType
-                } else {
-                    throw TerrainMapError.unknownTileType(type: tileCharCode, at: (i + 2, j))
-                }
+        map = stringMap.map { line in
+            return line.characters.map { charCode in
+                return TileType.from(charCode: charCode)
+            }
+        }
+
+        try map.forEach { line in
+            guard !line.contains(.max) else {
+                throw TerrainMapError.unknownTileType
             }
         }
     }
