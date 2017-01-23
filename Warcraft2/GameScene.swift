@@ -59,8 +59,6 @@ class GameScene: SKScene {
             }.reversed()
 
             for i in 0 ..< nodes.count {
-                print(i)
-                print(mapWidth)
                 for j in 0 ..< nodes[0].count {
                     nodes[i][j].position = CGPoint(x: j * terrainTileSize, y: i * terrainTileSize)
                     self.addChild(nodes[i][j])
