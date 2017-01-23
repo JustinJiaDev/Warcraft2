@@ -275,12 +275,16 @@ class PlayerAsset {
         return assetType.hitPoints
     }
 
+    var action: AssetAction {
+        return commands.last?.action ?? .none
+    }
+
     var type: AssetType {
         return assetType.type
     }
 
-    var action: AssetAction {
-        return commands.last?.action ?? .none
+    var color: PlayerColor {
+        return assetType.color
     }
 
     var armor: Int {
