@@ -11,8 +11,6 @@ import SpriteKit
 
 class TerrainManager {
 
-    // MARK: Tile Type Enum
-
     // MARK: Member Variables
 
     var terrainTiles = [SKTexture]() // Array of terrain textures, can be identified using terrainTypes

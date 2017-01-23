@@ -96,6 +96,7 @@
 		493C072F1E3130F600C1C9E6 /* Texture.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D61E3130F600C1C9E6 /* Texture.dat */; };
 		493C07301E3130F600C1C9E6 /* TownHall.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D71E3130F600C1C9E6 /* TownHall.dat */; };
 		493C07381E3136A100C1C9E6 /* Terrain.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C07371E3136A100C1C9E6 /* Terrain.dat */; };
+		4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */; };
 		497337991E31552100962763 /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497337981E31552100962763 /* MapManager.swift */; };
 		498584501E303F6B00F6766C /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4985844F1E303F6B00F6766C /* TerrainManager.swift */; };
 		8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */; };
@@ -219,6 +220,7 @@
 		493C06D61E3130F600C1C9E6 /* Texture.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Texture.dat; path = Image_Data_Assets/Texture.dat; sourceTree = "<group>"; };
 		493C06D71E3130F600C1C9E6 /* TownHall.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TownHall.dat; path = Image_Data_Assets/TownHall.dat; sourceTree = "<group>"; };
 		493C07371E3136A100C1C9E6 /* Terrain.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Terrain.dat; path = Image_Data_Assets/Terrain.dat; sourceTree = "<group>"; };
+		4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = blacksmith.wav; sourceTree = "<group>"; };
 		497337981E31552100962763 /* MapManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		4985844F1E303F6B00F6766C /* TerrainManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
 		8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameDataTypes.swift; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 			isa = PBXGroup;
 			children = (
 				8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */,
+				4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */,
 				8EA067711E3310470059CEC2 /* intro.mid */,
 			);
 			name = Music;
@@ -590,6 +593,7 @@
 				493C06DB1E3130F600C1C9E6 /* AssetNone.png in Resources */,
 				493C06E91E3130F600C1C9E6 /* FireSmall.png in Resources */,
 				493C07161E3130F600C1C9E6 /* Fog.dat in Resources */,
+				4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */,
 				493C07181E3130F600C1C9E6 /* FontKingthings8.dat in Resources */,
 				493C07051E3130F600C1C9E6 /* Arrow.dat in Resources */,
 				493C07131E3130F600C1C9E6 /* Farm.dat in Resources */,

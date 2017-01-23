@@ -14,7 +14,6 @@ class GameScene: SKScene {
     let mapScale = CGFloat(0.25)
     var mapWidth: CGFloat = 0
     var mapHeight: CGFloat = 0
-    var parentViewController: GameViewController?
     let mainCamera = SKCameraNode()
 
     // Called when transitioning to the view

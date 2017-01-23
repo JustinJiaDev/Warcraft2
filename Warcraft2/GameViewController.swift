@@ -30,8 +30,6 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
             skView.showsFPS = true
             skView.showsNodeCount = true
 
-            scene.parentViewController = self
-
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true
 

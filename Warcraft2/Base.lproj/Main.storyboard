@@ -88,10 +88,10 @@
             </objects>
             <point key="canvasLocation" x="545.57721139430294" y="520.79999999999995"/>
         </scene>
-        <!--View Controller-->
+        <!--Launch View Controller-->
         <scene sceneID="QYi-ZE-SG3">
             <objects>
-                <viewController id="wfB-tJ-xR5" sceneMemberID="viewController">
+                <viewController id="wfB-tJ-xR5" customClass="LaunchViewController" customModule="Warcraft2" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rY7-mw-86S"/>
                         <viewControllerLayoutGuide type="bottom" id="Dov-hc-uEB"/>
