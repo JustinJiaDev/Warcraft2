@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:PlayerCommand.swift">
+   </FileRef>
+   <FileRef
       location = "group:Warcraft2.xcodeproj">
    </FileRef>
    <FileRef
