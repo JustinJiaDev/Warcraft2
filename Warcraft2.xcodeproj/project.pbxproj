@@ -101,6 +101,7 @@
 		8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */; };
 		8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515E1E2D64DF008E968C /* Rectangle.swift */; };
 		8E1B51611E2D694C008E968C /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B51601E2D694C008E968C /* Position.swift */; };
+		8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */; };
 		8EA067681E3023880059CEC2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067671E3023880059CEC2 /* GameScene.swift */; };
 		8EA0676A1E3026CC0059CEC2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067691E3026CC0059CEC2 /* GameScene.sks */; };
 		8EA067721E3310470059CEC2 /* generalsoundfont.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */; };
@@ -230,6 +231,7 @@
 		8E1B515D1E2D5DE9008E968C /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		8E1B515E1E2D64DF008E968C /* Rectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rectangle.swift; sourceTree = "<group>"; };
 		8E1B51601E2D694C008E968C /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisibilityMap.swift; sourceTree = "<group>"; };
 		8EA067671E3023880059CEC2 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		8EA067691E3026CC0059CEC2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		8EA067701E3310470059CEC2 /* generalsoundfont.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = generalsoundfont.sf2; sourceTree = "<group>"; };
@@ -394,6 +396,7 @@
 		8E1B515A1E2D58CA008E968C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 				8EA067741E33C8E00059CEC2 /* DataSource.swift */,
 				8EA067751E33C8E00059CEC2 /* DataContainer.swift */,
 				8EA067761E33C8E00059CEC2 /* DataSink.swift */,
@@ -782,6 +785,7 @@
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 				D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */,
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
+				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
 				8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
 			);

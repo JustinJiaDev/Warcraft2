@@ -9,8 +9,8 @@
 import Foundation
 
 class Position {
-    private(set) var x: Int
-    private(set) var y: Int
+    var x: Int
+    var y: Int
 
     private(set) static var tileWidth = 1
     private(set) static var tileHeight = 1
