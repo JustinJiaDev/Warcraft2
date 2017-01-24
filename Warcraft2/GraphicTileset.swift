@@ -8,6 +8,13 @@
 
 import Foundation
 
+enum GraphicTilesetError: Error {
+    case failedToGetPath
+    case failedToLoadFile(path: String)
+    case failedToReadTileCount
+    case failedToReadTileName
+}
+
 class GraphicTileset {
 
     private var surfaceTileset: GraphicSurface?
@@ -23,7 +30,7 @@ class GraphicTileset {
     private(set) var tileHalfHeight: Int = 0
 
     var groupCount: Int {
-        fatalError("This method is not yet implemented.")
+        return groupNames.count
     }
 
     private static func parseGroupName(_ tileName: String) -> (String, Int)? {
@@ -103,6 +110,31 @@ class GraphicTileset {
         return groupSteps[groupName] ?? 0
     }
 
+    func drawTile(on surface: GraphicSurface, x: Int, y: Int, index: Int) {
+        guard index >= 0 || index < tileCount, let surfaceTileset = surfaceTileset else {
+            return
+        }
+        surface.draw(
+            surface: surfaceTileset,
+            dxPosition: x,
+            dyPosition: y,
+            width: tileWidth,
+            height: tileHeight,
+            sxPosition: 0,
+            syPosition: index * tileHeight
+        )
+    }
+
+    func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) {
+        guard let mask = clippingMasks[index] else {
+            return
+        }
+        let resourceContext = surface.createResourceContext()
+        resourceContext.setSourceRGB(rgb)
+        resourceContext.maskSurface(surface: mask, xPosition: x, yPosition: y)
+        resourceContext.fill()
+    }
+
     func clearTile(at index: Int) -> Bool {
         guard index >= 0 || index < tileCount, let surfaceTileset = surfaceTileset else {
             return false
@@ -165,18 +197,39 @@ class GraphicTileset {
     }
 
     func createClippingMasks() {
-        fatalError("This method is not yet implemented.")
+        guard let surfaceTileset = surfaceTileset else {
+            return
+        }
+        for i in 0 ..< tileCount {
+            clippingMasks[i] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
+            clippingMasks[i]?.copy(surface: surfaceTileset, dxPosition: 0, dyPosition: 0, width: tileWidth, height: tileHeight, sxPosition: 0, syPosition: i * tileHeight)
+        }
     }
 
-    func loadTileset(dataSource: DataSource) -> Bool {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func drawTile(surface _: GraphicSurface, x _: Int, y _: Int, tileIndex _: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func drawClipped(surface _: GraphicSurface, x _: Int, y _: Int, tileIndex _: Int, rgb _: UInt32) {
-        fatalError("This method is not yet implemented.")
+    func loadTileset(from dataSource: DataSource) throws {
+        let lineSource = LineDataSource(dataSource: dataSource)
+        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
+            throw GraphicTilesetError.failedToGetPath
+        }
+        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
+            throw GraphicTilesetError.failedToLoadFile(path: pngPath)
+        }
+        tileWidth = surfaceTileset.width()
+        tileHeight = surfaceTileset.height()
+        guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
+            throw GraphicTilesetError.failedToReadTileCount
+        }
+        tileCount = count
+        tileHeight /= tileCount
+        for i in 0 ..< tileCount {
+            guard let tileName = lineSource.readLine() else {
+                throw GraphicTilesetError.failedToReadTileName
+            }
+            mapping[tileName] = i
+            tileNames[i] = tileName
+        }
+        updateGroupNames()
+        tileHalfWidth = tileWidth / 2
+        tileHalfHeight = tileHeight / 2
     }
 }
