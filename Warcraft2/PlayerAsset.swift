@@ -18,19 +18,19 @@ class ActivatedPlayerCapability {
     private var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func percentComplete(max _: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func incrementstep() {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func cancel() {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 }
 
@@ -45,47 +45,47 @@ class PlayerCapability {
     private(set) var targetType: TargetType
 
     init(name: String, targetType: TargetType) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     private static func nameRegistry() -> [String: PlayerCapability] {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     private static func typeRegistry() -> [Int: PlayerCapability] {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     private static func register(capability: PlayerCapability) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findCapability(type: AssetCapabilityType) -> PlayerCapability {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findCapability(name: String) -> PlayerCapability {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func nameToType(name: String) -> AssetCapabilityType {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func typeToName(type: AssetCapabilityType) -> String {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 }
 
@@ -106,23 +106,23 @@ class PlayerUpgrade {
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
     init() {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func loadUpgrades(container: DataContainer) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func load(source: DataSource) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findUpgrade(type: AssetCapabilityType) -> PlayerUpgrade {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findUpgrade(name: String) -> PlayerUpgrade {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 }
 
@@ -155,31 +155,31 @@ class PlayerAssetType {
     private(set) static var nameTypeTranslation: [String: AssetType] = [:]
 
     init(playerAssetType: PlayerAssetType) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func armorUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func sightUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func speedUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func basicDamageUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func piercingDamageUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func rangeUpgrade() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func hasCapability(_ capability: AssetCapabilityType) -> Bool {
@@ -199,39 +199,39 @@ class PlayerAssetType {
     }
 
     static func nameToType(name: String) -> AssetType {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func typeToName(type: AssetType) -> String {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func maxSight() -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func loadTypes(container: DataContainer) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func load(source: DataSource) -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findDefault(from name: String) -> PlayerAssetType {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func findDefault(from type: AssetType) -> PlayerAssetType {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     static func construct() -> PlayerAsset {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 }
 
@@ -275,12 +275,16 @@ class PlayerAsset {
         return assetType.hitPoints
     }
 
+    var action: AssetAction {
+        return commands.last?.action ?? .none
+    }
+
     var type: AssetType {
         return assetType.type
     }
 
-    var action: AssetAction {
-        return commands.last?.action ?? .none
+    var color: PlayerColor {
+        return assetType.color
     }
 
     var armor: Int {
@@ -392,11 +396,11 @@ class PlayerAsset {
     }
 
     init(playerAsset: PlayerAssetType) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func setUpdateFrequency(frequency _: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func incrementHitPoints(_ increments: Int) -> Int {
@@ -440,7 +444,7 @@ class PlayerAsset {
     }
 
     func setTitlePosition(position _: Position) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func tilePositionX() -> Int {
@@ -448,7 +452,7 @@ class PlayerAsset {
     }
 
     func setTilePositionX(_: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func tilePositionY() -> Int {
@@ -456,11 +460,11 @@ class PlayerAsset {
     }
 
     func setTilePositionY(_: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func setPosition(position _: Position) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func positionX() -> Int {
@@ -468,7 +472,7 @@ class PlayerAsset {
     }
 
     func setPositionX(_: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func positionY() -> Int {
@@ -476,11 +480,11 @@ class PlayerAsset {
     }
 
     func setPositionY(_: Int) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func closestPosition(_ position: Position) -> Position {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func clearCommand() {
@@ -529,7 +533,7 @@ class PlayerAsset {
     }
 
     func interruptible() -> Bool {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func changeType(_ type: PlayerAssetType) {
@@ -541,6 +545,6 @@ class PlayerAsset {
     }
 
     func moveStep(occupancyMap _: [[PlayerAsset]], diagonals _: [[Bool]]) {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 }
