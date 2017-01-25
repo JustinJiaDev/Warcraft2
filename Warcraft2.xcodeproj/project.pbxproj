@@ -119,6 +119,8 @@
 		8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */; };
 		D01B68121E35A4320003C408 /* maze.map in Resources */ = {isa = PBXBuildFile; fileRef = D01B68111E35A3DE0003C408 /* maze.map */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
+		D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC61E384A7E00FF7DD7 /* 2player.map */; };
+		D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */; };
 		D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47421E35BE6300F7FED1 /* PixelType.swift */; };
 		D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47441E35D80600F7FED1 /* MapRenderer.swift */; };
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
@@ -249,6 +251,8 @@
 		D01B68111E35A3DE0003C408 /* maze.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = maze.map; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
+		D0773FC61E384A7E00FF7DD7 /* 2player.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2player.map; sourceTree = "<group>"; };
+		D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2playerdivide.map; sourceTree = "<group>"; };
 		D08F47421E35BE6300F7FED1 /* PixelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelType.swift; sourceTree = "<group>"; };
 		D08F47441E35D80600F7FED1 /* MapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRenderer.swift; sourceTree = "<group>"; };
 		D08F47461E35D89800F7FED1 /* GraphicTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicTileset.swift; sourceTree = "<group>"; };
@@ -375,6 +379,8 @@
 		498584511E311B5500F6766C /* Maps */ = {
 			isa = PBXGroup;
 			children = (
+				D0773FC61E384A7E00FF7DD7 /* 2player.map */,
+				D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */,
 				D01B68111E35A3DE0003C408 /* maze.map */,
 			);
 			name = Maps;
@@ -581,10 +587,10 @@
 				B536F43B3AE49DCFEF926339 /* [CP] Check Pods Manifest.lock */,
 				D0D6FA471E26015E00D92DA5 /* Sources */,
 				D0D6FA491E26015E00D92DA5 /* Resources */,
-				D0C00E0C1E28620400501EC8 /* Swift Format */,
 				DDEE025B1B5AE70FFE49E98F /* Frameworks */,
 				FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */,
 				35014607D933153BF4C15C38 /* [CP] Copy Pods Resources */,
+				D0C00E0C1E28620400501EC8 /* Format Code */,
 			);
 			buildRules = (
 			);
@@ -634,6 +640,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */,
+				D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */,
 				D01B68121E35A4320003C408 /* maze.map in Resources */,
 				8EA067731E3310470059CEC2 /* intro.mid in Resources */,
 				493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */,
@@ -767,19 +775,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		D0C00E0C1E28620400501EC8 /* Swift Format */ = {
+		D0C00E0C1E28620400501EC8 /* Format Code */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Swift Format";
+			name = "Format Code";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "swiftformat .";
+			shellScript = "chmod u+x \"${SRCROOT}/swiftformat\"\n\"${SRCROOT}/swiftformat\" \"${SRCROOT}/Warcraft2\" \\\n--indent 4 \\\n--allman false \\\n--wraparguments beforefirst  \\\n--removelines enabled \\\n--wrapelements beforefirst \\\n--exponentcase lowercase \\\n--stripunusedargs closure-only \\\n--header strip \\\n--insertlines disabled \\\n--binarygrouping 4,8 \\\n--empty void \\\n--ranges spaced \\\n--trimwhitespace always \\\n--hexliteralcase lowercase \\\n--linebreaks lf \\\n--decimalgrouping 3,6 \\\n--commas inline \\\n--comments indent \\\n--ifdef indent \\\n--octalgrouping 4,8 \\\n--hexgrouping 4,8 \\\n--semicolons inline";
 		};
 		FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

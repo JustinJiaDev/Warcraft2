@@ -1,11 +1,3 @@
-//
-//  Position.swift
-//  Warcraft2
-//
-//  Created by Bryce Korte on 1/16/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
 import Foundation
 
 class Position {
@@ -20,7 +12,7 @@ class Position {
     private static let tileDirections: [[Direction]] = [
         [.northWest, .north, .northEast],
         [.west, .max, .east],
-        [.southWest, .south, .southEast],
+        [.southWest, .south, .southEast]
     ]
 
     var TileAligned: Bool {

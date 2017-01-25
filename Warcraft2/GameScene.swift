@@ -1,11 +1,3 @@
-//
-//  GameScene.swift
-//  Warcraft2
-//
-//  Created by Bryce Korte on 1/18/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
 import Foundation
 import SpriteKit
 
