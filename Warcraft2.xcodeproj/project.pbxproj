@@ -120,14 +120,14 @@
 		8EA067881E33C8E00059CEC2 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */; };
 		8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */; };
 		D01B68121E35A4320003C408 /* maze.map in Resources */ = {isa = PBXBuildFile; fileRef = D01B68111E35A3DE0003C408 /* maze.map */; };
+		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
+		D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC61E384A7E00FF7DD7 /* 2player.map */; };
+		D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */; };
 		D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47421E35BE6300F7FED1 /* PixelType.swift */; };
 		D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47441E35D80600F7FED1 /* MapRenderer.swift */; };
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
-		D0D6FA511E26015E00D92DA5 /* TestScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA501E26015E00D92DA5 /* TestScene.sks */; };
-		D0D6FA531E26015E00D92DA5 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA521E26015E00D92DA5 /* Actions.sks */; };
-		D0D6FA551E26015E00D92DA5 /* TestScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA541E26015E00D92DA5 /* TestScene.swift */; };
 		D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA561E26015E00D92DA5 /* GameViewController.swift */; };
 		D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA581E26015E00D92DA5 /* Main.storyboard */; };
 		D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */; };
@@ -254,6 +254,9 @@
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D01B68111E35A3DE0003C408 /* maze.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = maze.map; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
+		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
+		D0773FC61E384A7E00FF7DD7 /* 2player.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2player.map; sourceTree = "<group>"; };
+		D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2playerdivide.map; sourceTree = "<group>"; };
 		D08F47421E35BE6300F7FED1 /* PixelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelType.swift; sourceTree = "<group>"; };
 		D08F47441E35D80600F7FED1 /* MapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRenderer.swift; sourceTree = "<group>"; };
 		D08F47461E35D89800F7FED1 /* GraphicTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicTileset.swift; sourceTree = "<group>"; };
@@ -261,9 +264,6 @@
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D0D6FA501E26015E00D92DA5 /* TestScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestScene.sks; sourceTree = "<group>"; };
-		D0D6FA521E26015E00D92DA5 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
-		D0D6FA541E26015E00D92DA5 /* TestScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScene.swift; sourceTree = "<group>"; };
 		D0D6FA561E26015E00D92DA5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		D0D6FA591E26015E00D92DA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -380,12 +380,14 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
-		498584511E311B5500F6766C /* Game Data Files */ = {
+		498584511E311B5500F6766C /* Maps */ = {
 			isa = PBXGroup;
 			children = (
+				D0773FC61E384A7E00FF7DD7 /* 2player.map */,
+				D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */,
 				D01B68111E35A3DE0003C408 /* maze.map */,
 			);
-			name = "Game Data Files";
+			name = Maps;
 			sourceTree = "<group>";
 		};
 		804A99FEFEE41B06F89EB89D /* Pods */ = {
@@ -400,22 +402,13 @@
 		8E1B515A1E2D58CA008E968C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
-				8EA067741E33C8E00059CEC2 /* DataSource.swift */,
-				8EA067751E33C8E00059CEC2 /* DataContainer.swift */,
-				8EA067761E33C8E00059CEC2 /* DataSink.swift */,
-				8EA067771E33C8E00059CEC2 /* FileDataSource.swift */,
-				8EA067781E33C8E00059CEC2 /* GraphicResourceContext.swift */,
-				8EA067791E33C8E00059CEC2 /* LineDataSource.swift */,
-				8EA0677A1E33C8E00059CEC2 /* PeriodicTimeout.swift */,
-				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
-				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
-				8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */,
-				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
-				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
-				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
-				8E1B51601E2D694C008E968C /* Position.swift */,
-				4985844F1E303F6B00F6766C /* TerrainManager.swift */,
+				D0773FBF1E38477F00FF7DD7 /* DataContainer */,
+				D0773FC01E3847A800FF7DD7 /* Map */,
+				D0773FC11E3847C200FF7DD7 /* Graphic */,
+				D0773FC41E38485500FF7DD7 /* GameType */,
+				D0773FC31E38483200FF7DD7 /* Player */,
+				D0773FC21E3847F100FF7DD7 /* Temporary */,
+				D0773FC51E38485C00FF7DD7 /* Utilities */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -440,16 +433,75 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D08F47481E35D8AF00F7FED1 /* Porting */ = {
+		D0773FBF1E38477F00FF7DD7 /* DataContainer */ = {
 			isa = PBXGroup;
 			children = (
-				D08F47421E35BE6300F7FED1 /* PixelType.swift */,
+				8EA067751E33C8E00059CEC2 /* DataContainer.swift */,
+				8EA067741E33C8E00059CEC2 /* DataSource.swift */,
+				8EA067761E33C8E00059CEC2 /* DataSink.swift */,
+				8EA067771E33C8E00059CEC2 /* FileDataSource.swift */,
+				8EA067791E33C8E00059CEC2 /* LineDataSource.swift */,
+			);
+			name = DataContainer;
+			sourceTree = "<group>";
+		};
+		D0773FC01E3847A800FF7DD7 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
+				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
 				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		D0773FC11E3847C200FF7DD7 /* Graphic */ = {
+			isa = PBXGroup;
+			children = (
+				8EA067781E33C8E00059CEC2 /* GraphicResourceContext.swift */,
 				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
+				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
 				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
 				49E8B2FA1E38400D00B80211 /* Debug.swift */,
 			);
-			name = Porting;
+			name = Graphic;
+			sourceTree = "<group>";
+		};
+		D0773FC21E3847F100FF7DD7 /* Temporary */ = {
+			isa = PBXGroup;
+			children = (
+				4985844F1E303F6B00F6766C /* TerrainManager.swift */,
+			);
+			name = Temporary;
+			sourceTree = "<group>";
+		};
+		D0773FC31E38483200FF7DD7 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
+				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
+			);
+			name = Player;
+			sourceTree = "<group>";
+		};
+		D0773FC41E38485500FF7DD7 /* GameType */ = {
+			isa = PBXGroup;
+			children = (
+				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
+				D08F47421E35BE6300F7FED1 /* PixelType.swift */,
+				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
+				8E1B51601E2D694C008E968C /* Position.swift */,
+			);
+			name = GameType;
+			sourceTree = "<group>";
+		};
+		D0773FC51E38485C00FF7DD7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				8EA0677A1E33C8E00059CEC2 /* PeriodicTimeout.swift */,
+				8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 		D0D6FA421E26015E00D92DA5 = {
@@ -476,7 +528,6 @@
 				D0D6FA6A1E26029500D92DA5 /* AppDelegate */,
 				8E1B515A1E2D58CA008E968C /* Models */,
 				D0D6FA681E26028000D92DA5 /* ViewControllers */,
-				D08F47481E35D8AF00F7FED1 /* Porting */,
 				D0D6FA691E26028B00D92DA5 /* Views */,
 				D0D6FA6C1E2602C200D92DA5 /* Scenes */,
 				D0D6FA6B1E2602AE00D92DA5 /* Resources */,
@@ -515,9 +566,8 @@
 			isa = PBXGroup;
 			children = (
 				8EA0676F1E33102E0059CEC2 /* Music */,
-				498584511E311B5500F6766C /* Game Data Files */,
+				498584511E311B5500F6766C /* Maps */,
 				4985844E1E303F0300F6766C /* Images */,
-				D0D6FA521E26015E00D92DA5 /* Actions.sks */,
 				D0D6FA601E26015E00D92DA5 /* Info.plist */,
 				D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */,
 			);
@@ -529,8 +579,6 @@
 			children = (
 				8EA067671E3023880059CEC2 /* GameScene.swift */,
 				8EA067691E3026CC0059CEC2 /* GameScene.sks */,
-				D0D6FA501E26015E00D92DA5 /* TestScene.sks */,
-				D0D6FA541E26015E00D92DA5 /* TestScene.swift */,
 			);
 			name = Scenes;
 			sourceTree = "<group>";
@@ -545,10 +593,10 @@
 				B536F43B3AE49DCFEF926339 /* [CP] Check Pods Manifest.lock */,
 				D0D6FA471E26015E00D92DA5 /* Sources */,
 				D0D6FA491E26015E00D92DA5 /* Resources */,
-				D0C00E0C1E28620400501EC8 /* Swift Format */,
 				DDEE025B1B5AE70FFE49E98F /* Frameworks */,
 				FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */,
 				35014607D933153BF4C15C38 /* [CP] Copy Pods Resources */,
+				D0C00E0C1E28620400501EC8 /* Format Code */,
 			);
 			buildRules = (
 			);
@@ -598,6 +646,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */,
+				D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */,
 				D01B68121E35A4320003C408 /* maze.map in Resources */,
 				8EA067731E3310470059CEC2 /* intro.mid in Resources */,
 				493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */,
@@ -641,7 +691,6 @@
 				493C07301E3130F600C1C9E6 /* TownHall.dat in Resources */,
 				493C07291E3130F600C1C9E6 /* OuterBevel.dat in Resources */,
 				493C07211E3130F600C1C9E6 /* InnerBevel.dat in Resources */,
-				D0D6FA511E26015E00D92DA5 /* TestScene.sks in Resources */,
 				493C06F71E3130F600C1C9E6 /* ListViewIcons.png in Resources */,
 				493C06FB1E3130F600C1C9E6 /* MiniIcons.png in Resources */,
 				493C06F21E3130F600C1C9E6 /* GoldMine.png in Resources */,
@@ -685,7 +734,6 @@
 				493C07001E3130F600C1C9E6 /* Splash.png in Resources */,
 				493C06F61E3130F600C1C9E6 /* Keep.png in Resources */,
 				493C072F1E3130F600C1C9E6 /* Texture.dat in Resources */,
-				D0D6FA531E26015E00D92DA5 /* Actions.sks in Resources */,
 				493C07031E3130F600C1C9E6 /* TownHall.png in Resources */,
 				493C06E21E3130F600C1C9E6 /* CannonTower.png in Resources */,
 				495F2EB81E3AD4EB0047BD0F /* selected4.wav in Resources */,
@@ -734,19 +782,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		D0C00E0C1E28620400501EC8 /* Swift Format */ = {
+		D0C00E0C1E28620400501EC8 /* Format Code */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Swift Format";
+			name = "Format Code";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "swiftformat .";
+			shellScript = "chmod u+x \"${SRCROOT}/swiftformat\"\n\"${SRCROOT}/swiftformat\" \"${SRCROOT}/Warcraft2\" \\\n--indent 4 \\\n--allman false \\\n--wraparguments beforefirst  \\\n--removelines enabled \\\n--wrapelements beforefirst \\\n--exponentcase lowercase \\\n--stripunusedargs closure-only \\\n--header strip \\\n--insertlines disabled \\\n--binarygrouping 4,8 \\\n--empty void \\\n--ranges spaced \\\n--trimwhitespace always \\\n--hexliteralcase lowercase \\\n--linebreaks lf \\\n--decimalgrouping 3,6 \\\n--commas inline \\\n--comments indent \\\n--ifdef indent \\\n--octalgrouping 4,8 \\\n--hexgrouping 4,8 \\\n--semicolons inline";
 		};
 		FEA1872ACCFD1AE4E419EC71 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -777,7 +825,6 @@
 				8E1B51611E2D694C008E968C /* Position.swift in Sources */,
 				8EA067841E33C8E00059CEC2 /* LineDataSource.swift in Sources */,
 				8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */,
-				D0D6FA551E26015E00D92DA5 /* TestScene.swift in Sources */,
 				8EA067851E33C8E00059CEC2 /* PeriodicTimeout.swift in Sources */,
 				8EA067681E3023880059CEC2 /* GameScene.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
@@ -795,6 +842,7 @@
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
 				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
 				8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */,
+				D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -927,6 +975,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucdavis.Warcraft2.iOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -943,6 +992,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucdavis.Warcraft2.iOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

@@ -1,11 +1,3 @@
-//
-//  MapTiles.swift
-//  Warcraft2
-//
-//  Created by Andrew van Tonningen on 1/18/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
 import Foundation
 import SpriteKit
 
