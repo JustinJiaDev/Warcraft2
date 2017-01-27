@@ -40,7 +40,6 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
     func playMIDIFile() {
 
-
         soundfont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
         midifile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
 
@@ -56,6 +55,5 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
         midiplayer!.prepareToPlay()
         midiplayer!.play()
-
     }
 }
