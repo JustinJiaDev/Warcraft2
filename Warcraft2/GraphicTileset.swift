@@ -11,15 +11,23 @@ class GraphicTileset {
 
     private var surfaceTileset: GraphicSurface?
     private var clippingMasks: [Int: GraphicSurface] = [:]
-    private var mapping: [String: Int] = [:]
+    
+    private var tileIndex: [String: Int] = [:]
     private var tileNames: [String] = []
-    private var groupNames: [String] = []
     private var groupSteps: [String: Int] = [:]
+    private var groupNames: [String] = []
+    
     private(set) var tileCount: Int = 0
     private(set) var tileWidth: Int = 0
     private(set) var tileHeight: Int = 0
-    private(set) var tileHalfWidth: Int = 0
-    private(set) var tileHalfHeight: Int = 0
+
+    var tileHalfWidth: Int {
+        return tileWidth / 2
+    }
+
+    var tileHalfHeight: Int {
+        return tileHeight / 2
+    }
 
     var groupCount: Int {
         return groupNames.count
@@ -63,10 +71,10 @@ class GraphicTileset {
         }
         guard count >= tileCount else {
             tileCount = count
-            mapping.keys.filter { key in
-                return self.mapping[key]! >= self.tileCount
+            tileIndex.keys.filter { key in
+                return self.tileIndex[key]! >= self.tileCount
             }.forEach { key in
-                self.mapping.removeValue(forKey: key)
+                self.tileIndex.removeValue(forKey: key)
             }
             updateGroupNames()
             return tileCount
@@ -82,7 +90,7 @@ class GraphicTileset {
     }
 
     func findTile(with name: String) -> Int {
-        return mapping.first { key, _ in
+        return tileIndex.first { key, _ in
             return key == name
         }?.value ?? -1
     }
@@ -151,9 +159,9 @@ class GraphicTileset {
             sxPosition: 0,
             syPosition: sourceIndex * tileHeight
         )
-        mapping[tileNames[destinationIndex]] = nil
+        tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
-        mapping[tileName] = destinationIndex
+        tileIndex[tileName] = destinationIndex
         return true
     }
 
@@ -172,9 +180,9 @@ class GraphicTileset {
             sxPosition: 0,
             syPosition: sourceIndex * tileHeight
         )
-        mapping[tileNames[destinationIndex]] = nil
+        tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
-        mapping[tileName] = destinationIndex
+        tileIndex[tileName] = destinationIndex
         clippingMasks[destinationIndex] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
         clippingMasks[destinationIndex]?.copy(
             surface: surfaceTileset,
@@ -206,22 +214,19 @@ class GraphicTileset {
         guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
             throw GraphicTilesetError.failedToLoadFile(path: pngPath)
         }
-        tileWidth = surfaceTileset.width()
-        tileHeight = surfaceTileset.height()
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GraphicTilesetError.failedToReadTileCount
         }
         tileCount = count
-        tileHeight /= tileCount
+        tileWidth = surfaceTileset.width()
+        tileHeight = surfaceTileset.height() / tileCount
         for i in 0 ..< tileCount {
             guard let tileName = lineSource.readLine() else {
                 throw GraphicTilesetError.failedToReadTileName
             }
-            mapping[tileName] = i
-            tileNames[i] = tileName
+            tileNames.append(tileName)
+            tileIndex[tileName] = i
         }
         updateGroupNames()
-        tileHalfWidth = tileWidth / 2
-        tileHalfHeight = tileHeight / 2
     }
 }
