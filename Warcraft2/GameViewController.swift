@@ -18,8 +18,11 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var statsActionsView: UIView!
     @IBOutlet weak var gameSceneView: SKView!
 
-    var soundbank: URL!
-    var mp: AVMIDIPlayer!
+    var midiplayer: AVMIDIPlayer?
+    var soundfont: URL?
+    var midifile: URL?
+
+    // var soundbank: URL!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,32 +48,22 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
     func playMIDIFile() {
 
-        // Load a SoundFont or DLS file.
-        self.soundbank = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")
 
-        // a standard MIDI file.
-        let contents: URL = Bundle.main.url(forResource: "intro", withExtension: "mid")!
+        soundfont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
+        midifile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
+
+        assert(soundfont != nil)
+        assert(midifile != nil)
 
         do {
-            try self.mp = AVMIDIPlayer(contentsOf: contents, soundBankURL: soundbank)
+            try midiplayer = AVMIDIPlayer(contentsOf: midifile!, soundBankURL: soundfont!)
+
         } catch {
+            assert(false)
         }
 
-        if self.mp == nil {
-            print("nil midi player")
-        }
+        midiplayer!.prepareToPlay()
+        midiplayer!.play()
 
-        self.mp.prepareToPlay()
-
-        self.mp.play(nil)
-
-        // there is a crash when you use a completion
-        // self.mp.play({
-        //    println("midi done")
-        // })
-
-        // or
-        //        var completion:AVMIDIPlayerCompletionHandler = {println("done")}
-        //        mp.play(completion)
     }
 }
