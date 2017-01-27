@@ -1,5 +1,6 @@
 import Foundation
 import SpriteKit
+import AudioToolbox
 
 class GameScene: SKScene {
 
@@ -8,9 +9,27 @@ class GameScene: SKScene {
     var mapHeight: CGFloat = 0
     let mainCamera = SKCameraNode()
 
+    let helloSoundURL = URL(fileURLWithPath: Bundle.main.path(forResource: "selected4", ofType: "wav")!)
+    var helloSoundID: SystemSoundID = 1
+
     // Called when transitioning to the view
     override func didMove(to _: SKView) {
+
+        let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(playSound))
+        self.view?.addGestureRecognizer(tapGestureRecognizer)
+
         drawMap()
+        initSound()
+    }
+
+    func playSound() {
+        AudioServicesPlaySystemSound(helloSoundID)
+    }
+
+    func initSound() {
+
+        let helloSoundCFURL: CFURL = helloSoundURL as CFURL
+        AudioServicesCreateSystemSoundID(helloSoundCFURL, &helloSoundID)
     }
 
     // Draws all map tiles contained in MapManager to the scene, in a grid format
