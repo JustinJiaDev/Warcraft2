@@ -462,7 +462,6 @@
 				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
 				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
 				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
-				49E8B2FA1E38400D00B80211 /* Debug.swift */,
 			);
 			name = Graphic;
 			sourceTree = "<group>";
@@ -498,6 +497,7 @@
 		D0773FC51E38485C00FF7DD7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				49E8B2FA1E38400D00B80211 /* Debug.swift */,
 				8EA0677A1E33C8E00059CEC2 /* PeriodicTimeout.swift */,
 				8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */,
 			);
