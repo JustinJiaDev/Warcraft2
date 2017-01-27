@@ -5,18 +5,21 @@ enum GraphicTilesetError: Error {
     case failedToLoadFile(path: String)
     case failedToReadTileCount
     case failedToReadTileName
+    case indexOutOfBound(index: Int)
+    case missingTileset
+    case missingTileName
 }
 
 class GraphicTileset {
 
     private var surfaceTileset: GraphicSurface?
     private var clippingMasks: [Int: GraphicSurface] = [:]
-    
+
     private var tileIndex: [String: Int] = [:]
     private var tileNames: [String] = []
     private var groupSteps: [String: Int] = [:]
     private var groupNames: [String] = []
-    
+
     private(set) var tileCount: Int = 0
     private(set) var tileWidth: Int = 0
     private(set) var tileHeight: Int = 0
@@ -69,6 +72,7 @@ class GraphicTileset {
         guard count > 0, tileWidth > 0, tileHeight > 0, let surfaceTileset = surfaceTileset else {
             return tileCount
         }
+
         guard count >= tileCount else {
             tileCount = count
             tileIndex.keys.filter { key in
@@ -80,11 +84,11 @@ class GraphicTileset {
             return tileCount
         }
 
-        guard let tempSurface = GraphicFactory.createSurface(width: tileWidth, height: count * tileHeight, format: surfaceTileset.format()) else {
+        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format()) else {
             return tileCount
         }
-        tempSurface.copy(surface: surfaceTileset, dxPosition: 0, dyPosition: 0, width: -1, height: -1, sxPosition: 0, syPosition: 0)
-        self.surfaceTileset = tempSurface
+        newSurface.copy(surface: surfaceTileset, dxPosition: 0, dyPosition: 0, width: -1, height: -1, sxPosition: 0, syPosition: 0)
+        self.surfaceTileset = newSurface
         tileCount = count
         return tileCount
     }
@@ -110,9 +114,12 @@ class GraphicTileset {
         return groupSteps[groupName] ?? 0
     }
 
-    func drawTile(on surface: GraphicSurface, x: Int, y: Int, index: Int) {
-        guard index >= 0 || index < tileCount, let surfaceTileset = surfaceTileset else {
-            return
+    func drawTile(on surface: GraphicSurface, x: Int, y: Int, index: Int) throws {
+        guard index >= 0 || index < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: index)
+        }
+        guard let surfaceTileset = surfaceTileset else {
+            throw GraphicTilesetError.missingTileset
         }
         surface.draw(
             surface: surfaceTileset,
@@ -125,9 +132,9 @@ class GraphicTileset {
         )
     }
 
-    func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) {
+    func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) throws {
         guard let mask = clippingMasks[index] else {
-            return
+            throw GraphicTilesetError.indexOutOfBound(index: index)
         }
         let resourceContext = surface.createResourceContext()
         resourceContext.setSourceRGB(rgb)
@@ -135,21 +142,30 @@ class GraphicTileset {
         resourceContext.fill()
     }
 
-    func clearTile(at index: Int) -> Bool {
-        guard index >= 0 || index < tileCount, let surfaceTileset = surfaceTileset else {
-            return false
+    func clearTile(at index: Int) throws {
+        guard index >= 0 || index < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: index)
+        }
+        guard let surfaceTileset = surfaceTileset else {
+            throw GraphicTilesetError.missingTileset
         }
         surfaceTileset.clear(xPosition: 0, yPosition: index * tileHeight, width: tileWidth, height: tileHeight)
-        return true
     }
 
-    func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) -> Bool {
-        guard sourceIndex > 0, destinationIndex > 0, sourceIndex < tileCount, destinationIndex < tileCount, !tileName.isEmpty else {
-            return false
+    func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) throws {
+        guard sourceIndex > 0, sourceIndex < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: sourceIndex)
         }
-        guard let surfaceTileset = surfaceTileset, clearTile(at: destinationIndex) else {
-            return false
+        guard destinationIndex > 0, destinationIndex < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: destinationIndex)
         }
+        guard let surfaceTileset = surfaceTileset else {
+            throw GraphicTilesetError.missingTileset
+        }
+        guard !tileName.isEmpty else {
+            throw GraphicTilesetError.missingTileName
+        }
+        try clearTile(at: destinationIndex)
         surfaceTileset.copy(
             surface: surfaceTileset,
             dxPosition: 0,
@@ -162,16 +178,25 @@ class GraphicTileset {
         tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
         tileIndex[tileName] = destinationIndex
-        return true
     }
 
-    func duplicateClippedTile(destinationIndex: Int, tileName: String, sourceIndex: Int, clipIndex: Int) -> Bool {
-        guard sourceIndex > 0, destinationIndex > 0, clipIndex > 0, sourceIndex < tileCount, destinationIndex < tileCount, clipIndex < clippingMasks.count, !tileName.isEmpty else {
-            return false
+    func duplicateClippedTile(destinationIndex: Int, tileName: String, sourceIndex: Int, clipIndex: Int) throws {
+        guard sourceIndex > 0, sourceIndex < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: sourceIndex)
         }
-        guard let surfaceTileset = surfaceTileset, let maskSurface = clippingMasks[clipIndex], clearTile(at: destinationIndex) else {
-            return false
+        guard destinationIndex > 0, destinationIndex < tileCount else {
+            throw GraphicTilesetError.indexOutOfBound(index: destinationIndex)
         }
+        guard let maskSurface = clippingMasks[clipIndex] else {
+            throw GraphicTilesetError.indexOutOfBound(index: clipIndex)
+        }
+        guard let surfaceTileset = surfaceTileset else {
+            throw GraphicTilesetError.missingTileset
+        }
+        guard !tileName.isEmpty else {
+            throw GraphicTilesetError.missingTileName
+        }
+        try clearTile(at: destinationIndex)
         surfaceTileset.copyMaskSurface(
             surface: surfaceTileset,
             dxPosition: 0,
@@ -193,12 +218,11 @@ class GraphicTileset {
             sxPosition: 0,
             syPosition: destinationIndex * tileHeight
         )
-        return true
     }
 
-    func createClippingMasks() {
+    func createClippingMasks() throws {
         guard let surfaceTileset = surfaceTileset else {
-            return
+            throw GraphicTilesetError.missingTileset
         }
         for i in 0 ..< tileCount {
             clippingMasks[i] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
