@@ -8,8 +8,8 @@
 
 import Foundation
 
-enum PlayerColor {
-    case none
+enum PlayerColor: Int {
+    case none = 0
     case blue
     case red
     case green

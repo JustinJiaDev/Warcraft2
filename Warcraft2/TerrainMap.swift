@@ -64,7 +64,7 @@ class TerrainMap {
         }
     }
 
-    private(set) var map: [[TileType]] = []
+    var map: [[TileType]] = []
     private(set) var stringMap: [String] = []
     private(set) var playerCount: Int = 0
     private(set) var mapName: String = ""
