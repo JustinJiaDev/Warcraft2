@@ -1,20 +1,3 @@
-/*
- Copyright (c) 2015, Christopher Nitta
- All rights reserved.
-
- All source material (source code, images, sounds, etc.) have been provided to
- University of California, Davis students of course ECS 160 for educational
- purposes. It may not be distributed beyond those enrolled in the course without
- prior permission from the copyright holder.
-
- All sound files, sound fonts, midi files, and images that have been included
- that were extracted from original Warcraft II by Blizzard Entertainment
- were found freely available via internet sources and have been labeld as
- abandonware. They have been included in this distribution for educational
- purposes only and this copyright notice does not attempt to claim any
- ownership of this material.
- */
-
 class AssetDecoratedMap: TerrainMap {
     struct AssetInitialization {
         var type: String
@@ -42,7 +25,7 @@ class AssetDecoratedMap: TerrainMap {
     private(set) var resourceInitializationList: [ResourceInitialization] = []
     private var searchMap: [[SearchStatus]] = []
     private static var mapNameTranslation: [String: Int] = [:]
-    private static var allMaps: [AssetDecoratedMap] = []
+    private static var all: [AssetDecoratedMap] = []
 
     override var playerCount: Int {
         return resourceInitializationList.count - 1
@@ -59,23 +42,24 @@ class AssetDecoratedMap: TerrainMap {
         resourceInitializationList = map.resourceInitializationList
     }
 
-    init(map: AssetDecoratedMap, newColors: [PlayerColor]) {
+    init(map: AssetDecoratedMap, newColors: [PlayerColor: PlayerColor]) {
         super.init(terrainMap: map)
         assets = map.assets
-        for initVal in map.assetInitializationList {
-            var newInitVal = initVal
-            if newColors.count > initVal.color.rawValue {
-                newInitVal.color = newColors[newInitVal.color.rawValue]
+        assetInitializationList = map.assetInitializationList.map { asset in
+            guard let newColor = newColors[asset.color] else {
+                return asset
             }
-            assetInitializationList.append(newInitVal)
+            var asset = asset
+            asset.color = newColor
+            return asset
         }
-
-        for initVal in map.resourceInitializationList {
-            var newInitVal = initVal
-            if newColors.count > initVal.color.rawValue {
-                newInitVal.color = newColors[newInitVal.color.rawValue]
+        resourceInitializationList = map.resourceInitializationList.map { resource in
+            guard let newColor = newColors[resource.color] else {
+                return resource
             }
-            resourceInitializationList.append(newInitVal)
+            var resource = resource
+            resource.color = newColor
+            return resource
         }
     }
 
@@ -100,8 +84,8 @@ class AssetDecoratedMap: TerrainMap {
                 } else {
                     PrintDebug("Loaded map \(filename).\n")
                 }
-                mapNameTranslation[tempMap.mapName] = allMaps.count
-                allMaps.append(tempMap)
+                mapNameTranslation[tempMap.mapName] = all.count
+                all.append(tempMap)
             }
         }
         PrintDebug("Maps loaded\n")
@@ -117,17 +101,17 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     static func getMap(index: Int) -> AssetDecoratedMap {
-        if 0 > index || allMaps.count <= index {
+        if 0 > index || all.count <= index {
             return AssetDecoratedMap()
         }
-        return allMaps[index]
+        return all[index]
     }
 
     static func duplicateMap(index: Int, newColors: [PlayerColor]) -> AssetDecoratedMap {
-        if 0 > index || allMaps.count <= index {
+        if 0 > index || all.count <= index {
             return AssetDecoratedMap()
         }
-        return AssetDecoratedMap(map: allMaps[index], newColors: newColors)
+        return AssetDecoratedMap(map: all[index], newColors: newColors)
     }
 
     func addAsset(asset: PlayerAsset) -> Bool {

@@ -1,7 +1,7 @@
 import Foundation
 
-enum PlayerColor: Int {
-    case none = 0
+enum PlayerColor {
+    case none
     case blue
     case red
     case green
