@@ -20,24 +20,24 @@ class MapRenderer {
         var anchor = 0
         var lastEnd: Int
         hammingSet.removeAll()
-        
-        for index in 0..<8 {
+
+        for index in 0 ..< 8 {
             let val = 1 << index
             if val & value != 0 {
                 hammingSet.append(val)
             }
         }
-        
+
         lastEnd = hammingSet.count
         bitCount = hammingSet.count
-        
-        for _ in 1..<bitCount {
-            for lastIndex in anchor..<lastEnd {
-                for bitIndex in 0..<bitCount {
+
+        for _ in 1 ..< bitCount {
+            for lastIndex in anchor ..< lastEnd {
+                for bitIndex in 0 ..< bitCount {
                     let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
                     if newValue != hammingSet[lastIndex] {
                         var found = false
-                        for index in lastEnd..<hammingSet.count {
+                        for index in lastEnd ..< hammingSet.count {
                             if newValue == hammingSet[index] {
                                 found = true
                                 break
@@ -54,8 +54,57 @@ class MapRenderer {
         }
     }
 
-    func findUnknown(type: TerrainMap.TileType, known: Int, unknown: Int) {
-        fatalError("Not yet ported")
+    func findUnknown(type: TerrainMap.TileType, known: Int, unknown: Int) -> Int {
+        if type == TerrainMap.TileType.tree {
+            if let val = treeUnknown[(known << 8) | unknown] {
+                return val
+            }
+            var hammingSet = [Int]()
+            makeHammingSet(value: unknown, hammingSet: &hammingSet)
+            for value in hammingSet {
+                if treeIndices[known | value] != -1 {
+                    treeUnknown[(known << 8) | unknown] = treeIndices[known | value]
+                    return treeIndices[known | value]
+                }
+            }
+        } else if type == TerrainMap.TileType.water {
+            if let val = waterUnknown[(known << 8) | unknown] {
+                return val
+            }
+            var hammingSet = [Int]()
+            makeHammingSet(value: unknown, hammingSet: &hammingSet)
+            for value in hammingSet {
+                if waterIndices[known | value] != -1 {
+                    waterUnknown[(known << 8) | unknown] = waterIndices[known | value]
+                    return waterIndices[known | value]
+                }
+            }
+        } else if type == TerrainMap.TileType.dirt {
+            if let val = dirtUnknown[(known << 8) | unknown] {
+                return val
+            }
+            var hammingSet = [Int]()
+            makeHammingSet(value: unknown, hammingSet: &hammingSet)
+            for value in hammingSet {
+                if dirtIndices[known | value] != -1 {
+                    dirtUnknown[(known << 8) | unknown] = dirtIndices[known | value]
+                    return dirtIndices[known | value]
+                }
+            }
+        } else if type == TerrainMap.TileType.rock {
+            if let val = rockUnknown[(known << 8) | unknown] {
+                return val
+            }
+            var hammingSet = [Int]()
+            makeHammingSet(value: unknown, hammingSet: &hammingSet)
+            for value in hammingSet {
+                if rockIndices[known | value] != -1 {
+                    rockUnknown[(known << 8) | unknown] = rockIndices[known | value]
+                    return rockIndices[known | value]
+                }
+            }
+        }
+        return -1
     }
 
     init(config: DataSource, tileSet: GraphicTileset, map: TerrainMap) {
