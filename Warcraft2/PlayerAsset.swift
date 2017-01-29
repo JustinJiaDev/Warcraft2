@@ -234,7 +234,12 @@ struct AssetCommand {
     var activatedCapability: ActivatedPlayerCapability?
 }
 
-class PlayerAsset {
+class PlayerAsset: Equatable {
+
+    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
+        return lhs == rhs
+    }
+
     var creationCycle: Int
     var hitPoints: Int
     var gold: Int
