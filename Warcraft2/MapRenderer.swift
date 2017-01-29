@@ -16,7 +16,42 @@ class MapRenderer {
     var rockUnknown: [Int: Int]
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
-        fatalError("Not yet ported")
+        var bitCount: Int
+        var anchor = 0
+        var lastEnd: Int
+        hammingSet.removeAll()
+        
+        for index in 0..<8 {
+            let val = 1 << index
+            if val & value != 0 {
+                hammingSet.append(val)
+            }
+        }
+        
+        lastEnd = hammingSet.count
+        bitCount = hammingSet.count
+        
+        for _ in 1..<bitCount {
+            for lastIndex in anchor..<lastEnd {
+                for bitIndex in 0..<bitCount {
+                    let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
+                    if newValue != hammingSet[lastIndex] {
+                        var found = false
+                        for index in lastEnd..<hammingSet.count {
+                            if newValue == hammingSet[index] {
+                                found = true
+                                break
+                            }
+                        }
+                        if !found {
+                            hammingSet.append(newValue)
+                        }
+                    }
+                }
+            }
+            anchor = lastEnd + 1
+            lastEnd = hammingSet.count
+        }
     }
 
     func findUnknown(type: TerrainMap.TileType, known: Int, unknown: Int) {
