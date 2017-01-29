@@ -35,6 +35,7 @@ class TerrainMap {
             case string where string.hasPrefix("tree"): return .tree
             case string where string.hasPrefix("water"): return .water
             case string where string.hasPrefix("rock"): return .rock
+            case string where string.hasPrefix("stump"): return .rock
             case string where string.hasPrefix("wall-damaged"): return .wallDamaged
             case string where string.hasPrefix("wall"): return .wall
             case string where string.hasPrefix("rubble"): return .rubble

@@ -127,19 +127,7 @@ class MapRenderer {
             }
             assert(colorValue >= 0)
 
-            var pixelType: TerrainMap.TileType
-            switch tokens[0] {
-            case "grass": pixelType = .grass
-            case "dirt": pixelType = .dirt
-            case "rock": pixelType = .rock
-            case "tree": pixelType = .tree
-            case "stump": pixelType = .stump
-            case "water": pixelType = .water
-            case "wall": pixelType = .wall
-            case "wall-damaged": pixelType = .wallDamaged
-            default:
-                pixelType = .rubble
-            }
+            let pixelType = TerrainMap.TileType.from(string: tokens[0])
             pixelIndices[pixelType.rawValue] = colorValue
         }
 
