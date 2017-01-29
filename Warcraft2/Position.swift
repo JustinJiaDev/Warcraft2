@@ -153,6 +153,12 @@ class Position {
         }
     }
 
+    func distanceSquared(_ pos: Position) -> Int {
+        let deltaX = pos.x - x
+        let deltaY = pos.y - y
+        return deltaX * deltaX + deltaY * deltaY
+    }
+
     func closestPosition(_ position: Position, objSize: Int) -> Position {
         let curPosition = Position(from: position)
         var bestPosition = Position()

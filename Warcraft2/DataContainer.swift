@@ -8,7 +8,7 @@ protocol DataContainerIterator {
 }
 
 protocol DataContainer {
-    func first() -> DataContainerIterator
+    func first() -> DataContainerIterator?
     func dataSource(name: String) -> DataSource
     func dataSink(name: String) -> DataSink
     func dataContainer(name: String) -> DataContainer

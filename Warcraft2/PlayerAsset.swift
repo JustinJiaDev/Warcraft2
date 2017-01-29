@@ -401,7 +401,7 @@ class PlayerAsset {
         return hitPoints
     }
 
-    func decrementtHitPoints(_ decrements: Int) -> Int {
+    func decrementHitPoints(_ decrements: Int) -> Int {
         hitPoints -= decrements
         hitPoints = max(hitPoints, 0)
         return hitPoints

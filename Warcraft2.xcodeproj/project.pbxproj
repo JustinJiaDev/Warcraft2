@@ -120,6 +120,8 @@
 		8EA067881E33C8E00059CEC2 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */; };
 		8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */; };
 		C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */; };
+		8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */; };
+		8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C91E3D797000ACB660 /* RouterMap.swift */; };
 		D01B68121E35A4320003C408 /* maze.map in Resources */ = {isa = PBXBuildFile; fileRef = D01B68111E35A3DE0003C408 /* maze.map */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
 		D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC61E384A7E00FF7DD7 /* 2player.map */; };
@@ -252,6 +254,8 @@
 		8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainMap.swift; sourceTree = "<group>"; };
 		8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicSurface.swift; sourceTree = "<group>"; };
+		8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetDecoratedMap.swift; sourceTree = "<group>"; };
+		8EC6A5C91E3D797000ACB660 /* RouterMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterMap.swift; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatter.swift; sourceTree = "<group>"; };
 		D01B68111E35A3DE0003C408 /* maze.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = maze.map; sourceTree = "<group>"; };
@@ -450,6 +454,8 @@
 		D0773FC01E3847A800FF7DD7 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
+				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
 				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
 				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
@@ -830,6 +836,7 @@
 				8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */,
 				8EA067851E33C8E00059CEC2 /* PeriodicTimeout.swift in Sources */,
 				8EA067681E3023880059CEC2 /* GameScene.swift in Sources */,
+				8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
 				498584501E303F6B00F6766C /* TerrainManager.swift in Sources */,
@@ -848,6 +855,7 @@
 				C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */,
 				D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
+				8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
