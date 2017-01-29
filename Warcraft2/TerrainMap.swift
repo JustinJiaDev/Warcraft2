@@ -13,8 +13,8 @@ enum TerrainMapError: Error {
 }
 
 class TerrainMap {
-    enum TileType {
-        case none
+    enum TileType: Int {
+        case none = 0
         case grass
         case dirt
         case rock
