@@ -33,15 +33,20 @@ class AssetDecoratedMap: TerrainMap {
         var y: Int
     }
 
-    private var assets: [PlayerAsset] = []
-    private var assetInitializationList: [AssetInitialization] = []
-    private var resourceInitializationList: [ResourceInitialization] = []
-    private var searchMap: [[Int]] = []
+    enum SearchStatus {
+        case unvisited, queued, visited
+    }
+
+    private(set) var assets: [PlayerAsset] = []
+    private(set) var assetInitializationList: [AssetInitialization] = []
+    private(set) var resourceInitializationList: [ResourceInitialization] = []
+    private var searchMap: [[SearchStatus]] = []
     private static var mapNameTranslation: [String: Int] = [:]
     private static var allMaps: [AssetDecoratedMap] = []
-    private let SEARCH_STATUS_UNVISITED = 0
-    private let SEARCH_STATUS_QUEUED = 1
-    private let SEARCH_STATUS_VISTIED = 2
+
+    override var playerCount: Int {
+        return resourceInitializationList.count - 1
+    }
 
     override init() {
         super.init()
@@ -123,10 +128,6 @@ class AssetDecoratedMap: TerrainMap {
             return AssetDecoratedMap()
         }
         return AssetDecoratedMap(map: allMaps[index], newColors: newColors)
-    }
-
-    func playerCount() -> Int {
-        return resourceInitializationList.count - 1
     }
 
     func addAsset(asset: PlayerAsset) -> Bool {
@@ -349,18 +350,6 @@ class AssetDecoratedMap: TerrainMap {
         return true
     }
 
-    func getAssets() -> [PlayerAsset] {
-        return assets
-    }
-
-    func getAssetInitializationList() -> [AssetInitialization] {
-        return assetInitializationList
-    }
-
-    func getResourceInitializationList() -> [ResourceInitialization] {
-        return resourceInitializationList
-    }
-
     func createInitializeMap() -> AssetDecoratedMap {
         let returnMap = AssetDecoratedMap()
         if returnMap.map.count != map.count {
@@ -454,28 +443,28 @@ class AssetDecoratedMap: TerrainMap {
         let searchYOffsets = [ -1, 0, 1, 0]
 
         if searchMap.count != map.count {
-            searchMap = Array(repeating: Array(repeating: 0, count: map[0].count), count: map.count)
+            searchMap = Array(repeating: Array(repeating: .unvisited, count: map[0].count), count: map.count)
             let lastYIndex = map.count - 1
             let lastXIndex = map[0].count - 1
             for index in 0 ..< map.count {
-                searchMap[index][0] = SEARCH_STATUS_VISTIED
-                searchMap[index][lastXIndex] = SEARCH_STATUS_VISTIED
+                searchMap[index][0] = .visited
+                searchMap[index][lastXIndex] = .visited
             }
             for index in 1 ..< lastXIndex {
-                searchMap[0][index] = SEARCH_STATUS_VISTIED
-                searchMap[lastYIndex][index] = SEARCH_STATUS_VISTIED
+                searchMap[0][index] = .visited
+                searchMap[lastYIndex][index] = .visited
             }
         }
         for y in 0 ..< mapHeight {
             for x in 0 ..< mapWidth {
-                searchMap[y + 1][x + 1] = SEARCH_STATUS_UNVISITED
+                searchMap[y + 1][x + 1] = .unvisited
             }
         }
         for asset in assets {
             if asset.tilePosition != pos {
                 for y in 0 ..< asset.size {
                     for x in 0 ..< asset.size {
-                        searchMap[asset.tilePositionY() + y + 1][asset.tilePositionX() + x + 1] = SEARCH_STATUS_VISTIED
+                        searchMap[asset.tilePositionY() + y + 1][asset.tilePositionX() + x + 1] = .visited
                     }
                 }
             }
@@ -486,14 +475,13 @@ class AssetDecoratedMap: TerrainMap {
         while searchQueueArray.count > 0 {
             currentSearch = searchQueueArray.first!
             searchQueueArray.remove(at: 0)
-            searchMap[currentSearch.y][currentSearch.x] = SEARCH_STATUS_VISTIED
+            searchMap[currentSearch.y][currentSearch.x] = .visited
             for index in 0 ..< searchXOffsets.count {
                 tempSearch.x = currentSearch.x + searchXOffsets[index]
                 tempSearch.y = currentSearch.y + searchYOffsets[index]
-                if SEARCH_STATUS_UNVISITED == searchMap[tempSearch.y][tempSearch.x] {
+                if searchMap[tempSearch.y][tempSearch.x] == .unvisited {
                     let curTileType = map[tempSearch.y][tempSearch.x]
-
-                    searchMap[tempSearch.y][tempSearch.x] = SEARCH_STATUS_QUEUED
+                    searchMap[tempSearch.y][tempSearch.x] = .queued
                     if type == curTileType {
                         return Position(x: tempSearch.x, y: tempSearch.y)
                     }
