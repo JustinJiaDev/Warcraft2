@@ -1,11 +1,3 @@
-//
-//  AssetDecoratedMap.swift
-//  Warcraft2
-//
-//  Created by Bryce Korte on 1/24/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
 /*
  Copyright (c) 2015, Christopher Nitta
  All rights reserved.
@@ -32,8 +24,8 @@ class AssetDecoratedMap: TerrainMap {
 
     struct ResourceInitialization {
         var color = PlayerColor.none
-        var gold: Int = 0
-        var lumber: Int = 0
+        var gold = 0
+        var lumber = 0
     }
 
     struct SearchTile {
@@ -83,17 +75,13 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     static func loadMaps(container: DataContainer) -> Bool {
-        func PrintError(_: String) {
-            fatalError("Temp function to avoid compiler error. This func should be deleted")
-        }
-        
         func generateError(_ msg: String) -> Bool {
             PrintError(msg + "\n")
             return false
         }
-        
+
         let fileIterator = container.first()
-        if (fileIterator == nil) {
+        if fileIterator == nil {
             return generateError("FileIterator == nil")
         }
         while fileIterator != nil && fileIterator!.isValid() {
@@ -104,22 +92,21 @@ class AssetDecoratedMap: TerrainMap {
                 if !tempMap.loadMap(source: container.dataSource(name: filename)) {
                     PrintError("Failed to load map \(filename).\n")
                     continue
-                }
-                else {
-                    fatalError("need to port print debug statement here")
+                } else {
+                    PrintDebug("Loaded map \(filename).\n")
                 }
                 mapNameTranslation[tempMap.mapName] = allMaps.count
                 allMaps.append(tempMap)
             }
         }
+        PrintDebug("Maps loaded\n")
         return true
     }
 
     static func findMapIndex(name: String) -> Int {
         if let val = mapNameTranslation[name] {
             return val
-        }
-        else {
+        } else {
             return -1
         }
     }
@@ -160,7 +147,7 @@ class AssetDecoratedMap: TerrainMap {
     func findNearestAsset(pos: Position, color: PlayerColor, type: AssetType) -> PlayerAsset {
         var bestAsset = assets[0]
         var bestDistanceSquared = -1
-        
+
         for asset in assets {
             if asset.type == type && asset.color == color && AssetAction.construct != asset.action {
                 let currentDistance = asset.position.distanceSquared(pos)
@@ -202,7 +189,7 @@ class AssetDecoratedMap: TerrainMap {
                 || ignoreAsset === asset
                 || rightX <= asset.tilePositionX() - offset
                 || pos.x >= asset.tilePositionX() + asset.size + offset
-                || bottomY <= asset.tilePositionY()
+                || bottomY <= asset.tilePositionY() - offset
                 || pos.y >= asset.tilePositionY() + asset.size + offset {
                 // do nothing
             } else {
@@ -218,14 +205,14 @@ class AssetDecoratedMap: TerrainMap {
         var curDistance: Int
         var bestPosition = Position(x: -1, y: -1)
         topY = fromAsset.tilePositionY() - placeAsset.size
-        bottomY = fromAsset.tilePositionX() + fromAsset.size
+        bottomY = fromAsset.tilePositionY() + fromAsset.size
         leftX = fromAsset.tilePositionX() - placeAsset.size
         rightX = fromAsset.tilePositionX() + fromAsset.size
 
         while true {
-            var skipped: Int = 0
+            var skipped = 0
             if 0 <= topY {
-                let toX = max(rightX, width - 1)
+                let toX = min(rightX, width - 1)
                 for curX in max(leftX, 0) ... toX {
                     if canPlaceAsset(pos: Position(x: curX, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let tempPosition = Position(x: curX, y: topY)
@@ -301,13 +288,8 @@ class AssetDecoratedMap: TerrainMap {
     func loadMap(source: DataSource) -> Bool {
         let lineSource = LineDataSource(dataSource: source)
         var tempResourceInit = ResourceInitialization()
-        var tokens: [String]
         var tempAssetInit: AssetInitialization
         var assetCount: Int
-
-        func PrintError(_: String) {
-            fatalError("Temp function to avoid compiler error. This func should be deleted")
-        }
 
         func generateError(_ msg: String) -> Bool {
             PrintError(msg + "\n")
@@ -323,14 +305,12 @@ class AssetDecoratedMap: TerrainMap {
         var tempString = lineSource.readLine()
         if tempString == nil { return generateError("Failed to read map resource count.") }
 
-        guard let resourceCount = Int(tempString!) else {
-            return generateError("String to Int conversion failed.")
-        }
+        let resourceCount = Int(tempString!)!
         resourceInitializationList = []
         for index in 0 ..< resourceCount {
             tempString = lineSource.readLine()
             if tempString == nil { return generateError("Failed to read map resource \(index).") }
-            var tokens = Tokenizer.tokenize(data: tempString!)
+            let tokens = Tokenizer.tokenize(data: tempString!)
             if 3 > tokens.count {
                 return generateError("Too few tokens for resource \(index).")
             }
@@ -353,6 +333,9 @@ class AssetDecoratedMap: TerrainMap {
             if tempString == nil { return generateError("Failed to read map asset \(index).") }
 
             let tokens = Tokenizer.tokenize(data: tempString!)
+            if 4 > tokens.count {
+                return generateError("Too few toeksn for asset \(index).")
+            }
             let color = PlayerColor(rawValue: Int(tokens[1])!)!
             let position = Position(x: Int(tokens[2])!, y: Int(tokens[3])!)
             let tempAssetInit = AssetInitialization(type: tokens[0], color: color, tilePosition: position)
@@ -381,8 +364,7 @@ class AssetDecoratedMap: TerrainMap {
     func createInitializeMap() -> AssetDecoratedMap {
         let returnMap = AssetDecoratedMap()
         if returnMap.map.count != map.count {
-            // Initialize to empty grass
-            returnMap.map = Array(repeating: Array(repeating: .grass, count: map[0].count), count: map.count)
+            returnMap.map = Array(repeating: Array(repeating: .none, count: map[0].count), count: map.count)
         }
         return returnMap
     }
@@ -399,7 +381,7 @@ class AssetDecoratedMap: TerrainMap {
             let curPosition = asset.tilePosition
             let assetSize = asset.size
             var removeAsset = false
-            if asset.speed != 0 || asset.action == AssetAction.decay || asset.action != AssetAction.none {
+            if asset.speed != 0 || asset.action == AssetAction.decay || asset.action == AssetAction.attack {
                 assets.remove(at: i)
                 continue
             }
@@ -477,7 +459,7 @@ class AssetDecoratedMap: TerrainMap {
             let lastXIndex = map[0].count - 1
             for index in 0 ..< map.count {
                 searchMap[index][0] = SEARCH_STATUS_VISTIED
-                searchMap[lastYIndex][index] = SEARCH_STATUS_VISTIED
+                searchMap[index][lastXIndex] = SEARCH_STATUS_VISTIED
             }
             for index in 1 ..< lastXIndex {
                 searchMap[0][index] = SEARCH_STATUS_VISTIED
@@ -515,7 +497,11 @@ class AssetDecoratedMap: TerrainMap {
                     if type == curTileType {
                         return Position(x: tempSearch.x, y: tempSearch.y)
                     }
-                    if TileType.grass == curTileType || TileType.dirt == curTileType || TileType.stump == curTileType || TileType.rubble == curTileType || TileType.none == curTileType {
+                    if TileType.grass == curTileType
+                        || TileType.dirt == curTileType
+                        || TileType.stump == curTileType
+                        || TileType.rubble == curTileType
+                        || TileType.none == curTileType {
                         searchQueueArray.append(tempSearch)
                     }
                 }
