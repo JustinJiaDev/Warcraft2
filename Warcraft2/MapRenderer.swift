@@ -1,19 +1,19 @@
 class MapRenderer {
     var tileSet: GraphicTileset
     var map: TerrainMap
-    var grassIndices: [Int]
-    var treeIndices: [Int]
-    var dirtIndices: [Int]
-    var waterIndices: [Int]
-    var rockIndices: [Int]
-    var wallIndices: [Int]
-    var wallDamagedIndices: [Int]
-    var pixelIndices: [Int]
+    var grassIndices: [Int] = []
+    var treeIndices: [Int] = []
+    var dirtIndices: [Int] = []
+    var waterIndices: [Int] = []
+    var rockIndices: [Int] = []
+    var wallIndices: [Int] = []
+    var wallDamagedIndices: [Int] = []
+    var pixelIndices: [Int] = []
 
-    var treeUnknown: [Int: Int]
-    var waterUnknown: [Int: Int]
-    var dirtUnknown: [Int: Int]
-    var rockUnknown: [Int: Int]
+    var treeUnknown: [Int: Int] = [:]
+    var waterUnknown: [Int: Int] = [:]
+    var dirtUnknown: [Int: Int] = [:]
+    var rockUnknown: [Int: Int] = [:]
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
         var bitCount: Int
@@ -108,7 +108,97 @@ class MapRenderer {
     }
 
     init(config: DataSource, tileSet: GraphicTileset, map: TerrainMap) {
-        fatalError("Not yet ported")
+        let lineSource = LineDataSource(dataSource: config)
+        var tempString: String?
+        self.tileSet = tileSet
+        self.map = map
+        pixelIndices = Array(repeating: -1, count: TerrainMap.TileType.max.rawValue)
+
+        tempString = lineSource.readLine()
+        if tempString == nil { return }
+
+        var itemCount = Int(tempString!)!
+        for _ in 0 ..< itemCount {
+            tempString = lineSource.readLine()
+            if tempString == nil { return }
+            let tokens = Tokenizer.tokenize(data: tempString!)
+            guard let colorValue = Int(tokens[1]) else {
+                fatalError("String to Int coversion failed. It is likely that the conversion was not ported correctly.")
+            }
+            assert(colorValue >= 0)
+
+            var pixelType: TerrainMap.TileType
+            switch tokens[0] {
+            case "grass": pixelType = .grass
+            case "dirt": pixelType = .dirt
+            case "rock": pixelType = .rock
+            case "tree": pixelType = .tree
+            case "stump": pixelType = .stump
+            case "water": pixelType = .water
+            case "wall": pixelType = .wall
+            case "wall-damaged": pixelType = .wallDamaged
+            default:
+                pixelType = .rubble
+            }
+            pixelIndices[pixelType.rawValue] = colorValue
+        }
+
+        var index = 0
+        while true {
+            let value = self.tileSet.findTile(with: "grass-\(index)")
+            if 0 > value {
+                break
+            }
+            grassIndices.append(value)
+            index += 1
+        }
+
+        for index in 0 ..< 0x40 {
+            treeIndices.append(self.tileSet.findTile(with: "tree-\(index)"))
+        }
+
+        for index in 0 ..< 0x100 {
+            dirtIndices.append(self.tileSet.findTile(with: "dirt-\(index)"))
+        }
+
+        for index in 0 ..< 0x100 {
+            waterIndices.append(self.tileSet.findTile(with: "water-\(index)"))
+        }
+
+        waterIndices[0x00] = dirtIndices[0xff]
+        for index in 0 ..< 0x100 {
+            rockIndices.append(self.tileSet.findTile(with: "rock-\(index)"))
+        }
+
+        for index in 0 ..< 0x10 {
+            wallIndices.append(self.tileSet.findTile(with: "wall-\(index)"))
+        }
+
+        for index in 0 ..< 0x10 {
+            wallDamagedIndices.append(self.tileSet.findTile(with: "wall-damaged-\(index)"))
+        }
+
+        tempString = lineSource.readLine()
+        if tempString == nil { return }
+        itemCount = Int(tempString!)!
+        for _ in 0 ..< itemCount {
+            tempString = lineSource.readLine()
+            if tempString == nil { return }
+            let tokens = Tokenizer.tokenize(data: tempString!)
+            guard let sourceIndex = Int(tokens[1]) else {
+                fatalError("String to Int coversion failed. It is likely that the conversion was not ported correctly.")
+            }
+
+            switch tokens[0] {
+            case "dirt": for i in 2 ..< tokens.count { dirtIndices[Int(tokens[i])!] = dirtIndices[sourceIndex] }
+            case "rock": for i in 2 ..< tokens.count { rockIndices[Int(tokens[i])!] = rockIndices[sourceIndex] }
+            case "tree": for i in 2 ..< tokens.count { treeIndices[Int(tokens[i])!] = treeIndices[sourceIndex] }
+            case "water": for i in 2 ..< tokens.count { waterIndices[Int(tokens[i])!] = waterIndices[sourceIndex] }
+            case "wall": for i in 2 ..< tokens.count { wallIndices[Int(tokens[i])!] = wallIndices[sourceIndex] }
+            case "wall-damaged": for i in 2 ..< tokens.count { wallDamagedIndices[Int(tokens[i])!] = wallDamagedIndices[sourceIndex] }
+            default: break
+            }
+        }
     }
 
     func mapWidth() -> Int {
