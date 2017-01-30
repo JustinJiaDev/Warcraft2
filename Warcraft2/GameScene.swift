@@ -4,6 +4,7 @@ import AudioToolbox
 
 enum GameSceneError: Error {
     case unknownConfiguration
+    case unknownTerrainTileset
     case unknownMapFile
 }
 
@@ -43,16 +44,23 @@ class GameScene: SKScene {
             guard let configurationURL = Bundle.main.url(forResource: "Config", withExtension: "") else {
                 throw GameSceneError.unknownConfiguration
             }
+            let configuration = try FileDataSource(url: configurationURL)
+
+            guard let tilesetURL = Bundle.main.url(forResource: "", withExtension: "") else {
+                throw GameSceneError.unknownTerrainTileset
+            }
+            let tilesetSource = try FileDataSource(url: tilesetURL)
             let tileset = GraphicTileset()
+            try tileset.loadTileset(from: tilesetSource)
 
             guard let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map") else {
                 throw GameSceneError.unknownMapFile
             }
             let mapSource = try FileDataSource(url: mapURL)
-            let terrainMap = TerrainMap()
-            try terrainMap.loadMap(source: mapSource)
-            let configuration = try FileDataSource(url: configurationURL)
-            let mapRender = MapRenderer(config: configuration, tileSet: tileset, map: terrainMap)
+            let map = TerrainMap()
+            try map.loadMap(source: mapSource)
+
+            let mapRender = MapRenderer(configuration: configuration, tileset: tileset, map: map)
             //            let terrainTileSize = 32
             //
             //            mapWidth = CGFloat((terrainMap.width + 2) * terrainTileSize)

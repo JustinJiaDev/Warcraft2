@@ -107,10 +107,10 @@ class MapRenderer {
         return -1
     }
 
-    init(config: DataSource, tileSet: GraphicTileset, map: TerrainMap) {
-        let lineSource = LineDataSource(dataSource: config)
+    init(configuration: DataSource, tileset: GraphicTileset, map: TerrainMap) {
+        let lineSource = LineDataSource(dataSource: configuration)
         var tempString: String?
-        self.tileSet = tileSet
+        self.tileSet = tileset
         self.map = map
         pixelIndices = Array(repeating: -1, count: TerrainMap.TileType.max.rawValue)
 
