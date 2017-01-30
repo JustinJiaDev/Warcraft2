@@ -35,18 +35,8 @@ class PixelType {
     private(set) var type: AssetTerrainType
     private(set) var color: PlayerColor
 
-    var pixelColor: UIColor {
-        switch color {
-        case .blue: return UIColor.blue
-        case .red: return UIColor.red
-        case .green: return UIColor.green
-        case .purple: return UIColor.purple
-        case .orange: return UIColor.orange
-        case .yellow: return UIColor.yellow
-        case .black: return UIColor.black
-        case .white: return UIColor.white
-        case .none, .max: return UIColor.clear
-        }
+    var pixelColor: UInt32 {
+        fatalError("This method is not yet implemented.")
     }
 
     var assetType: AssetType {
