@@ -2,12 +2,6 @@ import Foundation
 import SpriteKit
 import AudioToolbox
 
-enum GameSceneError: Error {
-    case unknownConfiguration
-    case unknownTerrainTileset
-    case unknownMapFile
-}
-
 class GameScene: SKScene {
 
     let mapScale = CGFloat(0.25)
@@ -41,56 +35,46 @@ class GameScene: SKScene {
     // Draws all map tiles contained in MapManager to the scene, in a grid format
     func drawMap() {
         do {
-            guard let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat") else {
-                throw GameSceneError.unknownConfiguration
-            }
-            let configuration = try FileDataSource(url: configurationURL)
-
-            guard let tilesetURL = Bundle.main.url(forResource: "Terrain", withExtension: "dat") else {
-                throw GameSceneError.unknownTerrainTileset
-            }
-            let tilesetSource = try FileDataSource(url: tilesetURL)
-            let tileset = GraphicTileset()
-            try tileset.loadTileset(from: tilesetSource)
+            let terrainManager = TerrainManager()
+            terrainManager.loadTerrainTextures()
 
             guard let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map") else {
-                throw GameSceneError.unknownMapFile
+                throw TerrainMapError.unknownMapFile
             }
             let mapSource = try FileDataSource(url: mapURL)
-            let map = TerrainMap()
-            try map.loadMap(source: mapSource)
+            let terrainMap = TerrainMap()
+            try terrainMap.loadMap(source: mapSource)
 
-            let mapRender = MapRenderer(configuration: configuration, tileset: tileset, map: map)
-            //            let terrainTileSize = 32
-            //
-            //            mapWidth = CGFloat((terrainMap.width + 2) * terrainTileSize)
-            //            mapHeight = CGFloat((terrainMap.height + 2) * terrainTileSize)
-            //
-            //            self.size = CGSize(width: mapWidth, height: mapHeight)
-            //            self.scaleMode = .fill
-            //
-            //            self.camera = mainCamera
-            //            mainCamera.setScale(mapScale)
-            //            self.addChild(mainCamera)
-            //            moveCameraTo(centerX: mapWidth / 2, centerY: mapHeight / 2)
-            //
-            //            // Draw map tiles
-            //            var nodes: [[SKSpriteNode]] = terrainMap.map.map { line in
-            //                return line.map { tileType in
-            //                    let tileTexture = terrainManager.terrainTiles[terrainManager.terrainTypes.index(of: tileType)!]
-            //                    let node = SKSpriteNode(texture: tileTexture)
-            //                    node.size = CGSize(width: 32, height: 32)
-            //                    node.anchorPoint = CGPoint.zero
-            //                    return node
-            //                }
-            //            }.reversed()
-            //
-            //            for i in 0 ..< nodes.count {
-            //                for j in 0 ..< nodes[0].count {
-            //                    nodes[i][j].position = CGPoint(x: j * terrainTileSize, y: i * terrainTileSize)
-            //                    self.addChild(nodes[i][j])
-            //                }
-            //            }
+            let terrainTileSize = 32
+
+            mapWidth = CGFloat((terrainMap.width + 2) * terrainTileSize)
+            mapHeight = CGFloat((terrainMap.height + 2) * terrainTileSize)
+
+            self.size = CGSize(width: mapWidth, height: mapHeight)
+            self.scaleMode = .fill
+
+            self.camera = mainCamera
+            mainCamera.setScale(mapScale)
+            self.addChild(mainCamera)
+            moveCameraTo(centerX: mapWidth / 2, centerY: mapHeight / 2)
+
+            // Draw map tiles
+            var nodes: [[SKSpriteNode]] = terrainMap.map.map { line in
+                return line.map { tileType in
+                    let tileTexture = terrainManager.terrainTiles[terrainManager.terrainTypes.index(of: tileType)!]
+                    let node = SKSpriteNode(texture: tileTexture)
+                    node.size = CGSize(width: 32, height: 32)
+                    node.anchorPoint = CGPoint.zero
+                    return node
+                }
+            }.reversed()
+
+            for i in 0 ..< nodes.count {
+                for j in 0 ..< nodes[0].count {
+                    nodes[i][j].position = CGPoint(x: j * terrainTileSize, y: i * terrainTileSize)
+                    self.addChild(nodes[i][j])
+                }
+            }
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
