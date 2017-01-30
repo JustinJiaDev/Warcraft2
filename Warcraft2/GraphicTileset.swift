@@ -137,13 +137,19 @@ class GraphicTileset {
     }
 
     func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) throws {
-        guard let mask = clippingMasks[index] else {
-            throw GraphicTilesetError.indexOutOfBound(index: index)
-        }
-        let resourceContext = surface.createResourceContext()
-        resourceContext.setSourceRGB(rgb)
-        resourceContext.maskSurface(surface: mask, xPosition: x, yPosition: y)
-        resourceContext.fill()
+        // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
+        // HACK - BEGIN
+        //
+        // HACK - END
+        // ORIGINAL - BEGIN
+        //        guard let mask = clippingMasks[index] else {
+        //            throw GraphicTilesetError.indexOutOfBound(index: index)
+        //        }
+        //        let resourceContext = surface.createResourceContext()
+        //        resourceContext.setSourceRGB(rgb)
+        //        resourceContext.maskSurface(surface: mask, xPosition: x, yPosition: y)
+        //        resourceContext.fill()
+        // ORIGINAL - END
     }
 
     func clearTile(at index: Int) throws {
@@ -252,9 +258,10 @@ class GraphicTileset {
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GraphicTilesetError.failedToReadTileCount
         }
-        tileCount = count
-        tileWidth = surfaceTileset.width
-        tileHeight = surfaceTileset.height / tileCount
+        self.surfaceTileset = surfaceTileset
+        self.tileCount = count
+        self.tileWidth = surfaceTileset.width
+        self.tileHeight = surfaceTileset.height / tileCount
         for i in 0 ..< tileCount {
             guard let tileName = lineSource.readLine() else {
                 throw GraphicTilesetError.failedToReadTileName
