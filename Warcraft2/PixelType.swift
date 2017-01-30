@@ -135,4 +135,9 @@ class PixelType {
     static func of(surface: GraphicSurface, x: Int, y: Int) -> PixelType {
         fatalError("This method is not yet implemented.")
     }
+    
+    static func toPixelColor() -> UInt32 {
+        fatalError("This method is not yet implemented.")
+
+    }
 }
