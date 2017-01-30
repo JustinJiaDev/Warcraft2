@@ -1,8 +1,6 @@
 import Foundation
 
 enum TerrainMapError: Error {
-
-    case unknownMapFile
     case failedToReadMapName
     case failedToReadMapDimensions
     case invalidMapDimensions
