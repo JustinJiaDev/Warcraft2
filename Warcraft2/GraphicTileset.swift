@@ -236,12 +236,19 @@ class GraphicTileset {
 
     func loadTileset(from dataSource: DataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
-        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
-            throw GraphicTilesetError.failedToGetPath
-        }
-        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
-            throw GraphicTilesetError.failedToLoadFile(path: pngPath)
-        }
+        // FIXME: MAKE TILESET GREAT AGAIN
+        // HACK - START
+        _ = lineSource.readLine()
+        let surfaceTileset = GraphicFactory.loadTerrainTilesetSurface()
+        // HACK - END
+        // ORIGINAL - START
+        //        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
+        //            throw GraphicTilesetError.failedToGetPath
+        //        }
+        //        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
+        //            throw GraphicTilesetError.failedToLoadFile(path: pngPath)
+        //        }
+        // ORIGINAL - END
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GraphicTilesetError.failedToReadTileCount
         }
