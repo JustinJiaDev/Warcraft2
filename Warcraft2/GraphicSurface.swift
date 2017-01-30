@@ -1,54 +1,94 @@
 import Foundation
+import CoreGraphics
 
 typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<UInt8>, _ source: UInt32) -> UInt32
 
-class GraphicSurface {
+enum GraphicSurfaceError: Error {
 
-    enum SurfaceFormat {
-        case argb32, rgb24, a8, a1
+    case missingContext
+    case missingSourceContext
+}
+
+enum GraphicSurfaceFormat {
+    case argb32, rgb24, a8, a1
+}
+
+protocol GraphicSurface {
+
+    var layer: CGLayer { get }
+    var width: Int { get }
+    var height: Int { get }
+    var format: GraphicSurfaceFormat { get }
+
+    func duplicate() -> GraphicSurface
+    func createResourceContext() -> GraphicResourceContext
+
+    func pixelColorAt(x: Int, y: Int) -> UInt32
+
+    func clear(x: Int, y: Int, width: Int, height: Int) throws
+    func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws
+}
+
+extension CGLayer: GraphicSurface {
+
+    var layer: CGLayer {
+        return self
     }
 
-    func width() -> Int {
-        fatalError("You need to override this method.")
+    var width: Int {
+        return Int(size.width)
     }
 
-    func height() -> Int {
-        fatalError("You need to override this method.")
+    var height: Int {
+        return Int(size.height)
     }
 
-    func format() -> SurfaceFormat {
-        fatalError("You need to override this method.")
-    }
-
-    func pixelAt(xPosition: Int, yPosition: Int) -> UInt32 {
-        fatalError("You need to override this method.")
-    }
-
-    func clear(xPosition _: Int = 0, yPosition _: Int = 0, width _: Int = -1, height _: Int = -1) {
-        fatalError("You need to override this method.")
-    }
-
-    func duplicate() -> GraphicSurface {
-        fatalError("You need to override this method.")
+    var format: GraphicSurfaceFormat {
+        fatalError("This method is not yet implemented.")
     }
 
     func createResourceContext() -> GraphicResourceContext {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
-    func draw(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, width _: Int, height _: Int, sxPosition _: Int, syPosition _: Int) {
-        fatalError("You need to override this method.")
+    func duplicate() -> GraphicSurface {
+        fatalError("This method is not yet implemented.")
     }
 
-    func copy(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, width _: Int, height _: Int, sxPosition _: Int, syPosition _: Int) {
-        fatalError("You need to override this method.")
+    func pixelColorAt(x: Int, y: Int) -> UInt32 {
+        fatalError("This method is not yet implemented.")
     }
 
-    func copyMaskSurface(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, maskSurface _: GraphicSurface, sxPosition _: Int, syPosition _: Int) {
-        fatalError("You need to override this method.")
+    func clear(x: Int, y: Int, width: Int, height: Int) throws {
+        guard let context = context else {
+            throw GraphicSurfaceError.missingContext
+        }
+        context.clear(CGRect(x: x, y: y, width: width, height: height))
     }
 
-    func transform(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, width _: Int, height _: Int, sxPosition _: Int, syPosition _: Int, callData _: UnsafeMutablePointer<Any>, callback _: GraphicSurfaceTransformCallback) {
-        fatalError("You need to override this method.")
+    func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
+        guard let context = context else {
+            throw GraphicSurfaceError.missingContext
+        }
+        guard let sourceContext = surface.layer.context else {
+            throw GraphicSurfaceError.missingSourceContext
+        }
+        sourceContext.clip(to: CGRect(x: sx, y: sy, width: width, height: height))
+        context.draw(surface.layer, in: CGRect(x: dx, y: dy, width: width, height: height))
+    }
+
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
+        fatalError("This method is not yet implemented.")
+    }
+
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws {
+        fatalError("This method is not yet implemented.")
+    }
+
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws {
+        fatalError("This method is not yet implemented.")
     }
 }
