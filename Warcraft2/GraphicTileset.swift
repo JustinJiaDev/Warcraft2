@@ -84,10 +84,14 @@ class GraphicTileset {
             return tileCount
         }
 
-        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format()) else {
+        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format) else {
             return tileCount
         }
-        newSurface.copy(surface: surfaceTileset, dxPosition: 0, dyPosition: 0, width: -1, height: -1, sxPosition: 0, syPosition: 0)
+        do {
+            try newSurface.copy(from: surfaceTileset, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0)
+        } catch {
+            return tileCount
+        }
         self.surfaceTileset = newSurface
         tileCount = count
         return tileCount
@@ -121,14 +125,14 @@ class GraphicTileset {
         guard let surfaceTileset = surfaceTileset else {
             throw GraphicTilesetError.missingTileset
         }
-        surface.draw(
-            surface: surfaceTileset,
-            dxPosition: x,
-            dyPosition: y,
+        try surface.draw(
+            from: surfaceTileset,
+            dx: x,
+            dy: y,
             width: tileWidth,
             height: tileHeight,
-            sxPosition: 0,
-            syPosition: index * tileHeight
+            sx: 0,
+            sy: index * tileHeight
         )
     }
 
@@ -149,7 +153,7 @@ class GraphicTileset {
         guard let surfaceTileset = surfaceTileset else {
             throw GraphicTilesetError.missingTileset
         }
-        surfaceTileset.clear(xPosition: 0, yPosition: index * tileHeight, width: tileWidth, height: tileHeight)
+        try surfaceTileset.clear(x: 0, y: index * tileHeight, width: tileWidth, height: tileHeight)
     }
 
     func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) throws {
@@ -166,14 +170,14 @@ class GraphicTileset {
             throw GraphicTilesetError.missingTileName
         }
         try clearTile(at: destinationIndex)
-        surfaceTileset.copy(
-            surface: surfaceTileset,
-            dxPosition: 0,
-            dyPosition: destinationIndex * tileHeight,
+        try surfaceTileset.copy(
+            from: surfaceTileset,
+            dx: 0,
+            dy: destinationIndex * tileHeight,
             width: tileWidth,
             height: tileHeight,
-            sxPosition: 0,
-            syPosition: sourceIndex * tileHeight
+            sx: 0,
+            sy: sourceIndex * tileHeight
         )
         tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
@@ -197,26 +201,26 @@ class GraphicTileset {
             throw GraphicTilesetError.missingTileName
         }
         try clearTile(at: destinationIndex)
-        surfaceTileset.copyMaskSurface(
-            surface: surfaceTileset,
-            dxPosition: 0,
-            dyPosition: destinationIndex * tileHeight,
+        try surfaceTileset.copy(
+            from: surfaceTileset,
+            dx: 0,
+            dy: destinationIndex * tileHeight,
             maskSurface: maskSurface,
-            sxPosition: 0,
-            syPosition: sourceIndex * tileHeight
+            sx: 0,
+            sy: sourceIndex * tileHeight
         )
         tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
         tileIndex[tileName] = destinationIndex
         clippingMasks[destinationIndex] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
-        clippingMasks[destinationIndex]?.copy(
-            surface: surfaceTileset,
-            dxPosition: 0,
-            dyPosition: 0,
+        try clippingMasks[destinationIndex]?.copy(
+            from: surfaceTileset,
+            dx: 0,
+            dy: 0,
             width: tileWidth,
             height: tileHeight,
-            sxPosition: 0,
-            syPosition: destinationIndex * tileHeight
+            sx: 0,
+            sy: destinationIndex * tileHeight
         )
     }
 
@@ -226,7 +230,7 @@ class GraphicTileset {
         }
         for i in 0 ..< tileCount {
             clippingMasks[i] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
-            clippingMasks[i]?.copy(surface: surfaceTileset, dxPosition: 0, dyPosition: 0, width: tileWidth, height: tileHeight, sxPosition: 0, syPosition: i * tileHeight)
+            try clippingMasks[i]?.copy(from: surfaceTileset, dx: 0, dy: 0, width: tileWidth, height: tileHeight, sx: 0, sy: i * tileHeight)
         }
     }
 
@@ -242,8 +246,8 @@ class GraphicTileset {
             throw GraphicTilesetError.failedToReadTileCount
         }
         tileCount = count
-        tileWidth = surfaceTileset.width()
-        tileHeight = surfaceTileset.height() / tileCount
+        tileWidth = surfaceTileset.width
+        tileHeight = surfaceTileset.height / tileCount
         for i in 0 ..< tileCount {
             guard let tileName = lineSource.readLine() else {
                 throw GraphicTilesetError.failedToReadTileName
