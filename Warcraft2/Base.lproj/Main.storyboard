@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wfB-tJ-xR5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wfB-tJ-xR5">
     <device id="retina4_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Test View Controller-->
         <scene sceneID="bkc-om-z4v">
             <objects>
-                <viewController id="wcZ-S5-Xs2" sceneMemberID="viewController">
+                <viewController id="wcZ-S5-Xs2" customClass="TestViewController" customModule="Warcraft2" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2xL-QV-jfP"/>
                         <viewControllerLayoutGuide type="bottom" id="twx-6l-Ygk"/>
@@ -123,6 +124,15 @@
                                     <segue destination="BV1-FR-VrT" kind="show" id="brl-pl-yAp"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ljU-kP-EsE">
+                                <rect key="frame" x="617" y="20" width="30" height="30"/>
+                                <state key="normal" title="Test">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="wcZ-S5-Xs2" kind="presentation" id="53I-NU-ebk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -130,8 +140,10 @@
                             <constraint firstAttribute="trailing" secondItem="9So-if-AcC" secondAttribute="trailing" id="2el-vZ-2D4"/>
                             <constraint firstItem="TZO-F5-Ucp" firstAttribute="centerY" secondItem="GL3-G1-BI9" secondAttribute="centerY" id="Ceb-RD-AbT"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="top" secondItem="GL3-G1-BI9" secondAttribute="top" id="H4R-Hl-gbS"/>
+                            <constraint firstItem="ljU-kP-EsE" firstAttribute="trailing" secondItem="GL3-G1-BI9" secondAttribute="trailingMargin" id="KFM-i1-b75"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="leading" secondItem="GL3-G1-BI9" secondAttribute="leading" id="Xna-Le-LHj"/>
                             <constraint firstItem="1c4-C2-Vct" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" constant="40" id="bYn-aO-QkJ"/>
+                            <constraint firstItem="ljU-kP-EsE" firstAttribute="top" secondItem="GL3-G1-BI9" secondAttribute="topMargin" constant="20" id="l94-8P-4y4"/>
                             <constraint firstItem="TZO-F5-Ucp" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" id="uZF-7p-fd7"/>
                             <constraint firstItem="1c4-C2-Vct" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" id="yia-WH-Gzw"/>
                         </constraints>

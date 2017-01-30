@@ -137,6 +137,7 @@
 		D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */; };
 		D0D6FA5F1E26015E00D92DA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */; };
 		D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */; };
+		D0DF813D1E3F2ECE000F9BC4 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */; };
 		F9A93CCBDD3B6E1591845090 /* Pods_Warcraft2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */; };
 /* End PBXBuildFile section */
 
@@ -278,6 +279,7 @@
 		D0D6FA5E1E26015E00D92DA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D0D6FA601E26015E00D92DA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
+		D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -553,6 +555,7 @@
 			children = (
 				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
 				D0D6FA561E26015E00D92DA5 /* GameViewController.swift */,
+				D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -853,6 +856,7 @@
 				49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */,
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 				D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */,
+				D0DF813D1E3F2ECE000F9BC4 /* TestViewController.swift in Sources */,
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
 				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
 				8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */,
