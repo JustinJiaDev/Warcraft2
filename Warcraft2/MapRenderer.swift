@@ -1,5 +1,5 @@
 class MapRenderer {
-    var tileSet: GraphicTileset
+    var tileset: GraphicTileset
     var map: TerrainMap
     var grassIndices: [Int] = []
     var treeIndices: [Int] = []
@@ -14,6 +14,22 @@ class MapRenderer {
     var waterUnknown: [Int: Int] = [:]
     var dirtUnknown: [Int: Int] = [:]
     var rockUnknown: [Int: Int] = [:]
+
+    var mapWidth: Int {
+        return map.width
+    }
+
+    var mapHeight: Int {
+        return map.height
+    }
+
+    var detailedMapWidth: Int {
+        return map.width * tileset.tileWidth
+    }
+
+    var detailedMapHeight: Int {
+        return map.height * tileset.tileHeight
+    }
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
         var bitCount: Int
@@ -110,7 +126,7 @@ class MapRenderer {
     init(configuration: DataSource, tileset: GraphicTileset, map: TerrainMap) {
         let lineSource = LineDataSource(dataSource: configuration)
         var tempString: String?
-        self.tileSet = tileset
+        self.tileset = tileset
         self.map = map
         pixelIndices = Array(repeating: -1, count: TerrainMap.TileType.max.rawValue)
 
@@ -133,7 +149,7 @@ class MapRenderer {
 
         var index = 0
         while true {
-            let value = self.tileSet.findTile(with: "grass-\(index)")
+            let value = self.tileset.findTile(with: "grass-\(index)")
             if 0 > value {
                 break
             }
@@ -142,28 +158,28 @@ class MapRenderer {
         }
 
         for index in 0 ..< 0x40 {
-            treeIndices.append(self.tileSet.findTile(with: "tree-\(index)"))
+            treeIndices.append(self.tileset.findTile(with: "tree-\(index)"))
         }
 
         for index in 0 ..< 0x100 {
-            dirtIndices.append(self.tileSet.findTile(with: "dirt-\(index)"))
+            dirtIndices.append(self.tileset.findTile(with: "dirt-\(index)"))
         }
 
         for index in 0 ..< 0x100 {
-            waterIndices.append(self.tileSet.findTile(with: "water-\(index)"))
+            waterIndices.append(self.tileset.findTile(with: "water-\(index)"))
         }
 
         waterIndices[0x00] = dirtIndices[0xff]
         for index in 0 ..< 0x100 {
-            rockIndices.append(self.tileSet.findTile(with: "rock-\(index)"))
+            rockIndices.append(self.tileset.findTile(with: "rock-\(index)"))
         }
 
         for index in 0 ..< 0x10 {
-            wallIndices.append(self.tileSet.findTile(with: "wall-\(index)"))
+            wallIndices.append(self.tileset.findTile(with: "wall-\(index)"))
         }
 
         for index in 0 ..< 0x10 {
-            wallDamagedIndices.append(self.tileSet.findTile(with: "wall-damaged-\(index)"))
+            wallDamagedIndices.append(self.tileset.findTile(with: "wall-damaged-\(index)"))
         }
 
         tempString = lineSource.readLine()
@@ -189,25 +205,9 @@ class MapRenderer {
         }
     }
 
-    func mapWidth() -> Int {
-        return map.width
-    }
-
-    func mapHeight() -> Int {
-        return map.height
-    }
-
-    func detailedMapWidth() -> Int {
-        return map.width * tileSet.tileWidth
-    }
-
-    func detailedMapHeight() -> Int {
-        return map.height * tileSet.tileHeight
-    }
-
     func drawMap(surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle, level: Int) throws {
-        let tileWidth = tileSet.tileWidth
-        let tileHeight = tileSet.tileHeight
+        let tileWidth = tileset.tileWidth
+        let tileHeight = tileset.tileHeight
         var unknownTree: [Bool] = []
         var unknownWater: [Bool] = []
         var unknownDirt: [Bool] = []
@@ -225,7 +225,7 @@ class MapRenderer {
         }
 
         if level == 0 {
-            typeSurface.clear()
+            try typeSurface.clear(x: 0, y: 0, width: typeSurface.width, height: typeSurface.height)
 
             var yIndex = rect.yPosition / tileHeight
             for yPos in stride(from: -(rect.yPosition % tileHeight), to: rect.height, by: tileHeight) {
@@ -265,8 +265,8 @@ class MapRenderer {
                         }
 
                         if displayIndex != -1 {
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
                         }
                     } else if thisTileType == .water {
                         var waterIndex = 0, waterMask = 0x1, unknownMask = 0, displayIndex = -1
@@ -301,8 +301,8 @@ class MapRenderer {
                         }
 
                         if displayIndex != -1 {
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
                         }
                     } else if thisTileType == .grass {
                         var otherIndex = 0, otherMask = 0x1, unknownMask = 0, displayIndex = -1
@@ -337,11 +337,11 @@ class MapRenderer {
                                 displayIndex = dirtIndices[otherIndex]
                             }
 
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
                         } else {
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
                         }
                     } else if thisTileType == .rock {
                         var rockIndex = 0, rockMask = 0x1, unknownMask = 0, displayIndex = -1
@@ -376,8 +376,8 @@ class MapRenderer {
                         }
 
                         if displayIndex != -1 {
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
                         }
                     } else if thisTileType == .wall || thisTileType == .wallDamaged {
                         var wallIndex = 0, wallMask = 0x1, displayIndex = -1
@@ -392,46 +392,46 @@ class MapRenderer {
                         }
                         displayIndex = .wall == thisTileType ? wallIndices[wallIndex] : wallDamagedIndices[wallIndex]
                         if displayIndex != -1 {
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
                         }
                     } else {
                         switch map.tileTypeAt(x: xIndex, y: yIndex) {
                         case .grass:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .dirt:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: dirtIndices[0xff])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: dirtIndices[0xff], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: dirtIndices[0xff])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: dirtIndices[0xff], rgb: pixelType.pixelColor)
                             break
                         case .rock:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: rockIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: rockIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: rockIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: rockIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .tree:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .stump:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .water:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: waterIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: waterIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: waterIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: waterIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .wall:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .wallDamaged:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallDamagedIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallDamagedIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallDamagedIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallDamagedIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         case .rubble:
-                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
-                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
+                            try tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
+                            try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
                             break
                         default:
                             break
@@ -459,8 +459,8 @@ class MapRenderer {
                             }
                         }
 
-                        try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[treeIndex])
-                        try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[treeIndex], rgb: pixelType.pixelColor)
+                        try tileset.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[treeIndex])
+                        try tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[treeIndex], rgb: pixelType.pixelColor)
                     }
                     xIndex += 1
                 }

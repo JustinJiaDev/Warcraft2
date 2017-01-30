@@ -27,8 +27,8 @@ class MapView: UIView {
 
             mapRender = MapRenderer(configuration: configuration, tileset: tileset, map: map)
 
-            bounds.size.width = CGFloat(mapRender.mapWidth())
-            bounds.size.height = CGFloat(mapRender.mapHeight())
+            bounds.size.width = CGFloat(mapRender.mapWidth)
+            bounds.size.height = CGFloat(mapRender.mapHeight)
 
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
@@ -38,6 +38,10 @@ class MapView: UIView {
     override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()!
         let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        mapRender.drawMap(surface: layer, typeSurface: layer, rest: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth(), height: mapRender.mapHeight()), level: 0)
+        do {
+            try mapRender.drawMap(surface: layer, typeSurface: layer, rect: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth, height: mapRender.mapHeight), level: 0)
+        } catch {
+            print(error.localizedDescription) // TODO: Handle Error
+        }
     }
 }
