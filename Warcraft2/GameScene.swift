@@ -41,12 +41,12 @@ class GameScene: SKScene {
     // Draws all map tiles contained in MapManager to the scene, in a grid format
     func drawMap() {
         do {
-            guard let configurationURL = Bundle.main.url(forResource: "Config", withExtension: "") else {
+            guard let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat") else {
                 throw GameSceneError.unknownConfiguration
             }
             let configuration = try FileDataSource(url: configurationURL)
 
-            guard let tilesetURL = Bundle.main.url(forResource: "", withExtension: "") else {
+            guard let tilesetURL = Bundle.main.url(forResource: "Terrain", withExtension: "dat") else {
                 throw GameSceneError.unknownTerrainTileset
             }
             let tilesetSource = try FileDataSource(url: tilesetURL)

@@ -131,6 +131,7 @@
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
+		D0D4A3DA1E3F1A07009460DE /* MapRendering.dat in Resources */ = {isa = PBXBuildFile; fileRef = D0D4A3D91E3F1A07009460DE /* MapRendering.dat */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
 		D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA561E26015E00D92DA5 /* GameViewController.swift */; };
 		D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA581E26015E00D92DA5 /* Main.storyboard */; };
@@ -270,6 +271,7 @@
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
+		D0D4A3D91E3F1A07009460DE /* MapRendering.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MapRendering.dat; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D0D6FA561E26015E00D92DA5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -391,6 +393,7 @@
 		498584511E311B5500F6766C /* Maps */ = {
 			isa = PBXGroup;
 			children = (
+				D0D4A3D91E3F1A07009460DE /* MapRendering.dat */,
 				D0773FC61E384A7E00FF7DD7 /* 2player.map */,
 				D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */,
 				D01B68111E35A3DE0003C408 /* maze.map */,
@@ -705,6 +708,7 @@
 				493C07211E3130F600C1C9E6 /* InnerBevel.dat in Resources */,
 				493C06F71E3130F600C1C9E6 /* ListViewIcons.png in Resources */,
 				493C06FB1E3130F600C1C9E6 /* MiniIcons.png in Resources */,
+				D0D4A3DA1E3F1A07009460DE /* MapRendering.dat in Resources */,
 				493C06F21E3130F600C1C9E6 /* GoldMine.png in Resources */,
 				493C06EE1E3130F600C1C9E6 /* FontKingthings12.png in Resources */,
 				493C07261E3130F600C1C9E6 /* Marker.dat in Resources */,
