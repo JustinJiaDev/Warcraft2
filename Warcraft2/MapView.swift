@@ -25,7 +25,7 @@ class MapView: UIView {
             let map = TerrainMap()
             try map.loadMap(source: mapSource)
 
-            mapRender = MapRenderer(configuration: configuration, tileset: tileset, map: map)
+            mapRender = try MapRenderer(configuration: configuration, tileset: tileset, map: map)
 
             bounds.size.width = CGFloat(mapRender.mapWidth)
             bounds.size.height = CGFloat(mapRender.mapHeight)

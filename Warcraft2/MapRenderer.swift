@@ -1,3 +1,16 @@
+enum MapRendererError: Error {
+
+    case failedToReadItemCount
+    case failedToReadItemLine
+    case failedToReadColor(string: String)
+    case invalidItemLine(string: String)
+    case invalidColorHex(string: String)
+    case failedToReadSecondItemCount
+    case failedToReadSecondItemLine
+    case invalidSourceIndexHex(string: String)
+    case invalidType(String: String)
+}
+
 class MapRenderer {
     var tileset: GraphicTileset
     var map: TerrainMap
@@ -29,6 +42,13 @@ class MapRenderer {
 
     var detailedMapHeight: Int {
         return map.height * tileset.tileHeight
+    }
+
+    private static func number(fromHexString string: String) -> Int? {
+        guard string.hasPrefix("0x") || string.hasPrefix("0X") else {
+            return nil
+        }
+        return Int(string.substring(from: string.index(string.startIndex, offsetBy: 2)), radix: 16)
     }
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
@@ -123,34 +143,36 @@ class MapRenderer {
         return -1
     }
 
-    init(configuration: DataSource, tileset: GraphicTileset, map: TerrainMap) {
-        let lineSource = LineDataSource(dataSource: configuration)
-        var tempString: String?
+    init(configuration: DataSource, tileset: GraphicTileset, map: TerrainMap) throws {
         self.tileset = tileset
         self.map = map
-        pixelIndices = Array(repeating: -1, count: TerrainMap.TileType.max.rawValue)
+        self.pixelIndices = Array(repeating: -1, count: TerrainMap.TileType.max.rawValue)
 
-        tempString = lineSource.readLine()
-        if tempString == nil { return }
+        let lineSource = LineDataSource(dataSource: configuration)
 
-        var itemCount = Int(tempString!)!
+        guard let itemCountString = lineSource.readLine(), let itemCount = Int(itemCountString) else {
+            throw MapRendererError.failedToReadItemCount
+        }
+
         for _ in 0 ..< itemCount {
-            tempString = lineSource.readLine()
-            if tempString == nil { return }
-            let tokens = Tokenizer.tokenize(data: tempString!)
-            guard let colorValue = Int(tokens[1]) else {
-                fatalError("String to Int coversion failed. It is likely that the conversion was not ported correctly.")
+            guard let currentLine = lineSource.readLine() else {
+                throw MapRendererError.failedToReadItemLine
             }
-            assert(colorValue >= 0)
-
+            let tokens = Tokenizer.tokenize(data: currentLine)
+            guard tokens.count >= 2 else {
+                throw MapRendererError.invalidItemLine(string: currentLine)
+            }
             let pixelType = TerrainMap.TileType.from(string: tokens[0])
-            pixelIndices[pixelType.rawValue] = colorValue
+            guard let colorHex = MapRenderer.number(fromHexString: tokens[1]), colorHex >= 0 else {
+                throw MapRendererError.invalidColorHex(string: tokens[1])
+            }
+            pixelIndices[pixelType.rawValue] = colorHex
         }
 
         var index = 0
         while true {
             let value = self.tileset.findTile(with: "grass-\(index)")
-            if 0 > value {
+            if value < 0 {
                 break
             }
             grassIndices.append(value)
@@ -170,6 +192,7 @@ class MapRenderer {
         }
 
         waterIndices[0x00] = dirtIndices[0xff]
+
         for index in 0 ..< 0x100 {
             rockIndices.append(self.tileset.findTile(with: "rock-\(index)"))
         }
@@ -182,25 +205,32 @@ class MapRenderer {
             wallDamagedIndices.append(self.tileset.findTile(with: "wall-damaged-\(index)"))
         }
 
-        tempString = lineSource.readLine()
-        if tempString == nil { return }
-        itemCount = Int(tempString!)!
-        for _ in 0 ..< itemCount {
-            tempString = lineSource.readLine()
-            if tempString == nil { return }
-            let tokens = Tokenizer.tokenize(data: tempString!)
-            guard let sourceIndex = Int(tokens[1]) else {
-                fatalError("String to Int coversion failed. It is likely that the conversion was not ported correctly.")
-            }
+        guard let secondItemCountString = lineSource.readLine(), let secondItemCount = Int(secondItemCountString) else {
+            throw MapRendererError.failedToReadItemCount
+        }
 
+        for _ in 0 ..< secondItemCount {
+            guard let currentLine = lineSource.readLine() else {
+                throw MapRendererError.failedToReadSecondItemLine
+            }
+            let tokens = Tokenizer.tokenize(data: currentLine)
+            guard tokens.count >= 3 else {
+                throw MapRendererError.invalidItemLine(string: currentLine)
+            }
+            let indices = try tokens.dropFirst().map { token -> Int in
+                guard let index = MapRenderer.number(fromHexString: token) else {
+                    throw MapRendererError.invalidSourceIndexHex(string: token)
+                }
+                return index
+            }
             switch tokens[0] {
-            case "dirt": for i in 2 ..< tokens.count { dirtIndices[Int(tokens[i])!] = dirtIndices[sourceIndex] }
-            case "rock": for i in 2 ..< tokens.count { rockIndices[Int(tokens[i])!] = rockIndices[sourceIndex] }
-            case "tree": for i in 2 ..< tokens.count { treeIndices[Int(tokens[i])!] = treeIndices[sourceIndex] }
-            case "water": for i in 2 ..< tokens.count { waterIndices[Int(tokens[i])!] = waterIndices[sourceIndex] }
-            case "wall": for i in 2 ..< tokens.count { wallIndices[Int(tokens[i])!] = wallIndices[sourceIndex] }
-            case "wall-damaged": for i in 2 ..< tokens.count { wallDamagedIndices[Int(tokens[i])!] = wallDamagedIndices[sourceIndex] }
-            default: break
+            case "dirt": for i in 1 ..< indices.count { dirtIndices[indices[i]] = dirtIndices[indices[0]] }
+            case "rock": for i in 1 ..< indices.count { rockIndices[indices[i]] = rockIndices[indices[0]] }
+            case "tree": for i in 1 ..< indices.count { treeIndices[indices[i]] = treeIndices[indices[0]] }
+            case "water": for i in 1 ..< indices.count { waterIndices[indices[i]] = waterIndices[indices[0]] }
+            case "wall": for i in 1 ..< indices.count { wallIndices[indices[i]] = wallIndices[indices[0]] }
+            case "wall-damaged": for i in 1 ..< indices.count { wallDamagedIndices[indices[i]] = wallDamagedIndices[indices[0]] }
+            default: throw MapRendererError.invalidType(String: tokens[0])
             }
         }
     }
