@@ -137,13 +137,19 @@ class GraphicTileset {
     }
 
     func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) throws {
-        guard let mask = clippingMasks[index] else {
-            throw GraphicTilesetError.indexOutOfBound(index: index)
-        }
-        let resourceContext = surface.createResourceContext()
-        resourceContext.setSourceRGB(rgb)
-        resourceContext.maskSurface(surface: mask, xPosition: x, yPosition: y)
-        resourceContext.fill()
+        // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
+        // HACK - BEGIN
+        //
+        // HACK - END
+        // ORIGINAL - BEGIN
+        //        guard let mask = clippingMasks[index] else {
+        //            throw GraphicTilesetError.indexOutOfBound(index: index)
+        //        }
+        //        let resourceContext = surface.createResourceContext()
+        //        resourceContext.setSourceRGB(rgb)
+        //        resourceContext.maskSurface(surface: mask, xPosition: x, yPosition: y)
+        //        resourceContext.fill()
+        // ORIGINAL - END
     }
 
     func clearTile(at index: Int) throws {
@@ -236,18 +242,26 @@ class GraphicTileset {
 
     func loadTileset(from dataSource: DataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
-        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
-            throw GraphicTilesetError.failedToGetPath
-        }
-        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
-            throw GraphicTilesetError.failedToLoadFile(path: pngPath)
-        }
+        // FIXME: MAKE TILESET GREAT AGAIN
+        // HACK - START
+        _ = lineSource.readLine()
+        let surfaceTileset = GraphicFactory.loadTerrainTilesetSurface()
+        // HACK - END
+        // ORIGINAL - START
+        //        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
+        //            throw GraphicTilesetError.failedToGetPath
+        //        }
+        //        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
+        //            throw GraphicTilesetError.failedToLoadFile(path: pngPath)
+        //        }
+        // ORIGINAL - END
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GraphicTilesetError.failedToReadTileCount
         }
-        tileCount = count
-        tileWidth = surfaceTileset.width
-        tileHeight = surfaceTileset.height / tileCount
+        self.surfaceTileset = surfaceTileset
+        self.tileCount = count
+        self.tileWidth = surfaceTileset.width
+        self.tileHeight = surfaceTileset.height / tileCount
         for i in 0 ..< tileCount {
             guard let tileName = lineSource.readLine() else {
                 throw GraphicTilesetError.failedToReadTileName

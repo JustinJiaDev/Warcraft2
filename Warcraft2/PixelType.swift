@@ -36,7 +36,10 @@ class PixelType {
     private(set) var color: PlayerColor
 
     var pixelColor: UInt32 {
-        fatalError("This method is not yet implemented.")
+        // FIXME: MAKE PIXEL COLOR GREAT AGAIN
+        // HACK - BEGIN
+        return 1
+        // HACK - END
     }
 
     var assetType: AssetType {

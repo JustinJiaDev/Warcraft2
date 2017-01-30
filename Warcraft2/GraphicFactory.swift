@@ -1,6 +1,11 @@
 import Foundation
 import CoreGraphics
 
+// FIXME: MAKE IMAGE GREAT AGAIN
+// HACK - START
+import UIKit
+// HACK - END
+
 class GraphicFactory {
     static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
@@ -15,4 +20,16 @@ class GraphicFactory {
     static func loadSurface(dataSource: DataSource) -> GraphicSurface? {
         fatalError("This method is not yet implemented.")
     }
+
+    // FIXME: MAKE TILESET GREAT AGAIN
+    // HACK - START
+    static func loadTerrainTilesetSurface() -> GraphicSurface {
+        let image = UIImage(named: "Terrain.png")!
+        UIGraphicsBeginImageContext(image.size)
+        image.draw(at: .zero)
+        let context = UIGraphicsGetCurrentContext()!
+        UIGraphicsEndImageContext()
+        return CGLayer(context, size: image.size, auxiliaryInfo: nil)!
+    }
+    // HACK - END
 }
