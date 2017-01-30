@@ -36,11 +36,11 @@ class Bevel {
         cornerIndices[3] = tileSet.findTile(with: "br")
     }
 
-    func drawBevel(surface: GraphicSurface, xpos: Int, ypos: Int, width: Int, height: Int) throws {
-        let topY = ypos - width
-        let bottomY = ypos + height
-        let leftX = xpos - width
-        let rightX = xpos + width
+    func drawBevel(on surface: GraphicSurface, x: Int, y: Int, width: Int, height: Int) throws {
+        let topY = y - width
+        let bottomY = y + height
+        let leftX = x - width
+        let rightX = x + width
 
         try tileSet.drawTile(on: surface, x: leftX, y: topY, index: cornerIndices[0])
         try tileSet.drawTile(on: surface, x: rightX, y: topY, index: cornerIndices[1])
@@ -52,8 +52,8 @@ class Bevel {
             if xOffset + width > width {
                 index = width - xOffset
             }
-            try tileSet.drawTile(on: surface, x: xpos + xOffset, y: topY, index: topIndices[index])
-            try tileSet.drawTile(on: surface, x: xpos + xOffset, y: bottomY, index: bottomIndices[index])
+            try tileSet.drawTile(on: surface, x: x + xOffset, y: topY, index: topIndices[index])
+            try tileSet.drawTile(on: surface, x: x + xOffset, y: bottomY, index: bottomIndices[index])
         }
 
         for yOffset in stride(from: 0, to: height, by: width) {
@@ -61,8 +61,8 @@ class Bevel {
             if yOffset + width > height {
                 index = height - yOffset
             }
-            try tileSet.drawTile(on: surface, x: leftX, y: ypos + yOffset, index: leftIndices[index])
-            try tileSet.drawTile(on: surface, x: rightX, y: ypos + yOffset, index: rightIndices[index])
+            try tileSet.drawTile(on: surface, x: leftX, y: y + yOffset, index: leftIndices[index])
+            try tileSet.drawTile(on: surface, x: rightX, y: y + yOffset, index: rightIndices[index])
         }
     }
 }
