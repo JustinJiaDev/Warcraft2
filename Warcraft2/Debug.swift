@@ -1,14 +1,18 @@
 import Foundation
 
-func PrintDebug(_ msg: String) {
+enum DebugLevel {
+    case low, normal, high
+}
+
+func printDebug(_ message: String, level: DebugLevel = .normal) {
     fatalError("not implemented")
 }
 
-func OpenDebug() {
+func openDebug() {
     fatalError("not implemented")
 }
 
-func PrintError(_ msg: String) {
+func printError(_ message: String, level: DebugLevel = .normal) {
     fatalError("not implemented")
 }
 
@@ -17,7 +21,7 @@ class Debug {
     init(debug: Debug) {
     }
 
-    static func DebugLevel() {
+    static func debugLevel() {
         fatalError("not implemented")
     }
 }
