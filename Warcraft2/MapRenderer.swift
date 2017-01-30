@@ -55,7 +55,7 @@ class MapRenderer {
     }
 
     func findUnknown(type: TerrainMap.TileType, known: Int, unknown: Int) -> Int {
-        if type == TerrainMap.TileType.tree {
+        if type == .tree {
             if let val = treeUnknown[(known << 8) | unknown] {
                 return val
             }
@@ -67,7 +67,7 @@ class MapRenderer {
                     return treeIndices[known | value]
                 }
             }
-        } else if type == TerrainMap.TileType.water {
+        } else if type == .water {
             if let val = waterUnknown[(known << 8) | unknown] {
                 return val
             }
@@ -79,7 +79,7 @@ class MapRenderer {
                     return waterIndices[known | value]
                 }
             }
-        } else if type == TerrainMap.TileType.dirt {
+        } else if type == .dirt {
             if let val = dirtUnknown[(known << 8) | unknown] {
                 return val
             }
@@ -91,7 +91,7 @@ class MapRenderer {
                     return dirtIndices[known | value]
                 }
             }
-        } else if type == TerrainMap.TileType.rock {
+        } else if type == .rock {
             if let val = rockUnknown[(known << 8) | unknown] {
                 return val
             }
@@ -205,8 +205,268 @@ class MapRenderer {
         return map.height * tileSet.tileHeight
     }
 
-    func drawMap(surface: GraphicSurface, typeSurface: GraphicSurface, rest: Rectangle, level: Int) {
-        fatalError("Not yet ported")
+    func drawMap(surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle, level: Int) throws {
+        let tileWidth = tileSet.tileWidth
+        let tileHeight = tileSet.tileHeight
+        var unknownTree: [Bool] = []
+        var unknownWater: [Bool] = []
+        var unknownDirt: [Bool] = []
+        var unknownRock: [Bool] = []
+        var unknownUnknownTree: [Int: Bool] = [:]
+        var unknownUnknownWater: [Int: Bool] = [:]
+        var unknownUnknownDirt: [Int: Bool] = [:]
+        var unknownUnknownRock: [Int: Bool] = [:]
+
+        if unknownTree.isEmpty {
+            unknownTree = Array(repeating: false, count: 0x100)
+            unknownWater = Array(repeating: false, count: 0x100)
+            unknownDirt = Array(repeating: false, count: 0x100)
+            unknownRock = Array(repeating: false, count: 0x100)
+        }
+
+        if level == 0 {
+            typeSurface.clear()
+
+            var yIndex = rect.yPosition / tileHeight
+            for yPos in stride(from: -(rect.yPosition % tileHeight), to: rect.height, by: tileHeight) {
+                var xIndex = rect.xPosition / tileWidth
+                for xPos in stride(from: -(rect.xPosition % tileWidth), to: rect.width, by: tileWidth) {
+                    let pixelType = PixelType(tileType: map.tileTypeAt(x: xIndex, y: yIndex))
+                    let thisTileType = map.tileTypeAt(x: xIndex, y: yIndex)
+
+                    if thisTileType == .tree {
+                        var treeIndex = 0, treeMask = 0x1, unknownMask = 0, displayIndex = -1
+                        for yOff in 0 ..< 2 {
+                            for xOff in -1 ..< 2 {
+                                let tile = map.tileTypeAt(x: xIndex + xOff, y: yIndex + yOff)
+                                if tile == .tree {
+                                    treeIndex |= treeMask
+                                } else if tile == .none {
+                                    unknownMask |= treeMask
+                                }
+                                treeMask <<= 1
+                            }
+                        }
+
+                        if treeIndices[treeIndex] == -1 {
+                            if !unknownTree[treeIndex] && unknownMask == 0 {
+                                printError("Unknown tree \(treeIndex) @ (\(xIndex), \(yIndex))")
+                                unknownTree[treeIndex] = true
+                            }
+                            displayIndex = findUnknown(type: .tree, known: treeIndex, unknown: unknownMask)
+                            if displayIndex == -1 {
+                                if unknownUnknownTree[(treeIndex << 8) | unknownMask] == nil {
+                                    unknownUnknownTree[(treeIndex << 8) | unknownMask] = true
+                                    printError("Unknown tree \(treeIndex)/\(unknownMask) @ (\(xIndex), \(yIndex))")
+                                }
+                            }
+                        } else {
+                            displayIndex = treeIndices[treeIndex]
+                        }
+
+                        if displayIndex != -1 {
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                        }
+                    } else if thisTileType == .water {
+                        var waterIndex = 0, waterMask = 0x1, unknownMask = 0, displayIndex = -1
+                        for yOff in -1 ..< 2 {
+                            for xOff in -1 ..< 2 {
+                                if xOff != 0 || yOff != 0 {
+                                    let tile = map.tileTypeAt(x: xIndex + xOff, y: yIndex + yOff)
+                                    if tile == .water {
+                                        waterIndex |= waterMask
+                                    } else if tile == .none {
+                                        unknownMask |= waterMask
+                                    }
+                                    waterMask <<= 1
+                                }
+                            }
+                        }
+
+                        if waterIndices[waterIndex] == -1 {
+                            if !unknownWater[waterIndex] && unknownMask == 0 {
+                                printError("Unknown water \(waterIndex) @ (\(xIndex), \(yIndex))")
+                                unknownWater[waterIndex] = true
+                            }
+                            displayIndex = findUnknown(type: .water, known: waterIndex, unknown: unknownMask)
+                            if displayIndex == -1 {
+                                if unknownUnknownWater[(waterIndex << 8) | unknownMask] == nil {
+                                    unknownUnknownWater[(waterIndex << 8) | unknownMask] = true
+                                    printError("Unknown water \(waterIndex)/\(unknownMask) @ (\(xIndex), \(yIndex))")
+                                }
+                            }
+                        } else {
+                            displayIndex = waterIndices[waterIndex]
+                        }
+
+                        if displayIndex != -1 {
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                        }
+                    } else if thisTileType == .grass {
+                        var otherIndex = 0, otherMask = 0x1, unknownMask = 0, displayIndex = -1
+                        for yOff in -1 ..< 2 {
+                            for xOff in -1 ..< 2 {
+                                if xOff != 0 || yOff != 0 {
+                                    let tile = map.tileTypeAt(x: xIndex + xOff, y: yIndex + yOff)
+                                    if tile == .water || tile == .dirt || tile == .rock {
+                                        otherIndex |= otherMask
+                                    } else if tile == .none {
+                                        unknownMask |= otherMask
+                                    }
+                                    otherMask <<= 1
+                                }
+                            }
+                        }
+
+                        if otherIndex != 0 {
+                            if dirtIndices[otherIndex] == -1 {
+                                if !unknownDirt[otherIndex] && unknownMask == 0 {
+                                    printError("Unknown dirt \(otherIndex) @ (\(xIndex), \(yIndex))")
+                                    unknownDirt[otherIndex] = true
+                                }
+                                displayIndex = findUnknown(type: .dirt, known: otherIndex, unknown: unknownMask)
+                                if displayIndex == -1 {
+                                    if unknownUnknownDirt[(otherIndex << 8) | unknownMask] == nil {
+                                        unknownUnknownDirt[(otherIndex << 8) | unknownMask] = true
+                                        printError("Unknown dirt \(otherIndex)/\(unknownMask) @ (\(xIndex), \(yIndex))")
+                                    }
+                                }
+                            } else {
+                                displayIndex = dirtIndices[otherIndex]
+                            }
+
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                        } else {
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
+                        }
+                    } else if thisTileType == .rock {
+                        var rockIndex = 0, rockMask = 0x1, unknownMask = 0, displayIndex = -1
+                        for yOff in -1 ..< 2 {
+                            for xOff in -1 ..< 2 {
+                                if xOff != 0 || yOff != 0 {
+                                    let tile = map.tileTypeAt(x: xIndex + xOff, y: yIndex + yOff)
+                                    if tile == .rock {
+                                        rockIndex |= rockMask
+                                    } else if tile == .none {
+                                        unknownMask |= rockMask
+                                    }
+                                    rockMask <<= 1
+                                }
+                            }
+                        }
+
+                        if rockIndices[rockIndex] == -1 {
+                            if !unknownRock[rockIndex] && unknownMask == 0 {
+                                printError("Unknown rock \(rockIndex) @ (\(xIndex), \(yIndex))")
+                                unknownRock[rockIndex] = true
+                            }
+                            displayIndex = findUnknown(type: .rock, known: rockIndex, unknown: unknownMask)
+                            if displayIndex == -1 {
+                                if unknownUnknownRock[(rockIndex << 8) | unknownMask] == nil {
+                                    unknownUnknownRock[(rockIndex << 8) | unknownMask] = true
+                                    printError("Unknown rock \(rockIndex)/\(unknownMask) @ (\(xIndex), \(yIndex))")
+                                }
+                            }
+                        } else {
+                            displayIndex = rockIndices[rockIndex]
+                        }
+
+                        if displayIndex != -1 {
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                        }
+                    } else if thisTileType == .wall || thisTileType == .wallDamaged {
+                        var wallIndex = 0, wallMask = 0x1, displayIndex = -1
+                        var xOffsets = [0, 1, 0, -1]
+                        var yOffsets = [ -1, 0, 1, 0]
+                        for index in 0 ..< xOffsets.count {
+                            let tile = map.tileTypeAt(x: xIndex + xOffsets[index], y: yIndex + yOffsets[index])
+                            if tile == .wall || tile == .wallDamaged || tile == .rubble {
+                                wallIndex |= wallMask
+                            }
+                            wallMask <<= 1
+                        }
+                        displayIndex = .wall == thisTileType ? wallIndices[wallIndex] : wallDamagedIndices[wallIndex]
+                        if displayIndex != -1 {
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: displayIndex)
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: displayIndex, rgb: pixelType.pixelColor)
+                        }
+                    } else {
+                        switch map.tileTypeAt(x: xIndex, y: yIndex) {
+                        case .grass:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .dirt:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: dirtIndices[0xff])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: dirtIndices[0xff], rgb: pixelType.pixelColor)
+                            break
+                        case .rock:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: rockIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: rockIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .tree:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .stump:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .water:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: waterIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: waterIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .wall:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .wallDamaged:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallDamagedIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallDamagedIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        case .rubble:
+                            try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
+                            try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
+                            break
+                        default:
+                            break
+                        }
+                    }
+                    xIndex += 1
+                }
+                yIndex += 1
+            }
+        } else {
+            var yIndex = rect.yPosition / tileHeight
+            for yPos in stride(from: -(rect.yPosition % tileHeight), to: rect.height, by: tileHeight) {
+                var xIndex = rect.xPosition / tileWidth
+                for xPos in stride(from: -(rect.xPosition % tileWidth), to: rect.width, by: tileWidth) {
+                    if (map.tileTypeAt(x: xIndex, y: yIndex + 1) == .tree) && (map.tileTypeAt(x: xIndex, y: yIndex) != .tree) {
+                        let pixelType = PixelType(tileType: .tree)
+                        var treeIndex = 0, treeMask = 0x1
+
+                        for yOff in 0 ..< 2 {
+                            for xOff in -1 ..< 2 {
+                                if map.tileTypeAt(x: xIndex + xOff, y: yIndex + yOff) == .tree {
+                                    treeIndex |= treeMask
+                                }
+                                treeMask <<= 1
+                            }
+                        }
+
+                        try tileSet.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[treeIndex])
+                        try tileSet.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[treeIndex], rgb: pixelType.pixelColor)
+                    }
+                    xIndex += 1
+                }
+                yIndex += 1
+            }
+        }
     }
 
     func drawMiniMap(surface: GraphicSurface) {
@@ -222,7 +482,7 @@ class MapRenderer {
                 while xPos < map.width && map.tileTypeAt(x: xPos, y: yPos) == tileType {
                     xPos += 1
                 }
-                if TerrainMap.TileType.none != tileType {
+                if .none != tileType {
                     resourceContext.setSourceRGB(UInt32(pixelIndices[tileType.rawValue]))
                     resourceContext.moveTo(xPosition: xAnchor, yPosition: yPos)
                     resourceContext.lineTo(xPosition: xPos - 1, yPosition: yPos)
