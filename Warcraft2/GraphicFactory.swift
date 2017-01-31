@@ -23,7 +23,7 @@ class GraphicFactory {
 
     // FIXME: MAKE TILESET GREAT AGAIN
     // HACK - START
-    static func loadTerrainTilesetSurface() -> CGLayer {
+    static func loadTerrainTilesetSurface() -> GraphicSurface {
         let image = UIImage(named: "Terrain.png")!
         UIGraphicsBeginImageContext(image.size)
         let layer = CGLayer(UIGraphicsGetCurrentContext()!, size: image.size, auxiliaryInfo: nil)!
