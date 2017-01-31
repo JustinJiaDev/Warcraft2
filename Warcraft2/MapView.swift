@@ -43,5 +43,6 @@ class MapView: UIView {
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
+        context.draw(layer, in: rect)
     }
 }
