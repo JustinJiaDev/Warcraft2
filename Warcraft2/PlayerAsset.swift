@@ -1,9 +1,5 @@
 import Foundation
 
-// TODO: Port this class (GameModel.h)
-class PlayerData {
-}
-
 class ActivatedPlayerCapability {
     private var actor: PlayerAsset
     private var playerData: PlayerData
