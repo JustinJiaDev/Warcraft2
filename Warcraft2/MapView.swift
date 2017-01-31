@@ -37,11 +37,16 @@ class MapView: UIView {
 
     override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()!
-        let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        do {
-            try mapRender.drawMap(surface: layer, typeSurface: layer, rect: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth, height: mapRender.mapHeight), level: 0)
-        } catch {
-            print(error.localizedDescription) // TODO: Handle Error
-        }
+        let surface = GraphicFactory.loadTerrainTilesetSurface()
+        context.draw(surface, in: rect)
+        //        context.draw(surface, in: rect)
+        //        context.draw(surface.layer, at: .zero)
+        //        do {
+        //            context.draw(surface.layer, at: .zero)
+        //            //            try layer.draw(from: surface, dx: 0, dy: 0, width: 100, height: 100, sx: 0, sy: 0)
+        //            //            try mapRender.drawMap(surface: layer, typeSurface: layer, rect: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth, height: mapRender.mapHeight), level: 0)
+        //        } catch {
+        //            print(error.localizedDescription) // TODO: Handle Error
+        //        }
     }
 }
