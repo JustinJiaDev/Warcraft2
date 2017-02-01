@@ -12,19 +12,19 @@ class AssetRenderer {
     private var arrowIndices: [Int] = []
     private var placeGoodIndex: Int
     private var placeBadIndex: Int
-    private var noneIndices: [[Int]] = [[]]
-    private var constructIndices: [[Int]] = [[]]
-    private var buildIndices: [[Int]] = [[]]
-    private var walkIndices: [[Int]] = [[]]
-    private var attackIndices: [[Int]] = [[]]
-    private var carryGoldIndices: [[Int]] = [[]]
-    private var carryLumberIndices: [[Int]] = [[]]
-    private var deathIndices: [[Int]] = [[]]
-    private var placeIndices: [[Int]] = [[]]
+    private var noneIndices: [[Int]] = []
+    private var constructIndices: [[Int]] = []
+    private var buildIndices: [[Int]] = []
+    private var walkIndices: [[Int]] = []
+    private var attackIndices: [[Int]] = []
+    private var carryGoldIndices: [[Int]] = []
+    private var carryLumberIndices: [[Int]] = []
+    private var deathIndices: [[Int]] = []
+    private var placeIndices: [[Int]] = []
     private var pixelColors: UInt32
     private var animationDownsample: Int
 
-    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markertileset: GraphicTileset, corpsetileset: GraphicTileset, firetileset: [GraphicTileset], buildingdeath: GraphicTileset, arrowtileset: GraphicTileset, player: PlayerData, map: AssetDecoratedMap) {
+    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTileset: [GraphicTileset], buildingDeath: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData, map: AssetDecoratedMap) {
         fatalError("This method is not yet implemented")
     }
 
@@ -36,7 +36,7 @@ class AssetRenderer {
         fatalError("This method is not yet implemented")
     }
 
-    func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionlist: [PlayerAsset], selectrect: Rectangle, highlightbuilding: Bool) {
+    func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) {
         fatalError("This method is not yet implemented")
     }
 
