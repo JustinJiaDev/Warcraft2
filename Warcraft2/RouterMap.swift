@@ -142,16 +142,16 @@ class RouterMap {
                 let tempDirection = Direction(rawValue: SearchStatus.occupied.rawValue - map[tempTile.y + 1][tempTile.x + 1].rawValue)!
                 if SearchStatus.unvisited == map[tempTile.y + 1][tempTile.x + 1] || RouterMap.movingAway(searchDirections[index], tempDirection) {
                     map[tempTile.y + 1][tempTile.x + 1] = SearchStatus(rawValue: index)!
-                    let curTileType = resMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
-                    if TerrainMap.TileType.grass == curTileType
-                        || TerrainMap.TileType.dirt == curTileType
-                        || TerrainMap.TileType.stump == curTileType
-                        || TerrainMap.TileType.rubble == curTileType
-                        || TerrainMap.TileType.none == curTileType {
+                    let currentTileType = resMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
+                    if currentTileType == .grass
+                        || currentTileType == .dirt
+                        || currentTileType == .stump
+                        || currentTileType == .rubble
+                        || currentTileType == .none {
                         tempSearch.x = tempTile.x
                         tempSearch.y = tempTile.y
                         tempSearch.steps = currentSearch.steps + 1
-                        tempSearch.tileType = curTileType
+                        tempSearch.tileType = currentTileType
                         tempSearch.targetDistanceSquared = tempTile.distanceSquared(targetTile)
                         tempSearch.inDirection = searchDirections[index]
                         searchQueueArray.append(tempSearch)
@@ -161,7 +161,7 @@ class RouterMap {
             if searchQueueArray.isEmpty {
                 break
             }
-            currentSearch = searchQueueArray.first!
+            currentSearch = searchQueueArray[0]
             searchQueueArray.remove(at: 0)
             currentTile.x = currentSearch.x
             currentTile.y = currentSearch.y
@@ -179,15 +179,15 @@ class RouterMap {
             currentTile.y -= resMapYOffsets[index]
         }
         if directionBeforeLast != lastInDirection {
-            let curTileType = resMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.rawValue], y: startY + diagCheckYOffset[directionBeforeLast.rawValue])
-            if curTileType == TerrainMap.TileType.grass
-                || curTileType == TerrainMap.TileType.dirt
-                || curTileType == TerrainMap.TileType.stump
-                || curTileType == TerrainMap.TileType.rubble
-                || curTileType == TerrainMap.TileType.none {
+            let currentTileType = resMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.rawValue], y: startY + diagCheckYOffset[directionBeforeLast.rawValue])
+            if currentTileType == .grass
+                || currentTileType == .dirt
+                || currentTileType == .stump
+                || currentTileType == .rubble
+                || currentTileType == .none {
                 var sum = lastInDirection.rawValue + directionBeforeLast.rawValue
                 // NW wrap around
-                if 6 == sum && lastInDirection == Direction.north || Direction.north == directionBeforeLast {
+                if 6 == sum && lastInDirection == .north || .north == directionBeforeLast {
                     sum += 8
                 }
                 sum /= 2
