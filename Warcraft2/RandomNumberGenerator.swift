@@ -7,10 +7,10 @@ class RandomNumberGenerator {
     }
 
     func seed(seed: UInt64) {
-        fatalError("not implemented")
+        seed2(high: UInt32(seed >> 32), low: UInt32(seed))
     }
 
-    func seed(high: UInt32, low: UInt32) {
+    func seed2(high: UInt32, low: UInt32) {
         if high != low && low != 0 && high != 0 {
             randomSeedHigh = high
             randomSeedLow = low
