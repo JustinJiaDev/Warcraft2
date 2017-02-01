@@ -30,8 +30,8 @@ enum AssetAction {
     case capability
 }
 
-enum AssetCapabilityType {
-    case none
+enum AssetCapabilityType: Int {
+    case none = 0
     case buildPeasant
     case buildFootman
     case buildArcher
