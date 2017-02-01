@@ -18,7 +18,7 @@ class GraphicMulticolorTileset: GraphicTileset {
         fatalError("This method is not yet implemented.")
     }
 
-    func drawTile(surface: GraphicSurface, xpos: Int, ypos: Int, tileindex: Int, colorindex: Int) {
+    func drawTile(on surface: GraphicSurface, xposition: Int, yposition: Int, tileindex: Int, colorindex: Int) {
         fatalError("This method is not yet implemented.")
     }
 }

@@ -1,7 +1,7 @@
 class AssetRenderer {
     private var playerData: PlayerData
     private var playerMap: AssetDecoratedMap
-    private var tileSets: [GraphicMulticolorTileset] = []
+    private var tilesets: [GraphicMulticolorTileset] = []
     private var markerTileset: GraphicTileset
     private var fireTilesets: [GraphicTileset] = []
     private var buildingDeathTileset: GraphicTileset
@@ -28,27 +28,27 @@ class AssetRenderer {
         fatalError("This method is not yet implemented")
     }
 
-    static func updateFrequency(freq: Int) -> Int {
+    static func updateFrequency(_frequency: Int) -> Int {
         fatalError("This method is not yet implemented")
     }
 
-    func drawAssets(surface: GraphicSurface, typesurface: GraphicSurface, rect: Rectangle) {
+    func drawAssets(on surface: GraphicSurface, typesurface: GraphicSurface, rect: Rectangle) {
         fatalError("This method is not yet implemented")
     }
 
-    func drawSelections(surface: GraphicSurface, rect: Rectangle, selectionlist: [PlayerAsset], selectrect: Rectangle, highlightbuilding: Bool) {
+    func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionlist: [PlayerAsset], selectrect: Rectangle, highlightbuilding: Bool) {
         fatalError("This method is not yet implemented")
     }
 
-    func drawOverlays(surface: GraphicSurface, rect: Rectangle) {
+    func drawOverlays(on surface: GraphicSurface, rect: Rectangle) {
         fatalError("This method is not yet implemented")
     }
 
-    func drawPlacement(surface: GraphicSurface, rect: Rectangle, pos: Position, type: AssetType, builder: PlayerAsset) {
+    func drawPlacement(on surface: GraphicSurface, rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) {
         fatalError("This method is not yet implemented")
     }
 
-    func drawMiniAssets(surface: GraphicSurface) {
+    func drawMiniAssets(on surface: GraphicSurface) {
         fatalError("This method is not yet implemented")
     }
 }

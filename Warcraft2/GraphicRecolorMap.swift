@@ -1,28 +1,21 @@
 class GraphicRecolorMap {
 
-    private var DState: Int
-    private var DMapping: Dictionary<String, Int>
-    private var DColorNames: Array<String>
-    private var DColors: Array<Array<UInt32>>
-    private var DOriginalColors: Array<Array<UInt32>>
+    private var state: Int
+    private var mapping: [String: Int] = [:]
+    private var colorNames: [String] = []
+    private var colors: [[UInt32]] = [[]]
+    private var originalColors: [[UInt32]] = [[]]
 
     init() {
-        DState = -1
-        DMapping = [:]
-        DColorNames = []
-        DColors = []
-        DOriginalColors = []
+        fatalError("This method is not yet implemented.")
     }
 
-    func groupCount() -> Int {
-        return DColors.count
+    var groupCount: Int {
+        return colors.count
     }
 
-    func colorCount() -> Int {
-        if DColors.count > 0 {
-            return DColors[0].count
-        }
-        return 0
+    var colorCount: Int {
+        return (colors.count != 0) ? colors[0].count : 0
     }
 
     func findColor(colorname: String) -> Int {
@@ -45,7 +38,7 @@ class GraphicRecolorMap {
         fatalError("This method is not yet implemented")
     }
 
-    func recolorSurface(index: Int, srcsurface: GraphicSurface) -> GraphicSurface {
+    func recolorSurface(index: Int, on surface: GraphicSurface) -> GraphicSurface {
         fatalError("This method is not yet implemented")
     }
 }
