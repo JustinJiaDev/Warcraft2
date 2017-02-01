@@ -32,7 +32,7 @@ class AssetRenderer {
         fatalError("This method is not yet implemented")
     }
 
-    func drawAssets(on surface: GraphicSurface, typesurface: GraphicSurface, rect: Rectangle) {
+    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle) {
         fatalError("This method is not yet implemented")
     }
 
