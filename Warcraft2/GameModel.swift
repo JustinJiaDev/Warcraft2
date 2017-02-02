@@ -207,7 +207,21 @@ class PlayerData {
     }
 
     func selectAsset(pos: Position, assetType: AssetType) -> PlayerAsset {
-        fatalError("not yet ported")
+        var bestAsset: PlayerAsset
+        var bestDistanceSquared = -1
+        
+        if .none != assetType {
+            for asset in assets {
+                if asset.type == assetType {
+                    let currentDistance = asset.position.distanceSquared(pos)
+                    if -1 == bestDistanceSquared || currentDistance < bestDistanceSquared {
+                        bestDistanceSquared = currentDistance
+                        bestAsset = asset
+                    }
+                }
+            }
+        }
+        return bestAsset
     }
 
     func findNearestOwnedAsset(pos: Position, assetTypes: [AssetType]) -> PlayerAsset {
