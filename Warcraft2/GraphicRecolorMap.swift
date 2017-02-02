@@ -10,27 +10,27 @@ import Foundation
 
 class GraphicRecolorMap{
     
-    private var DState: Int
-    private var DMapping: Dictionary<String, Int>
-    private var DColorNames: Array<String>
-    private var DColors: Array<Array<UInt32>>
-    private var DOriginalColors: Array<Array<UInt32>>
+    private var state: Int
+    private var mapping: Dictionary<String, Int>
+    private var colorNames: Array<String>
+    private var colors: Array<Array<UInt32>>
+    private var originalColors: Array<Array<UInt32>>
     
     init() {
-        DState = -1
-        DMapping = [:]
-        DColorNames = []
-        DColors = []
-        DOriginalColors = []
+        state = -1
+        mapping = [:]
+        colorNames = []
+        colors = []
+        originalColors = []
     }
     
     func groupCount() -> Int {
-        return DColors.count
+        return colors.count
     }
     
     func colorCount() -> Int {
-        if DColors.count > 0 {
-            return DColors[0].count
+        if colors.count > 0 {
+            return colors[0].count
         }
         return 0
     }
