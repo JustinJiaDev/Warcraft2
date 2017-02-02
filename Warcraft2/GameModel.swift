@@ -185,7 +185,21 @@ class PlayerData {
     }
 
     func updateVisibility() {
-        fatalError("not yet ported")
+        var removeList: [PlayerAsset] = []
+        
+        visibilityMap.update(assets: assets)
+        playerMap.updateMap(visibilityMap: visibilityMap, assetDecoratedMap: actualMap)
+        for asset in playerMap.assets {
+            if asset.type == .none && asset.action == .none {
+                asset.incrementStep()
+                if PlayerAsset.updateFrequency < asset.step * 2 {
+                    removeList.append(asset)
+                }
+            }
+        }
+        for asset in removeList {
+            playerMap.removeAsset(asset)
+        }
     }
 
     func selectAssets(selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
