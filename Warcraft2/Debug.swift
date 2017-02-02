@@ -13,7 +13,7 @@ func openDebug() {
 }
 
 func printError(_ message: String, level: DebugLevel = .normal) {
-    fatalError("not implemented")
+    print("[ERROR]: \(message)")
 }
 
 class Debug {
