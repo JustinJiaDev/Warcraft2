@@ -67,26 +67,28 @@ class MapRenderer {
         lastEnd = hammingSet.count
         bitCount = hammingSet.count
 
-        for _ in 1 ..< bitCount {
-            for lastIndex in anchor ..< lastEnd {
-                for bitIndex in 0 ..< bitCount {
-                    let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
-                    if newValue != hammingSet[lastIndex] {
-                        var found = false
-                        for index in lastEnd ..< hammingSet.count {
-                            if newValue == hammingSet[index] {
-                                found = true
-                                break
+        if bitCount > 0 {
+            for _ in 1 ..< bitCount {
+                for lastIndex in anchor ..< lastEnd {
+                    for bitIndex in 0 ..< bitCount {
+                        let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
+                        if newValue != hammingSet[lastIndex] {
+                            var found = false
+                            for index in lastEnd ..< hammingSet.count {
+                                if newValue == hammingSet[index] {
+                                    found = true
+                                    break
+                                }
                             }
-                        }
-                        if !found {
-                            hammingSet.append(newValue)
+                            if !found {
+                                hammingSet.append(newValue)
+                            }
                         }
                     }
                 }
+                anchor = lastEnd + 1
+                lastEnd = hammingSet.count
             }
-            anchor = lastEnd + 1
-            lastEnd = hammingSet.count
         }
     }
 
