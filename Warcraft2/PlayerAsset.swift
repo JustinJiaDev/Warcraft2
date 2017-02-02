@@ -236,114 +236,69 @@ class PlayerAsset: Equatable {
         return lhs == rhs
     }
 
-    var creationCycle: Int {
-        get {
-            return self.creationCycle
-        }
-        set(cycle) {
-            return self.creationCycle = cycle
-        }
-    }
-    var hitPoints: Int {
-        get {
-            return self.hitPoints
-        }
-        set(hitpts) {
-            return self.hitPoints = hitpts
-        }
-    }
-    var gold: Int {
-        get {
-            return self.gold
-        }
-        set(gold) {
-            return self.gold = gold
-        }
-    }
-    var lumber: Int {
-        get {
-            return self.lumber
-        }
-        set(lumber) {
-            return self.lumber = lumber
-        }
-    }
-    var step: Int {
-        get {
-            return self.step
-        }
-        set(step) {
-            return self.step = step
-        }
-    }
+    var creationCycle: Int
+    var hitPoints: Int
+    var gold: Int
+    var lumber: Int
+    var step: Int
 
     private(set) var moveRemainderX: Int
     private(set) var moveRemainderY: Int
 
-    private(set) var tilePosition: Position {
+    var tilePosition: Position {
+        willSet {
+            position.setFromTile(newValue)
+        }
+    }
+    
+    var tilePositionX: Int {
         get {
-            return self.tilePosition
+            return tilePosition.x
         }
-        set(pos) {
-            self.position.setFromTile(pos)
-            return self.tilePosition = pos
+        set {
+            position.setXFromTile(newValue)
+            tilePosition.x = newValue
         }
     }
     
-    func tilePositionX() -> Int {
-        return tilePosition.x
-    }
-    
-    func setTilePositionX(_ x: Int) {
-        self.position.setXFromTile(x)
-        return tilePosition.x = x
-    }
-    
-    func tilePositionY() -> Int {
-        return tilePosition.y
-    }
-    
-    func setTilePositionY(_ y: Int) {
-        self.position.setYFromTile(y)
-        return tilePosition.y = y
-    }
-    
-    private(set) var position: Position {
+    var tilePositionY: Int {
         get {
-            return self.position
+            return tilePosition.y
         }
-        set(pos) {
-            self.tilePosition.setToTile(pos)
-            return self.position = pos
+        set {
+            position.setYFromTile(newValue)
+            tilePosition.y = newValue
         }
-    }
-    
-    func positionX() -> Int {
-        return position.x
-    }
-    
-    func setPositionX(_ x: Int) {
-        self.tilePosition.setXToTile(x)
-        return self.position.x = x
-    }
-    
-    func positionY() -> Int {
-        return position.y
-    }
-    
-    func setPositionY(_ y: Int) {
-        self.tilePosition.setYToTile(y)
-        return self.position.y = y
     }
 
-    var direction: Direction {
-        get {
-            return self.direction
-        }
-        set(direction) {
-            return self.direction = direction
+    var position: Position {
+        willSet {
+            tilePosition.setToTile(newValue)
         }
     }
+    
+    var positionX: Int {
+        get {
+            return position.x
+        }
+        set {
+            tilePosition.setXToTile(newValue)
+            position.x = newValue
+        }
+    }
+
+    var positionY: Int {
+        get {
+            return position.y
+        }
+        set {
+            tilePosition.setYToTile(newValue)
+            position.y = newValue
+        }
+    }
+
+    var direction: Direction
+    
     private(set) var commands: [AssetCommand]
     private(set) var assetType: PlayerAssetType
     private(set) static var updateFrequency: Int = 0
@@ -532,7 +487,7 @@ class PlayerAsset: Equatable {
     func incrementStep() {
         step += 1
     }
-    
+
     func closestPosition(_ position: Position) -> Position {
         fatalError("This method is not yet implemented.")
     }

@@ -1,22 +1,8 @@
 import Foundation
 
 class Position {
-    var x: Int {
-        get {
-            return self.x
-        }
-        set(x) {
-            return self.x = x
-        }
-    }
-    var y: Int {
-        get {
-            return self.y
-        }
-        set(y) {
-            return self.y = y
-        }
-    }
+    var x: Int
+    var y: Int
 
     private(set) static var tileWidth = 1
     private(set) static var tileHeight = 1
