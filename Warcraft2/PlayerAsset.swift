@@ -236,17 +236,114 @@ class PlayerAsset: Equatable {
         return lhs == rhs
     }
 
-    var creationCycle: Int
-    var hitPoints: Int
-    var gold: Int
-    var lumber: Int
-    var step: Int
+    var creationCycle: Int {
+        get {
+            return self.creationCycle
+        }
+        set(cycle) {
+            return self.creationCycle = cycle
+        }
+    }
+    var hitPoints: Int {
+        get {
+            return self.hitPoints
+        }
+        set(hitpts) {
+            return self.hitPoints = hitpts
+        }
+    }
+    var gold: Int {
+        get {
+            return self.gold
+        }
+        set(gold) {
+            return self.gold = gold
+        }
+    }
+    var lumber: Int {
+        get {
+            return self.lumber
+        }
+        set(lumber) {
+            return self.lumber = lumber
+        }
+    }
+    var step: Int {
+        get {
+            return self.step
+        }
+        set(step) {
+            return self.step = step
+        }
+    }
 
     private(set) var moveRemainderX: Int
     private(set) var moveRemainderY: Int
-    private(set) var tilePosition: Position
-    private(set) var position: Position
-    var direction: Direction
+
+    private(set) var tilePosition: Position {
+        get {
+            return self.tilePosition
+        }
+        set(pos) {
+            self.position.setFromTile(pos)
+            return self.tilePosition = pos
+        }
+    }
+    
+    func tilePositionX() -> Int {
+        return tilePosition.x
+    }
+    
+    func setTilePositionX(_ x: Int) {
+        self.position.setXFromTile(x)
+        return tilePosition.x = x
+    }
+    
+    func tilePositionY() -> Int {
+        return tilePosition.y
+    }
+    
+    func setTilePositionY(_ y: Int) {
+        self.position.setYFromTile(y)
+        return tilePosition.y = y
+    }
+    
+    private(set) var position: Position {
+        get {
+            return self.position
+        }
+        set(pos) {
+            self.tilePosition.setToTile(pos)
+            return self.position = pos
+        }
+    }
+    
+    func positionX() -> Int {
+        return position.x
+    }
+    
+    func setPositionX(_ x: Int) {
+        self.tilePosition.setXToTile(x)
+        return self.position.x = x
+    }
+    
+    func positionY() -> Int {
+        return position.y
+    }
+    
+    func setPositionY(_ y: Int) {
+        self.tilePosition.setYToTile(y)
+        return self.position.y = y
+    }
+
+    var direction: Direction {
+        get {
+            return self.direction
+        }
+        set(direction) {
+            return self.direction = direction
+        }
+    }
     private(set) var commands: [AssetCommand]
     private(set) var assetType: PlayerAssetType
     private(set) static var updateFrequency: Int = 0
@@ -435,47 +532,7 @@ class PlayerAsset: Equatable {
     func incrementStep() {
         step += 1
     }
-
-    func setTitlePosition(position _: Position) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func tilePositionX() -> Int {
-        return tilePosition.x
-    }
-
-    func setTilePositionX(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func tilePositionY() -> Int {
-        return tilePosition.y
-    }
-
-    func setTilePositionY(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func setPosition(position _: Position) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func positionX() -> Int {
-        return position.x
-    }
-
-    func setPositionX(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func positionY() -> Int {
-        return position.y
-    }
-
-    func setPositionY(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
+    
     func closestPosition(_ position: Position) -> Position {
         fatalError("This method is not yet implemented.")
     }
