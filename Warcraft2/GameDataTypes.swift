@@ -72,8 +72,8 @@ enum AssetCapabilityType: Int {
     case max
 }
 
-enum AssetType {
-    case none
+enum AssetType: Int {
+    case none = 0
     case peasant
     case footman
     case archer

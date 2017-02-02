@@ -244,7 +244,7 @@ class PlayerAsset: Equatable {
 
     private(set) var moveRemainderX: Int
     private(set) var moveRemainderY: Int
-    private(set) var tilePosition: Position
+    var tilePosition: Position
     private(set) var position: Position
     var direction: Direction
     private(set) var commands: [AssetCommand]

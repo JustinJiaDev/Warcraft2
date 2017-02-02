@@ -20,11 +20,21 @@ struct GameEvent {
     var asset: PlayerAsset
 }
 
+func RangeToDistanceSquared(range: Int) -> Int {
+    var newRange:Int = range
+    newRange *= Position.tileWidth
+    newRange *= range
+    newRange += Position.tileWidth * Position.tileWidth
+    
+    return newRange
+    
+}
+
 class PlayerData {
     var isAi: Bool
     private(set) var color: PlayerColor
-    private(set) var visibilityMap: VisibilityMap
     private var actualMap: AssetDecoratedMap
+    private(set) var visibilityMap: VisibilityMap
     private(set) var playerMap: AssetDecoratedMap
     private(set) var assetTypes: [String: PlayerAssetType]
     private(set) var assets: [PlayerAsset]
@@ -35,7 +45,38 @@ class PlayerData {
     private(set) var gameCycle: Int
 
     init(map: AssetDecoratedMap, color: PlayerColor) {
-        fatalError("not yet ported")
+        self.isAi = true
+        self.color = color
+        self.actualMap = map
+        self.visibilityMap = actualMap.createVisibilityMap()
+        self.playerMap = self.actualMap.createInitializeMap()
+        self.assetTypes = PlayerAssetType.duplicateRegistry(color: self.color)
+        self.assets = []
+        self.upgrades = []
+        self.gameEvents = []
+        self.gold = 0
+        self.lumber = 0
+        self.gameCycle = 0
+        
+        upgrades = Array(repeating: false, count: AssetCapabilityType.max.rawValue)
+        
+        for resouceInit in actualMap.resourceInitializationList {
+            if resouceInit.color == self.color {
+                gold = resouceInit.gold
+                lumber = resouceInit.lumber
+            }
+        }
+        
+        for assetInit in actualMap.assetInitializationList {
+            if assetInit.color == self.color {
+                printDebug("Asset Init Error")
+                let initAsset:PlayerAsset = createAsset(assetTypeName: assetInit.type)
+                initAsset.tilePosition = assetInit.tilePosition
+                if (AssetType.goldMine == PlayerAssetType.nameToType(name: assetInit.type)) {
+                    initAsset.gold = self.gold
+                }
+            }
+        }
     }
 
     func incrementCycle() {
@@ -60,29 +101,87 @@ class PlayerData {
         self.lumber += lumber
         return self.lumber
     }
-
-    func foodConsumption() {
-        fatalError("not yet ported")
+    
+    func foodConsumption() -> Int {
+        var totalConsumption:Int = 0
+        
+        for asset in assets {
+            let assetConsumption = asset.foodConsumption
+            if (assetConsumption > 0) {
+                totalConsumption += assetConsumption
+            }
+        }
+        
+        return totalConsumption
     }
 
-    func foodProduction() {
-        fatalError("not yet ported")
+    func foodProduction() -> Int {
+        var totalProduction:Int = 0
+        for asset in assets {
+            let assetConsumption:Int = foodConsumption()
+            if ((assetConsumption < 0) && ((AssetAction.construct != asset.action) || (asset.currentCommand().assetTarget == nil))) {
+                totalProduction += -assetConsumption
+            }
+        }
+        
+        return totalProduction
     }
 
     func createMarker(pos: Position, addToMap: Bool) -> PlayerAsset {
-        fatalError("not yet ported")
+        let newMarker:PlayerAsset = assetTypes["None"].construct()
+        var tilePosition = Position()
+        tilePosition.setToTile(pos)
+        newMarker.tilePosition = tilePosition
+        if addToMap {
+            playerMap.addAsset(newMarker)
+        }
+        
+        return newMarker
     }
 
     func createAsset(assetTypeName: String) -> PlayerAsset {
-        fatalError("not yet ported")
+        let createdAsset:PlayerAsset = assetTypes[assetTypeName].construct()
+        
+        createdAsset.creationCycle = gameCycle
+        assets.append(createdAsset)
+        actualMap.addAsset(createdAsset)
+        return createdAsset
     }
 
     func deleteAsset(asset: PlayerAsset) {
-        fatalError("not yet ported")
+        if let removalIndex = assets.index(of: asset) {
+            assets.remove(at: removalIndex)
+        }
+        else {
+            return
+        }
+        
+        actualMap.removeAsset(asset)
     }
 
     func assetRequirementsMet(assetTypeName: String) -> Bool {
-        fatalError("not yet ported")
+        var assetCount:[Int] = Array(repeating: 0, count: AssetType.max.rawValue)
+        
+        for asset in assets {
+            if AssetAction.construct != asset.action {
+                assetCount[asset.type.rawValue] += 1
+            }
+        }
+        
+        guard let reqList = assetTypes[assetTypeName]?.assetRequirements else  { assert(false) }
+        
+        for requirement in reqList {
+            if assetCount[requirement.rawValue] == 0 {
+                if (AssetType.keep == requirement) && (assetCount[AssetType.castle.rawValue] != 0) {
+                    continue
+                }
+                if ((AssetType.townHall == requirement) && ((assetCount[AssetType.castle.rawValue] != 0) || (assetCount[AssetType.keep.rawValue] != 0))) {
+                    continue
+                }
+                return false
+            }
+        }
+        return true
     }
 
     func updateVisibility() {
