@@ -203,7 +203,44 @@ class PlayerData {
     }
 
     func selectAssets(selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
-        fatalError("not yet ported")
+        var returnList: [PlayerAsset] = []
+        if selectArea.width == 0 || selectArea.height == 0 {
+            let bestAsset = selectAsset(pos: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType)
+            returnList.append(bestAsset)
+            if selectIdentical && bestAsset.speed != 0 {
+                for asset in assets {
+                    if bestAsset != asset && asset.type == assetType {
+                        returnList.append(asset)
+                    }
+                }
+            }
+        }
+        else {
+            var anyMovable = false
+            for asset in assets {
+                if selectArea.xPosition <= asset.positionX()
+                    && asset.positionX() < selectArea.xPosition + selectArea.width
+                    && selectArea.yPosition <= asset.positionY()
+                    && asset.positionY() < selectArea.yPosition + selectArea.height {
+                    if anyMovable {
+                        if asset.speed != 0 {
+                            returnList.append(asset)
+                        }
+                    }
+                    else {
+                        if asset.speed != 0 {
+                            returnList.removeAll()
+                            returnList.append(asset)
+                            anyMovable = true
+                        }
+                        else if returnList.isEmpty {
+                            returnList.append(asset)
+                        }
+                    }
+                }
+            }
+        }
+        return returnList
     }
 
     func selectAsset(pos: Position, assetType: AssetType) -> PlayerAsset {
