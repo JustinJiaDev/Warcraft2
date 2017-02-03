@@ -256,8 +256,28 @@ class AssetRenderer {
         return _frequency
     }
 
+    struct AssetRenderData {
+        var type: AssetType
+        var x: Int
+        var y: Int
+        var bottomY: Int
+        var tileIndex: Int
+        var colorIndex: Int
+        var pixelColor: UInt32
+    }
+
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle) {
-        fatalError("This method is not yet implemented")
+        var screenRightX = rect.xPosition + rect.width - 1
+        var screenBottomY = rect.yPosition + rect.height - 1
+        var finalRenderList = Array<AssetRenderData>()
+        
+        for data in finalRenderList {
+            var tempRenderData: AssetRenderData
+            tempRenderData.type = data.type
+            if (AssetType.at)
+        }
+        
+        
     }
 
     func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) {
