@@ -1,13 +1,13 @@
 class GraphicRecolorMap {
 
-    private var state: Int
+    private var state: Int = -1
     private var mapping: [String: Int] = [:]
     private var colorNames: [String] = []
     private var colors: [[UInt32]] = [[]]
     private var originalColors: [[UInt32]] = [[]]
 
     init() {
-        fatalError("This method is not yet implemented.")
+        // Do nothing
     }
 
     var groupCount: Int {
@@ -15,7 +15,7 @@ class GraphicRecolorMap {
     }
 
     var colorCount: Int {
-        return (colors.count != 0) ? colors[0].count : 0
+        return colors.first?.count ?? 0
     }
 
     func findColor(with name: String) -> Int {
