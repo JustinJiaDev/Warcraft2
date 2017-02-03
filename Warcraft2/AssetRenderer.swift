@@ -247,13 +247,13 @@ class AssetRenderer {
         }
     }
 
-    func updateFrequency(_frequency: Int) -> Int {
-        if targetFrequency >= _frequency {
+    func updateFrequency(_ frequency: Int) -> Int {
+        if targetFrequency >= frequency {
             animationDownsample = 1
             return targetFrequency
         }
-        animationDownsample = _frequency / targetFrequency
-        return _frequency
+        animationDownsample = frequency / targetFrequency
+        return frequency
     }
 
     struct AssetRenderData {
@@ -435,11 +435,11 @@ class AssetRenderer {
 
     func drawMiniAssets(on surface: GraphicSurface) {
         let resourceContext = surface.createResourceContext()
-        if playerData != nil {
+        if let playerData = playerData {
             for asset in playerMap.assets {
                 var assetColor = asset.color
                 let size = asset.size
-                if assetColor == playerData?.color {
+                if assetColor == playerData.color {
                     assetColor = PlayerColor.max
                 }
                 resourceContext.setSourceRGB(pixelColors[assetColor.rawValue])
