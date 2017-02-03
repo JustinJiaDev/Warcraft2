@@ -18,7 +18,7 @@ class GraphicRecolorMap {
         return (colors.count != 0) ? colors[0].count : 0
     }
 
-    func findColor(colorname: String) -> Int {
+    func findColor(with name: String) -> Int {
         fatalError("This method is not yet implemented.")
     }
 

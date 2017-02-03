@@ -106,4 +106,8 @@ enum Direction: Int {
     var opposite: Direction {
         return Direction(rawValue: (rawValue + 180) % 360)!
     }
+
+    static var numberOfDirections: Int {
+        return 8
+    }
 }

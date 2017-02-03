@@ -10,8 +10,8 @@ class GraphicMulticolorTileset: GraphicTileset {
         return coloredTilesets.count
     }
 
-    func findColor(colorname: String) -> Int {
-        return colorMap.findColor(colorname: colorname)
+    func findColor(with colorname: String) -> Int {
+        return colorMap.findColor(with: colorname)
     }
 
     func loadTileset(colormap: GraphicRecolorMap, source: DataSource) -> Bool {
