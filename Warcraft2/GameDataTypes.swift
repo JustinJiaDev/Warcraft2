@@ -14,7 +14,7 @@ enum PlayerColor: Int {
 }
 
 enum AssetAction {
-    case none
+    case none = 0
     case construct
     case build
     case repair
@@ -73,7 +73,7 @@ enum AssetCapabilityType: Int {
 }
 
 enum AssetType {
-    case none
+    case none = 0
     case peasant
     case footman
     case archer
