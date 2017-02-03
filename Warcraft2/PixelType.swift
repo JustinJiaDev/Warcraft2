@@ -121,6 +121,43 @@ class PixelType {
         type = pixelType.type
     }
 
+    init(pixelColor: UInt32, t: AssetType) {
+        switch pixelColor {
+            //        case pixelColor where pixelColor == UIColor.blue: color = .blue
+            //        case pixelColor where pixelColor == UIColor.red: color = .red
+            //        case pixelColor where pixelColor == UIColor.green: color = .green
+            //        case pixelColor where pixelColor == UIColor.purple: color = .purple
+            //        case pixelColor where pixelColor == UIColor.orange: color = .orange
+            //        case pixelColor where pixelColor == UIColor.yellow: color = .yellow
+            //        case pixelColor where pixelColor == UIColor.black: color = .black
+            //        case pixelColor where pixelColor == UIColor.white: color = .white
+        default: color = .none
+        }
+        switch t {
+        case t where t == AssetType.peasant: type = AssetTerrainType.peasant
+        case t where t == AssetType.footman: type = AssetTerrainType.footman
+        case t where t == AssetType.archer: type = AssetTerrainType.archer
+        case t where t == AssetType.ranger: type = AssetTerrainType.ranger
+        case t where t == AssetType.goldMine: type = AssetTerrainType.goldMine
+        case t where t == AssetType.townHall: type = AssetTerrainType.townHall
+        case t where t == AssetType.keep: type = AssetTerrainType.keep
+        case t where t == AssetType.castle: type = AssetTerrainType.castle
+        case t where t == AssetType.farm: type = AssetTerrainType.farm
+        case t where t == AssetType.barracks: type = AssetTerrainType.barracks
+        case t where t == AssetType.lumberMill: type = AssetTerrainType.lumberMill
+        case t where t == AssetType.blacksmith: type = AssetTerrainType.blacksmith
+        case t where t == AssetType.scoutTower: type = AssetTerrainType.scoutTower
+        case t where t == AssetType.guardTower: type = AssetTerrainType.guardTower
+        case t where t == AssetType.cannonTower: type = AssetTerrainType.cannonTower
+            //        case t where t == AssetType.none, .max: type = AssetTerrainType.none
+        default: type = AssetTerrainType.none
+        }
+    }
+
+    init() {
+        fatalError()
+    }
+
     static func of(surface: GraphicSurface, position: Position) -> PixelType {
         return of(surface: surface, x: position.x, y: position.y)
     }
