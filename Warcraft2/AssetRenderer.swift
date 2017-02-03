@@ -1,5 +1,5 @@
 class AssetRenderer {
-    private var playerData: PlayerData
+    private var playerData: PlayerData?
     private var playerMap: AssetDecoratedMap
     private var tilesets: [GraphicMulticolorTileset] = []
     private var markerTileset: GraphicTileset
@@ -23,6 +23,7 @@ class AssetRenderer {
     private var placeIndices: [[Int]] = []
     private var pixelColors: [UInt32]
     private var animationDownsample: Int = 1
+    private var targetFrequency = 10
 
     init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTileset: [GraphicTileset], buildingDeath: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData, map: AssetDecoratedMap) {
         var typeIndex: Int = 0
@@ -246,8 +247,13 @@ class AssetRenderer {
         }
     }
 
-    static func updateFrequency(_frequency: Int) -> Int {
-        fatalError("This method is not yet implemented")
+    func updateFrequency(_frequency: Int) -> Int {
+        if targetFrequency >= _frequency {
+            animationDownsample = 1
+            return targetFrequency
+        }
+        animationDownsample = _frequency / targetFrequency
+        return _frequency
     }
 
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle) {
@@ -267,6 +273,26 @@ class AssetRenderer {
     }
 
     func drawMiniAssets(on surface: GraphicSurface) {
-        fatalError("This method is not yet implemented")
+        let resourceContext = surface.createResourceContext()
+        if playerData != nil {
+            for asset in playerMap.assets {
+                var assetColor = asset.color
+                let size = asset.size
+                if assetColor == playerData?.color {
+                    assetColor = PlayerColor.max
+                }
+                resourceContext.setSourceRGB(pixelColors[assetColor.rawValue])
+                resourceContext.rectangle(xPosition: asset.tilePositionX(), yPosition: asset.tilePositionY(), width: size, height: size)
+                resourceContext.fill()
+            }
+        } else {
+            for asset in playerMap.assetInitializationList {
+                var assetColor = asset.color
+                let size = PlayerAssetType.findDefault(from: asset.type).size
+                resourceContext.setSourceRGB(pixelColors[assetColor.rawValue])
+                resourceContext.rectangle(xPosition: asset.tilePosition.x, yPosition: asset.tilePosition.y, width: size, height: size)
+                resourceContext.fill()
+            }
+        }
     }
 }
