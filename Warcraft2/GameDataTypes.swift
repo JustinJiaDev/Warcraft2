@@ -13,7 +13,7 @@ enum PlayerColor: Int {
     case max
 }
 
-enum AssetAction {
+enum AssetAction: Int {
     case none = 0
     case construct
     case build
@@ -72,7 +72,7 @@ enum AssetCapabilityType: Int {
     case max
 }
 
-enum AssetType {
+enum AssetType: Int {
     case none = 0
     case peasant
     case footman
