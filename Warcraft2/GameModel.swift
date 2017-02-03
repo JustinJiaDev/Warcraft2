@@ -262,17 +262,76 @@ class PlayerData {
     }
 
     func findNearestOwnedAsset(pos: Position, assetTypes: [AssetType]) -> PlayerAsset {
-        fatalError("not yet ported")
+        var bestAsset:PlayerAsset
+        var bestDistanceSquared:Int = -1
+        
+        for asset in assets {
+            for assetType in assetTypes {
+                if((asset.type == assetType) && ((AssetAction.construct != asset.action) || (AssetType.keep == assetType)||(AssetType.castle == assetType))) {
+                    let currentDistance:Int = asset.position.distanceSquared(pos)
+                    
+                    if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
+                        bestDistanceSquared = currentDistance
+                        bestAsset = asset
+                    }
+                    break
+                }
+            }
+        }
+        return bestAsset
     }
-
-    func findNearestEnemy(pos: Position, range: Int) -> PlayerAsset {
-        fatalError("not yet ported")
+    
+    func findNearestAsset(pos: Position, assetType:AssetType) -> PlayerAsset {
+        var bestAsset:PlayerAsset
+        var bestDistanceSquared:Int = -1
+        
+        for asset in playerMap.assets {
+            if (asset.type == assetType) {
+                let currentDistance:Int = asset.position.distanceSquared(pos)
+                
+                if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
+                    bestDistanceSquared = currentDistance
+                    bestAsset = asset
+                }
+            }
+        }
+        return bestAsset
     }
-
-    func findBestAssetPlacement(pos: Position, builder: PlayerAsset, assetType: AssetType, buffer: Int) -> Position {
-        fatalError("not yet ported")
+    
+    func findNearestEnemy(pos: Position, inputRange: Int) -> PlayerAsset {
+        var bestAsset:PlayerAsset
+        var bestDistanceSquared:Int = -1
+        var range:Int = inputRange
+        
+        if (range > 0) {
+            range = RangeToDistanceSquared(range: range)
+        }
+        
+        for asset in playerMap.assets {
+            if ((asset.color != self.color) && (asset.color != PlayerColor.none) && (asset.isAlive == true)) {
+                let command:AssetCommand = asset.currentCommand()
+                if (AssetAction.capability == command.action) {
+                    if let tempTarget = command.assetTarget {
+                        if (AssetAction.construct == tempTarget.action) {
+                            continue
+                        }
+                    }
+                }
+                if((AssetAction.conveyGold != command.action) && (AssetAction.conveyLumber != command.action) && (AssetAction.mineGold != command.action)) {
+                    let currentDistance:Int = asset.closestPosition(pos).distanceSquared(pos)
+                    
+                    if ((range < 0) || (range >= currentDistance)) {
+                        if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
+                            bestDistanceSquared = currentDistance
+                            bestAsset = asset
+                        }
+                    }
+                }
+            }
+        }
+        return bestAsset
     }
-
+    
     func idleAssets() -> [PlayerAsset] {
         fatalError("not yet ported")
     }
