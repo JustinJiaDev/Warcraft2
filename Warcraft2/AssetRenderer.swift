@@ -277,7 +277,205 @@ class AssetRenderer {
     }
 
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle) {
-        fatalError("This method is not yet implemented")
+        var screenRightX = rect.xPosition + rect.width - 1
+        var screenBottomY = rect.yPosition + rect.height - 1
+        var finalRenderList = Array<AssetRenderData>()
+
+        for data in finalRenderList {
+            var tempRenderData = AssetRenderData()
+            // NOTE: the below was this code. I'm not sure how to deal with these iterators, so someone look over this
+            //            TempRenderData.DType = AssetIterator->Type();
+            tempRenderData.type = data.type
+            if AssetType.none == tempRenderData.type {
+                continue
+            }
+            guard (0 <= tempRenderData.type.hashValue) && ((tempRenderData.type.hashValue) < tilesets.count) else {
+                break
+            }
+            // NOTE: the below was this code. I have no idea if I dealt with this correctly, but I made another initializer in PixelType.swift. Double check?
+            //            CPixelType PixelType(*AssetIterator);
+            var pixelType = PixelType(pixelColor: data.pixelColor, t: data.type)
+            var rightX: Int
+
+            // FIXME: translate below to Swift
+            //            TempRenderData.DX = AssetIterator->PositionX() + (AssetIterator->Size() - 1) * CPosition::HalfTileWidth() - DTilesets[static_cast<int>(TempRenderData.DType)]->TileHalfWidth();
+            //            TempRenderData.DY = AssetIterator->PositionY() + (AssetIterator->Size() - 1) * CPosition::HalfTileHeight() - DTilesets[static_cast<int>(TempRenderData.DType)]->TileHalfHeight();
+
+            // FIXME: implement toPixelColor from C++
+            //            TempRenderData.DPixelColor = PixelType.ToPixelColor();
+            //            tempRenderData.pixelColor = pixelType.toPixelColor()
+
+            rightX = tempRenderData.x + tilesets[tempRenderData.type.hashValue].tileWidth - 1
+            tempRenderData.bottomY = tempRenderData.y + tilesets[tempRenderData.type.hashValue].tileHeight - 1
+            var onScreen = true
+            if (rightX < rect.xPosition) || (tempRenderData.x > screenRightX) {
+                onScreen = false
+            } else if (tempRenderData.bottomY < rect.yPosition) || (tempRenderData.y > screenBottomY) {
+                onScreen = false
+            }
+            tempRenderData.x -= rect.xPosition
+            tempRenderData.y -= rect.yPosition
+
+            // FIXME: translate below to Swift
+            //            TempRenderData.DColorIndex = static_cast<int>(AssetIterator->Color()) ? static_cast<int>(AssetIterator->Color()) - 1 : static_cast<int>(AssetIterator->Color());
+
+            tempRenderData.tileIndex = -1
+            guard onScreen else {
+                break
+            }
+            var actionSteps: Int
+            var currentStep: Int
+            var tileIndex: Int
+            // FIXME: translate below to Swift
+            //            switch(AssetIterator->Action()){
+            // placeholder for above statement
+            switch AssetAction.none {
+            case AssetAction.build:
+                actionSteps = buildIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                if actionSteps > 0 {
+                    // FIXME: translate below to Swift
+                    //                    TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + ((AssetIterator->Step() / DAnimationDownsample)% ActionSteps);
+
+                    // FIXME: uncomment below after translating above
+                    //                    tempRenderData.tileIndex = buildIndices[tempRenderData.type.hashValue][tileIndex]
+                }
+            case AssetAction.construct:
+                actionSteps = constructIndices[tempRenderData.type.hashValue].count
+                if actionSteps > 0 {
+                    // FIXME: translate below to Swift
+                    //                    int TotalSteps = AssetIterator->BuildTime() * CPlayerAsset::UpdateFrequency();
+                    //                    int CurrentStep = AssetIterator->Step() * ActionSteps / TotalSteps;
+                    //                    if(CurrentStep == DConstructIndices[static_cast<int>(TempRenderData.DType)].size()){
+                    //                      CurrentStep--;
+                    //                    }
+                    //                    TempRenderData.DTileIndex = DConstructIndices[static_cast<int>(TempRenderData.DType)][CurrentStep];
+                }
+            case AssetAction.walk:
+                // FIXME: translate below to Swift
+                //                if(AssetIterator->Lumber()){
+                actionSteps = carryLumberIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                    TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + ((AssetIterator->Step() / DAnimationDownsample)% ActionSteps);
+
+                // FIXME: uncomment below after translating above
+                //                    tempRenderData.tileIndex = carryLumberIndices[tempRenderData.type.hashValue][tileIndex]
+
+                //                }
+                //                else if(AssetIterator->Gold()){
+                actionSteps = carryGoldIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                    TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + ((AssetIterator->Step() / DAnimationDownsample)% ActionSteps);
+
+                // FIXME: uncomment below after translating above
+                //                    tempRenderData.tileIndex = carryGoldIndices[tempRenderData.type.hashValue][tileIndex]
+
+                //                }
+                //                else{
+                actionSteps = walkIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                    TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + ((AssetIterator->Step() / DAnimationDownsample)% ActionSteps);
+
+                // FIXME: uncomment below after translating above
+                //                    tempRenderData.tileIndex = walkIndices[tempRenderData.type.hashValue][tileIndex]
+
+                //                }
+            case AssetAction.attack:
+                //                    CurrentStep = AssetIterator->Step() % (AssetIterator->AttackSteps() + AssetIterator->ReloadSteps());
+                //                    if(CurrentStep < AssetIterator->AttackSteps()){
+                actionSteps = attackIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                    TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + (CurrentStep * ActionSteps / AssetIterator->AttackSteps());
+
+                // FIXME: uncomment below after translating above
+                //                    tempRenderData.tileIndex = attackIndices[tempRenderData.type.hashValue][tileIndex]
+
+                //                    }
+                //                    else{
+                //                    TempRenderData.DTileIndex = DNoneIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction())];
+                //                }
+            case AssetAction.repair:
+                break
+            case AssetAction.harvestLumber:
+                actionSteps = attackIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                TileIndex = static_cast<int>(AssetIterator->Direction()) * ActionSteps + ((AssetIterator->Step() / DAnimationDownsample)% ActionSteps);
+
+                // FIXME: uncomment below after translating above
+                //                tempRenderData.tileIndex = attackIndices[tempRenderData.type.hashValue][tileIndex]
+            case AssetAction.mineGold:
+                break
+            case AssetAction.standGround:
+                break
+            case AssetAction.none:
+                //                TempRenderData.DTileIndex = DNoneIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction())];
+                //                if(AssetIterator->Speed()){
+                //                    if(AssetIterator->Lumber()){
+                actionSteps = carryLumberIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                        TempRenderData.DTileIndex = DCarryLumberIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction()) * ActionSteps];
+                //                    }
+                //                    else if(AssetIterator->Gold()){
+                actionSteps = carryGoldIndices[tempRenderData.type.hashValue].count
+                actionSteps /= Direction.max.hashValue
+                //                        TempRenderData.DTileIndex = DCarryGoldIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction()) * ActionSteps];
+                //                    }
+                //                }
+            case AssetAction.capability:
+                //                if(AssetIterator->Speed()){
+                //                    if((EAssetCapabilityType::actPatrol == AssetIterator->CurrentCommand().DCapability)||(EAssetCapabilityType::actStandGround == AssetIterator->CurrentCommand().DCapability)){
+                //                        TempRenderData.DTileIndex = DNoneIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction())];
+                //                    }
+                //                }
+                //                else{
+                //                    // Buildings
+                //                    TempRenderData.DTileIndex = DNoneIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction())];
+                //                }
+                break
+            case AssetAction.death:
+                actionSteps = deathIndices[tempRenderData.type.hashValue].count
+                //                if(AssetIterator->Speed()){
+                actionSteps /= Direction.max.hashValue
+                if actionSteps > 0 {
+                    //                        CurrentStep = AssetIterator->Step() / DAnimationDownsample;
+
+                    // FIXME: uncomment below after translating above
+                    //                        if currentStep >= actionSteps {
+                    //                            currentStep = actionSteps - 1
+                    //                        }
+
+                    //                        TempRenderData.DTileIndex = DDeathIndices[static_cast<int>(TempRenderData.DType)][static_cast<int>(AssetIterator->Direction()) * ActionSteps + CurrentStep];
+                }
+
+                //                }
+                //                else{
+                //                    if(AssetIterator->Step() < DBuildingDeathTileset->TileCount()){
+                //                        TempRenderData.DTileIndex = DTilesets[static_cast<int>(TempRenderData.DType)]->TileCount() + AssetIterator->Step();
+                tempRenderData.x += tilesets[tempRenderData.type.hashValue].tileHalfWidth - buildingDeathTileset.tileHalfWidth
+                tempRenderData.y += tilesets[tempRenderData.type.hashValue].tileHalfHeight - buildingDeathTileset.tileHalfHeight
+                //                    }
+                //                }
+            default:
+                break
+            }
+
+            if 0 <= tempRenderData.tileIndex {
+                finalRenderList.append(tempRenderData)
+            }
+
+            //        }
+            //    }
+            //    FinalRenderList.sort(CompareRenderData);
+            //    for(auto &RenderIterator : FinalRenderList){
+            //    if(RenderIterator.DTileIndex < DTilesets[static_cast<int>(RenderIterator.DType)]->TileCount()){
+            //    DTilesets[static_cast<int>(RenderIterator.DType)]->DrawTile(surface, RenderIterator.DX, RenderIterator.DY, RenderIterator.DTileIndex, RenderIterator.DColorIndex);
+            //    DTilesets[static_cast<int>(RenderIterator.DType)]->DrawClipped(typesurface, RenderIterator.DX, RenderIterator.DY, RenderIterator.DTileIndex, RenderIterator.DPixelColor);
+            //    }
+            //    else{
+            //    DBuildingDeathTileset->DrawTile(surface, RenderIterator.DX, RenderIterator.DY, RenderIterator.DTileIndex);
+            //    }
+            //    }
+        }
     }
 
     func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) throws {
