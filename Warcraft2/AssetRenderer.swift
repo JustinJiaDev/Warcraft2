@@ -276,6 +276,16 @@ class AssetRenderer {
         }
     }
 
+    func compareRenderData(first: AssetRenderData, second: AssetRenderData) -> Bool {
+        if first.bottomY < second.bottomY {
+            return true
+        }
+        if first.bottomY > second.bottomY {
+            return false
+        }
+        return first.x <= second.x
+    }
+
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle) {
         var screenRightX = rect.xPosition + rect.width - 1
         var screenBottomY = rect.yPosition + rect.height - 1
@@ -697,8 +707,106 @@ class AssetRenderer {
         }
     }
 
-    func drawPlacement(on surface: GraphicSurface, rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) {
-        fatalError("This method is not yet implemented")
+    func drawPlacement(on surface: GraphicSurface, rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) throws {
+        let screenRightX = rect.xPosition + rect.width - 1
+        let screenBottomY = rect.yPosition + rect.height - 1
+
+        if type != .none {
+            let tempPosition = Position()
+            let tempTilePosition = Position()
+            var onScreen = true
+            let assetType = PlayerAssetType.findDefault(from: type)
+            var placementTiles: [[Int]] = []
+
+            tempTilePosition.setToTile(position)
+            tempPosition.setFromTile(tempTilePosition)
+
+            tempPosition.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
+            tempPosition.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
+            let placementRightX = tempPosition.x + tilesets[type.rawValue].tileWidth
+            let placementBottomY = tempPosition.y + tilesets[type.rawValue].tileHeight
+
+            tempTilePosition.setToTile(tempPosition)
+            var xOff = 0
+            var yOff = 0
+            placementTiles = Array(repeating: [], count: assetType.size)
+
+            // C++ code line 719 - 733
+            // Not sure if there is a better way to write this for loop? since the loop variable is immutable in Swift
+            for rowIndex in 0 ..< placementTiles.count {
+                placementTiles[rowIndex] = Array(repeating: -1, count: assetType.size)
+                for cellIndex in 0 ..< placementTiles[rowIndex].count {
+                    let tileType = playerMap.tileTypeAt(x: tempTilePosition.x + xOff, y: tempTilePosition.y + yOff)
+                    if tileType == .grass {
+                        placementTiles[rowIndex][cellIndex] = 1
+                    } else {
+                        placementTiles[rowIndex][cellIndex] = 0
+                    }
+                    xOff += 1
+                }
+                xOff = 0
+                yOff += 1
+            }
+
+            xOff = tempTilePosition.x + assetType.size
+            yOff = tempTilePosition.y + assetType.size
+
+            for playerAsset in playerMap.assets {
+                let offset = playerAsset.type == .goldMine ? 1 : 0
+
+                if playerAsset == builder {
+                    continue
+                }
+                if xOff <= playerAsset.tilePositionX() - offset {
+                    continue
+                }
+                if tempTilePosition.x >= (playerAsset.tilePositionX() + playerAsset.size + offset) {
+                    continue
+                }
+                if yOff <= (playerAsset.tilePositionY() - offset) {
+                    continue
+                }
+                if tempTilePosition.y >= (playerAsset.tilePositionY() + playerAsset.size + offset) {
+                    continue
+                }
+                let minX = max(tempTilePosition.x, playerAsset.tilePositionX() - offset)
+                let maxX = min(xOff, playerAsset.tilePositionX() + playerAsset.size + offset)
+                let minY = max(tempTilePosition.y, playerAsset.tilePositionY() - offset)
+                let maxY = min(yOff, playerAsset.tilePositionY() + playerAsset.size + offset)
+                for y in minY ..< maxY {
+                    for x in
+                    minX ..< maxX {
+                        placementTiles[y - tempTilePosition.y][x - tempTilePosition.x] = 0
+                    }
+                }
+
+                if placementRightX <= rect.xPosition {
+                    onScreen = false
+                } else if placementBottomY <= rect.yPosition {
+                    onScreen = false
+                } else if tempPosition.x >= screenRightX {
+                    onScreen = false
+                } else if tempPosition.y >= screenBottomY {
+                    onScreen = false
+                }
+
+                if onScreen {
+                    tempPosition.x -= rect.xPosition
+                    tempPosition.y -= tempPosition.y - rect.yPosition
+                    tilesets[type.rawValue].drawTile(on: surface, xposition: tempPosition.x, yposition: tempPosition.y, tileindex: placeIndices[type.rawValue][0], colorindex: (playerData?.color.rawValue)! - 1)
+                    var xPos = tempPosition.x
+                    var yPos = tempPosition.y
+                    for row in placementTiles {
+                        for cell in row {
+                            try markerTileset.drawTile(on: surface, x: xPos, y: yPos, index: cell != 0 ? placeGoodIndex : placeBadIndex)
+                            xPos += markerTileset.tileWidth
+                        }
+                        yPos += markerTileset.tileHeight
+                        xPos = tempPosition.x
+                    }
+                }
+            }
+        }
     }
 
     func drawMiniAssets(on surface: GraphicSurface) {
