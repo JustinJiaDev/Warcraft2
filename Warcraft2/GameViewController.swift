@@ -13,12 +13,16 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     var midiplayer: AVMIDIPlayer?
     var soundfont: URL?
     var midifile: URL?
+    
+    let menuSoundURL = URL(fileURLWithPath: (Bundle.main.path(forResource: "data/snd/music/menu", ofType: "mid"))!)
+    let menuSoundBankURL = Bundle.main.url(forResource: "data/snd/generalsoundfont", withExtension: "sf2")
+    var menuSound = AVMIDIPlayer()
 
     // var soundbank: URL!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if let scene = GameScene(fileNamed: "GameScene") {
             // Configure the view.
             let skView: SKView = gameSceneView
@@ -40,20 +44,14 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
     func playMIDIFile() {
 
-        soundfont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
-        midifile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
-
-        assert(soundfont != nil)
-        assert(midifile != nil)
-
         do {
-            try midiplayer = AVMIDIPlayer(contentsOf: midifile!, soundBankURL: soundfont!)
-
-        } catch {
-            assert(false)
+            try menuSound = AVMIDIPlayer(contentsOf: menuSoundURL, soundBankURL: menuSoundBankURL)
         }
-
-        midiplayer!.prepareToPlay()
-        midiplayer!.play()
+        catch {
+            NSLog("Error: Can't play sound file menu.mid")
+        }
+        
+        menuSound.prepareToPlay()
+        menuSound.play()
     }
 }

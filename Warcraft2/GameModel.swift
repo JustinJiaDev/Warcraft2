@@ -332,16 +332,43 @@ class PlayerData {
         return bestAsset
     }
     
-    func idleAssets() -> [PlayerAsset] {
-        fatalError("not yet ported")
+    func findBestAssetPlacement(pos: Position, builder: PlayerAsset, assetType: AssetType, buffer: Int) -> Position {
+        
     }
-
+    
     func playerAssetCount(type: AssetType) -> Int {
-        fatalError("not yet ported")
+        var count:Int = 0
+        
+        for asset in playerMap.assets {
+            if ((asset.color == self.color) && (asset.type == type)) {
+                count = count + 1
+            }
+        }
+        
+        return count
     }
 
     func foundAssetCount(type: AssetType) -> Int {
-        fatalError("not yet ported")
+        var count:Int = 0
+        
+        for asset in playerMap.assets {
+            if (asset.type == type) {
+                count = count + 1
+            }
+        }
+        
+        return count
+    }
+    
+    func idleAssets() -> [PlayerAsset] {
+        
+        
+        // ####### INCOMPLETE
+        var assetList:[PlayerAsset] = []
+        
+        for asset in assets {
+            if ((AssetAction.none == asset.action) && (AssetType.none != asset.type))
+        }
     }
 
     func addUpgrade(upgradeName: String) {
