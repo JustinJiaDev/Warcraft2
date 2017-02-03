@@ -11,6 +11,21 @@ enum PlayerColor: Int {
     case black
     case white
     case max
+
+    var index: Int {
+        switch self {
+        case .none: return 0
+        case .blue: return 1
+        case .red: return 2
+        case .green: return 3
+        case .purple: return 4
+        case .orange: return 5
+        case .yellow: return 6
+        case .black: return 7
+        case .white: return 8
+        case .max: return 9
+        }
+    }
 }
 
 enum AssetAction: Int {

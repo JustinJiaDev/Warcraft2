@@ -495,17 +495,17 @@ class AssetRenderer {
                 if tempRenderData.type == AssetType.none {
                     continue
                 }
-                if (0 <= tempRenderData.type.hashValue) && (tempRenderData.type.hashValue < tilesets.count) {
+                if 0 <= tempRenderData.type.rawValue && tempRenderData.type.rawValue < tilesets.count {
                     if asset.speed == 0 {
                         let offset = AssetType.goldMine == tempRenderData.type ? 1 : 0
 
-                        tempRenderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - tilesets[tempRenderData.type.hashValue].tileHalfWidth
-                        tempRenderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - tilesets[tempRenderData.type.hashValue].tileHalfHeight
+                        tempRenderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - tilesets[tempRenderData.type.rawValue].tileHalfWidth
+                        tempRenderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - tilesets[tempRenderData.type.rawValue].tileHalfHeight
                         tempRenderData.x -= offset * Position.tileWidth
                         tempRenderData.y -= offset * Position.tileHeight
 
-                        let rightX = tempRenderData.x + tilesets[tempRenderData.type.hashValue].tileWidth + (2 * offset * Position.tileWidth) - 1
-                        tempRenderData.bottomY = tempRenderData.y + tilesets[tempRenderData.type.hashValue].tileHeight + (2 * offset * Position.tileHeight) - 1
+                        let rightX = tempRenderData.x + tilesets[tempRenderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth) - 1
+                        tempRenderData.bottomY = tempRenderData.y + tilesets[tempRenderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight) - 1
                         var onScreen = true
                         if (rightX < rect.xPosition) || (tempRenderData.x > screenRightX) {
                             onScreen = false
@@ -515,7 +515,7 @@ class AssetRenderer {
                         tempRenderData.x -= rect.xPosition
                         tempRenderData.y -= rect.yPosition
                         if onScreen {
-                            resourceContext.rectangle(xPosition: tempRenderData.x, yPosition: tempRenderData.y, width: tilesets[tempRenderData.type.hashValue].tileWidth + (2 * offset * Position.tileWidth), height: tilesets[tempRenderData.type.hashValue].tileHeight + (2 * offset * Position.tileHeight))
+                            resourceContext.rectangle(xPosition: tempRenderData.x, yPosition: tempRenderData.y, width: tilesets[tempRenderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth), height: tilesets[tempRenderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight))
                             resourceContext.stroke()
                         }
                     }
@@ -554,9 +554,9 @@ class AssetRenderer {
                     let rightX = tempRenderData.x + corpseTileset.tileWidth
                     tempRenderData.bottomY = tempRenderData.y + corpseTileset.tileHeight
 
-                    if (rightX < rect.xPosition) || (tempRenderData.x > screenRightX) {
+                    if rightX < rect.xPosition || tempRenderData.x > screenRightX {
                         onScreen = false
-                    } else if (tempRenderData.bottomY < rect.yPosition) || (tempRenderData.y > screenBottomY) {
+                    } else if tempRenderData.bottomY < rect.yPosition || tempRenderData.y > screenBottomY {
                         onScreen = false
                     }
 
@@ -581,7 +581,7 @@ class AssetRenderer {
                     let rightX = tempRenderData.x + markerTileset.tileWidth
                     tempRenderData.bottomY = tempRenderData.y + markerTileset.tileHeight
 
-                    if (rightX < rect.xPosition) || (tempRenderData.x > screenRightX) {
+                    if rightX < rect.xPosition || tempRenderData.x > screenRightX {
                         onScreen = false
                     } else if (tempRenderData.bottomY < rect.yPosition) || (tempRenderData.y > screenBottomY) {
                         onScreen = false
@@ -597,7 +597,7 @@ class AssetRenderer {
                         }
                     }
                 }
-            } else if (tempRenderData.type.hashValue >= 0) && (tempRenderData.type.hashValue < tilesets.count) {
+            } else if tempRenderData.type.rawValue >= 0 && tempRenderData.type.rawValue < tilesets.count {
                 var onScreen = true
                 tempRenderData.x = asset.positionX() - Position.halfTileWidth
                 tempRenderData.y = asset.positionY() - Position.halfTileHeight
@@ -606,11 +606,11 @@ class AssetRenderer {
                 let rightX = tempRenderData.x + rectWidth
                 tempRenderData.bottomY = tempRenderData.y + rectHeight
 
-                if (rightX < rect.xPosition) || (tempRenderData.x > screenRightX) {
+                if rightX < rect.xPosition || tempRenderData.x > screenRightX {
                     onScreen = false
-                } else if (tempRenderData.bottomY < rect.yPosition) || (tempRenderData.y > screenBottomY) {
+                } else if tempRenderData.bottomY < rect.yPosition || tempRenderData.y > screenBottomY {
                     onScreen = false
-                } else if (asset.action == AssetAction.mineGold) || (asset.action == AssetAction.conveyLumber) || (asset.action == AssetAction.conveyGold) {
+                } else if asset.action == AssetAction.mineGold || asset.action == AssetAction.conveyLumber || asset.action == AssetAction.conveyGold {
                     onScreen = false
                 }
                 tempRenderData.x -= rect.xPosition
@@ -623,8 +623,78 @@ class AssetRenderer {
         }
     }
 
-    func drawOverlays(on surface: GraphicSurface, rect: Rectangle) {
-        fatalError("This method is not yet implemented")
+    func drawOverlays(on surface: GraphicSurface, rect: Rectangle) throws {
+        let screenRightX = rect.xPosition + rect.width - 1
+        let screenBottomY = rect.yPosition + rect.height - 1
+
+        for asset in playerMap.assets {
+            var tempRenderData = AssetRenderData()
+            tempRenderData.type = asset.type
+
+            if tempRenderData.type == .none {
+                if asset.action == .attack {
+                    var onScreen = true
+                    tempRenderData.x = asset.positionX() - arrowTileset.tileWidth / 2
+                    tempRenderData.y = asset.positionY() - arrowTileset.tileHeight / 2
+                    let rightX = tempRenderData.x + arrowTileset.tileWidth
+                    tempRenderData.bottomY = tempRenderData.y + arrowTileset.tileHeight
+
+                    if rightX < rect.xPosition || tempRenderData.x > screenRightX {
+                        onScreen = false
+                    } else if tempRenderData.bottomY < rect.yPosition || tempRenderData.y > screenBottomY {
+                        onScreen = false
+                    }
+                    tempRenderData.x -= rect.xPosition
+                    tempRenderData.y -= rect.yPosition
+                    if onScreen {
+                        let actionSteps = arrowIndices.count / Direction.max.rawValue
+                        try arrowTileset.drawTile(on: surface, x: tempRenderData.x, y: tempRenderData.y, index: arrowIndices[asset.direction.rawValue * actionSteps + (((playerData?.gameCycle)! - asset.creationCycle) % actionSteps)])
+                    }
+                }
+            } else if asset.speed == 0 {
+                let currentAction = asset.action
+                if currentAction != .death {
+                    var hitRange = asset.hitPoints * fireTileset.count * 2 / asset.maxHitPoints
+                    if currentAction == .construct {
+                        var command = asset.currentCommand()
+                        if command.assetTarget != nil {
+                            command = (command.assetTarget?.currentCommand())!
+                            if command.activatedCapability != nil {
+                                var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
+                                divisor = divisor != 0 ? divisor : 1
+                                hitRange = asset.hitPoints * fireTileset.count * 2 / divisor!
+                            }
+                        } else if command.activatedCapability != nil {
+                            var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
+                            divisor = divisor != 0 ? divisor : 1
+                            hitRange = asset.hitPoints * fireTileset.count * 2 / divisor!
+                        }
+                    }
+
+                    if hitRange < fireTileset.count {
+                        let tilesetIndex = fireTileset.count - 1 - hitRange
+                        tempRenderData.tileIndex = ((playerData?.gameCycle)! - asset.creationCycle) % fireTileset[tilesetIndex].tileCount
+                        tempRenderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - fireTileset[tilesetIndex].tileHalfWidth
+                        tempRenderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - fireTileset[tilesetIndex].tileHeight
+                        let rightX = tempRenderData.x + fireTileset[tilesetIndex].tileWidth - 1
+                        tempRenderData.bottomY = tempRenderData.y + fireTileset[tilesetIndex].tileHeight - 1
+                        var onScreen = true
+
+                        if rightX < rect.xPosition || tempRenderData.x > screenRightX {
+                            onScreen = false
+                        } else if tempRenderData.bottomY < rect.yPosition || tempRenderData.y > screenBottomY {
+                            onScreen = false
+                        }
+                        tempRenderData.x -= rect.xPosition
+                        tempRenderData.y -= rect.yPosition
+
+                        if onScreen {
+                            try fireTileset[tilesetIndex].drawTile(on: surface, x: tempRenderData.x, y: tempRenderData.y, index: tempRenderData.tileIndex)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     func drawPlacement(on surface: GraphicSurface, rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) {
