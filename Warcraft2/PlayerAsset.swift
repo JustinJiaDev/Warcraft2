@@ -249,7 +249,7 @@ class PlayerAsset: Equatable {
             position.setFromTile(newValue)
         }
     }
-    
+
     var tilePositionX: Int {
         get {
             return tilePosition.x
@@ -259,7 +259,7 @@ class PlayerAsset: Equatable {
             tilePosition.x = newValue
         }
     }
-    
+
     var tilePositionY: Int {
         get {
             return tilePosition.y
@@ -275,7 +275,7 @@ class PlayerAsset: Equatable {
             tilePosition.setToTile(newValue)
         }
     }
-    
+
     var positionX: Int {
         get {
             return position.x
@@ -297,10 +297,10 @@ class PlayerAsset: Equatable {
     }
 
     var direction: Direction
-    
-    private(set) var commands: [AssetCommand]
+
+    private(set) var commands = [AssetCommand]()
     private(set) var assetType: PlayerAssetType
-    
+
     static var updateFrequency = 1
     private(set) static var updateDivisor = 32
 
@@ -443,13 +443,13 @@ class PlayerAsset: Equatable {
     init(playerAsset: PlayerAssetType) {
         tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
-        
-        assetType = playerAsset;
-        hitPoints = playerAsset.hitPoints;
-        moveRemainderX = 0;
-        moveRemainderY = 0;
-        direction = .south;
-        
+
+        assetType = playerAsset
+        hitPoints = playerAsset.hitPoints
+        moveRemainderX = 0
+        moveRemainderY = 0
+        direction = .south
+
         tilePosition = Position()
     }
 
@@ -552,7 +552,7 @@ class PlayerAsset: Equatable {
 
     func interruptible() -> Bool {
         let command = currentCommand()
-        
+
         switch command.action {
         case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
             return false
@@ -565,8 +565,7 @@ class PlayerAsset: Equatable {
             return true
         }
     }
-    
-    
+
     func changeType(_ type: PlayerAssetType) {
         assetType = type
     }

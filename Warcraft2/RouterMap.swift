@@ -35,8 +35,8 @@ class RouterMap {
     func findRoute(resMap: AssetDecoratedMap, asset: PlayerAsset, target: Position) -> Direction {
         let mapWidth = resMap.width
         let mapHeight = resMap.height
-        let startX = asset.tilePositionX()
-        let startY = asset.tilePositionY()
+        let startX = asset.tilePositionX
+        let startY = asset.tilePositionY
         var tempSearch = SearchTarget()
         var currentSearch = SearchTarget()
         var bestSearch = SearchTarget()
@@ -68,8 +68,8 @@ class RouterMap {
         }
 
         if asset.tilePosition == targetTile {
-            let deltaX = target.x - asset.positionX()
-            let deltaY = target.y - asset.positionY()
+            let deltaX = target.x - asset.positionX
+            let deltaY = target.y - asset.positionY
 
             if 0 < deltaX {
                 if 0 < deltaY {
@@ -106,12 +106,12 @@ class RouterMap {
                         if asset.color != res.color || AssetAction.conveyGold != res.action && AssetAction.conveyLumber != res.action && AssetAction.mineGold != res.action {
                             for yOff in 0 ..< res.size {
                                 for xOff in 0 ..< res.size {
-                                    map[res.tilePositionY() + yOff + 1][res.tilePositionX() + xOff + 1] = SearchStatus.visited
+                                    map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = SearchStatus.visited
                                 }
                             }
                         }
                     } else {
-                        map[res.tilePositionY() + 1][res.tilePositionX() + 1] = SearchStatus(rawValue: SearchStatus.occupied.rawValue - res.direction.rawValue)!
+                        map[res.tilePositionY + 1][res.tilePositionX + 1] = SearchStatus(rawValue: SearchStatus.occupied.rawValue - res.direction.rawValue)!
                     }
                 }
             }
