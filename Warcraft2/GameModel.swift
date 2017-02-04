@@ -418,8 +418,13 @@ class GameModel {
         fatalError("not yet implemented")
     }
 
-    func validAsset(asset: PlayerAsset) -> Bool {
-        fatalError("not yet implemented")
+    func validAsset(playerAsset: PlayerAsset) -> Bool {
+        for asset in actualMap.assets {
+            if asset == playerAsset {
+                return true
+            }
+        }
+        return false
     }
 
     func map() -> AssetDecoratedMap {
