@@ -231,19 +231,18 @@ struct AssetCommand {
 }
 
 class PlayerAsset: Equatable {
-
     public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
         return lhs == rhs
     }
 
-    var creationCycle: Int
-    var hitPoints: Int
-    var gold: Int
-    var lumber: Int
-    var step: Int
+    var creationCycle: Int = 0
+    var hitPoints: Int = 0
+    var gold: Int = 0
+    var lumber: Int = 0
+    var step: Int = 0
 
-    private(set) var moveRemainderX: Int
-    private(set) var moveRemainderY: Int
+    private(set) var moveRemainderX: Int = 0
+    private(set) var moveRemainderY: Int = 0
 
     var tilePosition: Position {
         willSet {
@@ -301,8 +300,9 @@ class PlayerAsset: Equatable {
     
     private(set) var commands: [AssetCommand]
     private(set) var assetType: PlayerAssetType
-    private(set) static var updateFrequency: Int = 0
-    private(set) static var updateDivisor: Int = 0
+    
+    static var updateFrequency = 1
+    private(set) static var updateDivisor = 32
 
     var isAlive: Bool {
         return hitPoints > 0
@@ -441,11 +441,24 @@ class PlayerAsset: Equatable {
     }
 
     init(playerAsset: PlayerAssetType) {
-        fatalError("This method is not yet implemented.")
+        tilePosition = Position(x: 0, y: 0)
+        position = Position(x: 0, y: 0)
+        
+        assetType = playerAsset;
+        hitPoints = playerAsset.hitPoints;
+        moveRemainderX = 0;
+        moveRemainderY = 0;
+        direction = .south;
+        
+        tilePosition = Position()
     }
 
-    func setUpdateFrequency(frequency _: Int) {
-        fatalError("This method is not yet implemented.")
+    static func setUpdateFrequency(_ frequency: Int) -> Int {
+        if 0 < frequency {
+            PlayerAsset.updateFrequency = frequency
+            PlayerAsset.updateDivisor = 32 * PlayerAsset.updateFrequency
+        }
+        return PlayerAsset.updateFrequency
     }
 
     func incrementHitPoints(_ increments: Int) -> Int {
@@ -488,8 +501,8 @@ class PlayerAsset: Equatable {
         step += 1
     }
 
-    func closestPosition(_ position: Position) -> Position {
-        fatalError("This method is not yet implemented.")
+    func closestPosition(_ pos: Position) -> Position {
+        return pos.closestPosition(position, objSize: size)
     }
 
     func clearCommand() {
@@ -538,9 +551,22 @@ class PlayerAsset: Equatable {
     }
 
     func interruptible() -> Bool {
-        fatalError("This method is not yet implemented.")
+        let command = currentCommand()
+        
+        switch command.action {
+        case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
+            return false
+        case .capability:
+            if let assetTarget = command.assetTarget {
+                return AssetAction.construct != assetTarget.action
+            }
+            fallthrough
+        default:
+            return true
+        }
     }
-
+    
+    
     func changeType(_ type: PlayerAssetType) {
         assetType = type
     }
