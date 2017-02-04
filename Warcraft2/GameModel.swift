@@ -415,7 +415,26 @@ class GameModel {
     private var goldPerMining: Int
 
     init(mapIndex: Int, seed: UInt64, newColors: [PlayerColor]) {
-        fatalError("not yet implemented")
+        harvestTime = 5
+        harvestSteps = PlayerAsset.updateFrequency * harvestTime
+        mineTime = 5
+        mineSteps = PlayerAsset.updateFrequency * mineTime
+        conveyTime = 1
+        conveySteps = PlayerAsset.updateFrequency * conveyTime
+        deathTime = 1
+        deathSteps = PlayerAsset.updateFrequency * deathTime
+        decayTime = 4
+        decaySteps = PlayerAsset.updateFrequency * decayTime
+        lumberPerHarvest = 100
+        goldPerMining = 100
+        
+        randomNumberGenerator.seed(seed: seed)
+        actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+        
+        for playerIndex in 0..<PlayerColor.max.rawValue {
+            players.append(PlayerData(map: actualMap, color: PlayerColor(rawValue: playerIndex)!))
+        }
+        fatalError("Not implemented yet")
     }
 
     func validAsset(playerAsset: PlayerAsset) -> Bool {
@@ -432,7 +451,7 @@ class GameModel {
     }
 
     func player(color: PlayerColor) -> PlayerData {
-        fatalError("not yet implemented")
+        return players[color.rawValue]
     }
 
     func timestep() {
@@ -440,6 +459,8 @@ class GameModel {
     }
 
     func clearGameEvents() {
-        fatalError("not yet implemented")
+        for player in players {
+            player.clearGameEvents()
+        }
     }
 }
