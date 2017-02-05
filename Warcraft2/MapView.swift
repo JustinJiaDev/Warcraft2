@@ -2,7 +2,7 @@ import UIKit
 
 class MapView: UIView {
 
-    var mapRender: MapRenderer!
+    private var mapRender: MapRenderer!
 
     override func awakeFromNib() {
         do {
@@ -26,23 +26,30 @@ class MapView: UIView {
             try map.loadMap(source: mapSource)
 
             mapRender = try MapRenderer(configuration: configuration, tileset: tileset, map: map)
-
-            bounds.size.width = CGFloat(mapRender.mapWidth)
-            bounds.size.height = CGFloat(mapRender.mapHeight)
-
+            bounds.size = CGSize(width: mapRender.detailedMapWidth, height: mapRender.detailedMapHeight)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
     }
 
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let location = touches.first?.location(in: self), let previousLocation = touches.first?.previousLocation(in: self) else {
+            return
+        }
+        frame.origin.x += location.x - previousLocation.x
+        frame.origin.y += location.y - previousLocation.y
+        frame.origin.x = max(min(frame.origin.x, 0), -frame.size.width + UIScreen.main.bounds.width)
+        frame.origin.y = max(min(frame.origin.y, 0), -frame.size.height + UIScreen.main.bounds.height)
+    }
+
     override func draw(_ rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()!
-        let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
         do {
+            let context = UIGraphicsGetCurrentContext()!
+            let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
             try mapRender.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.detailedMapWidth, height: mapRender.detailedMapHeight), level: 0)
+            context.draw(layer, in: rect)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
-        context.draw(layer, in: rect)
     }
 }
