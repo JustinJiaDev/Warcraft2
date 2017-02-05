@@ -555,7 +555,6 @@ class PlayerAsset {
 
     func interruptible() -> Bool {
         let command = currentCommand()
-
         switch command.action {
         case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
             return false
@@ -563,7 +562,7 @@ class PlayerAsset {
             if let assetTarget = command.assetTarget {
                 return AssetAction.construct != assetTarget.action
             }
-            fallthrough
+            return true
         default:
             return true
         }
