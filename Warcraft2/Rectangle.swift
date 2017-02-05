@@ -1,5 +1,3 @@
-import Foundation
-
 struct Rectangle {
     var xPosition = 0
     var yPosition = 0
