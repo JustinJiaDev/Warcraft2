@@ -6,10 +6,6 @@ class GraphicRecolorMap {
     private var colors: [[UInt32]] = [[]]
     private var originalColors: [[UInt32]] = [[]]
 
-    init() {
-        // Do nothing
-    }
-
     var groupCount: Int {
         return colors.count
     }
@@ -22,11 +18,11 @@ class GraphicRecolorMap {
         fatalError("This method is not yet implemented.")
     }
 
-    func colorValue(gindex: Int, cindex: Int) -> UInt32 {
+    func colorValue(gIndex: Int, cIndex: Int) -> UInt32 {
         fatalError("This method is not yet implemented.")
     }
 
-    func load(source: DataSource) -> Bool {
+    func load(from dataSource: DataSource) throws {
         fatalError("This method is not yet implemented.")
     }
 
@@ -42,4 +38,3 @@ class GraphicRecolorMap {
         fatalError("This method is not yet implemented")
     }
 }
-

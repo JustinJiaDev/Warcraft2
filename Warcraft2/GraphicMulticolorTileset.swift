@@ -1,10 +1,6 @@
 class GraphicMulticolorTileset: GraphicTileset {
     private var coloredTilesets: [GraphicSurface] = []
-    private var colorMap: GraphicRecolorMap
-
-    override init() {
-        fatalError("This method is not yet implemented.")
-    }
+    private var colorMap: GraphicRecolorMap!
 
     var colorCount: Int {
         return coloredTilesets.count
@@ -14,11 +10,11 @@ class GraphicMulticolorTileset: GraphicTileset {
         return colorMap.findColor(with: colorname)
     }
 
-    func loadTileset(colormap: GraphicRecolorMap, source: DataSource) -> Bool {
+    func loadTileset(colorMap: GraphicRecolorMap, from dataSource: DataSource) throws {
         fatalError("This method is not yet implemented.")
     }
 
-    func drawTile(on surface: GraphicSurface, xposition: Int, yposition: Int, tileindex: Int, colorindex: Int) {
+    func drawTile(on surface: GraphicSurface, x: Int, y: Int, tileIndex: Int, colorIndex: Int) throws {
         fatalError("This method is not yet implemented.")
     }
 }
