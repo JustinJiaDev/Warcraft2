@@ -122,6 +122,20 @@ enum Direction: Int {
         return Direction(rawValue: (rawValue + 180) % 360)!
     }
 
+    var index: Int {
+        switch self {
+        case .north: return 0
+        case .northEast: return 1
+        case .east: return 2
+        case .southEast: return 3
+        case .south: return 4
+        case .southWest: return 5
+        case .west: return 6
+        case .northWest: return 7
+        case .max: return 8
+        }
+    }
+
     static var numberOfDirections: Int {
         return 8
     }
