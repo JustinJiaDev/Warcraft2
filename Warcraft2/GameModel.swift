@@ -248,9 +248,9 @@ class PlayerData {
         if .none != assetType {
             for asset in assets {
                 if asset.type == assetType {
-                    let currentDistance = asset.position.distanceSquared(pos)
-                    if -1 == bestDistanceSquared || currentDistance < bestDistanceSquared {
-                        bestDistanceSquared = currentDistance
+                    let currentDistanceSquared = asset.position.distanceSquared(pos)
+                    if -1 == bestDistanceSquared || currentDistanceSquared < bestDistanceSquared {
+                        bestDistanceSquared = currentDistanceSquared
                         bestAsset = asset
                     }
                 }
@@ -266,10 +266,10 @@ class PlayerData {
         for asset in assets {
             for assetType in assetTypes {
                 if((asset.type == assetType) && ((AssetAction.construct != asset.action) || (AssetType.keep == assetType)||(AssetType.castle == assetType))) {
-                    let currentDistance:Int = asset.position.distanceSquared(pos)
+                    let currentDistanceSquared = asset.position.distanceSquared(pos)
                     
-                    if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                        bestDistanceSquared = currentDistance
+                    if (bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared) {
+                        bestDistanceSquared = currentDistanceSquared
                         bestAsset = asset
                     }
                     break
@@ -284,11 +284,11 @@ class PlayerData {
         var bestDistanceSquared:Int = -1
         
         for asset in playerMap.assets {
-            if (asset.type == assetType) {
-                let currentDistance:Int = asset.position.distanceSquared(pos)
+            if asset.type == assetType {
+                let currentDistanceSquared = asset.position.distanceSquared(pos)
                 
-                if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                    bestDistanceSquared = currentDistance
+                if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared)) {
+                    bestDistanceSquared = currentDistanceSquared
                     bestAsset = asset
                 }
             }
@@ -316,11 +316,11 @@ class PlayerData {
                     }
                 }
                 if((AssetAction.conveyGold != command.action) && (AssetAction.conveyLumber != command.action) && (AssetAction.mineGold != command.action)) {
-                    let currentDistance:Int = asset.closestPosition(pos).distanceSquared(pos)
+                    let currentDistanceSquared:Int = asset.closestPosition(pos).distanceSquared(pos)
                     
-                    if ((range < 0) || (range >= currentDistance)) {
-                        if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                            bestDistanceSquared = currentDistance
+                    if ((range < 0) || (range >= currentDistanceSquared)) {
+                        if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared)) {
+                            bestDistanceSquared = currentDistanceSquared
                             bestAsset = asset
                         }
                     }
@@ -362,11 +362,12 @@ class PlayerData {
         
         
         // ####### INCOMPLETE
-        var assetList:[PlayerAsset] = []
-        
-        for asset in assets {
-            if ((AssetAction.none == asset.action) && (AssetType.none != asset.type))
-        }
+//        var assetList:[PlayerAsset] = []
+//        
+//        for asset in assets {
+//            if (AssetAction.none == asset.action) && (AssetType.none != asset.type)
+//        }
+        fatalError("not yet ported")
     }
 
     func addUpgrade(upgradeName: String) {
