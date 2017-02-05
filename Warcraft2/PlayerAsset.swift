@@ -9,7 +9,7 @@ class ActivatedPlayerCapability {
         fatalError("This method is not yet implemented.")
     }
 
-    func percentComplete(max _: Int) {
+    func percentComplete(max _: Int) -> Int {
         fatalError("This method is not yet implemented.")
     }
 

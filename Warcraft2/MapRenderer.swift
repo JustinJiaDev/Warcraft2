@@ -235,7 +235,7 @@ class MapRenderer {
         }
     }
 
-    func drawMap(surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle, level: Int) throws {
+    func drawMap(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle, level: Int) throws {
         let tileWidth = tileset.tileWidth
         let tileHeight = tileset.tileHeight
         var unknownTree: [Bool] = []
