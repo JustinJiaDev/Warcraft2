@@ -1,63 +1,40 @@
-//
-//  GraphicRecolorMap.swift
-//  Warcraft2
-//
-//  Created by Anthony on 1/31/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
+class GraphicRecolorMap {
 
-import Foundation
+    private var state: Int = -1
+    private var mapping: [String: Int] = [:]
+    private var colorNames: [String] = []
+    private var colors: [[UInt32]] = [[]]
+    private var originalColors: [[UInt32]] = [[]]
 
-class GraphicRecolorMap{
-    
-    private var state: Int
-    private var mapping: Dictionary<String, Int>
-    private var colorNames: Array<String>
-    private var colors: Array<Array<UInt32>>
-    private var originalColors: Array<Array<UInt32>>
-    
-    init() {
-        state = -1
-        mapping = [:]
-        colorNames = []
-        colors = []
-        originalColors = []
-    }
-    
-    func groupCount() -> Int {
+    var groupCount: Int {
         return colors.count
     }
-    
-    func colorCount() -> Int {
-        if colors.count > 0 {
-            return colors[0].count
-        }
-        return 0
+
+    var colorCount: Int {
+        return colors.first?.count ?? 0
     }
-    
-    func findColor(colorname: String) -> Int {
+
+    func findColor(with name: String) -> Int {
         fatalError("This method is not yet implemented.")
     }
-    
-    func colorValue(gindex: Int, cindex: Int) -> UInt32 {
+
+    func colorValue(gIndex: Int, cIndex: Int) -> UInt32 {
         fatalError("This method is not yet implemented.")
     }
-    
-    func load(source: DataSource) -> Bool {
+
+    func load(from dataSource: DataSource) throws {
         fatalError("This method is not yet implemented.")
     }
-    
+
     func observePixels() -> UInt32 {
         fatalError("This method is not yet implemented.")
     }
-    
+
     func recolorPixels() -> UInt32 {
         fatalError("This method is not yet implemented")
     }
-    
-    func recolorSurface(index: Int, srcsurface: GraphicSurface) -> GraphicSurface {
+
+    func recolorSurface(index: Int, on surface: GraphicSurface) -> GraphicSurface {
         fatalError("This method is not yet implemented")
     }
-    
 }
-

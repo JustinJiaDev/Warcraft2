@@ -39,7 +39,7 @@ class MapView: UIView {
         let context = UIGraphicsGetCurrentContext()!
         let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
         do {
-            try mapRender.drawMap(surface: layer, typeSurface: layer, rect: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth, height: mapRender.mapHeight), level: 0)
+            try mapRender.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.mapWidth, height: mapRender.mapHeight), level: 0)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
