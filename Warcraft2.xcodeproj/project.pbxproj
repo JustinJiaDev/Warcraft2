@@ -434,8 +434,9 @@
 				D0773FC11E3847C200FF7DD7 /* Graphic */,
 				D0773FC41E38485500FF7DD7 /* GameType */,
 				D0773FC31E38483200FF7DD7 /* Player */,
-				D0773FC21E3847F100FF7DD7 /* Temporary */,
+				D02808AC1E472190001C1E0E /* Render */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
+				D0773FC21E3847F100FF7DD7 /* Temporary */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -449,6 +450,16 @@
 				8EA067711E3310470059CEC2 /* intro.mid */,
 			);
 			name = Music;
+			sourceTree = "<group>";
+		};
+		D02808AC1E472190001C1E0E /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
+				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
+				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
+			);
+			name = Render;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
@@ -475,12 +486,10 @@
 		D0773FC01E3847A800FF7DD7 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
-				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
+				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
 				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
 				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
-				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
-				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
+				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -523,7 +532,6 @@
 				D08F47421E35BE6300F7FED1 /* PixelType.swift */,
 				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
 				8E1B51601E2D694C008E968C /* Position.swift */,
-				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
 			);
 			name = GameType;
 			sourceTree = "<group>";

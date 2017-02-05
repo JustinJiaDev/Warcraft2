@@ -300,8 +300,8 @@ class AssetRenderer {
 
             var renderData = Data()
             renderData.type = asset.type
-            renderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - tilesets[asset.type.rawValue].tileHalfWidth
-            renderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - tilesets[asset.type.rawValue].tileHalfHeight
+            renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[asset.type.rawValue].tileHalfWidth
+            renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[asset.type.rawValue].tileHalfHeight
             renderData.bottomY = renderData.y + tilesets[asset.type.rawValue].tileHeight - 1
             renderData.pixelColor = PixelType(playerAsset: asset).pixelColor
 
@@ -446,8 +446,8 @@ class AssetRenderer {
                     if asset.speed == 0 {
                         let offset = AssetType.goldMine == renderData.type ? 1 : 0
 
-                        renderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - tilesets[renderData.type.rawValue].tileHalfWidth
-                        renderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - tilesets[renderData.type.rawValue].tileHalfHeight
+                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[renderData.type.rawValue].tileHalfWidth
+                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[renderData.type.rawValue].tileHalfHeight
                         renderData.x -= offset * Position.tileWidth
                         renderData.y -= offset * Position.tileHeight
 
@@ -495,8 +495,8 @@ class AssetRenderer {
             if renderData.type == AssetType.none {
                 if asset.action == AssetAction.decay {
                     var onScreen = true
-                    renderData.x = asset.positionX() - corpseTileset.tileWidth / 2
-                    renderData.y = asset.positionY() - corpseTileset.tileHeight / 2
+                    renderData.x = asset.positionX - corpseTileset.tileWidth / 2
+                    renderData.y = asset.positionY - corpseTileset.tileHeight / 2
                     let rightX = renderData.x + corpseTileset.tileWidth
                     renderData.bottomY = renderData.y + corpseTileset.tileHeight
 
@@ -522,8 +522,8 @@ class AssetRenderer {
                     }
                 } else if asset.action == AssetAction.attack {
                     var onScreen = true
-                    renderData.x = asset.positionX() - markerTileset.tileWidth / 2
-                    renderData.y = asset.positionY() - markerTileset.tileHeight / 2
+                    renderData.x = asset.positionX - markerTileset.tileWidth / 2
+                    renderData.y = asset.positionY - markerTileset.tileHeight / 2
                     let rightX = renderData.x + markerTileset.tileWidth
                     renderData.bottomY = renderData.y + markerTileset.tileHeight
 
@@ -545,8 +545,8 @@ class AssetRenderer {
                 }
             } else if renderData.type.rawValue >= 0 && renderData.type.rawValue < tilesets.count {
                 var onScreen = true
-                renderData.x = asset.positionX() - Position.halfTileWidth
-                renderData.y = asset.positionY() - Position.halfTileHeight
+                renderData.x = asset.positionX - Position.halfTileWidth
+                renderData.y = asset.positionY - Position.halfTileHeight
                 let rectWidth = Position.tileWidth * asset.size
                 let rectHeight = Position.tileHeight * asset.size
                 let rightX = renderData.x + rectWidth
@@ -584,8 +584,8 @@ class AssetRenderer {
             if renderData.type == .none {
                 if asset.action == .attack {
                     var onScreen = true
-                    renderData.x = asset.positionX() - arrowTileset.tileWidth / 2
-                    renderData.y = asset.positionY() - arrowTileset.tileHeight / 2
+                    renderData.x = asset.positionX - arrowTileset.tileWidth / 2
+                    renderData.y = asset.positionY - arrowTileset.tileHeight / 2
                     let rightX = renderData.x + arrowTileset.tileWidth
                     renderData.bottomY = renderData.y + arrowTileset.tileHeight
 
@@ -629,8 +629,8 @@ class AssetRenderer {
                     if hitRange < fireTileset.count {
                         let tilesetIndex = fireTileset.count - 1 - hitRange
                         renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTileset[tilesetIndex].tileCount
-                        renderData.x = asset.positionX() + (asset.size - 1) * Position.halfTileWidth - fireTileset[tilesetIndex].tileHalfWidth
-                        renderData.y = asset.positionY() + (asset.size - 1) * Position.halfTileHeight - fireTileset[tilesetIndex].tileHeight
+                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTileset[tilesetIndex].tileHalfWidth
+                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTileset[tilesetIndex].tileHeight
                         let rightX = renderData.x + fireTileset[tilesetIndex].tileWidth - 1
                         renderData.bottomY = renderData.y + fireTileset[tilesetIndex].tileHeight - 1
                         var onScreen = true
@@ -701,22 +701,22 @@ class AssetRenderer {
             if playerAsset == builder {
                 continue
             }
-            if xOffset <= playerAsset.tilePositionX() - offset {
+            if xOffset <= playerAsset.tilePositionX - offset {
                 continue
             }
-            if tilePosition.x >= (playerAsset.tilePositionX() + playerAsset.size + offset) {
+            if tilePosition.x >= (playerAsset.tilePositionX + playerAsset.size + offset) {
                 continue
             }
-            if yOffset <= (playerAsset.tilePositionY() - offset) {
+            if yOffset <= (playerAsset.tilePositionY - offset) {
                 continue
             }
-            if tilePosition.y >= (playerAsset.tilePositionY() + playerAsset.size + offset) {
+            if tilePosition.y >= (playerAsset.tilePositionY + playerAsset.size + offset) {
                 continue
             }
-            let minX = max(tilePosition.x, playerAsset.tilePositionX() - offset)
-            let maxX = min(xOffset, playerAsset.tilePositionX() + playerAsset.size + offset)
-            let minY = max(tilePosition.y, playerAsset.tilePositionY() - offset)
-            let maxY = min(yOffset, playerAsset.tilePositionY() + playerAsset.size + offset)
+            let minX = max(tilePosition.x, playerAsset.tilePositionX - offset)
+            let maxX = min(xOffset, playerAsset.tilePositionX + playerAsset.size + offset)
+            let minY = max(tilePosition.y, playerAsset.tilePositionY - offset)
+            let maxY = min(yOffset, playerAsset.tilePositionY + playerAsset.size + offset)
             for y in minY ..< maxY {
                 for x in minX ..< maxX {
                     placementTiles[y - tilePosition.y][x - tilePosition.x] = 0
@@ -758,7 +758,7 @@ class AssetRenderer {
                 let size = asset.size
                 let pixelColor = asset.color == playerData.color ? selfPixelColor : pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
-                resourceContext.rectangle(xPosition: asset.tilePositionX(), yPosition: asset.tilePositionY(), width: size, height: size)
+                resourceContext.rectangle(xPosition: asset.tilePositionX, yPosition: asset.tilePositionY, width: size, height: size)
                 resourceContext.fill()
             }
         } else {

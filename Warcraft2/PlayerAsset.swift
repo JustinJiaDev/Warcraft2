@@ -587,15 +587,15 @@ class PlayerAsset: Equatable {
         let currentPosition = position
 
         if .max == currentOctant || currentOctant == direction { // Aligned just move
-            let newX = speed * deltaX[direction.rawValue] * Position.tileWidth + moveRemainderX
-            let newY = speed * deltaY[direction.rawValue] * Position.tileHeight + moveRemainderY
+            let newX = speed * deltaX[direction.index] * Position.tileWidth + moveRemainderX
+            let newY = speed * deltaY[direction.index] * Position.tileHeight + moveRemainderY
             moveRemainderX = newX % PlayerAsset.updateDivisor
             moveRemainderY = newY % PlayerAsset.updateDivisor
             positionX += (newX / PlayerAsset.updateDivisor)
             positionY += (newY / PlayerAsset.updateDivisor)
         } else { // Entering
-            let newX = speed + deltaX[direction.rawValue] * Position.tileWidth + moveRemainderX
-            let newY = speed + deltaY[direction.rawValue] * Position.tileHeight + moveRemainderY
+            let newX = speed + deltaX[direction.index] * Position.tileWidth + moveRemainderX
+            let newY = speed + deltaY[direction.index] * Position.tileHeight + moveRemainderY
             var tempMoveRemainderX = newX % PlayerAsset.updateDivisor
             var tempMoveRemainderY = newY % PlayerAsset.updateDivisor
             let newPosition = Position(x: positionX + newX / PlayerAsset.updateDivisor, y: positionY + newY / PlayerAsset.updateDivisor)
