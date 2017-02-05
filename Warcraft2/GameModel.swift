@@ -208,10 +208,8 @@ class PlayerData {
             let bestAsset = selectAsset(pos: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType)
             returnList.append(bestAsset)
             if selectIdentical && bestAsset.speed != 0 {
-                for asset in assets {
-                    if bestAsset != asset && asset.type == assetType {
-                        returnList.append(asset)
-                    }
+                for asset in assets where bestAsset != asset && asset.type == assetType {
+                    returnList.append(asset)
                 }
             }
         }
