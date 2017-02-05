@@ -1,17 +1,17 @@
-enum MapRendererError: Error {
-
-    case failedToReadItemCount
-    case failedToReadItemLine
-    case failedToReadColor(string: String)
-    case invalidItemLine(string: String)
-    case invalidColorHex(string: String)
-    case failedToReadSecondItemCount
-    case failedToReadSecondItemLine
-    case invalidSourceIndexHex(string: String)
-    case invalidType(String: String)
-}
-
 class MapRenderer {
+
+    enum GameError: Error {
+        case failedToReadItemCount
+        case failedToReadItemLine
+        case failedToReadColor(string: String)
+        case invalidItemLine(string: String)
+        case invalidColorHex(string: String)
+        case failedToReadSecondItemCount
+        case failedToReadSecondItemLine
+        case invalidSourceIndexHex(string: String)
+        case invalidType(String: String)
+    }
+
     var tileset: GraphicTileset
     var map: TerrainMap
     var grassIndices: [Int] = []
@@ -153,20 +153,20 @@ class MapRenderer {
         let lineSource = LineDataSource(dataSource: configuration)
 
         guard let itemCountString = lineSource.readLine(), let itemCount = Int(itemCountString) else {
-            throw MapRendererError.failedToReadItemCount
+            throw GameError.failedToReadItemCount
         }
 
         for _ in 0 ..< itemCount {
             guard let currentLine = lineSource.readLine() else {
-                throw MapRendererError.failedToReadItemLine
+                throw GameError.failedToReadItemLine
             }
             let tokens = Tokenizer.tokenize(data: currentLine)
             guard tokens.count >= 2 else {
-                throw MapRendererError.invalidItemLine(string: currentLine)
+                throw GameError.invalidItemLine(string: currentLine)
             }
             let pixelType = TerrainMap.TileType.from(string: tokens[0])
             guard let colorHex = MapRenderer.number(fromHexString: tokens[1]), colorHex >= 0 else {
-                throw MapRendererError.invalidColorHex(string: tokens[1])
+                throw GameError.invalidColorHex(string: tokens[1])
             }
             pixelIndices[pixelType.rawValue] = colorHex
         }
@@ -208,20 +208,20 @@ class MapRenderer {
         }
 
         guard let secondItemCountString = lineSource.readLine(), let secondItemCount = Int(secondItemCountString) else {
-            throw MapRendererError.failedToReadItemCount
+            throw GameError.failedToReadItemCount
         }
 
         for _ in 0 ..< secondItemCount {
             guard let currentLine = lineSource.readLine() else {
-                throw MapRendererError.failedToReadSecondItemLine
+                throw GameError.failedToReadSecondItemLine
             }
             let tokens = Tokenizer.tokenize(data: currentLine)
             guard tokens.count >= 3 else {
-                throw MapRendererError.invalidItemLine(string: currentLine)
+                throw GameError.invalidItemLine(string: currentLine)
             }
             let indices = try tokens.dropFirst().map { token -> Int in
                 guard let index = MapRenderer.number(fromHexString: token) else {
-                    throw MapRendererError.invalidSourceIndexHex(string: token)
+                    throw GameError.invalidSourceIndexHex(string: token)
                 }
                 return index
             }
@@ -232,7 +232,7 @@ class MapRenderer {
             case "water": for i in 1 ..< indices.count { waterIndices[indices[i]] = waterIndices[indices[0]] }
             case "wall": for i in 1 ..< indices.count { wallIndices[indices[i]] = wallIndices[indices[0]] }
             case "wall-damaged": for i in 1 ..< indices.count { wallDamagedIndices[indices[i]] = wallDamagedIndices[indices[0]] }
-            default: throw MapRendererError.invalidType(String: tokens[0])
+            default: throw GameError.invalidType(String: tokens[0])
             }
         }
     }

@@ -1,9 +1,8 @@
-enum AssetRendererError: Error {
-    case typeIsNone
-    case missingPlayerData
-}
-
 class AssetRenderer {
+
+    enum GameError: Error {
+        case missingPlayerData
+    }
 
     struct Data {
         var type = AssetType.none
@@ -425,7 +424,7 @@ class AssetRenderer {
 
     func drawSelections(on surface: GraphicSurface, in rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) throws {
         guard let playerData = playerData else {
-            throw AssetRendererError.missingPlayerData
+            throw GameError.missingPlayerData
         }
 
         let resourceContext = surface.createResourceContext()
@@ -571,7 +570,7 @@ class AssetRenderer {
 
     func drawOverlays(on surface: GraphicSurface, in rect: Rectangle) throws {
         guard let playerData = playerData else {
-            throw AssetRendererError.missingPlayerData
+            throw GameError.missingPlayerData
         }
 
         let screenRightX = rect.xPosition + rect.width - 1
@@ -654,10 +653,10 @@ class AssetRenderer {
 
     func drawPlacement(on surface: GraphicSurface, in rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) throws {
         guard type != .none else {
-            throw AssetRendererError.typeIsNone
+            return
         }
         guard let playerData = playerData else {
-            throw AssetRendererError.missingPlayerData
+            throw GameError.missingPlayerData
         }
 
         let screenRightX = rect.xPosition + rect.width - 1
