@@ -230,10 +230,7 @@ struct AssetCommand {
     var activatedCapability: ActivatedPlayerCapability?
 }
 
-class PlayerAsset: Equatable {
-    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
-        return lhs == rhs
-    }
+class PlayerAsset {
 
     var creationCycle: Int = 0
     var hitPoints: Int = 0
@@ -298,17 +295,18 @@ class PlayerAsset: Equatable {
 
     var direction: Direction
 
-    private(set) var commands = [AssetCommand]()
+    private(set) var commands: [AssetCommand] = []
     private(set) var assetType: PlayerAssetType
 
+    private static var _updateFrequency = 1
     static var updateFrequency: Int {
         get {
-            return PlayerAsset.updateFrequency
+            return _updateFrequency
         }
         set {
-            if 0 < newValue {
-                PlayerAsset.updateFrequency = newValue
-                PlayerAsset.updateDivisor = 32 * PlayerAsset.updateFrequency
+            if newValue > 0 {
+                _updateFrequency = newValue
+                updateDivisor = 32 * _updateFrequency
             }
         }
     }
@@ -636,5 +634,11 @@ class PlayerAsset: Equatable {
 
         incrementStep()
         return true
+    }
+}
+
+extension PlayerAsset: Equatable {
+    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
+        return lhs == rhs
     }
 }
