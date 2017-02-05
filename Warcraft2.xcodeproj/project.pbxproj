@@ -123,7 +123,10 @@
 		8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */; };
 		8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C91E3D797000ACB660 /* RouterMap.swift */; };
 		9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */; };
+		A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */; };
 		C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */; };
+		C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */; };
+		C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */; };
 		D01B68121E35A4320003C408 /* maze.map in Resources */ = {isa = PBXBuildFile; fileRef = D01B68111E35A3DE0003C408 /* maze.map */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
 		D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC61E384A7E00FF7DD7 /* 2player.map */; };
@@ -266,7 +269,10 @@
 		8EC6A5C91E3D797000ACB660 /* RouterMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterMap.swift; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicRecolorMap.swift; sourceTree = "<group>"; };
+		A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitActionRenderer.swift; sourceTree = "<group>"; };
 		C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatter.swift; sourceTree = "<group>"; };
+		C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicMulticolorTileset.swift; sourceTree = "<group>"; };
+		C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetRenderer.swift; sourceTree = "<group>"; };
 		D01B68111E35A3DE0003C408 /* maze.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = maze.map; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
@@ -428,8 +434,9 @@
 				D0773FC11E3847C200FF7DD7 /* Graphic */,
 				D0773FC41E38485500FF7DD7 /* GameType */,
 				D0773FC31E38483200FF7DD7 /* Player */,
-				D0773FC21E3847F100FF7DD7 /* Temporary */,
+				D02808AC1E472190001C1E0E /* Render */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
+				D0773FC21E3847F100FF7DD7 /* Temporary */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -443,6 +450,16 @@
 				8EA067711E3310470059CEC2 /* intro.mid */,
 			);
 			name = Music;
+			sourceTree = "<group>";
+		};
+		D02808AC1E472190001C1E0E /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
+				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
+				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
+			);
+			name = Render;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
@@ -469,11 +486,10 @@
 		D0773FC01E3847A800FF7DD7 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
+				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
 				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
 				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
-				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
-				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
+				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -481,12 +497,13 @@
 		D0773FC11E3847C200FF7DD7 /* Graphic */ = {
 			isa = PBXGroup;
 			children = (
+				D0D4A3D71E3ED46B009460DE /* Bevel.swift */,
 				8EA067781E33C8E00059CEC2 /* GraphicResourceContext.swift */,
-				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
 				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
 				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
-				D0D4A3D71E3ED46B009460DE /* Bevel.swift */,
 				9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */,
+				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
+				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
 			);
 			name = Graphic;
 			sourceTree = "<group>";
@@ -855,9 +872,12 @@
 				8EA067841E33C8E00059CEC2 /* LineDataSource.swift in Sources */,
 				8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */,
 				8EA067851E33C8E00059CEC2 /* PeriodicTimeout.swift in Sources */,
+				A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */,
 				8EA067681E3023880059CEC2 /* GameScene.swift in Sources */,
 				8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */,
 				D0D4A3DC1E3F265A009460DE /* MapView.swift in Sources */,
+				C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */,
+				C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */,
 				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
 				498584501E303F6B00F6766C /* TerrainManager.swift in Sources */,

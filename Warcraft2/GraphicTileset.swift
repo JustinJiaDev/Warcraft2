@@ -98,9 +98,7 @@ class GraphicTileset {
     }
 
     func findTile(with name: String) -> Int {
-        return tileIndex.first { key, _ in
-            return key == name
-        }?.value ?? -1
+        return tileIndex[name] ?? -1
     }
 
     func groupName(at index: Int) -> String {
