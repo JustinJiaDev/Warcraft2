@@ -106,7 +106,7 @@ class RouterMap {
                         if asset.color != res.color || AssetAction.conveyGold != res.action && AssetAction.conveyLumber != res.action && AssetAction.mineGold != res.action {
                             for yOff in 0 ..< res.size {
                                 for xOff in 0 ..< res.size {
-                                    map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = SearchStatus.visited
+                                    map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = .visited
                                 }
                             }
                         }

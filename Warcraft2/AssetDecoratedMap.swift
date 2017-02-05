@@ -168,7 +168,7 @@ class AssetDecoratedMap: TerrainMap {
         }
         for asset in assets {
             let offset = (AssetType.goldMine == asset.type) ? 1 : 0
-            if AssetType.none == asset.type
+            if .none == asset.type
                 || ignoreAsset === asset
                 || rightX <= asset.tilePositionX - offset
                 || position.x >= asset.tilePositionX + asset.size + offset

@@ -301,7 +301,18 @@ class PlayerAsset: Equatable {
     private(set) var commands = [AssetCommand]()
     private(set) var assetType: PlayerAssetType
 
-    static var updateFrequency = 1
+    static var updateFrequency: Int {
+        get {
+            return PlayerAsset.updateFrequency
+        }
+        set {
+            if 0 < newValue {
+                PlayerAsset.updateFrequency = newValue
+                PlayerAsset.updateDivisor = 32 * PlayerAsset.updateFrequency
+            }
+        }
+    }
+
     private(set) static var updateDivisor = 32
 
     var isAlive: Bool {
@@ -450,15 +461,9 @@ class PlayerAsset: Equatable {
         moveRemainderY = 0
         direction = .south
 
-        tilePosition = Position()
-    }
+        PlayerAsset.updateFrequency = 1
 
-    static func setUpdateFrequency(_ frequency: Int) -> Int {
-        if 0 < frequency {
-            PlayerAsset.updateFrequency = frequency
-            PlayerAsset.updateDivisor = 32 * PlayerAsset.updateFrequency
-        }
-        return PlayerAsset.updateFrequency
+        tilePosition = Position()
     }
 
     func incrementHitPoints(_ increments: Int) -> Int {
