@@ -21,13 +21,16 @@ class AssetRenderer {
     private var carryLumberIndices: [[Int]] = []
     private var deathIndices: [[Int]] = []
     private var placeIndices: [[Int]] = []
-    private var pixelColors: [UInt32]
+    private var pixelColors: [PlayerColor: UInt32]
+    private var selfPixelColor: UInt32
+    private var enemyPixelColor: UInt32
+    private var buildingPixelColor: UInt32
     private var animationDownsample: Int = 1
     private var targetFrequency = 10
 
     init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTileset: [GraphicTileset], buildingDeath: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData, map: AssetDecoratedMap) {
-        var typeIndex: Int = 0
-        var markerIndex: Int = 0
+        var typeIndex = 0
+        var markerIndex = 0
 
         self.tilesets = tilesets
         self.markerTileset = markerTileset
@@ -37,20 +40,20 @@ class AssetRenderer {
         self.arrowTileset = arrowTileset
         self.playerData = player
         self.playerMap = map
-
-        self.pixelColors = Array(repeating: 0, count: PlayerColor.max.rawValue + 3)
-        pixelColors[PlayerColor.none.rawValue] = colors.colorValue(gindex: colors.findColor(with: "none"), cindex: 0)
-        pixelColors[PlayerColor.blue.rawValue] = colors.colorValue(gindex: colors.findColor(with: "blue"), cindex: 0)
-        pixelColors[PlayerColor.red.rawValue] = colors.colorValue(gindex: colors.findColor(with: "red"), cindex: 0)
-        pixelColors[PlayerColor.green.rawValue] = colors.colorValue(gindex: colors.findColor(with: "green"), cindex: 0)
-        pixelColors[PlayerColor.purple.rawValue] = colors.colorValue(gindex: colors.findColor(with: "purple"), cindex: 0)
-        pixelColors[PlayerColor.orange.rawValue] = colors.colorValue(gindex: colors.findColor(with: "orange"), cindex: 0)
-        pixelColors[PlayerColor.yellow.rawValue] = colors.colorValue(gindex: colors.findColor(with: "yellow"), cindex: 0)
-        pixelColors[PlayerColor.black.rawValue] = colors.colorValue(gindex: colors.findColor(with: "black"), cindex: 0)
-        pixelColors[PlayerColor.white.rawValue] = colors.colorValue(gindex: colors.findColor(with: "white"), cindex: 0)
-        pixelColors[PlayerColor.max.rawValue] = colors.colorValue(gindex: colors.findColor(with: "self"), cindex: 0)
-        pixelColors[PlayerColor.max.rawValue + 1] = colors.colorValue(gindex: colors.findColor(with: "enemy"), cindex: 0)
-        pixelColors[PlayerColor.max.rawValue + 2] = colors.colorValue(gindex: colors.findColor(with: "building"), cindex: 0)
+        self.pixelColors = [
+            .none: colors.colorValue(gindex: colors.findColor(with: "none"), cindex: 0),
+            .blue: colors.colorValue(gindex: colors.findColor(with: "blue"), cindex: 0),
+            .red: colors.colorValue(gindex: colors.findColor(with: "red"), cindex: 0),
+            .green: colors.colorValue(gindex: colors.findColor(with: "green"), cindex: 0),
+            .purple: colors.colorValue(gindex: colors.findColor(with: "purple"), cindex: 0),
+            .orange: colors.colorValue(gindex: colors.findColor(with: "orange"), cindex: 0),
+            .yellow: colors.colorValue(gindex: colors.findColor(with: "yellow"), cindex: 0),
+            .black: colors.colorValue(gindex: colors.findColor(with: "black"), cindex: 0),
+            .white: colors.colorValue(gindex: colors.findColor(with: "white"), cindex: 0)
+        ]
+        self.selfPixelColor = colors.colorValue(gindex: colors.findColor(with: "self"), cindex: 0)
+        self.enemyPixelColor = colors.colorValue(gindex: colors.findColor(with: "enemy"), cindex: 0)
+        self.buildingPixelColor = colors.colorValue(gindex: colors.findColor(with: "building"), cindex: 0)
 
         while true {
             let index = markerTileset.findTile(with: "marker-" + String(markerIndex))
@@ -321,7 +324,7 @@ class AssetRenderer {
 
             renderData.x -= rect.xPosition
             renderData.y -= rect.yPosition
-            renderData.colorIndex = asset.color != .none ? asset.color.rawValue - 1 : 0
+            renderData.colorIndex = asset.color != .none ? asset.color.index - 1 : 0
             renderData.tileIndex = -1
 
             switch asset.action {
@@ -426,14 +429,14 @@ class AssetRenderer {
 
     func drawSelections(on surface: GraphicSurface, rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) throws {
         let resourceContext = surface.createResourceContext()
-        var rectangleColor = pixelColors[PlayerColor.max.rawValue]
+        var rectangleColor = selfPixelColor
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
         var selectionX: Int
         var selectionY: Int
 
         if highlightBuilding {
-            rectangleColor = pixelColors[PlayerColor.max.rawValue + 2]
+            rectangleColor = buildingPixelColor
             resourceContext.setSourceRGB(rectangleColor)
             for asset in playerMap.assets {
                 var tempRenderData = AssetRenderData()
@@ -467,26 +470,25 @@ class AssetRenderer {
                     }
                 }
             }
-            rectangleColor = pixelColors[PlayerColor.max.rawValue]
+            rectangleColor = selfPixelColor
         }
 
         resourceContext.setSourceRGB(rectangleColor)
-        if (selectRect.width != 0) && (selectRect.height != 0) {
+        if selectRect.width != 0 && selectRect.height != 0 {
             selectionX = selectRect.xPosition - rect.xPosition
             selectionY = selectRect.yPosition - rect.yPosition
             resourceContext.rectangle(xPosition: selectionX, yPosition: selectionY, width: selectRect.width, height: selectRect.height)
             resourceContext.stroke()
         }
 
-        if selectionList.count != 0 {
-            if let asset = selectionList.first {
-                if asset.color == PlayerColor.none {
-                    rectangleColor = pixelColors[PlayerColor.none.rawValue]
-                } else if asset.color != playerData?.color {
-                    rectangleColor = pixelColors[PlayerColor.max.rawValue + 1]
-                }
-                resourceContext.setSourceRGB(rectangleColor)
+        // FIXME: C++ implementation called lock()
+        if let asset = selectionList.first {
+            if asset.color == .none {
+                rectangleColor = pixelColors[.none]!
+            } else if asset.color != playerData?.color {
+                rectangleColor = enemyPixelColor
             }
+            resourceContext.setSourceRGB(rectangleColor)
         }
 
         for asset in selectionList {
@@ -723,7 +725,7 @@ class AssetRenderer {
                 if onScreen {
                     tempPosition.x -= rect.xPosition
                     tempPosition.y -= tempPosition.y - rect.yPosition
-                    tilesets[type.rawValue].drawTile(on: surface, xposition: tempPosition.x, yposition: tempPosition.y, tileindex: placeIndices[type.rawValue][0], colorindex: (playerData?.color.rawValue)! - 1)
+                    tilesets[type.rawValue].drawTile(on: surface, xposition: tempPosition.x, yposition: tempPosition.y, tileindex: placeIndices[type.rawValue][0], colorindex: playerData!.color.index - 1)
                     var xPos = tempPosition.x
                     var yPos = tempPosition.y
                     for row in placementTiles {
@@ -743,20 +745,17 @@ class AssetRenderer {
         let resourceContext = surface.createResourceContext()
         if let playerData = playerData {
             for asset in playerMap.assets {
-                var assetColor = asset.color
                 let size = asset.size
-                if assetColor == playerData.color {
-                    assetColor = PlayerColor.max
-                }
-                resourceContext.setSourceRGB(pixelColors[assetColor.rawValue])
+                let pixelColor = asset.color == playerData.color ? selfPixelColor : pixelColors[asset.color]!
+                resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(xPosition: asset.tilePositionX(), yPosition: asset.tilePositionY(), width: size, height: size)
                 resourceContext.fill()
             }
         } else {
             for asset in playerMap.assetInitializationList {
-                let assetColor = asset.color
                 let size = PlayerAssetType.findDefault(from: asset.type).size
-                resourceContext.setSourceRGB(pixelColors[assetColor.rawValue])
+                let pixelColor = pixelColors[asset.color]!
+                resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(xPosition: asset.tilePosition.x, yPosition: asset.tilePosition.y, width: size, height: size)
                 resourceContext.fill()
             }

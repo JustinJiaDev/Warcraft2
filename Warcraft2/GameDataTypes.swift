@@ -1,7 +1,7 @@
 import Foundation
 
-enum PlayerColor: Int {
-    case none = 0
+enum PlayerColor {
+    case none
     case blue
     case red
     case green
@@ -10,7 +10,21 @@ enum PlayerColor: Int {
     case yellow
     case black
     case white
-    case max
+
+    init?(index: Int) {
+        switch index {
+        case 0: self = .none
+        case 1: self = .blue
+        case 2: self = .red
+        case 3: self = .green
+        case 4: self = .purple
+        case 5: self = .orange
+        case 6: self = .yellow
+        case 7: self = .black
+        case 8: self = .white
+        default: return nil
+        }
+    }
 
     var index: Int {
         switch self {
@@ -23,7 +37,6 @@ enum PlayerColor: Int {
         case .yellow: return 6
         case .black: return 7
         case .white: return 8
-        case .max: return 9
         }
     }
 }
