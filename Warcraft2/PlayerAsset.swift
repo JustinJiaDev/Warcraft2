@@ -577,36 +577,52 @@ class PlayerAsset {
     }
 
     func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
-        let currentOctant = position.tileOctant()
-        let deltaX: [Int] = [0, 5, 7, 5, 0, -5, -7, -5]
-        let deltaY: [Int] = [ -7, -5, 0, 5, 7, 5, 0, -5]
+        let currentOctant = position.tileOctant
         let currentTile = tilePosition
         let currentPosition = position
+        let deltaX: [Direction: Int] = [
+            .north: 0,
+            .northEast: 5,
+            .east: 7,
+            .southEast: 5,
+            .south: 0,
+            .southWest: -5,
+            .west: -7,
+            .northWest: -5
+        ]
+        let deltaY: [Direction: Int] = [
+            .north: -7,
+            .northEast: -5,
+            .east: 0,
+            .southEast: 5,
+            .south: 7,
+            .southWest: -5,
+            .west: -0,
+            .northWest: -5
+        ]
 
-        if .max == currentOctant || currentOctant == direction { // Aligned just move
-            let newX = speed * deltaX[direction.index] * Position.tileWidth + moveRemainderX
-            let newY = speed * deltaY[direction.index] * Position.tileHeight + moveRemainderY
+        if currentOctant == .max || currentOctant == direction { // Aligned just move
+            let newX = speed * deltaX[direction]! * Position.tileWidth + moveRemainderX
+            let newY = speed * deltaY[direction]! * Position.tileHeight + moveRemainderY
             moveRemainderX = newX % PlayerAsset.updateDivisor
             moveRemainderY = newY % PlayerAsset.updateDivisor
-            positionX += (newX / PlayerAsset.updateDivisor)
-            positionY += (newY / PlayerAsset.updateDivisor)
+            positionX += newX / PlayerAsset.updateDivisor
+            positionY += newY / PlayerAsset.updateDivisor
         } else { // Entering
-            let newX = speed + deltaX[direction.index] * Position.tileWidth + moveRemainderX
-            let newY = speed + deltaY[direction.index] * Position.tileHeight + moveRemainderY
-            var tempMoveRemainderX = newX % PlayerAsset.updateDivisor
-            var tempMoveRemainderY = newY % PlayerAsset.updateDivisor
+            let newX = speed + deltaX[direction]! * Position.tileWidth + moveRemainderX
+            let newY = speed + deltaY[direction]! * Position.tileHeight + moveRemainderY
+            moveRemainderX = newX % PlayerAsset.updateDivisor
+            moveRemainderY = newY % PlayerAsset.updateDivisor
             let newPosition = Position(x: positionX + newX / PlayerAsset.updateDivisor, y: positionY + newY / PlayerAsset.updateDivisor)
 
-            if newPosition.tileOctant() == direction {
+            if newPosition.tileOctant == direction {
                 newPosition.setToTile(newPosition)
                 newPosition.setFromTile(newPosition)
-                tempMoveRemainderX = 0
-                tempMoveRemainderY = 0
+                moveRemainderX = 0
+                moveRemainderY = 0
             }
 
             position = newPosition
-            moveRemainderX = tempMoveRemainderX
-            moveRemainderY = tempMoveRemainderY
         }
 
         tilePosition.setToTile(position)
@@ -618,7 +634,7 @@ class PlayerAsset {
             if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
                 var returnValue = false
                 if let occupancyMapSquare = occupancyMap[tilePositionY][tilePositionX], occupancyMapSquare.action == .walk {
-                    returnValue = occupancyMapSquare.direction == currentPosition.tileOctant()
+                    returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
                 }
                 tilePosition = currentTile
                 position = currentPosition
