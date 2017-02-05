@@ -9,7 +9,7 @@
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AC6D47D1-D645-46D3-A55C-24BE19DB16BC",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "B9B9848CC2E4D975EA9124B5A47E3A51B7D4C38E" : "ECS160iOS\/",
+    "B9B9848CC2E4D975EA9124B5A47E3A51B7D4C38E" : "iOS_porting\/",
     "F8825D2960F09A7EAE89C2C5C1734299BCADF5A1" : "ECS160Linux\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Warcraft2",

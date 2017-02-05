@@ -1,14 +1,6 @@
-//
-//  UnitActionRenderer.swift
-//  Warcraft2
-//
-//  Created by Michelle Lee on 2/3/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
 import Foundation
 
-class UnitActionRenderer{
+class UnitActionRenderer {
     private var iconTileset: GraphicTileset
     private var bevel: Bevel
     private var playerData: PlayerData
@@ -18,18 +10,18 @@ class UnitActionRenderer{
     private var fullIconWidth: Int
     private var fullIconHeight: Int
     private var disabledIndex: Int
-    
-    init(bevelParam: Bevel, icons: GraphicTileset, color: PlayerColor, player: PlayerData){
+
+    init(bevelParam: Bevel, icons: GraphicTileset, color: PlayerColor, player: PlayerData) {
         iconTileset = icons
-        bevel = bevelParam
         playerData = player
         playerColor = color
-        
+        bevel = bevelParam
+
         commandIndices = Array(repeating: AssetCapabilityType.none.rawValue, count: AssetCapabilityType.max.rawValue)
         fullIconWidth = iconTileset.tileWidth + bevel.width * 2
         fullIconHeight = iconTileset.tileHeight + bevel.width * 2
         displayedCommands = Array(repeating: AssetCapabilityType.none, count: 9)
-        
+
         commandIndices[AssetCapabilityType.none.rawValue] = -1
         commandIndices[AssetCapabilityType.buildPeasant.rawValue] = iconTileset.findTile(with: "peasant")
         commandIndices[AssetCapabilityType.buildFootman.rawValue] = iconTileset.findTile(with: "footman")
@@ -68,147 +60,129 @@ class UnitActionRenderer{
         commandIndices[AssetCapabilityType.longbow.rawValue] = iconTileset.findTile(with: "longbow")
         commandIndices[AssetCapabilityType.rangerScouting.rawValue] = iconTileset.findTile(with: "ranger-scouting")
         commandIndices[AssetCapabilityType.marksmanship.rawValue] = iconTileset.findTile(with: "marksmanship")
-        
+
         disabledIndex = iconTileset.findTile(with: "disabled")
     }
-    
-    
-    func minimumWidth() -> Int {
+
+    var minimumWidth: Int {
         return fullIconWidth * 3 + bevel.width * 2
     }
-    
-    func minimumHeight() -> Int {
+
+    var minimumHeight: Int {
         return fullIconHeight * 3 + bevel.width * 2
     }
-    
-    func selection(position: Position) -> AssetCapabilityType{
-        if(((position.x % (fullIconWidth + bevel.width)) < fullIconWidth) && ((position.y % (fullIconWidth + bevel.width)) < fullIconHeight)){
+
+    func selection(at position: Position) -> AssetCapabilityType {
+        if ((position.x % (fullIconWidth + bevel.width)) < fullIconWidth) && ((position.y % (fullIconWidth + bevel.width)) < fullIconHeight) {
             let index = (position.x / (fullIconWidth + bevel.width)) + (position.y / (fullIconHeight + bevel.width)) * 3
             return displayedCommands[index]
         }
-        return AssetCapabilityType.none
+        return .none
     }
-    
-    func drawUnitAction(surface: GraphicSurface,  selectionlist: [PlayerAsset], currentaction: AssetCapabilityType){
+
+    func drawUnitAction(surface: GraphicSurface, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) throws {
         var allSame = true
         var isFirst = true
         var moveable = true
         var hasCargo = false
         var unitType = AssetType.none
-        
-        displayedCommands = Array(repeating: AssetCapabilityType.none, count: 9)
-        
-        if(selectionlist.count == 0){
+
+        displayedCommands = Array(repeating: .none, count: 9)
+
+        if selectionList.count == 0 {
             return
         }
-        
-        for asset in selectionlist{
-            if(playerColor != asset.color){
+
+        for asset in selectionList {
+            if playerColor != asset.color {
                 return
             }
-            if(isFirst){
+            if isFirst {
                 unitType = asset.type
                 isFirst = false
                 moveable = 0 < asset.speed
-            }
-            else if(unitType != asset.type){
+            } else if unitType != asset.type {
                 allSame = false
             }
-            if((asset.lumber != 0) || (asset.gold != 0)){
+            if (asset.lumber != 0) || (asset.gold != 0) {
                 hasCargo = true
             }
+        } // for loop
 
-        } //for loop
-        
-        if(AssetCapabilityType.none == currentaction){
-            if(moveable){
-                displayedCommands[0] = hasCargo ? AssetCapabilityType.convey : AssetCapabilityType.move
-                displayedCommands[1] = AssetCapabilityType.standGround
-                displayedCommands[2] = AssetCapabilityType.attack
-                
-                let asset = selectionlist.first
-                if(asset?.hasCapability(AssetCapabilityType.repair))!{
-                    displayedCommands[3] = AssetCapabilityType.repair
+        if .none == currentAction {
+            if moveable {
+                displayedCommands[0] = hasCargo ? .convey : .move
+                displayedCommands[1] = .standGround
+                displayedCommands[2] = .attack
+
+                let asset = selectionList[0]
+                if asset.hasCapability(.repair) {
+                    displayedCommands[3] = .repair
                 }
-                if(asset?.hasCapability(AssetCapabilityType.patrol))!{
-                    displayedCommands[3] = AssetCapabilityType.patrol
+                if asset.hasCapability(.patrol) {
+                    displayedCommands[3] = .patrol
                 }
-                if(asset?.hasCapability(AssetCapabilityType.mine))!{
-                    displayedCommands[4] = AssetCapabilityType.mine
+                if asset.hasCapability(.mine) {
+                    displayedCommands[4] = .mine
                 }
-                if((asset?.hasCapability(AssetCapabilityType.buildSimple))! && (1 == selectionlist.count)){
-                    displayedCommands[6] = AssetCapabilityType.buildSimple
+                if (asset.hasCapability(.buildSimple)) && (1 == selectionList.count) {
+                    displayedCommands[6] = .buildSimple
                 }
-            }
-            else {
-                let asset = selectionlist.first
-                if((AssetAction.construct == asset?.action) || (AssetAction.capability == asset?.action)){
-                    displayedCommands[displayedCommands.count - 1] = AssetCapabilityType.cancel
-                }
-                else{
-                    var index = 0
-                    for capability in (asset?.capabilities)!{
-                        displayedCommands[index] = capability
-                        index += 1
-                        if(displayedCommands.count <= index){
+            } else {
+                let asset = selectionList[0]
+                if (asset.action == .construct) || (asset.action == .capability) {
+                    displayedCommands[displayedCommands.count - 1] = .cancel
+                } else {
+                    let index = 0
+                    for i in 0 ..< asset.capabilities.count {
+                        displayedCommands[i] = asset.capabilities[i]
+                        if displayedCommands.count <= index {
                             break
                         }
                     }
                 }
             }
-        }
-        else if(AssetCapabilityType.buildSimple == currentaction){
-            let asset = selectionlist.first
+        } else if .buildSimple == currentAction {
+            let asset = selectionList[0]
             var index = 0
-            for capability in [AssetCapabilityType.buildFarm, AssetCapabilityType.buildTownHall, AssetCapabilityType.buildBarracks, AssetCapabilityType.buildLumberMill, AssetCapabilityType.buildBlacksmith, AssetCapabilityType.buildKeep, AssetCapabilityType.buildCastle, AssetCapabilityType.buildScoutTower, AssetCapabilityType.buildGuardTower, AssetCapabilityType.buildCannonTower]{
-                
-                if(asset?.hasCapability(capability))!{
+            for capability in [AssetCapabilityType.buildFarm, .buildTownHall, .buildBarracks, .buildLumberMill, .buildBlacksmith, .buildKeep, .buildCastle, .buildScoutTower, .buildGuardTower, .buildCannonTower] {
+
+                if asset.hasCapability(capability) {
                     displayedCommands[index] = capability
                     index += 1
-                    if(displayedCommands.count <= index){
+                    if displayedCommands.count <= index {
                         break
                     }
                 }
             }
             displayedCommands[displayedCommands.count - 1] = AssetCapabilityType.cancel
-        }
-        else{
+        } else {
             displayedCommands[displayedCommands.count - 1] = AssetCapabilityType.cancel
         }
-        
+
         var xOffset = bevel.width
         var yOffset = bevel.width
         var index = 0
-        //var playerCapability:PlayerCapability
-        
-        for iconType in displayedCommands{
-            if(AssetCapabilityType.none != iconType){
+
+        for iconType in displayedCommands {
+            if .none != iconType {
                 let playerCapability = PlayerCapability.findCapability(type: iconType)
-                do{
-                    try bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
-                    try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[iconType.rawValue])
-                } catch {
-                    print(error)
-                }
-                
-                if(playerCapability.targetType != PlayerCapability.TargetType.none){    //not too sure
-                    if(!playerCapability.canInitiate(actor: selectionlist.first!, playerData: playerData)){
-                        do{
-                            try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
-                        } catch{
-                            print(error)
-                        }
+                try bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
+                try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[iconType.rawValue])
+
+                if playerCapability.targetType != PlayerCapability.TargetType.none {
+                    if !playerCapability.canInitiate(actor: selectionList[0], playerData: playerData) {
+                        try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
                     }
                 }
             }
-            
+
             xOffset += fullIconWidth + bevel.width
             index += 1
-            if(0 == (index % 3)){
+            if 0 == (index % 3) {
                 xOffset = bevel.width
                 yOffset += fullIconHeight + bevel.width
             }
         }
-        
     }
 }
