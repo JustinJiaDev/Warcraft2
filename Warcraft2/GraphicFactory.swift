@@ -8,13 +8,12 @@ import UIKit
 
 class GraphicFactory {
     static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
-        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
-            return nil
-        }
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: 0) else {
-            return nil
-        }
-        return CGLayer(context, size: CGSize(width: width, height: height), auxiliaryInfo: nil)
+        let size = CGSize(width: width, height: height)
+        UIGraphicsBeginImageContext(size)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        let layer = CGLayer(context, size: size, auxiliaryInfo: nil)
+        UIGraphicsEndImageContext()
+        return layer
     }
 
     static func loadSurface(dataSource: DataSource) -> GraphicSurface? {
