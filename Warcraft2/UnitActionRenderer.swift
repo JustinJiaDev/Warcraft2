@@ -73,7 +73,7 @@ class UnitActionRenderer {
     }
 
     func selection(at position: Position) -> AssetCapabilityType {
-        if ((position.x % (fullIconWidth + bevel.width)) < fullIconWidth) && ((position.y % (fullIconWidth + bevel.width)) < fullIconHeight) {
+        if (position.x % (fullIconWidth + bevel.width)) < fullIconWidth && (position.y % (fullIconWidth + bevel.width)) < fullIconHeight {
             let index = (position.x / (fullIconWidth + bevel.width)) + (position.y / (fullIconHeight + bevel.width)) * 3
             return displayedCommands[index]
         }
@@ -104,7 +104,7 @@ class UnitActionRenderer {
             } else if unitType != asset.type {
                 allSame = false
             }
-            if (asset.lumber != 0) || (asset.gold != 0) {
+            if asset.lumber != 0 || asset.gold != 0 {
                 hasCargo = true
             }
         } // for loop
@@ -125,12 +125,12 @@ class UnitActionRenderer {
                 if asset.hasCapability(.mine) {
                     displayedCommands[4] = .mine
                 }
-                if (asset.hasCapability(.buildSimple)) && (1 == selectionList.count) {
+                if asset.hasCapability(.buildSimple) && 1 == selectionList.count {
                     displayedCommands[6] = .buildSimple
                 }
             } else {
                 let asset = selectionList[0]
-                if (asset.action == .construct) || (asset.action == .capability) {
+                if asset.action == .construct || asset.action == .capability {
                     displayedCommands[displayedCommands.count - 1] = .cancel
                 } else {
                     let index = 0
