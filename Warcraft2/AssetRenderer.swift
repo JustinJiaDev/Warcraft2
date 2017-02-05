@@ -731,17 +731,11 @@ class AssetRenderer {
             var yOff = 0
             placementTiles = Array(repeating: [], count: assetType.size)
 
-            // C++ code line 719 - 733
-            // Not sure if there is a better way to write this for loop? since the loop variable is immutable in Swift
             for rowIndex in 0 ..< placementTiles.count {
                 placementTiles[rowIndex] = Array(repeating: -1, count: assetType.size)
                 for cellIndex in 0 ..< placementTiles[rowIndex].count {
                     let tileType = playerMap.tileTypeAt(x: tempTilePosition.x + xOff, y: tempTilePosition.y + yOff)
-                    if tileType == .grass {
-                        placementTiles[rowIndex][cellIndex] = 1
-                    } else {
-                        placementTiles[rowIndex][cellIndex] = 0
-                    }
+                    placementTiles[rowIndex][cellIndex] = tileType == .grass ? 1 : 0
                     xOff += 1
                 }
                 xOff = 0
