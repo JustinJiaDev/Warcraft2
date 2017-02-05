@@ -230,27 +230,88 @@ struct AssetCommand {
     var activatedCapability: ActivatedPlayerCapability?
 }
 
-class PlayerAsset: Equatable {
+class PlayerAsset {
 
-    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
-        return lhs == rhs
+    var creationCycle: Int = 0
+    var hitPoints: Int = 0
+    var gold: Int = 0
+    var lumber: Int = 0
+    var step: Int = 0
+
+    private(set) var moveRemainderX: Int = 0
+    private(set) var moveRemainderY: Int = 0
+
+    var tilePosition: Position {
+        willSet {
+            position.setFromTile(newValue)
+        }
     }
 
-    var creationCycle: Int
-    var hitPoints: Int
-    var gold: Int
-    var lumber: Int
-    var step: Int
+    var tilePositionX: Int {
+        get {
+            return tilePosition.x
+        }
+        set {
+            position.setXFromTile(newValue)
+            tilePosition.x = newValue
+        }
+    }
 
-    private(set) var moveRemainderX: Int
-    private(set) var moveRemainderY: Int
-    private(set) var tilePosition: Position
-    private(set) var position: Position
+    var tilePositionY: Int {
+        get {
+            return tilePosition.y
+        }
+        set {
+            position.setYFromTile(newValue)
+            tilePosition.y = newValue
+        }
+    }
+
+    var position: Position {
+        willSet {
+            tilePosition.setToTile(newValue)
+        }
+    }
+
+    var positionX: Int {
+        get {
+            return position.x
+        }
+        set {
+            tilePosition.setXToTile(newValue)
+            position.x = newValue
+        }
+    }
+
+    var positionY: Int {
+        get {
+            return position.y
+        }
+        set {
+            tilePosition.setYToTile(newValue)
+            position.y = newValue
+        }
+    }
+
     var direction: Direction
-    private(set) var commands: [AssetCommand]
+
+    private(set) var commands: [AssetCommand] = []
     private(set) var assetType: PlayerAssetType
-    private(set) static var updateFrequency: Int = 0
-    private(set) static var updateDivisor: Int = 0
+
+    private static var _updateFrequency = 1
+    static var updateFrequency: Int {
+        get {
+            return _updateFrequency
+        }
+        set {
+            if newValue > 0 {
+                _updateFrequency = newValue
+                updateDivisor = 32 * _updateFrequency
+            }
+        }
+    }
+
+    private(set) static var updateDivisor = 32
 
     var isAlive: Bool {
         return hitPoints > 0
@@ -389,11 +450,18 @@ class PlayerAsset: Equatable {
     }
 
     init(playerAsset: PlayerAssetType) {
-        fatalError("This method is not yet implemented.")
-    }
+        tilePosition = Position(x: 0, y: 0)
+        position = Position(x: 0, y: 0)
 
-    func setUpdateFrequency(frequency _: Int) {
-        fatalError("This method is not yet implemented.")
+        assetType = playerAsset
+        hitPoints = playerAsset.hitPoints
+        moveRemainderX = 0
+        moveRemainderY = 0
+        direction = .south
+
+        PlayerAsset.updateFrequency = 1
+
+        tilePosition = Position()
     }
 
     func incrementHitPoints(_ increments: Int) -> Int {
@@ -436,48 +504,8 @@ class PlayerAsset: Equatable {
         step += 1
     }
 
-    func setTitlePosition(position _: Position) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func tilePositionX() -> Int {
-        return tilePosition.x
-    }
-
-    func setTilePositionX(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func tilePositionY() -> Int {
-        return tilePosition.y
-    }
-
-    func setTilePositionY(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func setPosition(position _: Position) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func positionX() -> Int {
-        return position.x
-    }
-
-    func setPositionX(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func positionY() -> Int {
-        return position.y
-    }
-
-    func setPositionY(_: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func closestPosition(_ position: Position) -> Position {
-        fatalError("This method is not yet implemented.")
+    func closestPosition(_ pos: Position) -> Position {
+        return pos.closestPosition(position, objSize: size)
     }
 
     func clearCommand() {
@@ -526,7 +554,18 @@ class PlayerAsset: Equatable {
     }
 
     func interruptible() -> Bool {
-        fatalError("This method is not yet implemented.")
+        let command = currentCommand()
+        switch command.action {
+        case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
+            return false
+        case .capability:
+            if let assetTarget = command.assetTarget {
+                return AssetAction.construct != assetTarget.action
+            }
+            return true
+        default:
+            return true
+        }
     }
 
     func changeType(_ type: PlayerAssetType) {
@@ -537,7 +576,84 @@ class PlayerAsset: Equatable {
         return assetType.hasCapability(capability)
     }
 
-    func moveStep(occupancyMap _: [[PlayerAsset]], diagonals _: [[Bool]]) {
-        fatalError("This method is not yet implemented.")
+    func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
+        let currentOctant = position.tileOctant
+        let currentTile = tilePosition
+        let currentPosition = position
+        let deltaX: [Direction: Int] = [
+            .north: 0,
+            .northEast: 5,
+            .east: 7,
+            .southEast: 5,
+            .south: 0,
+            .southWest: -5,
+            .west: -7,
+            .northWest: -5
+        ]
+        let deltaY: [Direction: Int] = [
+            .north: -7,
+            .northEast: -5,
+            .east: 0,
+            .southEast: 5,
+            .south: 7,
+            .southWest: -5,
+            .west: -0,
+            .northWest: -5
+        ]
+
+        if currentOctant == .max || currentOctant == direction { // Aligned just move
+            let newX = speed * deltaX[direction]! * Position.tileWidth + moveRemainderX
+            let newY = speed * deltaY[direction]! * Position.tileHeight + moveRemainderY
+            moveRemainderX = newX % PlayerAsset.updateDivisor
+            moveRemainderY = newY % PlayerAsset.updateDivisor
+            positionX += newX / PlayerAsset.updateDivisor
+            positionY += newY / PlayerAsset.updateDivisor
+        } else { // Entering
+            let newX = speed + deltaX[direction]! * Position.tileWidth + moveRemainderX
+            let newY = speed + deltaY[direction]! * Position.tileHeight + moveRemainderY
+            moveRemainderX = newX % PlayerAsset.updateDivisor
+            moveRemainderY = newY % PlayerAsset.updateDivisor
+            let newPosition = Position(x: positionX + newX / PlayerAsset.updateDivisor, y: positionY + newY / PlayerAsset.updateDivisor)
+
+            if newPosition.tileOctant == direction {
+                newPosition.setToTile(newPosition)
+                newPosition.setFromTile(newPosition)
+                moveRemainderX = 0
+                moveRemainderY = 0
+            }
+
+            position = newPosition
+        }
+
+        tilePosition.setToTile(position)
+        if currentTile != tilePosition {
+            let diagonal = (currentTile.x != tilePositionX) && (currentTile.y != tilePositionY)
+            let diagonalX = min(currentTile.x, tilePositionX)
+            let diagonalY = min(currentTile.y, tilePositionY)
+
+            if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
+                var returnValue = false
+                if let occupancyMapSquare = occupancyMap[tilePositionY][tilePositionX], occupancyMapSquare.action == .walk {
+                    returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
+                }
+                tilePosition = currentTile
+                position = currentPosition
+                return returnValue
+            }
+            if diagonal {
+                diagonals[diagonalY][diagonalX] = true
+            }
+            occupancyMap[tilePositionY][tilePositionX] = occupancyMap[currentTile.y][currentTile.x]
+            occupancyMap[currentTile.y][currentTile.x] = nil
+        }
+
+        incrementStep()
+        return true
+    }
+}
+
+extension PlayerAsset: Equatable {
+    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
+        return lhs == rhs
     }
 }

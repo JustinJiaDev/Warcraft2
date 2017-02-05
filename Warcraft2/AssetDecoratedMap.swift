@@ -169,12 +169,12 @@ class AssetDecoratedMap: TerrainMap {
         }
         for asset in assets {
             let offset = (AssetType.goldMine == asset.type) ? 1 : 0
-            if AssetType.none == asset.type
+            if .none == asset.type
                 || ignoreAsset === asset
-                || rightX <= asset.tilePositionX() - offset
-                || position.x >= asset.tilePositionX() + asset.size + offset
-                || bottomY <= asset.tilePositionY() - offset
-                || position.y >= asset.tilePositionY() + asset.size + offset {
+                || rightX <= asset.tilePositionX - offset
+                || position.x >= asset.tilePositionX + asset.size + offset
+                || bottomY <= asset.tilePositionY - offset
+                || position.y >= asset.tilePositionY + asset.size + offset {
                 continue
             } else {
                 return false
@@ -188,10 +188,10 @@ class AssetDecoratedMap: TerrainMap {
         var bestDistance = -1
         var currentDistance: Int
         var bestPosition = Position(x: -1, y: -1)
-        topY = fromAsset.tilePositionY() - placeAsset.size
-        bottomY = fromAsset.tilePositionY() + fromAsset.size
-        leftX = fromAsset.tilePositionX() - placeAsset.size
-        rightX = fromAsset.tilePositionX() + fromAsset.size
+        topY = fromAsset.tilePositionY - placeAsset.size
+        bottomY = fromAsset.tilePositionY + fromAsset.size
+        leftX = fromAsset.tilePositionX - placeAsset.size
+        rightX = fromAsset.tilePositionX + fromAsset.size
 
         while true {
             var skipped = 0
@@ -423,7 +423,7 @@ class AssetDecoratedMap: TerrainMap {
             if asset.tilePosition != position {
                 for y in 0 ..< asset.size {
                     for x in 0 ..< asset.size {
-                        searchMap[asset.tilePositionY() + y + 1][asset.tilePositionX() + x + 1] = .visited
+                        searchMap[asset.tilePositionY + y + 1][asset.tilePositionX + x + 1] = .visited
                     }
                 }
             }
