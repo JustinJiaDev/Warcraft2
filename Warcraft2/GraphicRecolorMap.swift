@@ -42,3 +42,4 @@ class GraphicRecolorMap {
         fatalError("This method is not yet implemented")
     }
 }
+
