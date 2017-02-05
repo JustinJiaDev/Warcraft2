@@ -1,5 +1,3 @@
-import Foundation
-
 class GraphicRecolorMap {
 
     private var state: Int = -1
