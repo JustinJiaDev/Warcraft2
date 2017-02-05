@@ -215,7 +215,7 @@ class AssetRenderer {
                 if tileIndex >= 0 {
                     noneIndices[typeIndex].append(tileIndex)
                 } else if walkIndices[typeIndex].count != 0 {
-                    noneIndices[typeIndex].append(walkIndices[typeIndex][noneIndices[typeIndex].count * (walkIndices[typeIndex].count / Direction.max.rawValue)])
+                    noneIndices[typeIndex].append(walkIndices[typeIndex][noneIndices[typeIndex].count * (walkIndices[typeIndex].count / Direction.numberOfDirections)])
                 } else if tileset.findTile(with: "inactive") >= 0 {
                     tileIndex = tileset.findTile(with: "inactive")
                     noneIndices[typeIndex].append(tileIndex)
@@ -512,13 +512,13 @@ class AssetRenderer {
                     tempRenderData.y -= rect.yPosition
 
                     if onScreen {
-                        let actionSteps = corpseIndices.count / Direction.max.rawValue
+                        let actionSteps = corpseIndices.count / Direction.numberOfDirections
                         if actionSteps != 0 {
                             var currentStep = asset.step / (animationDownsample * targetFrequency)
                             if currentStep >= actionSteps {
                                 currentStep = actionSteps - 1
                             }
-                            tempRenderData.tileIndex = corpseIndices[asset.direction.rawValue * actionSteps + currentStep]
+                            tempRenderData.tileIndex = corpseIndices[asset.direction.index * actionSteps + currentStep]
                         }
                         try corpseTileset.drawTile(on: surface, x: tempRenderData.x, y: tempRenderData.y, index: tempRenderData.tileIndex)
                     }
@@ -595,8 +595,8 @@ class AssetRenderer {
                     tempRenderData.x -= rect.xPosition
                     tempRenderData.y -= rect.yPosition
                     if onScreen {
-                        let actionSteps = arrowIndices.count / Direction.max.rawValue
-                        try arrowTileset.drawTile(on: surface, x: tempRenderData.x, y: tempRenderData.y, index: arrowIndices[asset.direction.rawValue * actionSteps + (((playerData?.gameCycle)! - asset.creationCycle) % actionSteps)])
+                        let actionSteps = arrowIndices.count / Direction.numberOfDirections
+                        try arrowTileset.drawTile(on: surface, x: tempRenderData.x, y: tempRenderData.y, index: arrowIndices[asset.direction.index * actionSteps + ((playerData!.gameCycle - asset.creationCycle) % actionSteps)])
                     }
                 }
             } else if asset.speed == 0 {

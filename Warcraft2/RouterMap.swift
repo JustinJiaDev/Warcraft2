@@ -21,15 +21,10 @@ class RouterMap {
     static var idealSearchDirection = Direction.north
     static var mapWidth = 1
 
-    static func movingAway(_ dir1: Direction, _ dir2: Direction) -> Bool {
-        if 0 > dir2.rawValue || Direction.max.rawValue <= dir2.rawValue {
-            return false
-        }
-        let value = Direction.max.rawValue + dir2.rawValue - dir1.rawValue % Direction.max.rawValue
-        if 1 >= value || Direction.max.rawValue - 1 <= value {
-            return true
-        }
-        return false
+    static func movingAway(_ first: Direction, _ second: Direction) -> Bool {
+        let angleInBetween = abs(first.angle - second.angle)
+        let normalizedAngle = min(angleInBetween, 360 - angleInBetween)
+        return normalizedAngle <= 45
     }
 
     func findRoute(resMap: AssetDecoratedMap, asset: PlayerAsset, target: Position) -> Direction {
@@ -111,7 +106,7 @@ class RouterMap {
                             }
                         }
                     } else {
-                        map[res.tilePositionY() + 1][res.tilePositionX() + 1] = SearchStatus(rawValue: SearchStatus.occupied.rawValue - res.direction.rawValue)!
+                        map[res.tilePositionY() + 1][res.tilePositionX() + 1] = SearchStatus(rawValue: SearchStatus.occupied.rawValue - res.direction.index)!
                     }
                 }
             }
@@ -139,7 +134,7 @@ class RouterMap {
             for index in 0 ..< searchDirections.count {
                 tempTile.x = currentSearch.x + resMapXOffsets[index]
                 tempTile.y = currentSearch.y + resMapYOffsets[index]
-                let tempDirection = Direction(rawValue: SearchStatus.occupied.rawValue - map[tempTile.y + 1][tempTile.x + 1].rawValue)!
+                let tempDirection = Direction(index: SearchStatus.occupied.rawValue - map[tempTile.y + 1][tempTile.x + 1].rawValue)!
                 if SearchStatus.unvisited == map[tempTile.y + 1][tempTile.x + 1] || RouterMap.movingAway(searchDirections[index], tempDirection) {
                     map[tempTile.y + 1][tempTile.x + 1] = SearchStatus(rawValue: index)!
                     let currentTileType = resMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
@@ -179,19 +174,19 @@ class RouterMap {
             currentTile.y -= resMapYOffsets[index]
         }
         if directionBeforeLast != lastInDirection {
-            let currentTileType = resMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.rawValue], y: startY + diagCheckYOffset[directionBeforeLast.rawValue])
+            let currentTileType = resMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.index], y: startY + diagCheckYOffset[directionBeforeLast.index])
             if currentTileType == .grass
                 || currentTileType == .dirt
                 || currentTileType == .stump
                 || currentTileType == .rubble
                 || currentTileType == .none {
-                var sum = lastInDirection.rawValue + directionBeforeLast.rawValue
+                var sum = lastInDirection.index + directionBeforeLast.index
                 // NW wrap around
                 if 6 == sum && lastInDirection == .north || .north == directionBeforeLast {
                     sum += 8
                 }
                 sum /= 2
-                lastInDirection = Direction(rawValue: sum)!
+                lastInDirection = Direction(index: sum)!
             }
         }
 
