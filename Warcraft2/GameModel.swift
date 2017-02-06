@@ -497,8 +497,8 @@ class PlayerData {
 class GameModel {
     private var randomNumberGenerator: RandomNumberGenerator
     private var actualMap: AssetDecoratedMap
-    private var assetOccupancyMap: [[PlayerAsset]]
-    private var diagonalOccupancyMap: [[Bool]]
+    private var assetOccupancyMap: [[PlayerAsset?]]
+    private var diagonalOccupancyMap: [[Bool?]]
     private var routerMap: RouterMap
     private var players: [PlayerData]
     private var lumberAvailable: [[Int]]
@@ -530,13 +530,22 @@ class GameModel {
         lumberPerHarvest = 100
         goldPerMining = 100
         
-        randomNumberGenerator.seed(seed: seed)
+        randomNumberGenerator.seed(seed)
         actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
         
         for playerIndex in 0..<PlayerColor.max.rawValue {
             players.append(PlayerData(map: actualMap, color: PlayerColor(rawValue: playerIndex)!))
         }
-        fatalError("Not implemented yet")
+        assetOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
+        diagonalOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
+        lumberAvailable = Array(repeating: Array(repeating: 0, count: actualMap.width), count: actualMap.height)
+        for row in 0..<actualMap.height {
+            for col in 0..<actualMap.width {
+                if actualMap.tileTypeAt(x: col, y: row) == .tree {
+                    lumberAvailable[row][col] = players[0].lumber
+                }
+            }
+        }
     }
 
     func validAsset(playerAsset: PlayerAsset) -> Bool {
