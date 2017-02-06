@@ -708,7 +708,7 @@ class AssetRenderer {
         for playerAsset in playerMap.assets {
             let offset = playerAsset.type == .goldMine ? 1 : 0
 
-            if playerAsset == builder {
+            if playerAsset === builder {
                 continue
             }
             if xOffset <= playerAsset.tilePositionX - offset {

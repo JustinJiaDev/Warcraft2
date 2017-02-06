@@ -755,9 +755,3 @@ class PlayerAsset {
         return true
     }
 }
-
-extension PlayerAsset: Equatable {
-    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
-        return lhs == rhs
-    }
-}

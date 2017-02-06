@@ -125,7 +125,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func removeAsset(_ asset: PlayerAsset) {
-        if let index = assets.index(of: asset) {
+        if let index = assets.index(where: { $0 === asset }) {
             assets.remove(at: index)
         }
     }
