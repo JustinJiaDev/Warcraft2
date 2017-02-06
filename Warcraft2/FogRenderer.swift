@@ -54,7 +54,7 @@ class FogRenderer {
                     var bestHamming = 8
 
                     for orig in originalValues {
-                        var currentHamming = FogRenderer.hammingDistance(v1: orig, v2: value)
+                        var currentHamming = FogRenderer.hammingDistance(orig, value)
 
                         if currentHamming == FogRenderer.hammingDistance(v1: 0, v2: ~orig & value) {
                             if currentHamming < bestHamming {
@@ -70,7 +70,7 @@ class FogRenderer {
                         bestHamming = 8
 
                         for orig in originalValues {
-                            let currentHamming = FogRenderer.hammingDistance(v1: orig, v2: value)
+                            let currentHamming = FogRenderer.hammingDistance(orig, value)
 
                             if currentHamming == FogRenderer.hammingDistance(v1: 0, v2: ~orig & value) {
                                 if currentHamming < bestHamming {
@@ -90,7 +90,7 @@ class FogRenderer {
         }
     }
 
-    func drawMap(surface: GraphicSurface, rectangle: Rectangle) throws {
+    func drawMap(on surface: GraphicSurface, rectangle: Rectangle) throws {
         var unknownFog = Array(repeating: false, count: 0x100)
         var unknownBlack = Array(repeating: false, count: 0x100)
 
@@ -163,7 +163,7 @@ class FogRenderer {
         }
     }
 
-    func drawMiniMap(surface: GraphicSurface) {
+    func drawMiniMap(on surface: GraphicSurface) {
         let resourceContext = surface.resourceContext
 
         resourceContext.setLineWidth(1)
@@ -192,7 +192,7 @@ class FogRenderer {
         }
     }
 
-    static func hammingDistance(v1: Int, v2: Int) -> Int {
+    static func hammingDistance(_ v1: Int, _ v2: Int) -> Int {
         var delta = v1 ^ v2
         var distance = 0
 
