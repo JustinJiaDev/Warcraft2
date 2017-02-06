@@ -1,6 +1,14 @@
 import UIKit
 import AVFoundation
 
+fileprivate func tileset(with name: String) throws -> GraphicMulticolorTileset {
+    let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat")!
+    let tilesetSource = try FileDataSource(url: tilesetURL)
+    let tileset = GraphicMulticolorTileset()
+    try tileset.loadTileset(from: tilesetSource)
+    return tileset
+}
+
 class TestViewController: UIViewController {
 
     private lazy var midiPlayer: AVMIDIPlayer = {
@@ -16,9 +24,7 @@ class TestViewController: UIViewController {
 
     private lazy var map: AssetDecoratedMap = {
         do {
-            guard let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map") else {
-                fatalError()
-            }
+            let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map")!
             let mapSource = try FileDataSource(url: mapURL)
             let map = AssetDecoratedMap()
             try map.loadMap(source: mapSource)
@@ -30,18 +36,10 @@ class TestViewController: UIViewController {
 
     private lazy var mapRenderer: MapRenderer = {
         do {
-            guard let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat") else {
-                fatalError()
-            }
+            let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat")!
             let configuration = try FileDataSource(url: configurationURL)
-
-            guard let tilesetURL = Bundle.main.url(forResource: "Terrain", withExtension: "dat") else {
-                fatalError()
-            }
-            let tilesetSource = try FileDataSource(url: tilesetURL)
-            let tileset = GraphicTileset()
-            try tileset.loadTileset(from: tilesetSource)
-            return try MapRenderer(configuration: configuration, tileset: tileset, map: self.map)
+            let terrainTileset = try tileset(with: "Terrain")
+            return try MapRenderer(configuration: configuration, tileset: terrainTileset, map: self.map)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
@@ -50,18 +48,27 @@ class TestViewController: UIViewController {
     private lazy var assetRenderer: AssetRenderer = {
         do {
             let colors = GraphicRecolorMap()
-            let tilesets: [GraphicMulticolorTileset] = try ["GoldMine", "Peasant"].map { name in
-                let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat")!
-                let tilesetSource = try FileDataSource(url: tilesetURL)
-                let tileset = GraphicMulticolorTileset()
-                try tileset.loadTileset(from: tilesetSource)
-                return tileset
-            }
-            let markerTileset = GraphicTileset()
-            let corpseTileset = GraphicTileset()
-            let fireTilesets = [GraphicTileset()]
-            let buildingDeathTileset = GraphicTileset()
-            let arrowTileset = GraphicTileset()
+            var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
+            tilesets[AssetType.peasant.rawValue] = try tileset(with: "Peasant")
+            tilesets[AssetType.footman.rawValue] = try tileset(with: "Footman")
+            tilesets[AssetType.archer.rawValue] = try tileset(with: "Archer")
+            tilesets[AssetType.ranger.rawValue] = try tileset(with: "Ranger")
+            tilesets[AssetType.goldMine.rawValue] = try tileset(with: "GoldMine")
+            tilesets[AssetType.townHall.rawValue] = try tileset(with: "TownHall")
+            tilesets[AssetType.keep.rawValue] = try tileset(with: "Keep")
+            tilesets[AssetType.castle.rawValue] = try tileset(with: "Castle")
+            tilesets[AssetType.farm.rawValue] = try tileset(with: "Farm")
+            tilesets[AssetType.barracks.rawValue] = try tileset(with: "Barracks")
+            tilesets[AssetType.lumberMill.rawValue] = try tileset(with: "LumberMill")
+            tilesets[AssetType.blacksmith.rawValue] = try tileset(with: "Blacksmith")
+            tilesets[AssetType.scoutTower.rawValue] = try tileset(with: "ScoutTower")
+            tilesets[AssetType.guardTower.rawValue] = try tileset(with: "GuardTower")
+            tilesets[AssetType.cannonTower.rawValue] = try tileset(with: "CannonTower")
+            let markerTileset = try tileset(with: "Marker")
+            let corpseTileset = try tileset(with: "Corpse")
+            let fireTilesets = [try tileset(with: "FireSmall"), try tileset(with: "FireLarge")]
+            let buildingDeathTileset = try tileset(with: "BuildingDeath")
+            let arrowTileset = try tileset(with: "Arrow")
             let playerData: PlayerData? = nil
             let assetRenderer = AssetRenderer(
                 colors: colors,
@@ -86,13 +93,10 @@ class TestViewController: UIViewController {
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
-        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), renderer: mapRenderer)
-        let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), renderer: mapRenderer)
+        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), mapRenderer: mapRenderer, assetRenderer: assetRenderer)
+        let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
-
-        let assetView = AssetView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), renderer: assetRenderer)
-        view.addSubview(assetView)
     }
 
     override var prefersStatusBarHidden: Bool {
