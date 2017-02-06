@@ -276,7 +276,7 @@ class AssetDecoratedMap: TerrainMap {
         guard let resourceCountString = lineSource.readLine(), let resourceCount = Int(resourceCountString) else {
             throw GameError.failedToReadResourceCount
         }
-        for index in 0 ..< resourceCount {
+        for index in 0 ... resourceCount {
             guard let currentLine = lineSource.readLine() else {
                 throw GameError.failedToReadResource(index: index)
             }

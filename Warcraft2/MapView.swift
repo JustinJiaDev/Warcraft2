@@ -22,7 +22,7 @@ class MapView: UIView {
                 fatalError()
             }
             let mapSource = try FileDataSource(url: mapURL)
-            let map = TerrainMap()
+            let map = AssetDecoratedMap()
             try map.loadMap(source: mapSource)
 
             mapRender = try MapRenderer(configuration: configuration, tileset: tileset, map: map)
