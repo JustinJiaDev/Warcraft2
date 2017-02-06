@@ -11,7 +11,6 @@ class FogRenderer {
         let originalValues = [0x0b, 0x16, 0xd0, 0x68, 0x07, 0x94, 0xe0, 0x29, 0x03, 0x06, 0x14, 0x90, 0x60, 0xc0, 0x09, 0x28, 0x01, 0x02, 0x04, 0x10, 0x80, 0x40, 0x20, 0x08]
         self.tileset = tileset
         self.map = map
-//        _ = tileset.findTile(with: "visible")
         noneIndex = tileset.findTile(with: "none")
         seenIndex = tileset.findTile(with: "seen")
         partialIndex = tileset.findTile(with: "partial")
