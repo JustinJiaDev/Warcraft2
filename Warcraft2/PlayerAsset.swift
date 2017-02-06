@@ -396,7 +396,6 @@ class PlayerAsset {
             position.y = newValue
         }
     }
-
     var direction: Direction
 
     private(set) var commands: [AssetCommand] = []

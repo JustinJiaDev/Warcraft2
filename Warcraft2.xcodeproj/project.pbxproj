@@ -420,6 +420,14 @@
 			name = Maps;
 			sourceTree = "<group>";
 		};
+		49F506811E41924100DB1362 /* GameLogic */ = {
+			isa = PBXGroup;
+			children = (
+				8E663E8F1E41492100FD4727 /* GameModel.swift */,
+			);
+			name = GameLogic;
+			sourceTree = "<group>";
+		};
 		804A99FEFEE41B06F89EB89D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -432,7 +440,7 @@
 		8E1B515A1E2D58CA008E968C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8E663E8F1E41492100FD4727 /* GameModel.swift */,
+				49F506811E41924100DB1362 /* GameLogic */,
 				D0773FBF1E38477F00FF7DD7 /* DataContainer */,
 				D0773FC01E3847A800FF7DD7 /* Map */,
 				D0773FC11E3847C200FF7DD7 /* Graphic */,
