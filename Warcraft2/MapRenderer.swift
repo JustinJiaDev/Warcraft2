@@ -48,7 +48,10 @@ class MapRenderer {
         guard string.hasPrefix("0x") || string.hasPrefix("0X") else {
             return nil
         }
-        return Int(string.substring(from: string.index(string.startIndex, offsetBy: 2)), radix: 16)
+
+        let x = Int(string.substring(from: string.index(string.startIndex, offsetBy: 2)), radix: 16)
+        print("String: \(string) Int: \(x)")
+        return x
     }
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
@@ -507,7 +510,6 @@ class MapRenderer {
         resourceContext.setLineCap(.square)
         for y in 0 ..< map.height {
             var x = 0
-
             while x < map.width {
                 let tileType = map.tileTypeAt(x: x, y: y)
                 let xAnchor = x

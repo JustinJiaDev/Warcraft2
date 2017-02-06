@@ -1,16 +1,25 @@
 import UIKit
 
+protocol MiniMapViewDelegate {
+    func drawMiniMap(on surface: GraphicSurface)
+}
+
 class MiniMapView: UIView {
 
-    weak var mapRender: MapRenderer?
+    weak var render: MapRenderer?
+
+    convenience init(frame: CGRect, render: MapRenderer) {
+        self.init(frame: frame)
+        self.render = render
+    }
 
     override func draw(_ rect: CGRect) {
-        guard let mapRender = mapRender else {
+        guard let render = render else {
             return
         }
         let context = UIGraphicsGetCurrentContext()!
         let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        mapRender.drawMiniMap(on: layer)
+        render.drawMiniMap(on: layer)
         context.draw(layer, in: rect)
     }
 }

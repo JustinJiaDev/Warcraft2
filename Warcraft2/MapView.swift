@@ -2,7 +2,12 @@ import UIKit
 
 class MapView: UIView {
 
-    weak var mapRender: MapRenderer?
+    weak var render: MapRenderer?
+
+    convenience init(frame: CGRect, render: MapRenderer) {
+        self.init(frame: frame)
+        self.render = render
+    }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let location = touches.first?.location(in: self), let previousLocation = touches.first?.previousLocation(in: self) else {
@@ -15,13 +20,13 @@ class MapView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
+        guard let render = render else {
+            return
+        }
         do {
-            guard let mapRender = mapRender else {
-                return
-            }
             let context = UIGraphicsGetCurrentContext()!
             let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-            try mapRender.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.detailedMapWidth, height: mapRender.detailedMapHeight), level: 0)
+            try render.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: render.detailedMapWidth, height: render.detailedMapHeight), level: 0)
             context.draw(layer, in: rect)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
