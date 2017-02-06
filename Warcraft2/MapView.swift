@@ -2,11 +2,13 @@ import UIKit
 
 class MapView: UIView {
 
-    weak var render: MapRenderer?
+    weak var mapRenderer: MapRenderer?
+    weak var assetRenderer: AssetRenderer?
 
-    convenience init(frame: CGRect, render: MapRenderer) {
+    convenience init(frame: CGRect, mapRenderer: MapRenderer, assetRenderer: AssetRenderer) {
         self.init(frame: frame)
-        self.render = render
+        self.mapRenderer = mapRenderer
+        self.assetRenderer = assetRenderer
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -20,14 +22,22 @@ class MapView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let render = render else {
+        guard let mapRenderer = mapRenderer, let assetRenderer = assetRenderer else {
             return
         }
         do {
+            let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
+            let layer = GraphicFactory.createSurface(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight, format: .a1)!
+            let typeLayer = GraphicFactory.createSurface(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight, format: .a1)!
+            try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 0)
+            try assetRenderer.drawAssets(on: layer, typeSurface: layer, in: rectangle)
+            try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 1)
+            // let builder = PlayerAsset(playerAsset: PlayerAssetType())
+            // try assetRenderer.drawPlacement(on: layer, in: rectangle, position: Position(x: 100, y: 100), type: .goldMine, builder: builder)
+            // try assetRenderer.drawOverlays(on: layer, in: rectangle)
             let context = UIGraphicsGetCurrentContext()!
-            let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-            try render.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: render.detailedMapWidth, height: render.detailedMapHeight), level: 0)
-            context.draw(layer, in: rect)
+            context.draw(layer as! CGLayer, in: rect)
+            context.draw(typeLayer as! CGLayer, in: rect)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }
