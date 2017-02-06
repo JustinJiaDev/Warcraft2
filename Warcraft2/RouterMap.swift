@@ -96,9 +96,9 @@ class RouterMap {
 
         for res in resMap.assets {
             if asset !== res {
-                if AssetType.none != res.type {
-                    if AssetAction.walk != res.action || asset.color != res.color {
-                        if asset.color != res.color || AssetAction.conveyGold != res.action && AssetAction.conveyLumber != res.action && AssetAction.mineGold != res.action {
+                if res.type != .none {
+                    if res.action != .walk || asset.color != res.color {
+                        if asset.color != res.color || .conveyGold != res.action && .conveyLumber != res.action && .mineGold != res.action {
                             for yOff in 0 ..< res.size {
                                 for xOff in 0 ..< res.size {
                                     map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = .visited
@@ -112,6 +112,7 @@ class RouterMap {
             }
         }
 
+        RouterMap.idealSearchDirection = asset.direction
         currentTile = asset.tilePosition
         bestSearch.x = currentTile.x
         bestSearch.y = currentTile.y
