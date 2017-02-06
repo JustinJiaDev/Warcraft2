@@ -145,7 +145,7 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
                 newCommand.action = AssetAction.capability
                 newCommand.capability = AssetCapabilityType.none
                 newCommand.assetTarget = newAsset
-                newCommand.activatedCapability = PlayerCapabilityBuildNormal.ActivatedCapability(actor, playerData, newAsset, AssetType.lumberCost, AssetType.goldCost, PlayerAsset.updateFrequency * AssetType.buildTime)
+                newCommand.activatedCapability = PlayerCapabilityBuildNormal.ActivatedCapability(actor, playerData, newAsset, .lumberCost, .goldCost, PlayerAsset.updateFrequency * .buildTime)
                 actor.pushCommand(command: newCommand)
             }
             else{
