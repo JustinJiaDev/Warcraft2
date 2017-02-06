@@ -15,6 +15,9 @@ class GraphicMulticolorTileset: GraphicTileset {
     }
 
     func drawTile(on surface: GraphicSurface, x: Int, y: Int, tileIndex: Int, colorIndex: Int) throws {
-        fatalError("This method is not yet implemented.")
+        // FIXME: MAKE DRAW TILE GREAT AGAIN
+        // HACK - BEGIN
+        try drawTile(on: surface, x: x, y: y, index: tileIndex)
+        // HACK - END
     }
 }
