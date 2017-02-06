@@ -507,7 +507,6 @@ class MapRenderer {
         resourceContext.setLineCap(.square)
         for y in 0 ..< map.height {
             var x = 0
-
             while x < map.width {
                 let tileType = map.tileTypeAt(x: x, y: y)
                 let xAnchor = x

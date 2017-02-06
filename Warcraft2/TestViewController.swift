@@ -1,14 +1,20 @@
 import UIKit
+import AVFoundation
 
 class TestViewController: UIViewController {
 
-    @IBOutlet weak var mapView: MapView!
-    @IBOutlet weak var miniMapView: MiniMapView!
+    private var midiPlayer: AVMIDIPlayer = {
+        do {
+            let soundFont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
+            let midiFile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
+            return try AVMIDIPlayer(contentsOf: midiFile, soundBankURL: soundFont)
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
 
-    private var mapRender: MapRenderer?
+    }()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private var render: MapRenderer = {
         do {
             guard let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat") else {
                 fatalError()
@@ -28,16 +34,22 @@ class TestViewController: UIViewController {
             let mapSource = try FileDataSource(url: mapURL)
             let map = AssetDecoratedMap()
             try map.loadMap(source: mapSource)
-
-            let render = try MapRenderer(configuration: configuration, tileset: tileset, map: map)
-            mapView.bounds.size = CGSize(width: render.detailedMapWidth, height: render.detailedMapHeight)
-            mapView.mapRender = render
-            miniMapView.bounds.size = CGSize(width: render.mapWidth, height: render.mapHeight)
-            miniMapView.mapRender = render
-            mapRender = render
+            return try MapRenderer(configuration: configuration, tileset: tileset, map: map)
         } catch {
-            print(error.localizedDescription) // TODO: Handle Error
+            fatalError(error.localizedDescription) // TODO: Handle Error
         }
+    }()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        midiPlayer.prepareToPlay()
+        midiPlayer.play()
+
+        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: render.detailedMapWidth, height: render.detailedMapHeight)), render: render)
+        let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: render.mapWidth, height: render.mapHeight)), render: render)
+        view.addSubview(mapView)
+        view.addSubview(miniMapView)
     }
 
     override var prefersStatusBarHidden: Bool {

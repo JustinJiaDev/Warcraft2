@@ -51,7 +51,8 @@ extension CGContext: GraphicResourceContext {
     }
 
     func setSourceRGBA(r: Double, g: Double, b: Double, a: Double) {
-        setFillColor(CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [CGFloat(r), CGFloat(g), CGFloat(b), CGFloat(a)])!)
+        setStrokeColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
+        setFillColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
     }
 
     func setSourceSurface(_ surface: GraphicSurface, x: Int, y: Int) {
