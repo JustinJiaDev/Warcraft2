@@ -115,7 +115,6 @@ class PlayerUpgrade {
 }
 
 class PlayerAssetType {
-    private(set) weak var this: PlayerAssetType?
     private(set) var name = "None"
     private(set) var type = AssetType.none
     private(set) var color = PlayerColor.none
@@ -137,88 +136,6 @@ class PlayerAssetType {
     private(set) var basicDamage: Int
     private(set) var piercingDamage: Int
     private(set) var range: Int
-
-    private(set) static var registry: [String: PlayerAssetType] = [:]
-    private(set) static var typeStrings = [
-        "None",
-        "Peasant",
-        "Footman",
-        "Archer",
-        "Ranger",
-        "GoldMine",
-        "TownHall",
-        "Keep",
-        "Castle",
-        "Farm",
-        "Barracks",
-        "LumberMill",
-        "Blacksmith",
-        "ScoutTower",
-        "GuardTower",
-        "CannonTower"
-    ]
-    private(set) static var nameTypeTranslation: [String: AssetType] = [
-        "None": .none,
-        "Peasant": .peasant,
-        "Footman": .footman,
-        "Archer": .archer,
-        "Ranger": .ranger,
-        "GoldMine": .goldMine,
-        "TownHall": .townHall,
-        "Keep": .keep,
-        "Castle": .castle,
-        "Farm": .farm,
-        "Barracks": .barracks,
-        "LumberMill": .lumberMill,
-        "Blacksmith": .blacksmith,
-        "ScoutTower": .scoutTower,
-        "GuardTower": .guardTower,
-        "CannonTower": .cannonTower
-    ]
-
-    init(playerAsset: PlayerAssetType) {
-        name = playerAsset.name
-        type = playerAsset.type
-        color = playerAsset.color
-        capabilities = playerAsset.capabilities
-        assetUpgrades = playerAsset.assetUpgrades
-        assetRequirements = playerAsset.assetRequirements
-        hitPoints = playerAsset.hitPoints
-        armor = playerAsset.armor
-        sight = playerAsset.sight
-        constructionSight = playerAsset.constructionSight
-        size = playerAsset.size
-        speed = playerAsset.speed
-        goldCost = playerAsset.goldCost
-        lumberCost = playerAsset.lumberCost
-        foodConsumption = playerAsset.foodConsumption
-        buildTime = playerAsset.buildTime
-        attackSteps = playerAsset.attackSteps
-        reloadSteps = playerAsset.reloadSteps
-        basicDamage = playerAsset.basicDamage
-        piercingDamage = playerAsset.piercingDamage
-        range = playerAsset.range
-    }
-    init() {
-        for capability in AssetCapabilityType.allValues {
-            capabilities[capability] = false
-        }
-        hitPoints = 1
-        armor = 0
-        sight = 0
-        constructionSight = 0
-        size = 1
-        speed = 0
-        goldCost = 0
-        lumberCost = 0
-        foodConsumption = 0
-        buildTime = 0
-        attackSteps = 0
-        reloadSteps = 0
-        basicDamage = 0
-        piercingDamage = 0
-        range = 0
-    }
 
     var armorUpgrade: Int {
         var returnValue = 0
@@ -268,6 +185,99 @@ class PlayerAssetType {
         return returnValue
     }
 
+    private(set) static var typeStrings = [
+        "None",
+        "Peasant",
+        "Footman",
+        "Archer",
+        "Ranger",
+        "GoldMine",
+        "TownHall",
+        "Keep",
+        "Castle",
+        "Farm",
+        "Barracks",
+        "LumberMill",
+        "Blacksmith",
+        "ScoutTower",
+        "GuardTower",
+        "CannonTower"
+    ]
+
+    private(set) static var nameTypeTranslation: [String: AssetType] = [
+        "None": .none,
+        "Peasant": .peasant,
+        "Footman": .footman,
+        "Archer": .archer,
+        "Ranger": .ranger,
+        "GoldMine": .goldMine,
+        "TownHall": .townHall,
+        "Keep": .keep,
+        "Castle": .castle,
+        "Farm": .farm,
+        "Barracks": .barracks,
+        "LumberMill": .lumberMill,
+        "Blacksmith": .blacksmith,
+        "ScoutTower": .scoutTower,
+        "GuardTower": .guardTower,
+        "CannonTower": .cannonTower
+    ]
+
+    private(set) static var registry: [String: PlayerAssetType] = [:]
+
+    static var maxSight: Int {
+        var currentMaxSight = 0
+        for (_, type) in registry {
+            currentMaxSight = max(currentMaxSight, type.sight)
+        }
+        return currentMaxSight
+    }
+
+    init(playerAsset: PlayerAssetType) {
+        name = playerAsset.name
+        type = playerAsset.type
+        color = playerAsset.color
+        capabilities = playerAsset.capabilities
+        assetUpgrades = playerAsset.assetUpgrades
+        assetRequirements = playerAsset.assetRequirements
+        hitPoints = playerAsset.hitPoints
+        armor = playerAsset.armor
+        sight = playerAsset.sight
+        constructionSight = playerAsset.constructionSight
+        size = playerAsset.size
+        speed = playerAsset.speed
+        goldCost = playerAsset.goldCost
+        lumberCost = playerAsset.lumberCost
+        foodConsumption = playerAsset.foodConsumption
+        buildTime = playerAsset.buildTime
+        attackSteps = playerAsset.attackSteps
+        reloadSteps = playerAsset.reloadSteps
+        basicDamage = playerAsset.basicDamage
+        piercingDamage = playerAsset.piercingDamage
+        range = playerAsset.range
+    }
+
+    init() {
+        for capability in AssetCapabilityType.allValues {
+            capabilities[capability] = false
+        }
+        hitPoints = 1
+        armor = 0
+        sight = 0
+        constructionSight = 0
+        size = 1
+        speed = 0
+        goldCost = 0
+        lumberCost = 0
+        foodConsumption = 0
+        buildTime = 0
+        attackSteps = 0
+        reloadSteps = 0
+        basicDamage = 0
+        piercingDamage = 0
+        range = 0
+    }
+
     func hasCapability(_ capability: AssetCapabilityType) -> Bool {
         return capabilities[capability] ?? false
     }
@@ -292,10 +302,6 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func maxSight() -> Int {
-        fatalError("This method is not yet implemented.")
-    }
-
     static func loadTypes(container: DataContainer) -> Bool {
         fatalError("This method is not yet implemented.")
     }
@@ -305,11 +311,11 @@ class PlayerAssetType {
     }
 
     static func findDefault(from name: String) -> PlayerAssetType {
-        fatalError("This method is not yet implemented.")
+        return registry[name] ?? PlayerAssetType()
     }
 
     static func findDefault(from type: AssetType) -> PlayerAssetType {
-        fatalError("This method is not yet implemented.")
+        return findDefault(from: name(from: type))
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {

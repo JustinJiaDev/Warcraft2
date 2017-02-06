@@ -328,7 +328,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func createVisibilityMap() -> VisibilityMap {
-        return VisibilityMap(width: width, height: height, maxVisibility: PlayerAssetType.maxSight())
+        return VisibilityMap(width: width, height: height, maxVisibility: PlayerAssetType.maxSight)
     }
 
     func updateMap(visibilityMap: VisibilityMap, assetDecoratedMap: AssetDecoratedMap) {
