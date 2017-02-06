@@ -1,19 +1,25 @@
 import Foundation
 import os.log
 
-enum AssetDecoratedMapError: Error {
-    case missingFirstFileInterator
-    case failedToReadResourceCount
-    case failedToReadResource(index: Int)
-    case tooFewTokensForResource(index: Int)
-    case firstResourceIsNotForColorNone
-    case failedToReadAssetCount
-    case failedToReadAsset(index: Int)
-    case tooFewTokensForAsset(index: Int)
-    case invalidAssetPosition(x: Int, y: Int)
-}
-
 class AssetDecoratedMap: TerrainMap {
+
+    enum GameError: Error {
+        case missingFirstFileInterator
+        case failedToReadResourceCount
+        case failedToReadResource(index: Int)
+        case tooFewTokensForResource(index: Int)
+        case firstResourceIsNotForColorNone
+        case failedToReadAssetCount
+        case failedToReadAsset(index: Int)
+        case tooFewTokensForAsset(index: Int)
+        case invalidAssetPosition(x: Int, y: Int)
+        case unknownColorIndex(index: Int)
+    }
+
+    enum SearchStatus {
+        case unvisited, queued, visited
+    }
+
     struct AssetInitialization {
         var type: String
         var color: PlayerColor
@@ -29,10 +35,6 @@ class AssetDecoratedMap: TerrainMap {
     struct SearchTile {
         var x: Int
         var y: Int
-    }
-
-    enum SearchStatus {
-        case unvisited, queued, visited
     }
 
     private(set) var assets: [PlayerAsset] = []
@@ -61,26 +63,26 @@ class AssetDecoratedMap: TerrainMap {
         super.init(terrainMap: map)
         assets = map.assets
         assetInitializationList = map.assetInitializationList.map { asset in
-            guard asset.color.rawValue < newColors.count else {
+            guard asset.color.index < newColors.count else {
                 return asset
             }
             var asset = asset
-            asset.color = newColors[asset.color.rawValue]
+            asset.color = newColors[asset.color.index]
             return asset
         }
         resourceInitializationList = map.resourceInitializationList.map { resource in
-            guard resource.color.rawValue < newColors.count else {
+            guard resource.color.index < newColors.count else {
                 return resource
             }
             var resource = resource
-            resource.color = newColors[resource.color.rawValue]
+            resource.color = newColors[resource.color.index]
             return resource
         }
     }
 
     static func loadMaps(container: DataContainer) throws {
         guard let fileIterator = container.first() else {
-            throw AssetDecoratedMapError.missingFirstFileInterator
+            throw GameError.missingFirstFileInterator
         }
         while fileIterator.isValid() {
             let filename = fileIterator.name()
@@ -123,7 +125,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func removeAsset(_ asset: PlayerAsset) {
-        if let index = assets.index(of: asset) {
+        if let index = assets.index(where: { $0 === asset }) {
             assets.remove(at: index)
         }
     }
@@ -168,12 +170,12 @@ class AssetDecoratedMap: TerrainMap {
         }
         for asset in assets {
             let offset = (AssetType.goldMine == asset.type) ? 1 : 0
-            if AssetType.none == asset.type
+            if .none == asset.type
                 || ignoreAsset === asset
-                || rightX <= asset.tilePositionX() - offset
-                || position.x >= asset.tilePositionX() + asset.size + offset
-                || bottomY <= asset.tilePositionY() - offset
-                || position.y >= asset.tilePositionY() + asset.size + offset {
+                || rightX <= asset.tilePositionX - offset
+                || position.x >= asset.tilePositionX + asset.size + offset
+                || bottomY <= asset.tilePositionY - offset
+                || position.y >= asset.tilePositionY + asset.size + offset {
                 continue
             } else {
                 return false
@@ -183,26 +185,23 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func findAssetPlacement(placeAsset: PlayerAsset, fromAsset: PlayerAsset, nextTileTarget: Position) -> Position {
-        var topY, bottomY, leftX, rightX: Int
         var bestDistance = -1
-        var currentDistance: Int
         var bestPosition = Position(x: -1, y: -1)
-        topY = fromAsset.tilePositionY() - placeAsset.size
-        bottomY = fromAsset.tilePositionY() + fromAsset.size
-        leftX = fromAsset.tilePositionX() - placeAsset.size
-        rightX = fromAsset.tilePositionX() + fromAsset.size
-
+        var topY = fromAsset.tilePositionY - placeAsset.size
+        var bottomY = fromAsset.tilePositionY + fromAsset.size
+        var leftX = fromAsset.tilePositionX - placeAsset.size
+        var rightX = fromAsset.tilePositionX + fromAsset.size
         while true {
             var skipped = 0
-            if 0 <= topY {
+            if topY >= 0 {
                 let toX = min(rightX, width - 1)
-                for curX in max(leftX, 0) ... toX {
-                    if canPlaceAsset(at: Position(x: curX, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
-                        let tempPosition = Position(x: curX, y: topY)
-                        currentDistance = tempPosition.distanceSquaredFrom(position: nextTileTarget)
+                for x in max(leftX, 0) ... toX {
+                    if canPlaceAsset(at: Position(x: x, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
+                        let position = Position(x: x, y: topY)
+                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
-                            bestPosition = tempPosition
+                            bestPosition = position
                         }
                     }
                 }
@@ -211,13 +210,13 @@ class AssetDecoratedMap: TerrainMap {
             }
             if width > rightX {
                 let toY = min(bottomY, height - 1)
-                for curY in max(topY, 0) ... toY {
-                    if canPlaceAsset(at: Position(x: rightX, y: curY), size: placeAsset.size, ignoreAsset: placeAsset) {
-                        let tempPosition = Position(x: rightX, y: curY)
-                        currentDistance = tempPosition.distanceSquaredFrom(position: nextTileTarget)
+                for y in max(topY, 0) ... toY {
+                    if canPlaceAsset(at: Position(x: rightX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
+                        let position = Position(x: rightX, y: y)
+                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
-                            bestPosition = tempPosition
+                            bestPosition = position
                         }
                     }
                 }
@@ -225,39 +224,39 @@ class AssetDecoratedMap: TerrainMap {
                 skipped += 1
             }
             if height > bottomY {
-                let ToX = max(leftX, 0)
-                for curX in (ToX ... min(rightX, width - 1)).reversed() {
-                    if canPlaceAsset(at: Position(x: curX, y: bottomY), size: placeAsset.size, ignoreAsset: placeAsset) {
-                        let tempPosition = Position(x: curX, y: bottomY)
-                        currentDistance = tempPosition.distanceSquared(nextTileTarget)
+                let toX = max(leftX, 0)
+                for x in (toX ... min(rightX, width - 1)).reversed() {
+                    if canPlaceAsset(at: Position(x: x, y: bottomY), size: placeAsset.size, ignoreAsset: placeAsset) {
+                        let position = Position(x: x, y: bottomY)
+                        let currentDistance = position.distanceSquared(nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
-                            bestPosition = tempPosition
+                            bestPosition = position
                         }
                     }
                 }
             } else {
                 skipped += 1
             }
-            if 0 <= leftX {
+            if leftX >= 0 {
                 let toY = max(topY, 0)
-                for curY in (toY ... min(bottomY, height - 1)).reversed() {
-                    if canPlaceAsset(at: Position(x: leftX, y: curY), size: placeAsset.size, ignoreAsset: placeAsset) {
-                        let tempPosition = Position(x: leftX, y: curY)
-                        currentDistance = tempPosition.distanceSquared(nextTileTarget)
+                for y in (toY ... min(bottomY, height - 1)).reversed() {
+                    if canPlaceAsset(at: Position(x: leftX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
+                        let position = Position(x: leftX, y: y)
+                        let currentDistance = position.distanceSquared(nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
-                            bestPosition = tempPosition
+                            bestPosition = position
                         }
                     }
                 }
             } else {
                 skipped += 1
             }
-            if 4 == skipped {
+            if skipped == 4 {
                 break
             }
-            if -1 != bestDistance {
+            if bestDistance != -1 {
                 break
             }
             topY -= 1
@@ -275,39 +274,44 @@ class AssetDecoratedMap: TerrainMap {
 
         resourceInitializationList = []
         guard let resourceCountString = lineSource.readLine(), let resourceCount = Int(resourceCountString) else {
-            throw AssetDecoratedMapError.failedToReadResourceCount
+            throw GameError.failedToReadResourceCount
         }
-        for index in 0 ..< resourceCount {
+        for index in 0 ... resourceCount {
             guard let currentLine = lineSource.readLine() else {
-                throw AssetDecoratedMapError.failedToReadResource(index: index)
+                throw GameError.failedToReadResource(index: index)
             }
             let tokens = Tokenizer.tokenize(data: currentLine)
-            guard tokens.count >= 3, let playerColorRawValue = Int(tokens[0]), let gold = Int(tokens[1]), let lumber = Int(tokens[2]) else {
-                throw AssetDecoratedMapError.tooFewTokensForResource(index: index)
+            guard tokens.count >= 3, let playerColorIndex = Int(tokens[0]), let gold = Int(tokens[1]), let lumber = Int(tokens[2]) else {
+                throw GameError.tooFewTokensForResource(index: index)
             }
-            guard let playerColor = PlayerColor(rawValue: playerColorRawValue), (index == 0 && playerColor != .none) else {
-                throw AssetDecoratedMapError.firstResourceIsNotForColorNone
+            guard let playerColor = PlayerColor(index: playerColorIndex) else {
+                throw GameError.unknownColorIndex(index: playerColorIndex)
+            }
+            if index == 0 && playerColor != .none {
+                throw GameError.firstResourceIsNotForColorNone
             }
             resourceInitializationList.append(ResourceInitialization(color: playerColor, gold: gold, lumber: lumber))
         }
 
         assetInitializationList = []
         guard let assetCountString = lineSource.readLine(), let assetCount = Int(assetCountString) else {
-            throw AssetDecoratedMapError.failedToReadAssetCount
+            throw GameError.failedToReadAssetCount
         }
         for index in 0 ..< assetCount {
             guard let currentLine = lineSource.readLine() else {
-                throw AssetDecoratedMapError.failedToReadAsset(index: index)
+                throw GameError.failedToReadAsset(index: index)
             }
 
             let tokens = Tokenizer.tokenize(data: currentLine)
-            guard tokens.count >= 4, let type = tokens.first, let playerColorRawValue = Int(tokens[1]), let x = Int(tokens[2]), let y = Int(tokens[3]) else {
-                throw AssetDecoratedMapError.tooFewTokensForAsset(index: index)
+            guard tokens.count >= 4, let type = tokens.first, let playerColorIndex = Int(tokens[1]), let x = Int(tokens[2]), let y = Int(tokens[3]) else {
+                throw GameError.tooFewTokensForAsset(index: index)
             }
             guard x >= 0, y >= 0, x < width, y < width else {
-                throw AssetDecoratedMapError.invalidAssetPosition(x: x, y: y)
+                throw GameError.invalidAssetPosition(x: x, y: y)
             }
-            let color = PlayerColor(rawValue: playerColorRawValue) ?? .max
+            guard let color = PlayerColor(index: playerColorIndex) else {
+                throw GameError.unknownColorIndex(index: playerColorIndex)
+            }
             let position = Position(x: x, y: y)
             assetInitializationList.append(AssetInitialization(type: type, color: color, tilePosition: position))
         }
@@ -322,7 +326,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func createVisibilityMap() -> VisibilityMap {
-        return VisibilityMap(width: width, height: height, maxVisibility: PlayerAssetType.maxSight())
+        return VisibilityMap(width: width, height: height, maxVisibility: PlayerAssetType.maxSight)
     }
 
     func updateMap(visibilityMap: VisibilityMap, assetDecoratedMap: AssetDecoratedMap) {
@@ -341,7 +345,7 @@ class AssetDecoratedMap: TerrainMap {
                 let yPosition = currentPosition.y + yOffset
                 for xOffset in 0 ..< assetSize {
                     let xPosition = currentPosition.x + xOffset
-                    let tileType = visibilityMap.tileType(xIndex: xPosition, yIndex: yPosition)
+                    let tileType = visibilityMap.tileTypeAt(x: xPosition, y: yPosition)
                     if tileType == .partial || tileType == .partialPartial || tileType == .visible {
                         removeAsset = (asset.type != .none) // Remove visible so they can be updated
                         break
@@ -357,7 +361,7 @@ class AssetDecoratedMap: TerrainMap {
         }
         for yPosition in 0 ..< map.count {
             for xPosition in 0 ..< map[yPosition].count {
-                let type = visibilityMap.tileType(xIndex: xPosition - 1, yIndex: yPosition - 1)
+                let type = visibilityMap.tileTypeAt(x: xPosition - 1, y: yPosition - 1)
                 if type == .partial || type == .partialPartial || type == .visible {
                     map[yPosition][xPosition] = assetDecoratedMap.map[yPosition][xPosition]
                 }
@@ -369,10 +373,10 @@ class AssetDecoratedMap: TerrainMap {
             var addAsset = false
 
             for yOffset in 0 ..< assetSize {
-                let yPos = currentPosition.y + yOffset
+                let yPosition = currentPosition.y + yOffset
                 for xOffset in 0 ..< assetSize {
                     let xPosition = currentPosition.x + xOffset
-                    let type = visibilityMap.tileType(xIndex: xPosition, yIndex: yPos)
+                    let type = visibilityMap.tileTypeAt(x: xPosition, y: yPosition)
                     if type == .partial || type == .partialPartial || type == .visible {
                         addAsset = true // Add visible resources
                         break
@@ -417,7 +421,7 @@ class AssetDecoratedMap: TerrainMap {
             if asset.tilePosition != position {
                 for y in 0 ..< asset.size {
                     for x in 0 ..< asset.size {
-                        searchMap[asset.tilePositionY() + y + 1][asset.tilePositionX() + x + 1] = .visited
+                        searchMap[asset.tilePositionY + y + 1][asset.tilePositionX + x + 1] = .visited
                     }
                 }
             }

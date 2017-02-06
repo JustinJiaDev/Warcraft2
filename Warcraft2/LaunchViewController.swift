@@ -7,12 +7,15 @@ class LaunchViewController: UIViewController {
     var blacksmithSoundID: SystemSoundID = 0
 
     override func viewDidLoad() {
-
         if let blacksmithSoundCFURL: CFURL = blacksmithSoundURL as CFURL? {
             AudioServicesCreateSystemSoundID(blacksmithSoundCFURL, &blacksmithSoundID)
             AudioServicesPlaySystemSound(blacksmithSoundID)
         } else {
-            assert(false)
+            fatalError()
         }
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
 }

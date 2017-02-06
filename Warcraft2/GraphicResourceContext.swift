@@ -1,104 +1,125 @@
 import Foundation
+import CoreGraphics
+import UIKit
 
-class GraphicResourceContext {
+typealias GraphicResourceContextLineCap = CGLineCap
+typealias GraphicResourceContextLineJoin = CGLineJoin
 
-    enum LineCap {
-        case butt, round, square
+protocol GraphicResourceContext {
+
+    func setSourceRGB(_ rgb: UInt32)
+    func setSourceRGB(r: Double, g: Double, b: Double)
+    func setSourceRGBA(_ rgba: UInt32)
+    func setSourceRGBA(r: Double, g: Double, b: Double, a: Double)
+    func setSourceSurface(_ surface: GraphicSurface, x: Int, y: Int)
+    func setLineWidth(_ width: Double)
+    func setLineCap(_ cap: GraphicResourceContextLineCap)
+    func setLineJoin(_ join: GraphicResourceContextLineJoin)
+    func scale(x: Double, y: Double)
+    func paint()
+    func paintWithAlpha(_ alpha: Double)
+    func fill()
+    func stroke()
+    func rectangle(x: Int, y: Int, width: Int, height: Int)
+    func moveTo(x: Int, y: Int)
+    func lineTo(x: Int, y: Int)
+    func clip()
+    func maskSurface(surface: GraphicSurface, x: Int, y: Int)
+    func getTarget() -> GraphicSurface
+    func save()
+    func restore()
+    func drawSurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
+    func copySurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
+}
+
+extension CGContext: GraphicResourceContext {
+
+    func setSourceRGB(_ rgb: UInt32) {
+        setSourceRGBA(0xff00_0000 | rgb)
     }
 
-    enum LineJoin {
-        case miter, round, bevel
+    func setSourceRGB(r: Double, g: Double, b: Double) {
+        setSourceRGBA(r: r, g: g, b: b, a: 1)
     }
 
-    func setSourceRGB(_: UInt32) {
-        fatalError("You need to override this method.")
+    func setSourceRGBA(_ rgba: UInt32) {
+        let r = Double(rgba >> 16 & 0xff) / 255.0
+        let g = Double(rgba >> 8 & 0xff) / 255.0
+        let b = Double(rgba & 0xff) / 255.0
+        let a = Double(rgba >> 24 & 0xff) / 255.0
+        setSourceRGBA(r: r, g: g, b: b, a: a)
     }
 
-    func setSourceRGB(r _: Double, g _: Double, b _: Double) {
-        fatalError("You need to override this method.")
+    func setSourceRGBA(r: Double, g: Double, b: Double, a: Double) {
+        setStrokeColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
+        setFillColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
     }
 
-    func setSourceRGBA(_: UInt32) {
-        fatalError("You need to override this method.")
+    func setSourceSurface(_ surface: GraphicSurface, x: Int, y: Int) {
+        fatalError("This method is not yet implemented.")
     }
 
-    func setSourceRGBA(r _: Double, g _: Double, b _: Double) {
-        fatalError("You need to override this method.")
+    func setLineWidth(_ width: Double) {
+        setLineWidth(CGFloat(width))
     }
 
-    func setSourceSurface(_ surface: GraphicSurface, xPosition _: Int, yPosition _: Int) {
-        fatalError("You need to override this method.")
-    }
-
-    func setLineWidth(_: Double) {
-        fatalError("You need to override this method.")
-    }
-
-    func setLineCap(_: LineCap) {
-        fatalError("You need to override this method.")
-    }
-
-    func setLineJoin(_: LineJoin) {
-        fatalError("You need to override this method.")
-    }
-
-    func scale(x _: Double, y _: Double) {
-        fatalError("You need to override this method.")
+    func scale(x: Double, y: Double) {
+        scaleBy(x: CGFloat(x), y: CGFloat(y))
     }
 
     func paint() {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
-    func paint(with _: Double) {
-        fatalError("You need to override this method.")
+    func paintWithAlpha(_ alpha: Double) {
+        fatalError("This method is not yet implemented.")
     }
 
     func fill() {
-        fatalError("You need to override this method.")
+        fillPath()
     }
 
     func stroke() {
-        fatalError("You need to override this method.")
+        strokePath()
     }
 
-    func rectangle(xPosition _: Int, yPosition _: Int, width _: Int, height _: Int) {
-        fatalError("You need to override this method.")
+    func rectangle(x: Int, y: Int, width: Int, height: Int) {
+        addRect(CGRect(x: x, y: y, width: width, height: height))
     }
 
-    func moveTo(xPosition _: Int, yPosition _: Int) {
-        fatalError("You need to override this method.")
+    func moveTo(x: Int, y: Int) {
+        move(to: CGPoint(x: x, y: y))
     }
 
-    func lineTo(xPosition _: Int, yPosition _: Int) {
-        fatalError("You need to override this method.")
+    func lineTo(x: Int, y: Int) {
+        addLine(to: CGPoint(x: x, y: y))
     }
 
     func clip() {
-        fatalError("You need to override this method.")
+        clip(using: .winding)
     }
 
-    func maskSurface(surface _: GraphicSurface, xPosition _: Int, yPosition _: Int) {
-        fatalError("You need to override this method.")
+    func maskSurface(surface: GraphicSurface, x: Int, y: Int) {
+        fatalError("This method is not yet implemented.")
     }
 
     func getTarget() -> GraphicSurface {
-        fatalError("You need to override this method.")
+        fatalError("This method is not yet implemented.")
     }
 
     func save() {
-        fatalError("You need to override this method.")
+        saveGState()
     }
 
     func restore() {
-        fatalError("You need to override this method.")
+        restoreGState()
     }
 
-    func drawSurface(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, width _: Int, height _: Int, sxPosition _: Int, syPosition _: Int) {
-        fatalError("You need to override this method.")
+    func drawSurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) {
+        fatalError("This method is not yet implemented.")
     }
 
-    func copySurface(surface _: GraphicSurface, dxPosition _: Int, dyPosition _: Int, width _: Int, height _: Int, sxPosition _: Int, syPosition _: Int) {
-        fatalError("You need to override this method.")
+    func copySurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) {
+        fatalError("This method is not yet implemented.")
     }
 }

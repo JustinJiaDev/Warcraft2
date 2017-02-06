@@ -3,8 +3,8 @@ import UIKit.UIColor
 
 class PixelType {
 
-    enum AssetTerrainType {
-        case none
+    enum AssetTerrainType: Int {
+        case none = 0
         case grass
         case dirt
         case rock
@@ -35,11 +35,12 @@ class PixelType {
     private(set) var type: AssetTerrainType
     private(set) var color: PlayerColor
 
+    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
     var pixelColor: UInt32 {
-        // FIXME: MAKE PIXEL COLOR GREAT AGAIN
-        // HACK - BEGIN
-        return 1
-        // HACK - END
+        var colorCode = UInt32(color.index)
+        colorCode <<= 16
+        colorCode |= UInt32(type.rawValue) << 8
+        return colorCode
     }
 
     var assetType: AssetType {
@@ -63,6 +64,7 @@ class PixelType {
         }
     }
 
+    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
     init(pixelColor: UIColor) {
         switch pixelColor {
         case pixelColor where pixelColor == UIColor.blue: color = .blue

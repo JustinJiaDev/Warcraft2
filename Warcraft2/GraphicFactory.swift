@@ -8,13 +8,12 @@ import UIKit
 
 class GraphicFactory {
     static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
-        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
-            return nil
-        }
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: 0) else {
-            return nil
-        }
-        return CGLayer(context, size: CGSize(width: width, height: height), auxiliaryInfo: nil)
+        let size = CGSize(width: width, height: height)
+        UIGraphicsBeginImageContext(size)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        let layer = CGLayer(context, size: size, auxiliaryInfo: nil)
+        UIGraphicsEndImageContext()
+        return layer
     }
 
     static func loadSurface(dataSource: DataSource) -> GraphicSurface? {
@@ -23,8 +22,9 @@ class GraphicFactory {
 
     // FIXME: MAKE TILESET GREAT AGAIN
     // HACK - START
-    static func loadTerrainTilesetSurface() -> GraphicSurface {
-        let image = UIImage(named: "Terrain.png")!
+    static func loadPNGTilesetSurface(name: String) -> GraphicSurface {
+        let name = String(name.characters.dropFirst(2))
+        let image = UIImage(named: name)!
         UIGraphicsBeginImageContext(image.size)
         let layer = CGLayer(UIGraphicsGetCurrentContext()!, size: image.size, auxiliaryInfo: nil)!
         layer.context!.draw(image.cgImage!, in: CGRect(origin: .zero, size: image.size))
