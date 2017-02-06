@@ -97,9 +97,24 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func loadUpgrades(container: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
-    }
+    //    static func loadUpgrades(container: DataContainer) -> Bool {
+    //        var fileIterator = container.first
+    //        if let actualFileIterator = fileIterator {
+    //            while actualFileIterator != nil && actualFileIterator.isValid()  {
+    //                var filename = actualFileIterator.name
+    //                actualFileIterator.next
+    //                if filename.find(".dat") == (filename.length - 4) {
+    //                    print("Failed to load upgrade")
+    //                    continue
+    //                }
+    //            }
+    //            return true
+    //        }
+    //        else {
+    //            print("fileIterator == nil")
+    //            return false
+    //        }
+    //    }
 
     static func load(source: DataSource) -> Bool {
         fatalError("This method is not yet implemented.")
@@ -116,12 +131,12 @@ class PlayerUpgrade {
 
 class PlayerAssetType {
     private(set) weak var this: PlayerAssetType?
-    private(set) var name: String
-    private(set) var type: AssetType
-    private(set) var color: PlayerColor
-    private(set) var capabilities: [AssetCapabilityType: Bool]
-    private(set) var assetRequirements: [AssetType]
-    private(set) var assetUpgrades: [PlayerUpgrade]
+    private(set) var name = "None"
+    private(set) var type = AssetType.none
+    private(set) var color = PlayerColor.none
+    private(set) var capabilities: [AssetCapabilityType: Bool] = [:]
+    private(set) var assetRequirements: [AssetType] = []
+    private(set) var assetUpgrades: [PlayerUpgrade] = []
     private(set) var hitPoints: Int
     private(set) var armor: Int
     private(set) var sight: Int
@@ -139,35 +154,137 @@ class PlayerAssetType {
     private(set) var range: Int
 
     private(set) static var registry: [String: PlayerAssetType] = [:]
-    private(set) static var typeStrings: [String] = []
-    private(set) static var nameTypeTranslation: [String: AssetType] = [:]
+    private(set) static var typeStrings = [
+        "None",
+        "Peasant",
+        "Footman",
+        "Archer",
+        "Ranger",
+        "GoldMine",
+        "TownHall",
+        "Keep",
+        "Castle",
+        "Farm",
+        "Barracks",
+        "LumberMill",
+        "Blacksmith",
+        "ScoutTower",
+        "GuardTower",
+        "CannonTower"
+    ]
+    private(set) static var nameTypeTranslation: [String: AssetType] = [
+        "None": .none,
+        "Peasant": .peasant,
+        "Footman": .footman,
+        "Archer": .archer,
+        "Ranger": .ranger,
+        "GoldMine": .goldMine,
+        "TownHall": .townHall,
+        "Keep": .keep,
+        "Castle": .castle,
+        "Farm": .farm,
+        "Barracks": .barracks,
+        "LumberMill": .lumberMill,
+        "Blacksmith": .blacksmith,
+        "ScoutTower": .scoutTower,
+        "GuardTower": .guardTower,
+        "CannonTower": .cannonTower
+    ]
 
-    init(playerAssetType: PlayerAssetType) {
-        fatalError("This method is not yet implemented.")
+    init?(playerAsset: PlayerAssetType?) {
+        if let asset = playerAsset {
+            name = asset.name
+            type = asset.type
+            color = asset.color
+            capabilities = asset.capabilities
+            assetUpgrades = asset.assetUpgrades
+            assetRequirements = asset.assetRequirements
+            hitPoints = asset.hitPoints
+            armor = asset.armor
+            sight = asset.sight
+            constructionSight = asset.constructionSight
+            size = asset.size
+            speed = asset.speed
+            goldCost = asset.goldCost
+            lumberCost = asset.lumberCost
+            foodConsumption = asset.foodConsumption
+            buildTime = asset.buildTime
+            attackSteps = asset.attackSteps
+            reloadSteps = asset.reloadSteps
+            basicDamage = asset.basicDamage
+            piercingDamage = asset.piercingDamage
+            range = asset.range
+        } else {
+            return nil
+        }
+    }
+    init() {
+        for capability in AssetCapabilityType.allValues {
+            capabilities[capability] = false
+        }
+        hitPoints = 1
+        armor = 0
+        sight = 0
+        constructionSight = 0
+        size = 1
+        speed = 0
+        goldCost = 0
+        lumberCost = 0
+        foodConsumption = 0
+        buildTime = 0
+        attackSteps = 0
+        reloadSteps = 0
+        basicDamage = 0
+        piercingDamage = 0
+        range = 0
     }
 
     func armorUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.armor
+        }
+        return returnValue
     }
 
     func sightUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.sight
+        }
+        return returnValue
     }
 
     func speedUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.speed
+        }
+        return returnValue
     }
 
     func basicDamageUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.basicDamage
+        }
+        return returnValue
     }
 
     func piercingDamageUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.piercingDamage
+        }
+        return returnValue
     }
 
     func rangeUpgrade() -> Int {
-        fatalError("This method is not yet implemented.")
+        var returnValue = 0
+        for upgrade in assetUpgrades {
+            returnValue += upgrade.range
+        }
+        return returnValue
     }
 
     func hasCapability(_ capability: AssetCapabilityType) -> Bool {
@@ -187,11 +304,11 @@ class PlayerAssetType {
     }
 
     static func nameToType(name: String) -> AssetType {
-        fatalError("This method is not yet implemented.")
+        return nameTypeTranslation[name] ?? .none
     }
 
     static func typeToName(type: AssetType) -> String {
-        fatalError("This method is not yet implemented.")
+        return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
     static func maxSight() -> Int {
