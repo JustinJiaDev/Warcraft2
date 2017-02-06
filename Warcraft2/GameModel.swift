@@ -208,10 +208,8 @@ class PlayerData {
             let bestAsset = selectAsset(pos: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType)
             returnList.append(bestAsset)
             if selectIdentical && bestAsset.speed != 0 {
-                for asset in assets {
-                    if bestAsset != asset && asset.type == assetType {
-                        returnList.append(asset)
-                    }
+                for asset in assets where bestAsset != asset && asset.type == assetType {
+                    returnList.append(asset)
                 }
             }
         }
@@ -250,9 +248,9 @@ class PlayerData {
         if .none != assetType {
             for asset in assets {
                 if asset.type == assetType {
-                    let currentDistance = asset.position.distanceSquared(pos)
-                    if -1 == bestDistanceSquared || currentDistance < bestDistanceSquared {
-                        bestDistanceSquared = currentDistance
+                    let currentDistanceSquared = asset.position.distanceSquared(pos)
+                    if -1 == bestDistanceSquared || currentDistanceSquared < bestDistanceSquared {
+                        bestDistanceSquared = currentDistanceSquared
                         bestAsset = asset
                     }
                 }
@@ -268,10 +266,10 @@ class PlayerData {
         for asset in assets {
             for assetType in assetTypes {
                 if((asset.type == assetType) && ((AssetAction.construct != asset.action) || (AssetType.keep == assetType)||(AssetType.castle == assetType))) {
-                    let currentDistance:Int = asset.position.distanceSquared(pos)
+                    let currentDistanceSquared = asset.position.distanceSquared(pos)
                     
-                    if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                        bestDistanceSquared = currentDistance
+                    if (bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared) {
+                        bestDistanceSquared = currentDistanceSquared
                         bestAsset = asset
                     }
                     break
@@ -286,11 +284,11 @@ class PlayerData {
         var bestDistanceSquared:Int = -1
         
         for asset in playerMap.assets {
-            if (asset.type == assetType) {
-                let currentDistance:Int = asset.position.distanceSquared(pos)
+            if asset.type == assetType {
+                let currentDistanceSquared = asset.position.distanceSquared(pos)
                 
-                if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                    bestDistanceSquared = currentDistance
+                if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared)) {
+                    bestDistanceSquared = currentDistanceSquared
                     bestAsset = asset
                 }
             }
@@ -318,11 +316,11 @@ class PlayerData {
                     }
                 }
                 if((AssetAction.conveyGold != command.action) && (AssetAction.conveyLumber != command.action) && (AssetAction.mineGold != command.action)) {
-                    let currentDistance:Int = asset.closestPosition(pos).distanceSquared(pos)
+                    let currentDistanceSquared:Int = asset.closestPosition(pos).distanceSquared(pos)
                     
-                    if ((range < 0) || (range >= currentDistance)) {
-                        if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistance)) {
-                            bestDistanceSquared = currentDistance
+                    if ((range < 0) || (range >= currentDistanceSquared)) {
+                        if ((bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared)) {
+                            bestDistanceSquared = currentDistanceSquared
                             bestAsset = asset
                         }
                     }
@@ -453,7 +451,6 @@ class PlayerData {
     
     func idleAssets() -> [PlayerAsset] {
         
-        
         var assetList:[PlayerAsset] = []
         
         for asset in assets {
@@ -520,11 +517,35 @@ class GameModel {
     private var goldPerMining: Int
 
     init(mapIndex: Int, seed: UInt64, newColors: [PlayerColor]) {
-        fatalError("not yet implemented")
+        harvestTime = 5
+        harvestSteps = PlayerAsset.updateFrequency * harvestTime
+        mineTime = 5
+        mineSteps = PlayerAsset.updateFrequency * mineTime
+        conveyTime = 1
+        conveySteps = PlayerAsset.updateFrequency * conveyTime
+        deathTime = 1
+        deathSteps = PlayerAsset.updateFrequency * deathTime
+        decayTime = 4
+        decaySteps = PlayerAsset.updateFrequency * decayTime
+        lumberPerHarvest = 100
+        goldPerMining = 100
+        
+        randomNumberGenerator.seed(seed: seed)
+        actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+        
+        for playerIndex in 0..<PlayerColor.max.rawValue {
+            players.append(PlayerData(map: actualMap, color: PlayerColor(rawValue: playerIndex)!))
+        }
+        fatalError("Not implemented yet")
     }
 
-    func validAsset(asset: PlayerAsset) -> Bool {
-        fatalError("not yet implemented")
+    func validAsset(playerAsset: PlayerAsset) -> Bool {
+        for asset in actualMap.assets {
+            if asset == playerAsset {
+                return true
+            }
+        }
+        return false
     }
 
     func map() -> AssetDecoratedMap {
@@ -532,7 +553,7 @@ class GameModel {
     }
 
     func player(color: PlayerColor) -> PlayerData {
-        fatalError("not yet implemented")
+        return players[color.rawValue]
     }
 
     func timestep() {
@@ -540,6 +561,8 @@ class GameModel {
     }
 
     func clearGameEvents() {
-        fatalError("not yet implemented")
+        for player in players {
+            player.clearGameEvents()
+        }
     }
 }
