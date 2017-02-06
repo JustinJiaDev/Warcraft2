@@ -1,9 +1,5 @@
 import UIKit
 
-protocol MiniMapViewDelegate {
-    func drawMiniMap(on surface: GraphicSurface)
-}
-
 class MiniMapView: UIView {
 
     weak var render: MapRenderer?
