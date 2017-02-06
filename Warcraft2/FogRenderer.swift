@@ -8,11 +8,10 @@ class FogRenderer {
     private var blackIndices: [Int] = []
 
     init(tileset: GraphicTileset, map: VisibilityMap) throws {
-        var nextIndex = 0
         let originalValues = [0x0b, 0x16, 0xd0, 0x68, 0x07, 0x94, 0xe0, 0x29, 0x03, 0x06, 0x14, 0x90, 0x60, 0xc0, 0x09, 0x28, 0x01, 0x02, 0x04, 0x10, 0x80, 0x40, 0x20, 0x08]
         self.tileset = tileset
         self.map = map
-        _ = tileset.findTile(with: "visible")
+//        _ = tileset.findTile(with: "visible")
         noneIndex = tileset.findTile(with: "none")
         seenIndex = tileset.findTile(with: "seen")
         partialIndex = tileset.findTile(with: "partial")
@@ -43,7 +42,7 @@ class FogRenderer {
         blackIndices[0x09] = blackIndices[0x29]
         blackIndices[0x28] = blackIndices[0x29]
 
-        noneIndex = tileset.tileCount
+        var nextIndex = tileset.tileCount
         _ = tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
         try tileset.createClippingMasks()
 
@@ -109,6 +108,9 @@ class FogRenderer {
                     continue
                 }
                 if tileType == .seen || tileType == .seenPartial {
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: seenIndex)
+                }
+                if tileType == .partialPartial || tileType == .partial {
                     var visibilityIndex = 0
                     var visibilityMask = 0x1
 
@@ -172,7 +174,7 @@ class FogRenderer {
             var xPosition = 0
             while xPosition < map.width {
                 let tileType = map.tileTypeAt(x: xPosition, y: yPosition)
-
+                let xAnchor = xPosition
                 while xPosition < map.width && map.tileTypeAt(x: xPosition, y: yPosition) == tileType {
                     xPosition += 1
                 }
@@ -184,7 +186,7 @@ class FogRenderer {
                     default: colorRGBA = 0x5400_0000
                     }
                     resourceContext.setSourceRGB(colorRGBA)
-                    resourceContext.moveTo(x: xPosition - 1, y: yPosition)
+                    resourceContext.moveTo(x: xAnchor, y: yPosition)
                     resourceContext.lineTo(x: xPosition - 1, y: yPosition)
                     resourceContext.stroke()
                 }
