@@ -332,7 +332,98 @@ class PlayerData {
         return bestAsset
     }
     
-    func findBestAssetPlacement(pos: Position, builder: PlayerAsset, assetType: AssetType, buffer: Int) -> Position {
+    func findBestAssetPlacement(pos: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
+        
+        guard let assetType:PlayerAssetType = assetTypes[PlayerAssetType.typeToName(type: assetTypeInput)] else { assert(false) }
+        let placementSize:Int = assetType.size + 2 * buffer;
+        let maxDistance:Int = max(playerMap.width, playerMap.height)
+        
+        for distance in 0..<maxDistance {
+        
+            var bestPosition:Position
+            var bestDistance:Int = -1
+            var leftX:Int = pos.x - distance
+            var topY:Int = pos.y - distance
+            var rightX:Int = pos.x + distance
+            var bottomY:Int = pos.y + distance
+            var leftValid:Bool = true
+            var rightValid:Bool = true
+            var topValid:Bool = true
+            var bottomValid:Bool = true
+            
+            if (leftX < 0) {
+                leftValid = false
+                leftX = 0
+            }
+            if (topY < 0) {
+                topValid = false
+                topY = 0
+            }
+            if (rightX >= playerMap.width) {
+                rightValid = false
+                rightX = playerMap.width - 1
+            }
+            if (bottomY >= playerMap.height) {
+                bottomValid = false
+                bottomY = playerMap.height - 1
+            }
+            
+            if (topValid) {
+                for index in leftX...rightX {
+                    var tempPosition:Position = Position(x: index, y: topY)
+                    if (playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder)) {
+                        var currentDistance:Int = builder.tilePosition.distanceSquared(tempPosition)
+                        if ((bestDistance == -1) || ( bestDistance > currentDistance)) {
+                            bestDistance = currentDistance
+                            bestPosition = tempPosition
+                        }
+                    }
+                }
+            }
+            if (rightValid) {
+                for index in topY...bottomY {
+                    var tempPosition:Position = Position(x: rightX, y: index)
+                    if (playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder)) {
+                        var currentDistance:Int = builder.tilePosition.distanceSquared(tempPosition)
+                        if ((bestDistance == -1 || bestDistance > currentDistance)) {
+                            bestDistance = currentDistance
+                            bestPosition = tempPosition
+                        }
+                    }
+                }
+            }
+            if (bottomValid) {
+                for index in topY...bottomY {
+                    var tempPosition:Position = Position(x: index, y: bottomY)
+                    if (playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder)) {
+                        var currentDistance:Int = builder.tilePosition.distanceSquared(tempPosition)
+                        if ((bestDistance == -1 || bestDistance > currentDistance)) {
+                            bestDistance = currentDistance
+                            bestPosition = tempPosition
+                        }
+                    }
+                }
+            }
+            if (leftValid) {
+                for index in topY...bottomY {
+                    var tempPosition:Position = Position(x: leftX, y: index)
+                    if (playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder)) {
+                        var currentDistance:Int = builder.tilePosition.distanceSquared(tempPosition)
+                        if ((bestDistance == -1 || bestDistance > currentDistance)) {
+                            bestDistance = currentDistance
+                            bestPosition = tempPosition
+                        }
+                    }
+                }
+            }
+            
+            if(bestDistance != -1) {
+                return Position(x: bestPosition.x + buffer, y: bestPosition.y + buffer)
+            }
+
+        }
+        
+        return Position(x: -1,y: -1)
         
     }
     
@@ -363,16 +454,30 @@ class PlayerData {
     func idleAssets() -> [PlayerAsset] {
         
         
-        // ####### INCOMPLETE
         var assetList:[PlayerAsset] = []
         
         for asset in assets {
-            if ((AssetAction.none == asset.action) && (AssetType.none != asset.type))
+            if ((AssetAction.none == asset.action) && (AssetType.none != asset.type)) {
+                assetList.append(asset)
+            }
         }
+        
+        return assetList
     }
 
     func addUpgrade(upgradeName: String) {
-        fatalError("not yet ported")
+
+        if let upgrade:PlayerUpgrade = PlayerUpgrade.findUpgrade(name: upgradeName) {
+        
+            for assetType in upgrade.affectedAssets {
+                let assetName =  PlayerAssetType.typeToName(type: assetType)
+                if assetTypes[assetName] != nil {
+                    assetTypes[assetName]?.addUpgrade(upgrade: upgrade)
+                }
+            }
+        }
+        upgrades[(PlayerCapability.nameToType(name: upgradeName)).rawValue] = true
+    
     }
 
     func hasUpgrade(upgrade: AssetCapabilityType) -> Bool {
