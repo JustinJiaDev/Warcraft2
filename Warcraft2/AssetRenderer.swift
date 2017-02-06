@@ -18,7 +18,7 @@ class AssetRenderer {
     private var playerMap: AssetDecoratedMap
     private var tilesets: [GraphicMulticolorTileset] = []
     private var markerTileset: GraphicTileset
-    private var fireTileset: [GraphicTileset] = []
+    private var fireTilesets: [GraphicTileset] = []
     private var buildingDeathTileset: GraphicTileset
     private var corpseTileset: GraphicTileset
     private var arrowTileset: GraphicTileset
@@ -43,14 +43,14 @@ class AssetRenderer {
     private var animationDownsample: Int = 1
     private var targetFrequency = 10
 
-    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTileset: [GraphicTileset], buildingDeath: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
+    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTilesets: [GraphicTileset], buildingDeathTileset: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
         var typeIndex = 0
         var markerIndex = 0
 
         self.tilesets = tilesets
         self.markerTileset = markerTileset
-        self.fireTileset = fireTileset
-        self.buildingDeathTileset = buildingDeath
+        self.fireTilesets = fireTilesets
+        self.buildingDeathTileset = buildingDeathTileset
         self.corpseTileset = corpseTileset
         self.arrowTileset = arrowTileset
         self.playerData = player
@@ -613,7 +613,7 @@ class AssetRenderer {
             } else if asset.speed == 0 {
                 let currentAction = asset.action
                 if currentAction != .death {
-                    var hitRange = asset.hitPoints * fireTileset.count * 2 / asset.maxHitPoints
+                    var hitRange = asset.hitPoints * fireTilesets.count * 2 / asset.maxHitPoints
                     if currentAction == .construct {
                         var command = asset.currentCommand()
                         if let assetTarget = command.assetTarget {
@@ -621,22 +621,22 @@ class AssetRenderer {
                             if command.activatedCapability != nil {
                                 var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
                                 divisor = divisor != 0 ? divisor : 1
-                                hitRange = asset.hitPoints * fireTileset.count * 2 / divisor!
+                                hitRange = asset.hitPoints * fireTilesets.count * 2 / divisor!
                             }
                         } else if let activatedCapability = command.activatedCapability {
                             var divisor = activatedCapability.percentComplete(max: asset.maxHitPoints)
                             divisor = divisor != 0 ? divisor : 1
-                            hitRange = asset.hitPoints * fireTileset.count * 2 / divisor
+                            hitRange = asset.hitPoints * fireTilesets.count * 2 / divisor
                         }
                     }
 
-                    if hitRange < fireTileset.count {
-                        let tilesetIndex = fireTileset.count - 1 - hitRange
-                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTileset[tilesetIndex].tileCount
-                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTileset[tilesetIndex].tileHalfWidth
-                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTileset[tilesetIndex].tileHeight
-                        let rightX = renderData.x + fireTileset[tilesetIndex].tileWidth - 1
-                        renderData.bottomY = renderData.y + fireTileset[tilesetIndex].tileHeight - 1
+                    if hitRange < fireTilesets.count {
+                        let tilesetIndex = fireTilesets.count - 1 - hitRange
+                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
+                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTilesets[tilesetIndex].tileHalfWidth
+                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTilesets[tilesetIndex].tileHeight
+                        let rightX = renderData.x + fireTilesets[tilesetIndex].tileWidth - 1
+                        renderData.bottomY = renderData.y + fireTilesets[tilesetIndex].tileHeight - 1
                         var onScreen = true
 
                         if rightX < rect.xPosition || renderData.x > screenRightX {
@@ -648,7 +648,7 @@ class AssetRenderer {
                         renderData.y -= rect.yPosition
 
                         if onScreen {
-                            try fireTileset[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                            try fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                         }
                     }
                 }

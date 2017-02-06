@@ -1,10 +1,10 @@
 import UIKit
 
-class MiniMapView: UIView {
+class AssetView: UIView {
 
-    weak var renderer: MapRenderer?
+    weak var renderer: AssetRenderer?
 
-    convenience init(frame: CGRect, renderer: MapRenderer) {
+    convenience init(frame: CGRect, renderer: AssetRenderer) {
         self.init(frame: frame)
         self.renderer = renderer
     }
@@ -15,7 +15,8 @@ class MiniMapView: UIView {
         }
         let context = UIGraphicsGetCurrentContext()!
         let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        renderer.drawMiniMap(on: layer)
+        renderer.drawMiniAssets(on: layer)
+        // try renderer.drawAssets(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: Int(rect.width), height: Int(rect.height)))
         context.draw(layer, in: rect)
     }
 }

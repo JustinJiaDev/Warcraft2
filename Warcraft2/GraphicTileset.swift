@@ -242,8 +242,8 @@ class GraphicTileset {
         let lineSource = LineDataSource(dataSource: dataSource)
         // FIXME: MAKE TILESET GREAT AGAIN
         // HACK - START
-        _ = lineSource.readLine()
-        let surfaceTileset = GraphicFactory.loadTerrainTilesetSurface()
+        let name = lineSource.readLine()!
+        let surfaceTileset = GraphicFactory.loadPNGTilesetSurface(name: name)
         // HACK - END
         // ORIGINAL - START
         //        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {

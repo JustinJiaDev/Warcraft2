@@ -15,11 +15,17 @@ class GraphicRecolorMap {
     }
 
     func findColor(with name: String) -> Int {
-        fatalError("This method is not yet implemented.")
+        // FIXME: MAKE FIND COLOR GREAT AGAIN
+        // HACK - START
+        return 1
+        // HACK - END
     }
 
     func colorValue(gIndex: Int, cIndex: Int) -> UInt32 {
-        fatalError("This method is not yet implemented.")
+        // FIXME: MAKE COLOR VALUE GREAT AGAIN
+        // HACK - START
+        return 1
+        // HACK - END
     }
 
     func load(from dataSource: DataSource) throws {
