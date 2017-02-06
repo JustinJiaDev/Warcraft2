@@ -97,24 +97,9 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    //    static func loadUpgrades(container: DataContainer) -> Bool {
-    //        var fileIterator = container.first
-    //        if let actualFileIterator = fileIterator {
-    //            while actualFileIterator != nil && actualFileIterator.isValid()  {
-    //                var filename = actualFileIterator.name
-    //                actualFileIterator.next
-    //                if filename.find(".dat") == (filename.length - 4) {
-    //                    print("Failed to load upgrade")
-    //                    continue
-    //                }
-    //            }
-    //            return true
-    //        }
-    //        else {
-    //            print("fileIterator == nil")
-    //            return false
-    //        }
-    //    }
+    static func loadUpgrades(container: DataContainer) -> Bool {
+        fatalError("This method is not yet implemented.")
+    }
 
     static func load(source: DataSource) -> Bool {
         fatalError("This method is not yet implemented.")
@@ -191,32 +176,28 @@ class PlayerAssetType {
         "CannonTower": .cannonTower
     ]
 
-    init?(playerAsset: PlayerAssetType?) {
-        if let asset = playerAsset {
-            name = asset.name
-            type = asset.type
-            color = asset.color
-            capabilities = asset.capabilities
-            assetUpgrades = asset.assetUpgrades
-            assetRequirements = asset.assetRequirements
-            hitPoints = asset.hitPoints
-            armor = asset.armor
-            sight = asset.sight
-            constructionSight = asset.constructionSight
-            size = asset.size
-            speed = asset.speed
-            goldCost = asset.goldCost
-            lumberCost = asset.lumberCost
-            foodConsumption = asset.foodConsumption
-            buildTime = asset.buildTime
-            attackSteps = asset.attackSteps
-            reloadSteps = asset.reloadSteps
-            basicDamage = asset.basicDamage
-            piercingDamage = asset.piercingDamage
-            range = asset.range
-        } else {
-            return nil
-        }
+    init(playerAsset: PlayerAssetType) {
+        name = playerAsset.name
+        type = playerAsset.type
+        color = playerAsset.color
+        capabilities = playerAsset.capabilities
+        assetUpgrades = playerAsset.assetUpgrades
+        assetRequirements = playerAsset.assetRequirements
+        hitPoints = playerAsset.hitPoints
+        armor = playerAsset.armor
+        sight = playerAsset.sight
+        constructionSight = playerAsset.constructionSight
+        size = playerAsset.size
+        speed = playerAsset.speed
+        goldCost = playerAsset.goldCost
+        lumberCost = playerAsset.lumberCost
+        foodConsumption = playerAsset.foodConsumption
+        buildTime = playerAsset.buildTime
+        attackSteps = playerAsset.attackSteps
+        reloadSteps = playerAsset.reloadSteps
+        basicDamage = playerAsset.basicDamage
+        piercingDamage = playerAsset.piercingDamage
+        range = playerAsset.range
     }
     init() {
         for capability in AssetCapabilityType.allValues {
@@ -239,7 +220,7 @@ class PlayerAssetType {
         range = 0
     }
 
-    func armorUpgrade() -> Int {
+    var armorUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.armor
@@ -247,7 +228,7 @@ class PlayerAssetType {
         return returnValue
     }
 
-    func sightUpgrade() -> Int {
+    var sightUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.sight
@@ -255,7 +236,7 @@ class PlayerAssetType {
         return returnValue
     }
 
-    func speedUpgrade() -> Int {
+    var speedUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.speed
@@ -263,7 +244,7 @@ class PlayerAssetType {
         return returnValue
     }
 
-    func basicDamageUpgrade() -> Int {
+    var basicDamageUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.basicDamage
@@ -271,7 +252,7 @@ class PlayerAssetType {
         return returnValue
     }
 
-    func piercingDamageUpgrade() -> Int {
+    var piercingDamageUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.piercingDamage
@@ -279,7 +260,7 @@ class PlayerAssetType {
         return returnValue
     }
 
-    func rangeUpgrade() -> Int {
+    var rangeUpgrade: Int {
         var returnValue = 0
         for upgrade in assetUpgrades {
             returnValue += upgrade.range
@@ -303,11 +284,11 @@ class PlayerAssetType {
         assetUpgrades.append(upgrade)
     }
 
-    static func nameToType(name: String) -> AssetType {
+    static func type(from name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func typeToName(type: AssetType) -> String {
+    static func name(from type: AssetType) -> String {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
@@ -511,27 +492,27 @@ class PlayerAsset {
     }
 
     var armorUpgrade: Int {
-        return assetType.armorUpgrade()
+        return assetType.armorUpgrade
     }
 
     var sightUpgrade: Int {
-        return assetType.sightUpgrade()
+        return assetType.sightUpgrade
     }
 
     var speedUpgrade: Int {
-        return assetType.speedUpgrade()
+        return assetType.speedUpgrade
     }
 
     var basicDamageUpgrade: Int {
-        return assetType.basicDamageUpgrade()
+        return assetType.basicDamageUpgrade
     }
 
     var piercingDamageUpgrade: Int {
-        return assetType.piercingDamageUpgrade()
+        return assetType.piercingDamageUpgrade
     }
 
     var rangeUpgrade: Int {
-        return assetType.rangeUpgrade()
+        return assetType.rangeUpgrade
     }
 
     var effectiveArmor: Int {
