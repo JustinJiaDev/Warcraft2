@@ -48,10 +48,7 @@ class MapRenderer {
         guard string.hasPrefix("0x") || string.hasPrefix("0X") else {
             return nil
         }
-
-        let x = Int(string.substring(from: string.index(string.startIndex, offsetBy: 2)), radix: 16)
-        print("String: \(string) Int: \(x)")
-        return x
+        return Int(string.substring(from: string.index(string.startIndex, offsetBy: 2)), radix: 16)
     }
 
     func makeHammingSet(value: Int, hammingSet: inout [Int]) {
