@@ -257,32 +257,6 @@ class PlayerAssetType {
         range = playerAsset.range
     }
 
-    // FIXME: MAKE ASSET TYPE GREAT AGAIN
-    // HACK - BEGIN
-    init(type: AssetType) {
-        self.type = type
-
-        for capability in AssetCapabilityType.allValues {
-            capabilities[capability] = false
-        }
-        hitPoints = 1
-        armor = 0
-        sight = 0
-        constructionSight = 0
-        size = 200
-        speed = 0
-        goldCost = 0
-        lumberCost = 0
-        foodConsumption = 0
-        buildTime = 0
-        attackSteps = 0
-        reloadSteps = 0
-        basicDamage = 0
-        piercingDamage = 0
-        range = 0
-    }
-    // HACK - END
-
     init() {
         for capability in AssetCapabilityType.allValues {
             capabilities[capability] = false
@@ -784,6 +758,6 @@ class PlayerAsset {
 
 extension PlayerAsset: Equatable {
     public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
-        return lhs.type == rhs.type
+        return lhs == rhs
     }
 }
