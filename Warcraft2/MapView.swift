@@ -2,35 +2,7 @@ import UIKit
 
 class MapView: UIView {
 
-    private var mapRender: MapRenderer!
-
-    override func awakeFromNib() {
-        do {
-            guard let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat") else {
-                fatalError()
-            }
-            let configuration = try FileDataSource(url: configurationURL)
-
-            guard let tilesetURL = Bundle.main.url(forResource: "Terrain", withExtension: "dat") else {
-                fatalError()
-            }
-            let tilesetSource = try FileDataSource(url: tilesetURL)
-            let tileset = GraphicTileset()
-            try tileset.loadTileset(from: tilesetSource)
-
-            guard let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map") else {
-                fatalError()
-            }
-            let mapSource = try FileDataSource(url: mapURL)
-            let map = AssetDecoratedMap()
-            try map.loadMap(source: mapSource)
-
-            mapRender = try MapRenderer(configuration: configuration, tileset: tileset, map: map)
-            bounds.size = CGSize(width: mapRender.detailedMapWidth, height: mapRender.detailedMapHeight)
-        } catch {
-            print(error.localizedDescription) // TODO: Handle Error
-        }
-    }
+    weak var mapRender: MapRenderer?
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let location = touches.first?.location(in: self), let previousLocation = touches.first?.previousLocation(in: self) else {
@@ -44,6 +16,9 @@ class MapView: UIView {
 
     override func draw(_ rect: CGRect) {
         do {
+            guard let mapRender = mapRender else {
+                return
+            }
             let context = UIGraphicsGetCurrentContext()!
             let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
             try mapRender.drawMap(on: layer, typeSurface: layer, in: Rectangle(xPosition: 0, yPosition: 0, width: mapRender.detailedMapWidth, height: mapRender.detailedMapHeight), level: 0)

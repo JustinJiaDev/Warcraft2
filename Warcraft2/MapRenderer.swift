@@ -501,23 +501,23 @@ class MapRenderer {
         }
     }
 
-    func drawMiniMap(surface: GraphicSurface) {
-        let resourceContext = surface.createResourceContext()
+    func drawMiniMap(on surface: GraphicSurface) {
+        let resourceContext = surface.resourceContext
         resourceContext.setLineWidth(1)
-        resourceContext.setLineCap(GraphicResourceContext.LineCap.square)
-        for yPos in 0 ..< map.height {
-            var xPos = 0
+        resourceContext.setLineCap(.square)
+        for y in 0 ..< map.height {
+            var x = 0
 
-            while xPos < map.width {
-                let tileType = map.tileTypeAt(x: xPos, y: yPos)
-                let xAnchor = xPos
-                while xPos < map.width && map.tileTypeAt(x: xPos, y: yPos) == tileType {
-                    xPos += 1
+            while x < map.width {
+                let tileType = map.tileTypeAt(x: x, y: y)
+                let xAnchor = x
+                while x < map.width && map.tileTypeAt(x: x, y: y) == tileType {
+                    x += 1
                 }
-                if .none != tileType {
+                if tileType != .none {
                     resourceContext.setSourceRGB(UInt32(pixelIndices[tileType.rawValue]))
-                    resourceContext.moveTo(xPosition: xAnchor, yPosition: yPos)
-                    resourceContext.lineTo(xPosition: xPos - 1, yPosition: yPos)
+                    resourceContext.moveTo(x: xAnchor, y: y)
+                    resourceContext.lineTo(x: x - 1, y: y)
                     resourceContext.stroke()
                 }
             }

@@ -26,9 +26,18 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cYq-nC-wy8" customClass="MiniMapView" customModule="Warcraft2" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="247" width="130" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="sZd-cS-lN4" id="DOA-XH-eId"/>
+                        <outlet property="miniMapView" destination="cYq-nC-wy8" id="BXK-wF-J9j"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hhk-Mp-Sqb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

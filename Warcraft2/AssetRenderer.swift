@@ -427,7 +427,7 @@ class AssetRenderer {
             throw GameError.missingPlayerData
         }
 
-        let resourceContext = surface.createResourceContext()
+        let resourceContext = surface.resourceContext
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
         var rectangleColor = selfPixelColor
@@ -461,7 +461,12 @@ class AssetRenderer {
                         renderData.x -= rect.xPosition
                         renderData.y -= rect.yPosition
                         if onScreen {
-                            resourceContext.rectangle(xPosition: renderData.x, yPosition: renderData.y, width: tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth), height: tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight))
+                            resourceContext.rectangle(
+                                x: renderData.x,
+                                y: renderData.y,
+                                width: tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth),
+                                height: tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight)
+                            )
                             resourceContext.stroke()
                         }
                     }
@@ -474,7 +479,7 @@ class AssetRenderer {
         if selectRect.width != 0 && selectRect.height != 0 {
             let selectionX = selectRect.xPosition - rect.xPosition
             let selectionY = selectRect.yPosition - rect.yPosition
-            resourceContext.rectangle(xPosition: selectionX, yPosition: selectionY, width: selectRect.width, height: selectRect.height)
+            resourceContext.rectangle(x: selectionX, y: selectionY, width: selectRect.width, height: selectRect.height)
             resourceContext.stroke()
         }
 
@@ -561,7 +566,7 @@ class AssetRenderer {
                 renderData.x -= rect.xPosition
                 renderData.y -= rect.yPosition
                 if onScreen {
-                    resourceContext.rectangle(xPosition: renderData.x, yPosition: renderData.y, width: rectWidth, height: rectHeight)
+                    resourceContext.rectangle(x: renderData.x, y: renderData.y, width: rectWidth, height: rectHeight)
                     resourceContext.stroke()
                 }
             }
@@ -751,13 +756,13 @@ class AssetRenderer {
     }
 
     func drawMiniAssets(on surface: GraphicSurface) {
-        let resourceContext = surface.createResourceContext()
+        let resourceContext = surface.resourceContext
         if let playerData = playerData {
             for asset in playerMap.assets {
                 let size = asset.size
                 let pixelColor = asset.color == playerData.color ? selfPixelColor : pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
-                resourceContext.rectangle(xPosition: asset.tilePositionX, yPosition: asset.tilePositionY, width: size, height: size)
+                resourceContext.rectangle(x: asset.tilePositionX, y: asset.tilePositionY, width: size, height: size)
                 resourceContext.fill()
             }
         } else {
@@ -765,7 +770,7 @@ class AssetRenderer {
                 let size = PlayerAssetType.findDefault(from: asset.type).size
                 let pixelColor = pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
-                resourceContext.rectangle(xPosition: asset.tilePosition.x, yPosition: asset.tilePosition.y, width: size, height: size)
+                resourceContext.rectangle(x: asset.tilePosition.x, y: asset.tilePosition.y, width: size, height: size)
                 resourceContext.fill()
             }
         }
