@@ -56,7 +56,7 @@ class FogRenderer {
                     for orig in originalValues {
                         var currentHamming = FogRenderer.hammingDistance(orig, value)
 
-                        if currentHamming == FogRenderer.hammingDistance(v1: 0, v2: ~orig & value) {
+                        if currentHamming == FogRenderer.hammingDistance(0, ~orig & value) {
                             if currentHamming < bestHamming {
                                 bestHamming = currentHamming
                                 bestMatch = orig
@@ -72,7 +72,7 @@ class FogRenderer {
                         for orig in originalValues {
                             let currentHamming = FogRenderer.hammingDistance(orig, value)
 
-                            if currentHamming == FogRenderer.hammingDistance(v1: 0, v2: ~orig & value) {
+                            if currentHamming == FogRenderer.hammingDistance(0, ~orig & value) {
                                 if currentHamming < bestHamming {
                                     bestHamming = currentHamming
                                     bestMatch = orig
