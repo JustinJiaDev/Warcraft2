@@ -373,8 +373,8 @@ class AssetRenderer {
                     } else {
                         return nil
                     }
-                    }() else {
-                        break
+                }() else {
+                    break
                 }
                 let actionSteps = currentIndices[asset.type.rawValue].count / Direction.numberOfDirections
                 renderData.tileIndex = currentIndices[asset.type.rawValue][asset.direction.index * actionSteps]
@@ -673,19 +673,19 @@ class AssetRenderer {
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
 
-        let position = Position()
-        let tilePosition = Position()
         var onScreen = true
         let assetType = PlayerAssetType.findDefault(from: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
+        let tempPosition = Position()
+        let tilePosition = Position()
         tilePosition.setToTile(position)
-        position.setFromTile(tilePosition)
+        tempPosition.setFromTile(tilePosition)
 
-        position.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
-        position.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
-        let placementRightX = position.x + tilesets[type.rawValue].tileWidth
-        let placementBottomY = position.y + tilesets[type.rawValue].tileHeight
+        tempPosition.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
+        tempPosition.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
+        let placementRightX = tempPosition.x + tilesets[type.rawValue].tileWidth
+        let placementBottomY = tempPosition.y + tilesets[type.rawValue].tileHeight
 
         tilePosition.setToTile(position)
         var xOffset = 0
