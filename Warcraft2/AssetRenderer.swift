@@ -373,8 +373,8 @@ class AssetRenderer {
                     } else {
                         return nil
                     }
-                }() else {
-                    break
+                    }() else {
+                        break
                 }
                 let actionSteps = currentIndices[asset.type.rawValue].count / Direction.numberOfDirections
                 renderData.tileIndex = currentIndices[asset.type.rawValue][asset.direction.index * actionSteps]
@@ -660,9 +660,15 @@ class AssetRenderer {
         guard type != .none else {
             return
         }
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
+        // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
+        // HACK - BEGIN
+        //
+        // HACK - END
+        // ORIGINAL - BEGIN
+        // guard let playerData = playerData else {
+        //     throw GameError.missingPlayerData
+        // }
+        // ORIGINAL - END
 
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
@@ -740,7 +746,13 @@ class AssetRenderer {
             if onScreen {
                 position.x -= rect.xPosition
                 position.y -= position.y - rect.yPosition
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
+                // HACK - BEGIN
+                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: 1)
+                // HACK - END
+                // ORIGINAL - BEGIN
+                // try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                // ORIGINAL - END
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {
