@@ -100,6 +100,7 @@
 		4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */; };
 		498584501E303F6B00F6766C /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4985844F1E303F6B00F6766C /* TerrainManager.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
+		8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B3B161E48656000BA4832 /* FogRenderer.swift */; };
 		8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */; };
 		8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515E1E2D64DF008E968C /* Rectangle.swift */; };
 		8E1B51611E2D694C008E968C /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B51601E2D694C008E968C /* Position.swift */; };
@@ -246,6 +247,7 @@
 		4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = blacksmith.wav; sourceTree = "<group>"; };
 		4985844F1E303F6B00F6766C /* TerrainManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		8E0B3B161E48656000BA4832 /* FogRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FogRenderer.swift; sourceTree = "<group>"; };
 		8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameDataTypes.swift; sourceTree = "<group>"; };
 		8E1B515D1E2D5DE9008E968C /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		8E1B515E1E2D64DF008E968C /* Rectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rectangle.swift; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
 				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
+				8E0B3B161E48656000BA4832 /* FogRenderer.swift */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -901,6 +904,7 @@
 				8EA067831E33C8E00059CEC2 /* GraphicResourceContext.swift in Sources */,
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
+				8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */,
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
 				8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */,
 				49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */,
