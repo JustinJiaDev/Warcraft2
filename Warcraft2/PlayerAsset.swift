@@ -294,6 +294,10 @@ class PlayerAssetType {
         assetUpgrades.append(upgrade)
     }
 
+    func construct() -> PlayerAsset {
+        fatalError("This method is not yet implemented.")
+    }
+
     static func type(from name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
@@ -319,10 +323,6 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("This method is not yet implemented.")
-    }
-
-    static func construct() -> PlayerAsset {
         fatalError("This method is not yet implemented.")
     }
 }

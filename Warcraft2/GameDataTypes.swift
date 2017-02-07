@@ -25,6 +25,10 @@ enum PlayerColor {
         }
     }
 
+    static var numberOfColors: Int {
+        return 9
+    }
+
     init?(index: Int) {
         switch index {
         case 0: self = .none

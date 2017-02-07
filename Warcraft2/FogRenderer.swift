@@ -52,7 +52,7 @@ class FogRenderer {
                     var bestHamming = 8
 
                     for orig in originalValues {
-                        var currentHamming = FogRenderer.hammingDistance(orig, value)
+                        let currentHamming = FogRenderer.hammingDistance(orig, value)
 
                         if currentHamming == FogRenderer.hammingDistance(0, ~orig & value) {
                             if currentHamming < bestHamming {
@@ -63,7 +63,8 @@ class FogRenderer {
                     }
                     if bestHamming <= allowedHamming {
                         let firstBest = bestMatch
-                        let currentValue = value & ~bestMatch
+                        // FIXME: FIGURE OUT IF WE NEED CURRENT VALUE
+                        // let currentValue = value & ~bestMatch
                         bestMatch = -1
                         bestHamming = 8
 
@@ -107,7 +108,7 @@ class FogRenderer {
                     continue
                 }
                 if tileType == .seen || tileType == .seenPartial {
-                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: seenIndex)
+                    try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: seenIndex)
                 }
                 if tileType == .partialPartial || tileType == .partial {
                     var visibilityIndex = 0
