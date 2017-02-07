@@ -323,7 +323,10 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("This method is not yet implemented.")
+        // FIXME: MAKE DUPLICATE GREAT AGAIN
+        // HACK - BEGIN
+        return registry
+        // HACK - END
     }
 }
 

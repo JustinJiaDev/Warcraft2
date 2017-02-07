@@ -69,7 +69,7 @@ class TestViewController: UIViewController {
             let fireTilesets = [try tileset(with: "FireSmall"), try tileset(with: "FireLarge")]
             let buildingDeathTileset = try tileset(with: "BuildingDeath")
             let arrowTileset = try tileset(with: "Arrow")
-            let playerData: PlayerData? = nil
+            let playerData = PlayerData(map: self.map, color: .blue)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,
