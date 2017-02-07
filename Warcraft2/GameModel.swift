@@ -100,7 +100,7 @@ class PlayerData {
         self.lumber += lumber
         return self.lumber
     }
-    
+
     func decrementLumber(by lumber: Int) -> Int {
         self.lumber -= lumber
         return lumber

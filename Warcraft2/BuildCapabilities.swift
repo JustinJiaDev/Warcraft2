@@ -1,7 +1,7 @@
-//import Foundation
+// import Foundation
 //
 //// Build normal buildings capability
-//class PlayerCapabilityBuildNormal: PlayerCapability {
+// class PlayerCapabilityBuildNormal: PlayerCapability {
 //    class Registrant: PlayerCapability {
 //        init() {
 //            PlayerCapability.register(capability: PlayerCapabilityBuildNormal(buildingName: "TownHall"))
@@ -151,4 +151,4 @@
 //            return true
 //        }
 //    }
-//}
+// }
