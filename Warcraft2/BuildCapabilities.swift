@@ -3,7 +3,7 @@ import Foundation
 
 // Build normal buildings capability
 class PlayerCapabilityBuildNormal: PlayerCapability{
-    class Registrant{
+    class Registrant: PlayerCapability{
         init() {
             PlayerCapability.register(capability: PlayerCapabilityBuildNormal(buildingName: "TownHall"))
             PlayerCapability.register(capability: PlayerCapabilityBuildNormal(buildingName: "Farm"))
@@ -24,14 +24,14 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
 
 
         init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset, lumber: Int, gold: Int, steps: Int){
-            ActivatedPlayerCapability(actor, playerData, target) //parent class constructor ???
+            ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
             var assetCommand: AssetCommand
 
             self.currentStep = 0
             self.totalSteps = steps
             self.lumber = lumber
             self.gold = gold
-            self.playerData.decrementLumber(self.lumber)
+            //self.playerData.decrementLumber(self.lumber)
             self.playerData.decrementGold(by: gold)
             assetCommand.action = AssetAction.construct
             assetCommand.assetTarget = actor
@@ -45,11 +45,11 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
         }
 
         func incrementStep() -> Bool {
-            var addHitPoints = (target.maxHitPoints() * (self.currentStep + 1) / self.totalSteps) - (target.maxHitPoints() * self.currentStep / self.totalSteps);
+            var addHitPoints = (target.maxHitPoints * (self.currentStep + 1) / self.totalSteps) - (target.maxHitPoints * self.currentStep / self.totalSteps);
 
             self.target.incrementHitPoints(addHitPoints);
-            if self.target.hitPoints() > self.target.maxHitPoints() {
-                self.target.hitPoints(self.target.maxHitPoints());
+            if self.target.hitPoints > self.target.maxHitPoints {
+                self.target.hitPoints = self.target.maxHitPoints;
             }
             self.currentStep += 1;
             self.actor.incrementStep();
@@ -59,11 +59,11 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
 
                 tempEvent.type = EventType.workComplete;
                 tempEvent.asset = self.actor;
-                self.playerData.AddGameEvent(tempEvent);
+                self.playerData.addGameEvent(event: tempEvent);
 
                 self.target.popCommand();
                 self.actor.popCommand();
-                self.actor.tilePosition(self.playerData.playerMap().findAssetPlacement(self.actor, self.target, Position(self.playerData.playerMap().width() - 1, self.playerData.playerMap().height()-1)));
+                self.actor.tilePosition.setToTile (self.playerData.playerMap.findAssetPlacement(placeAsset: self.actor, fromAsset: self.target, nextTileTarget: Position(x: self.playerData.playerMap.width - 1, y: self.playerData.playerMap.height-1)))
                 self.actor.resetStep();
                 self.target.resetStep();
 
@@ -73,10 +73,10 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
 
         }
 
-        func cancel(){
-                self.playerData.incrementLumber(self.lumber)
-                self.playerData.incrementGold(self.gold)
-                self.playerData.deleteAsset(self.target)
+        override func cancel(){
+                self.playerData.incrementLumber(by: self.lumber)
+                self.playerData.incrementGold(by: self.gold)
+                self.playerData.deleteAsset(asset: self.target)
                 self.actor.popCommand()
 
         }
@@ -85,7 +85,7 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
     private var buildingName: String
 
     init(buildingName: String) {
-        PlayerCapability("Build" + buildingName, targetType: .terrainOrAsset)
+        PlayerCapability(name: "Build" + buildingName, targetType: .terrainOrAsset)
         self.buildingName = buildingName
 
     }
@@ -106,7 +106,7 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
         return true;
     }
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool{
-        let iterator = playerData.assetTypes().findDefault(buildingName)
+        let iterator = playerData.assetTypes.find(buildingName)
 
         if (actor != target)&&(AssetType.none != target.type ){
             return false;
@@ -130,7 +130,7 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         let iterator = playerData.assetTypes.find(buildingName)
 
-        if iterator != playerData.assetTypes().end() {
+        if iterator != playerData.assetTypes.last {
             var newCommand: AssetCommand
 
             actor.clearCommand();
@@ -139,13 +139,13 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
                 let newAsset = playerData.createAsset(assetTypeName: buildingName)
                 var tilePosition: Position
                 tilePosition.setToTile(target.position)
-                newAsset.tilePosition(tilePosition)
+                newAsset.tilePosition.setToTile(tilePosition)
                 newAsset.hitPoints = 1
 
                 newCommand.action = AssetAction.capability
                 newCommand.capability = AssetCapabilityType.none
                 newCommand.assetTarget = newAsset
-                newCommand.activatedCapability = PlayerCapabilityBuildNormal.ActivatedCapability(actor, playerData, newAsset, AssetType.lumberCost, AssetType.goldCost, PlayerAsset.updateFrequency * AssetType.buildTime)
+                newCommand.activatedCapability = PlayerCapabilityBuildNormal.ActivatedCapability(actor, playerData, newAsset, .lumberCost, .goldCost, PlayerAsset.updateFrequency * .buildTime)
                 actor.pushCommand(command: newCommand)
             }
             else{
