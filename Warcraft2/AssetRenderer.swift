@@ -18,7 +18,7 @@ class AssetRenderer {
     private var playerMap: AssetDecoratedMap
     private var tilesets: [GraphicMulticolorTileset] = []
     private var markerTileset: GraphicTileset
-    private var fireTileset: [GraphicTileset] = []
+    private var fireTilesets: [GraphicTileset] = []
     private var buildingDeathTileset: GraphicTileset
     private var corpseTileset: GraphicTileset
     private var arrowTileset: GraphicTileset
@@ -43,14 +43,14 @@ class AssetRenderer {
     private var animationDownsample: Int = 1
     private var targetFrequency = 10
 
-    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTileset: [GraphicTileset], buildingDeath: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
+    init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTilesets: [GraphicTileset], buildingDeathTileset: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
         var typeIndex = 0
         var markerIndex = 0
 
         self.tilesets = tilesets
         self.markerTileset = markerTileset
-        self.fireTileset = fireTileset
-        self.buildingDeathTileset = buildingDeath
+        self.fireTilesets = fireTilesets
+        self.buildingDeathTileset = buildingDeathTileset
         self.corpseTileset = corpseTileset
         self.arrowTileset = arrowTileset
         self.playerData = player
@@ -613,7 +613,7 @@ class AssetRenderer {
             } else if asset.speed == 0 {
                 let currentAction = asset.action
                 if currentAction != .death {
-                    var hitRange = asset.hitPoints * fireTileset.count * 2 / asset.maxHitPoints
+                    var hitRange = asset.hitPoints * fireTilesets.count * 2 / asset.maxHitPoints
                     if currentAction == .construct {
                         var command = asset.currentCommand()
                         if let assetTarget = command.assetTarget {
@@ -621,22 +621,22 @@ class AssetRenderer {
                             if command.activatedCapability != nil {
                                 var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
                                 divisor = divisor != 0 ? divisor : 1
-                                hitRange = asset.hitPoints * fireTileset.count * 2 / divisor!
+                                hitRange = asset.hitPoints * fireTilesets.count * 2 / divisor!
                             }
                         } else if let activatedCapability = command.activatedCapability {
                             var divisor = activatedCapability.percentComplete(max: asset.maxHitPoints)
                             divisor = divisor != 0 ? divisor : 1
-                            hitRange = asset.hitPoints * fireTileset.count * 2 / divisor
+                            hitRange = asset.hitPoints * fireTilesets.count * 2 / divisor
                         }
                     }
 
-                    if hitRange < fireTileset.count {
-                        let tilesetIndex = fireTileset.count - 1 - hitRange
-                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTileset[tilesetIndex].tileCount
-                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTileset[tilesetIndex].tileHalfWidth
-                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTileset[tilesetIndex].tileHeight
-                        let rightX = renderData.x + fireTileset[tilesetIndex].tileWidth - 1
-                        renderData.bottomY = renderData.y + fireTileset[tilesetIndex].tileHeight - 1
+                    if hitRange < fireTilesets.count {
+                        let tilesetIndex = fireTilesets.count - 1 - hitRange
+                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
+                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTilesets[tilesetIndex].tileHalfWidth
+                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTilesets[tilesetIndex].tileHeight
+                        let rightX = renderData.x + fireTilesets[tilesetIndex].tileWidth - 1
+                        renderData.bottomY = renderData.y + fireTilesets[tilesetIndex].tileHeight - 1
                         var onScreen = true
 
                         if rightX < rect.xPosition || renderData.x > screenRightX {
@@ -648,7 +648,7 @@ class AssetRenderer {
                         renderData.y -= rect.yPosition
 
                         if onScreen {
-                            try fireTileset[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                            try fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                         }
                     }
                 }
@@ -660,26 +660,32 @@ class AssetRenderer {
         guard type != .none else {
             return
         }
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
+        // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
+        // HACK - BEGIN
+        //
+        // HACK - END
+        // ORIGINAL - BEGIN
+        // guard let playerData = playerData else {
+        //     throw GameError.missingPlayerData
+        // }
+        // ORIGINAL - END
 
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
 
-        let position = Position()
-        let tilePosition = Position()
         var onScreen = true
         let assetType = PlayerAssetType.findDefault(from: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
+        let tempPosition = Position()
+        let tilePosition = Position()
         tilePosition.setToTile(position)
-        position.setFromTile(tilePosition)
+        tempPosition.setFromTile(tilePosition)
 
-        position.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
-        position.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
-        let placementRightX = position.x + tilesets[type.rawValue].tileWidth
-        let placementBottomY = position.y + tilesets[type.rawValue].tileHeight
+        tempPosition.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
+        tempPosition.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
+        let placementRightX = tempPosition.x + tilesets[type.rawValue].tileWidth
+        let placementBottomY = tempPosition.y + tilesets[type.rawValue].tileHeight
 
         tilePosition.setToTile(position)
         var xOffset = 0
@@ -702,7 +708,7 @@ class AssetRenderer {
         for playerAsset in playerMap.assets {
             let offset = playerAsset.type == .goldMine ? 1 : 0
 
-            if playerAsset == builder {
+            if playerAsset === builder {
                 continue
             }
             if xOffset <= playerAsset.tilePositionX - offset {
@@ -740,7 +746,13 @@ class AssetRenderer {
             if onScreen {
                 position.x -= rect.xPosition
                 position.y -= position.y - rect.yPosition
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
+                // HACK - BEGIN
+                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: 1)
+                // HACK - END
+                // ORIGINAL - BEGIN
+                // try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                // ORIGINAL - END
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {

@@ -2,20 +2,20 @@ import UIKit
 
 class MiniMapView: UIView {
 
-    weak var render: MapRenderer?
+    weak var mapRenderer: MapRenderer?
 
-    convenience init(frame: CGRect, render: MapRenderer) {
+    convenience init(frame: CGRect, mapRenderer: MapRenderer) {
         self.init(frame: frame)
-        self.render = render
+        self.mapRenderer = mapRenderer
     }
 
     override func draw(_ rect: CGRect) {
-        guard let render = render else {
+        guard let mapRenderer = mapRenderer else {
             return
         }
         let context = UIGraphicsGetCurrentContext()!
         let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        render.drawMiniMap(on: layer)
+        mapRenderer.drawMiniMap(on: layer)
         context.draw(layer, in: rect)
     }
 }

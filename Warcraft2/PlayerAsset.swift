@@ -396,7 +396,6 @@ class PlayerAsset {
             position.y = newValue
         }
     }
-
     var direction: Direction
 
     private(set) var commands: [AssetCommand] = []
@@ -753,11 +752,5 @@ class PlayerAsset {
 
         incrementStep()
         return true
-    }
-}
-
-extension PlayerAsset: Equatable {
-    public static func ==(lhs: PlayerAsset, rhs: PlayerAsset) -> Bool {
-        return lhs == rhs
     }
 }
