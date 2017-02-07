@@ -31,7 +31,7 @@ class PlayerCapabilityBuildNormal: PlayerCapability{
             self.totalSteps = steps
             self.lumber = lumber
             self.gold = gold
-            //self.playerData.decrementLumber(self.lumber)
+            self.playerData.decrementLumber(by: lumber)
             self.playerData.decrementGold(by: gold)
             assetCommand.action = AssetAction.construct
             assetCommand.assetTarget = actor
