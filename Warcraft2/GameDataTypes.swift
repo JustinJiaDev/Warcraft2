@@ -25,6 +25,10 @@ enum PlayerColor {
         }
     }
 
+    static var numberOfColors: Int {
+        return 9
+    }
+
     init?(index: Int) {
         switch index {
         case 0: self = .none
@@ -59,6 +63,7 @@ enum AssetAction: Int {
 }
 
 enum AssetCapabilityType: Int {
+
     case none = 0
     case buildPeasant
     case buildFootman
@@ -98,6 +103,48 @@ enum AssetCapabilityType: Int {
     case rangerScouting
     case marksmanship
     case max
+
+    static var allValues: [AssetCapabilityType] { return [
+        .none,
+        .buildPeasant,
+        .buildFootman,
+        .buildArcher,
+        .buildRanger,
+        .buildFarm,
+        .buildTownHall,
+        .buildBarracks,
+        .buildLumberMill,
+        .buildBlacksmith,
+        .buildKeep,
+        .buildCastle,
+        .buildScoutTower,
+        .buildGuardTower,
+        .buildCannonTower,
+        .move,
+        .repair,
+        .mine,
+        .buildSimple,
+        .buildAdvanced,
+        .convey,
+        .cancel,
+        .buildWall,
+        .attack,
+        .standGround,
+        .patrol,
+        .weaponUpgrade1,
+        .weaponUpgrade2,
+        .weaponUpgrade3,
+        .arrowUpgrade1,
+        .arrowUpgrade2,
+        .arrowUpgrade3,
+        .armorUpgrade1,
+        .armorUpgrade2,
+        .armorUpgrade3,
+        .longbow,
+        .rangerScouting,
+        .marksmanship,
+        .max
+    ] }
 }
 
 enum AssetType: Int {

@@ -14,6 +14,10 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
     var soundfont: URL?
     var midifile: URL?
 
+    let menuSoundURL = URL(fileURLWithPath: (Bundle.main.path(forResource: "data/snd/music/menu", ofType: "mid"))!)
+    let menuSoundBankURL = Bundle.main.url(forResource: "data/snd/generalsoundfont", withExtension: "sf2")
+    var menuSound = AVMIDIPlayer()
+
     // var soundbank: URL!
 
     override func viewDidLoad() {
@@ -40,20 +44,13 @@ class GameViewController: UIViewController, UIScrollViewDelegate {
 
     func playMIDIFile() {
 
-        soundfont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
-        midifile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
-
-        assert(soundfont != nil)
-        assert(midifile != nil)
-
         do {
-            try midiplayer = AVMIDIPlayer(contentsOf: midifile!, soundBankURL: soundfont!)
-
+            try menuSound = AVMIDIPlayer(contentsOf: menuSoundURL, soundBankURL: menuSoundBankURL)
         } catch {
-            assert(false)
+            NSLog("Error: Can't play sound file menu.mid")
         }
 
-        midiplayer!.prepareToPlay()
-        midiplayer!.play()
+        menuSound.prepareToPlay()
+        menuSound.play()
     }
 }
