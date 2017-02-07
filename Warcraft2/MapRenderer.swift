@@ -1,17 +1,17 @@
-enum MapRendererError: Error {
-
-    case failedToReadItemCount
-    case failedToReadItemLine
-    case failedToReadColor(string: String)
-    case invalidItemLine(string: String)
-    case invalidColorHex(string: String)
-    case failedToReadSecondItemCount
-    case failedToReadSecondItemLine
-    case invalidSourceIndexHex(string: String)
-    case invalidType(String: String)
-}
-
 class MapRenderer {
+
+    enum GameError: Error {
+        case failedToReadItemCount
+        case failedToReadItemLine
+        case failedToReadColor(string: String)
+        case invalidItemLine(string: String)
+        case invalidColorHex(string: String)
+        case failedToReadSecondItemCount
+        case failedToReadSecondItemLine
+        case invalidSourceIndexHex(string: String)
+        case invalidType(String: String)
+    }
+
     var tileset: GraphicTileset
     var map: TerrainMap
     var grassIndices: [Int] = []
@@ -67,26 +67,28 @@ class MapRenderer {
         lastEnd = hammingSet.count
         bitCount = hammingSet.count
 
-        for _ in 1 ..< bitCount {
-            for lastIndex in anchor ..< lastEnd {
-                for bitIndex in 0 ..< bitCount {
-                    let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
-                    if newValue != hammingSet[lastIndex] {
-                        var found = false
-                        for index in lastEnd ..< hammingSet.count {
-                            if newValue == hammingSet[index] {
-                                found = true
-                                break
+        if bitCount > 0 {
+            for _ in 1 ..< bitCount {
+                for lastIndex in anchor ..< lastEnd {
+                    for bitIndex in 0 ..< bitCount {
+                        let newValue = hammingSet[lastIndex] | hammingSet[bitIndex]
+                        if newValue != hammingSet[lastIndex] {
+                            var found = false
+                            for index in lastEnd ..< hammingSet.count {
+                                if newValue == hammingSet[index] {
+                                    found = true
+                                    break
+                                }
                             }
-                        }
-                        if !found {
-                            hammingSet.append(newValue)
+                            if !found {
+                                hammingSet.append(newValue)
+                            }
                         }
                     }
                 }
+                anchor = lastEnd + 1
+                lastEnd = hammingSet.count
             }
-            anchor = lastEnd + 1
-            lastEnd = hammingSet.count
         }
     }
 
@@ -151,20 +153,20 @@ class MapRenderer {
         let lineSource = LineDataSource(dataSource: configuration)
 
         guard let itemCountString = lineSource.readLine(), let itemCount = Int(itemCountString) else {
-            throw MapRendererError.failedToReadItemCount
+            throw GameError.failedToReadItemCount
         }
 
         for _ in 0 ..< itemCount {
             guard let currentLine = lineSource.readLine() else {
-                throw MapRendererError.failedToReadItemLine
+                throw GameError.failedToReadItemLine
             }
             let tokens = Tokenizer.tokenize(data: currentLine)
             guard tokens.count >= 2 else {
-                throw MapRendererError.invalidItemLine(string: currentLine)
+                throw GameError.invalidItemLine(string: currentLine)
             }
             let pixelType = TerrainMap.TileType.from(string: tokens[0])
             guard let colorHex = MapRenderer.number(fromHexString: tokens[1]), colorHex >= 0 else {
-                throw MapRendererError.invalidColorHex(string: tokens[1])
+                throw GameError.invalidColorHex(string: tokens[1])
             }
             pixelIndices[pixelType.rawValue] = colorHex
         }
@@ -206,20 +208,20 @@ class MapRenderer {
         }
 
         guard let secondItemCountString = lineSource.readLine(), let secondItemCount = Int(secondItemCountString) else {
-            throw MapRendererError.failedToReadItemCount
+            throw GameError.failedToReadItemCount
         }
 
         for _ in 0 ..< secondItemCount {
             guard let currentLine = lineSource.readLine() else {
-                throw MapRendererError.failedToReadSecondItemLine
+                throw GameError.failedToReadSecondItemLine
             }
             let tokens = Tokenizer.tokenize(data: currentLine)
             guard tokens.count >= 3 else {
-                throw MapRendererError.invalidItemLine(string: currentLine)
+                throw GameError.invalidItemLine(string: currentLine)
             }
             let indices = try tokens.dropFirst().map { token -> Int in
                 guard let index = MapRenderer.number(fromHexString: token) else {
-                    throw MapRendererError.invalidSourceIndexHex(string: token)
+                    throw GameError.invalidSourceIndexHex(string: token)
                 }
                 return index
             }
@@ -230,12 +232,12 @@ class MapRenderer {
             case "water": for i in 1 ..< indices.count { waterIndices[indices[i]] = waterIndices[indices[0]] }
             case "wall": for i in 1 ..< indices.count { wallIndices[indices[i]] = wallIndices[indices[0]] }
             case "wall-damaged": for i in 1 ..< indices.count { wallDamagedIndices[indices[i]] = wallDamagedIndices[indices[0]] }
-            default: throw MapRendererError.invalidType(String: tokens[0])
+            default: throw GameError.invalidType(String: tokens[0])
             }
         }
     }
 
-    func drawMap(surface: GraphicSurface, typeSurface: GraphicSurface, rect: Rectangle, level: Int) throws {
+    func drawMap(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle, level: Int) throws {
         let tileWidth = tileset.tileWidth
         let tileHeight = tileset.tileHeight
         var unknownTree: [Bool] = []
@@ -499,23 +501,22 @@ class MapRenderer {
         }
     }
 
-    func drawMiniMap(surface: GraphicSurface) {
-        let resourceContext = surface.createResourceContext()
+    func drawMiniMap(on surface: GraphicSurface) {
+        let resourceContext = surface.resourceContext
         resourceContext.setLineWidth(1)
-        resourceContext.setLineCap(GraphicResourceContext.LineCap.square)
-        for yPos in 0 ..< map.height {
-            var xPos = 0
-
-            while xPos < map.width {
-                let tileType = map.tileTypeAt(x: xPos, y: yPos)
-                let xAnchor = xPos
-                while xPos < map.width && map.tileTypeAt(x: xPos, y: yPos) == tileType {
-                    xPos += 1
+        resourceContext.setLineCap(.square)
+        for y in 0 ..< map.height {
+            var x = 0
+            while x < map.width {
+                let tileType = map.tileTypeAt(x: x, y: y)
+                let xAnchor = x
+                while x < map.width && map.tileTypeAt(x: x, y: y) == tileType {
+                    x += 1
                 }
-                if .none != tileType {
+                if tileType != .none {
                     resourceContext.setSourceRGB(UInt32(pixelIndices[tileType.rawValue]))
-                    resourceContext.moveTo(xPosition: xAnchor, yPosition: yPos)
-                    resourceContext.lineTo(xPosition: xPos - 1, yPosition: yPos)
+                    resourceContext.moveTo(x: xAnchor, y: y)
+                    resourceContext.lineTo(x: x - 1, y: y)
                     resourceContext.stroke()
                 }
             }

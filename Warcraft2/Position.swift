@@ -20,6 +20,10 @@ class Position {
             && ((y % Position.tileHeight) == Position.halfTileHeight)
     }
 
+    var tileOctant: Direction {
+        return Position.octant[y % Position.tileHeight][x % Position.tileWidth]
+    }
+
     init() {
         x = 0
         y = 0
@@ -127,10 +131,6 @@ class Position {
         self.y = y / Position.tileHeight
     }
 
-    func tileOctant() -> Direction {
-        return Position.octant[y % Position.tileHeight][x % Position.tileWidth]
-    }
-
     func adjacentTileDirection(position: Position, objSize: Int) -> Direction {
         if 1 == objSize {
             let deltaX = position.x - x
@@ -197,7 +197,7 @@ class Position {
         if Position.tileHeight <= delta.y {
             delta.y = Position.tileHeight - 1
         }
-        return delta.tileOctant()
+        return delta.tileOctant
     }
 
     func distanceSquaredFrom(position: Position) -> Int {

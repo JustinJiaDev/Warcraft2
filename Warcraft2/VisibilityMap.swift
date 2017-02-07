@@ -8,35 +8,35 @@ class VisibilityMap {
         case seen
     }
 
-    private var map = [[TileVisibility]]()
+    private var map: [[TileVisibility]]
     private var maxVisibility: Int
     private var totalMapTiles: Int
     private var unseenTiles: Int
 
     init(width: Int, height: Int, maxVisibility: Int) {
+        let rowCount = height + 2 * maxVisibility
+        let columnCount = width + 2 * maxVisibility
         self.maxVisibility = maxVisibility
-        let numRows = height + 2 * maxVisibility
-        let numCols = width + 2 * maxVisibility
-        map = Array(repeating: Array(repeating: .none, count: numCols), count: numRows)
-        totalMapTiles = width * height
-        unseenTiles = totalMapTiles
+        self.map = Array(repeating: Array(repeating: .none, count: columnCount), count: rowCount)
+        self.totalMapTiles = width * height
+        self.unseenTiles = totalMapTiles
     }
 
     init(map: VisibilityMap) {
-        maxVisibility = map.maxVisibility
+        self.maxVisibility = map.maxVisibility
         self.map = map.map
-        totalMapTiles = map.totalMapTiles
-        unseenTiles = map.unseenTiles
+        self.totalMapTiles = map.totalMapTiles
+        self.unseenTiles = map.unseenTiles
     }
 
-    func width() -> Int {
+    var width: Int {
         if map.count != 0 {
             return map[0].count - 2 * maxVisibility
         }
         return 0
     }
 
-    func height() -> Int {
+    var height: Int {
         return map.count - 2 * maxVisibility
     }
 
@@ -44,17 +44,17 @@ class VisibilityMap {
         return (max * (totalMapTiles - unseenTiles)) / totalMapTiles
     }
 
-    func tileType(xIndex: Int, yIndex: Int) -> TileVisibility {
-        if (-maxVisibility > xIndex) || (-maxVisibility > yIndex) {
+    func tileTypeAt(x: Int, y: Int) -> TileVisibility {
+        if (-maxVisibility > x) || (-maxVisibility > y) {
             return .none
         }
-        if map.count <= yIndex + maxVisibility {
+        if map.count <= y + maxVisibility {
             return .none
         }
-        if map[yIndex + maxVisibility].count <= xIndex + maxVisibility {
+        if map[y + maxVisibility].count <= x + maxVisibility {
             return .none
         }
-        return map[yIndex + maxVisibility][xIndex + maxVisibility]
+        return map[y + maxVisibility][x + maxVisibility]
     }
 
     func update(assets: [PlayerAsset]) {

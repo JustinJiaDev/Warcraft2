@@ -1,10 +1,11 @@
 import Foundation
 import CoreGraphics
+import UIKit
 
 typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<UInt8>, _ source: UInt32) -> UInt32
 
 enum GraphicSurfaceError: Error {
-
+    case cannotCreateLayer
     case missingContext
     case missingSourceContext
 }
@@ -15,13 +16,12 @@ enum GraphicSurfaceFormat {
 
 protocol GraphicSurface {
 
-    var layer: CGLayer { get }
     var width: Int { get }
     var height: Int { get }
     var format: GraphicSurfaceFormat { get }
+    var resourceContext: GraphicResourceContext { get }
 
     func duplicate() -> GraphicSurface
-    func createResourceContext() -> GraphicResourceContext
 
     func pixelColorAt(x: Int, y: Int) -> UInt32
 
@@ -33,10 +33,6 @@ protocol GraphicSurface {
 }
 
 extension CGLayer: GraphicSurface {
-
-    var layer: CGLayer {
-        return self
-    }
 
     var width: Int {
         return Int(size.width)
@@ -50,8 +46,8 @@ extension CGLayer: GraphicSurface {
         fatalError("This method is not yet implemented.")
     }
 
-    func createResourceContext() -> GraphicResourceContext {
-        fatalError("This method is not yet implemented.")
+    var resourceContext: GraphicResourceContext {
+        return context!
     }
 
     func duplicate() -> GraphicSurface {
@@ -73,11 +69,23 @@ extension CGLayer: GraphicSurface {
         guard let context = context else {
             throw GraphicSurfaceError.missingContext
         }
-        guard let sourceContext = surface.layer.context else {
-            throw GraphicSurfaceError.missingSourceContext
+        let surface = surface as! CGLayer
+        if sx == 0 && sy == 0 {
+            context.draw(surface, in: CGRect(x: dx, y: dy, width: width, height: height))
+        } else {
+            let size = CGSize(width: width, height: height)
+            UIGraphicsBeginImageContext(size)
+            guard let newContext = UIGraphicsGetCurrentContext(), let layer = CGLayer(newContext, size: size, auxiliaryInfo: nil) else {
+                throw GraphicSurfaceError.cannotCreateLayer
+            }
+            layer.context!.saveGState()
+            layer.context!.translateBy(x: 0, y: size.height)
+            layer.context!.scaleBy(x: 1, y: -1)
+            layer.context!.draw(surface, at: CGPoint(x: -sx, y: -surface.height + 32 + sy))
+            layer.context!.restoreGState()
+            UIGraphicsEndImageContext()
+            try draw(from: layer, dx: dx, dy: dy, width: width, height: height, sx: 0, sy: 0)
         }
-        sourceContext.clip(to: CGRect(x: sx, y: sy, width: width, height: height))
-        context.draw(surface.layer, in: CGRect(x: dx, y: dy, width: width, height: height))
     }
 
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
