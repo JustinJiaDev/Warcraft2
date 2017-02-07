@@ -22,7 +22,7 @@ class ViewportRenderer {
         lastViewportHeight = height
     }
 
-    func viewportX(x: Int) -> Int {
+    @discardableResult func viewportX(_ x: Int) -> Int {
         viewportX = x
 
         if viewportX + lastViewportWidth >= mapRenderer.detailedMapWidth {
@@ -34,7 +34,7 @@ class ViewportRenderer {
         return viewportX
     }
 
-    func viewportY(y: Int) -> Int {
+    @discardableResult func viewportY(_ y: Int) -> Int {
         viewportY = y
         if viewportY + lastViewportHeight >= mapRenderer.detailedMapHeight {
             viewportY = mapRenderer.detailedMapHeight - lastViewportHeight
@@ -46,40 +46,40 @@ class ViewportRenderer {
     }
 
     func centerViewport(position: Position) {
-        _ = viewportX(x: position.x - lastViewportWidth / 2)
-        _ = viewportY(y: position.y - lastViewportHeight / 2)
+        viewportX(position.x - lastViewportWidth / 2)
+        viewportY(position.y - lastViewportHeight / 2)
     }
 
-    func detailedPosition(position: Position) -> Position {
+    func detailedPosition(of position: Position) -> Position {
         return Position(x: position.x + viewportX, y: position.y + viewportY)
     }
 
-    func panNorth(pan: Int) {
-        viewportY -= pan
+    func panNorth(_ distance: Int) {
+        viewportY -= distance
         if viewportY < 0 {
             viewportY = 0
         }
     }
 
-    func panEast(pan: Int) {
-        _ = viewportX(x: viewportX + pan)
+    func panEast(_ distance: Int) {
+        viewportX(viewportX + distance)
     }
 
-    func panSouth(pan: Int) {
-        _ = viewportY(y: viewportY + pan)
+    func panSouth(_ distance: Int) {
+        viewportY(viewportY + distance)
     }
 
-    func panWest(pan: Int) {
-        viewportX -= pan
+    func panWest(_ distance: Int) {
+        viewportX -= distance
         if viewportX < 0 {
             viewportX = 0
         }
     }
 
-    func drawViewport(on surface: GraphicSurface, on typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, curCapability: AssetCapabilityType) throws {
+    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, currentCapability: AssetCapabilityType) throws {
         var tempRectangle = Rectangle()
         var placeType = AssetType.none
-        var builder = PlayerAsset(playerAsset: PlayerAssetType())
+        let builder = selectionMarkerList.first ?? PlayerAsset(playerAsset: PlayerAssetType())
 
         lastViewportWidth = surface.width
         lastViewportHeight = surface.height
@@ -96,27 +96,14 @@ class ViewportRenderer {
         tempRectangle.width = lastViewportWidth
         tempRectangle.height = lastViewportHeight
 
-        switch curCapability {
-        case .buildFarm:
-            placeType = .farm
-            break
-        case .buildTownHall:
-            placeType = .townHall
-            break
-        case .buildBarracks:
-            placeType = .barracks
-            break
-        case .buildLumberMill:
-            placeType = .lumberMill
-            break
-        case .buildBlacksmith:
-            placeType = .blacksmith
-            break
-        case .buildScoutTower:
-            placeType = .scoutTower
-            break
-        default:
-            break
+        switch currentCapability {
+        case .buildFarm: placeType = .farm
+        case .buildTownHall: placeType = .townHall
+        case .buildBarracks: placeType = .barracks
+        case .buildLumberMill: placeType = .lumberMill
+        case .buildBlacksmith: placeType = .blacksmith
+        case .buildScoutTower: placeType = .scoutTower
+        default: break
         }
 
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 0)
@@ -124,11 +111,6 @@ class ViewportRenderer {
         try assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: tempRectangle)
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
         try assetRenderer.drawOverlays(on: surface, in: tempRectangle)
-
-        if selectionMarkerList.count != 0 {
-            builder = selectionMarkerList.first!
-        }
-
         try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.xPosition, y: selectRect.yPosition), type: placeType, builder: builder)
         try fogRenderer.drawMap(on: surface, rectangle: tempRectangle)
     }
