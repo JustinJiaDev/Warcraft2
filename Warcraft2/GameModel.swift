@@ -101,6 +101,11 @@ class PlayerData {
         return self.lumber
     }
 
+    func decrementLumber(by lumber: Int) -> Int {
+        self.lumber -= lumber
+        return lumber
+    }
+
     func foodConsumption() -> Int {
         var totalConsumption: Int = 0
 

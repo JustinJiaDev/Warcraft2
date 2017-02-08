@@ -41,7 +41,7 @@ class PlayerCapability {
         fatalError("This method is not yet implemented.")
     }
 
-    private static func register(capability: PlayerCapability) -> Bool {
+    static func register(capability: PlayerCapability) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
