@@ -6,19 +6,21 @@ class ActivatedPlayerCapability {
     private var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
-        fatalError("This method is not yet implemented.")
+        self.actor = actor
+        self.playerData = playerData
+        self.target = target
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func incrementstep() {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func cancel() {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 }
 
