@@ -7,7 +7,7 @@ class RandomNumberGenerator {
     }
 
     func seed(_ seed: UInt64) {
-        seed2(high: UInt32(seed >> 32), low: UInt32(seed))
+        seed2(high: UInt32(seed >> 32), low: UInt32(truncatingBitPattern: seed))
     }
 
     func seed2(high: UInt32, low: UInt32) {
