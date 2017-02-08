@@ -1,233 +1,233 @@
-////started importing from line 59 of the original file
-//
-// import Foundation
-//
-// class CPlayerCapabilityMove: CPlayerCapability{ // CPlayerCapability need to be implemented.
-//
-//    class CRegistrant{
-//        init(){}
-//    }
-//
-//    class CActivatedCapability: CActivatedPlayerCapability{ //CActivatedPlayerCapability
-//        init(){}
-//
-//        func percentComplete(max:Int)-> Int{
-//            return 0;
-//        }
-//
-//        func incrementStep()->Bool{
-//            var assetCommand = SAssetCommand()
-//            var tempEvent = SGameEvent()
-//
-//            tempEvent.DType = etAcknowledge
-//            tempEvent.DAsset = DActor() //check if its a class or not.
-//            playerData.addGameEvent(tempEvent) // re-check if I did this line correctly!
-//            assetCommand.DAction = aaWalk
-//            assetCommand.DAssetTarget = DTarget //is DTarget a class or variable?
-//
-//            if !DActor.tileAligned() {
-//                DActor.direction(directionOpposite(DActor.position().tileOctant))
-//            }
-//
-//            DActor.clearCommand()
-//            DActor.pushCommand(assetCommand)
-//
-//            return true
-//        }
-//
-//        func cancel(){
-//            DActor.popCommand()
-//        }
-//    }
-//
-//    func canInitiate(actor:CPlayerAsset, playerData:CPlayerData)-> Bool{ //CPlayerAsset
-//        return actor.speed() > 0;
-//    }
-//
-//    func canApply(actor:CPlayerAsset, playerData:CPlayerData, target: CPlayerAsset)-> Bool{
-//        return actor.speed() > 0;
-//    }
-//
-//    func applyCapability(actor:CPlayerAsset, playerData:CPlayerData, target:CPlayerAsset)->Bool {
-//        if actor.tilePosition() != target.tilePosition() {
-//            var newCommand = SAssetCommand() //SAssetCommand need to locate this
-//            newCommand.DAction = aaCapability
-//            newCommand.DCapability = AssetCapabilityType()
-//            newCommand.DAssetTarget = target
-//            newCommand.DActivatedCapability // need to fix this line!
-//            actor.clearCommand()
-//            actor.pushCommand(newCommand)
-//            return true
-//        }
-//        return false
-//    }
-// }
-//
-//
-// class CPlayerCapabilityMineHarvest: CPlayerCapability{
-//
-//    private class CRegistrant{
-//
-//    }
-//
-//    class CActivateCapability: CActivatedPlayerCapability{
-//        init(){}
-//
-//        func percentComplete(max:Int)-> Int{
-//            return 0;
-//        }
-//
-//        func incrementStep()->Bool{
-//            var assetCommand = SAssetCommand()
-//            var tempEvent = SGameEvent()
-//
-//            tempEvent.DType = EEventType.etAcknowledge
-//            tempEvent.DAsset = DActor() // DActor is a class right? need to check this again.
-//            DPlayerData.addGameEvent(tempEvent) //DPlayerData? or just obj.addGameEvent()?
-//            assetCommand.DAssetTarget = DTarget() //DTarget class?
-//
-//            if EAssetType.atGoldMine == DTarget.Type() {
-//                assetCommand.DAction = EAssetAction.aaMineGold
-//            }else{
-//                assetCommand.DAction = EAsset.aaHarvestLumber
-//            }
-//            DActor.clearCommand()
-//            DActor.pushCommand(assetCommand)
-//            assetCommand.DAction = EAssetAction.aaWalk
-//            if !DActor.tileAligned() {
-//                DActor.direction(directionOpposite(DActor.position().tileOctant()))
-//            }
-//            DActor.pushCommand(assetCommand)
-//            return true
-//        }
-//
-//        func cancel(){
-//            DActor.popCommand()
-//        }
-//    }
-//
-//    func canInitiate(actor:CPlayerAsset, playerData:CPlayerData)->Bool{
-//        return actor.hasCapability(EAssetCapabilityType.actMine) //re-check this line again
-//    }
-//
-//    func canApply(actor:CplayerAsset, playerdata:CPlayerData, target:CPlayerAsset)->Bool{
-//        if !actor.hasCapability(EAssetCapabilityType.actMine) {
-//            return false
-//        }
-//        if actor.lumber() || actor.gold() {
-//            return false
-//        }
-//        if EAssetType.atGoldMine == target.type() {
-//            return true
-//        }
-//        if EAssetType.atNone != target.type() {
-//            return false
-//        }
-//        return CTerrainMap.ETileType.ttTree == playerdata.playerMap().tileType(target.tilePosition())
-//    }
-//
-//    func applyCapability(actor:CPlayerAsset, playerData:CPlayerData, target:CPlayerAsset)-> Bool{
-//        var newCommand = SAssetCommand()
-//
-//        newCommand.DAction = EAssetAction.aaCapability //need to re-check this line!
-//        newCommand.DCapabilty = AssetCapabilityType()
-//        newCommand.DAssetTarget = target
-//        newCommand.DActivatedCapability// need to check how to complete this line
-//        actor.clearCommand()
-//        actor.pushCommand(newCommand)
-//        return true
-//    }
-// }
-//
-//
-//
-// class CPlayerCapabityStandGround: CPlayerCapability{
-//
-//    class CRegistrant{
-//    }
-//
-//    class CActivatedCapability: CActivatedPlayerCapability{
-//
-//        func percentCompelte(max:Int)->Int{
-//            return 0
-//        }
-//
-//        func incrementStep()->Bool{
-//            var assetCommand = SAssetCommand()
-//            var tempEvent = SGameEvent()
-//
-//            tempEvent.DType = EEventType.etacknowledge
-//            tempEvent.DAsset = DActor()//
-//            DPlayerData.addGameEvent(tempEvent)
-//
-//            assetCommand.DAssetTarget = DPlayerData.CreateMaker(DActor.position(), false)
-//            assetCommand.DAction = EAssetAction.aaStandGround//
-//
-//            DActor.clearCommand()
-//            DActor.pushCommand(assetCommand)
-//
-//            if !DActor.tileAligned() {
-//                assetCommand.DAction = EAssetAction.aaWalk
-//                DActor.direction(directionOpposite(DActor.position().tileOctant()))
-//                DActor.pushCommand(assetCommand)
-//            }
-//            return true
-//        }
-//
-//        func cancel(){
-//            DActor.popCommand()
-//        }
-//    }
-//
-//    func canInitiate(actor:CPlayerAsset, playerData:CPlayerData)->Bool{
-//        return true;
-//    }
-//
-//    func canApply(actor:CPlayerAsset, playerData:CPlayerData, target:CPlayerAsset)->Bool{
-//        return true
-//    }
-//
-//    func applyCapability(actor:CPlayerAsset, playerData:CPlayerData, target:CPlayerAsset)->Bool{
-//        var newCommand = SAssetCommand()
-//
-//        newCommand.DAction = EAssetAction.aaCapability
-//        newCommand.DCapability = AssetCapabilityType()
-//        newCommand.DAssetTarget = target
-//        newCommand.DActivatedCapability // need complete this line
-//        actor.clearCommand()
-//        actor.pushCommand(newCommand)
-//        return true
-//    }
-// }
-//
-//
-// class CPlayerCapabilityCancel: CPlayerCapability{
-//
-//    class CRegistrant{
-//    }
-//
-//    class CActivatedCapability: CActivatedPlayerCapability{
-//
-//    }
-//
-//    func canInitiate(actor:CPlayerAsset, playerData:CPlayerData)->Bool{
-//        return true
-//    }
-//
-//    func canApply(actor:CPlayerAsset, playerData:CPlayerDta, target:CPlayerAsset)->Bool{
-//        return true
-//    }
-//
-//    func applyCapability(actor:CPlayerAsset, playerData:CPlayerData, target:CPlayerAsset)->Bool{
-//        var newCommand = SAssetCommand()
-//
-//        newCommand.DAction = EAssetAction.aaCapability//
-//        newCommand.DCapability = AssetCapabilityType()
-//        newCommand.DAssetTarget = target
-//        newCommand.DActivatedCapability //need finish this line
-//
-//        actor.pushCommand(newCommand)
-//
-//        return true
-//    }
-// }
+//started importing from line 59 of the original file
+
+ import Foundation
+
+ class PlayerCapabilityMove: PlayerCapability{ // CPlayerCapability need to be implemented.
+
+    class Registrant{
+        init(){}
+    }
+
+    class ActivatedCapability: ActivatedPlayerCapability{ //CActivatedPlayerCapability
+        init(){}
+
+        override func percentComplete(max:Int)-> Int{
+            return 0;
+        }
+
+        func incrementStep()->Bool{
+            var assetCommand = AssetCommand()
+            var tempEvent = GameEvent()
+
+            tempEvent.type = .acknowledge
+            tempEvent.DAsset = actor() //check if its a class or not.
+            playerData.addGameEvent(tempEvent) // re-check if I did this line correctly!
+            assetCommand.DAction = .walk
+            assetCommand.assetTarget = target //is DTarget a class or variable?
+
+            if !actor.tileAligned {
+                actor.direction(directionOpposite(actor.position().tileOctant))
+            }
+
+            actor.clearCommand()
+            actor.pushCommand(assetCommand)
+
+            return true
+        }
+
+        override func cancel(){
+            actor.popCommand()
+        }
+    }
+
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)-> Bool{ //PlayerAsset
+        return actor.speed > 0;
+    }
+
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target: PlayerAsset)-> Bool{
+        return actor.speed > 0;
+    }
+
+    func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool {
+        if actor.tilePosition != target.tilePosition {
+            var newCommand = AssetCommand() //AssetCommand need to locate this
+            newCommand.action = .capability
+            newCommand.capability = AssetCapabilityType()
+            newCommand.assetTarget = target
+            newCommand.activatedCapability // need to fix this line!
+            actor.clearCommand()
+            actor.pushCommand(newCommand)
+            return true
+        }
+        return false
+    }
+ }
+
+
+ class PlayerCapabilityMineHarvest: PlayerCapability{
+
+    private class Registrant{
+
+    }
+
+    class ActivateCapability: ActivatedPlayerCapability{
+        init(){}
+
+        override func percentComplete(max:Int)-> Int{
+            return 0;
+        }
+
+        func incrementStep()->Bool{
+            var assetCommand = AssetCommand()
+            var tempEvent = GameEvent()
+
+            tempEvent.DType = EventType.acknowledge
+            tempEvent.DAsset = actor() // actor is a class right? need to check this again.
+            PlayerData.addGameEvent(tempEvent) //DPlayerData? or just obj.addGameEvent()?
+            assetCommand.DAssetTarget = target
+
+            if AssetType.goldMine == target.type {
+                assetCommand.DAction = AssetAction.mineGold
+            }else{
+                assetCommand.DAction = AssetAction.harvestLumber
+            }
+            actor.clearCommand()
+            actor.pushCommand(assetCommand)
+            assetCommand.DAction = AssetAction.walk
+            if !actor.tileAligned {
+                actor.direction(directionOpposite(actor.position().tileOctant()))
+            }
+            actor.pushCommand(assetCommand)
+            return true
+        }
+
+        override func cancel(){
+            actor.popCommand()
+        }
+    }
+
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return actor.hasCapability(AssetCapabilityType.mine) //re-check this line again
+    }
+
+    func canApply(actor:PlayerAsset, playerdata:PlayerData, target:PlayerAsset)->Bool{
+        if !actor.hasCapability(AssetCapabilityType.mine) {
+            return false
+        }
+        if actor.lumber != 0 || actor.gold != 0 {
+            return false
+        }
+        if AssetType.goldMine == target.type {
+            return true
+        }
+        if AssetType.none != target.type {
+            return false
+        }
+        return TerrainMap.TileType.tree == playerdata.playerMap.tileType(target.tilePosition())
+    }
+
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)-> Bool{
+        var newCommand = AssetCommand()
+
+        newCommand.action = AssetAction.aaCapability //need to re-check this line!
+        newCommand.capabilty = AssetCapabilityType()
+        newCommand.assetTarget = target
+        newCommand.activatedCapability// need to check how to complete this line
+        actor.clearCommand()
+        actor.pushCommand(newCommand)
+        return true
+    }
+ }
+
+
+
+ class PlayerCapabityStandGround: PlayerCapability{
+
+    class Registrant{
+    }
+
+    class ActivatedCapability: ActivatedPlayerCapability{
+
+        func percentCompelte(max:Int)->Int{
+            return 0
+        }
+
+        func incrementStep()->Bool{
+            var assetCommand = AssetCommand()
+            var tempEvent = GameEvent()
+
+            tempEvent.DType = EventType.acknowledge
+            tempEvent.asset = actor()//
+            PlayerData.addGameEvent(tempEvent)
+
+            assetCommand.DAssetTarget = PlayerData.CreateMaker(actor.position(), false)
+            assetCommand.DAction = AssetAction.aaStandGround//
+
+            actor.clearCommand()
+            actor.pushCommand(assetCommand)
+
+            if !actor.tileAligned {
+                assetCommand.DAction = AssetAction.aaWalk
+                actor.direction(directionOpposite(actor.position.tileOctant()))
+                actor.pushCommand(assetCommand)
+            }
+            return true
+        }
+
+        override func cancel(){
+            actor.popCommand()
+        }
+    }
+
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return true;
+    }
+
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true
+    }
+
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        var newCommand = AssetCommand()
+
+        newCommand.DAction = AssetAction.aaCapability
+        newCommand.DCapability = AssetCapabilityType()
+        newCommand.DAssetTarget = target
+        newCommand.DActivatedCapability // need complete this line
+        actor.clearCommand()
+        actor.pushCommand(newCommand)
+        return true
+    }
+ }
+
+
+ class PlayerCapabilityCancel: PlayerCapability{
+
+    class CRegistrant{
+    }
+
+    class CActivatedCapability: ActivatedPlayerCapability{
+
+    }
+
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return true
+    }
+
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true
+    }
+
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        var newCommand = AssetCommand()
+
+        newCommand.DAction = AssetAction.capability
+        newCommand.DCapability = AssetCapabilityType()
+        newCommand.DAssetTarget = target
+        newCommand.DActivatedCapability //need finish this line
+
+        actor.pushCommand(newCommand)
+
+        return true
+    }
+ }

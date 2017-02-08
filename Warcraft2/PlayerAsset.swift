@@ -1,25 +1,22 @@
 import Foundation
 
 class ActivatedPlayerCapability {
-    private var actor: PlayerAsset
-    private var playerData: PlayerData
-    private var target: PlayerAsset
+    var actor: PlayerAsset
+    var playerData: PlayerData
+    var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
-        fatalError("This method is not yet implemented.")
+        fatalError("This method should be overriden in the derived class.")
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("This method is not yet implemented.")
-    }
+        fatalError("This method should be overriden in the derived class.")    }
 
     func incrementstep() {
-        fatalError("This method is not yet implemented.")
-    }
+        fatalError("This method should be overriden in the derived class.")    }
 
     func cancel() {
-        fatalError("This method is not yet implemented.")
-    }
+        fatalError("This method should be overriden in the derived class.")    }
 }
 
 class PlayerCapability {
