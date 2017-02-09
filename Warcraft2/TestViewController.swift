@@ -1,11 +1,21 @@
 import UIKit
 import AVFoundation
 
-fileprivate func tileset(_ name: String) throws -> GraphicMulticolorTileset {
+fileprivate func tileset(_ name: String) throws -> GraphicTileset {
     guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
         throw GraphicTileset.GameError.failedToGetPath
     }
-    let tilesetSource = try! FileDataSource(url: tilesetURL)
+    let tilesetSource = try FileDataSource(url: tilesetURL)
+    let tileset = GraphicTileset()
+    try tileset.loadTileset(from: tilesetSource)
+    return tileset
+}
+
+fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTileset {
+    guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
+        throw GraphicTileset.GameError.failedToGetPath
+    }
+    let tilesetSource = try FileDataSource(url: tilesetURL)
     let tileset = GraphicMulticolorTileset()
     try tileset.loadTileset(from: tilesetSource)
     return tileset
@@ -51,21 +61,21 @@ class TestViewController: UIViewController {
         do {
             let colors = GraphicRecolorMap()
             var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
-            tilesets[AssetType.peasant.rawValue] = try tileset("Peasant")
-            tilesets[AssetType.footman.rawValue] = try tileset("Footman")
-            tilesets[AssetType.archer.rawValue] = try tileset("Archer")
-            tilesets[AssetType.ranger.rawValue] = try tileset("Ranger")
-            tilesets[AssetType.goldMine.rawValue] = try tileset("GoldMine")
-            tilesets[AssetType.townHall.rawValue] = try tileset("TownHall")
-            tilesets[AssetType.keep.rawValue] = try tileset("Keep")
-            tilesets[AssetType.castle.rawValue] = try tileset("Castle")
-            tilesets[AssetType.farm.rawValue] = try tileset("Farm")
-            tilesets[AssetType.barracks.rawValue] = try tileset("Barracks")
-            tilesets[AssetType.lumberMill.rawValue] = try tileset("LumberMill")
-            tilesets[AssetType.blacksmith.rawValue] = try tileset("Blacksmith")
-            tilesets[AssetType.scoutTower.rawValue] = try tileset("ScoutTower")
-            tilesets[AssetType.guardTower.rawValue] = try tileset("GuardTower")
-            tilesets[AssetType.cannonTower.rawValue] = try tileset("CannonTower")
+            tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
+            tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
+            tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer")
+            tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger")
+            tilesets[AssetType.goldMine.rawValue] = try multicolorTileset("GoldMine")
+            tilesets[AssetType.townHall.rawValue] = try multicolorTileset("TownHall")
+            tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep")
+            tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle")
+            tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm")
+            tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks")
+            tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill")
+            tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith")
+            tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower")
+            tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower")
+            tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower")
             let markerTileset = try tileset("Marker")
             let corpseTileset = try tileset("Corpse")
             let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
