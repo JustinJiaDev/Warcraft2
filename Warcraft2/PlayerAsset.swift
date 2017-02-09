@@ -194,19 +194,19 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func loadUpgrades(container: DataContainer) -> Bool {
+    static func loadUpgrades(from container: DataContainer) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
-    static func load(source: DataSource) -> Bool {
+    static func load(from dataSource: DataSource) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
-    static func findUpgrade(type: AssetCapabilityType) -> PlayerUpgrade {
+    static func upgrade(from type: AssetCapabilityType) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func findUpgrade(name: String) -> PlayerUpgrade {
+    static func upgrade(from name: String) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 }
@@ -413,7 +413,7 @@ class PlayerAssetType {
         capabilities[capability] = false
     }
 
-    func addUpgrade(upgrade: PlayerUpgrade) {
+    func addUpgrade(_ upgrade: PlayerUpgrade) {
         assetUpgrades.append(upgrade)
     }
 
@@ -429,7 +429,7 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(container: DataContainer) throws -> Bool {
+    static func loadTypes(from container: DataContainer) throws -> Bool {
         guard let fileIterator = container.first() else {
             throw PlayerAssetTypeError.fileIteratorNull
         }

@@ -410,11 +410,11 @@ class PlayerData {
     }
 
     func addUpgrade(with name: String) {
-        let upgrade = PlayerUpgrade.findUpgrade(name: name)
+        let upgrade = PlayerUpgrade.upgrade(from: name)
         for assetType in upgrade.affectedAssets {
             let assetName = PlayerAssetType.name(from: assetType)
             if let assetType = assetTypes[assetName] {
-                assetType.addUpgrade(upgrade: upgrade)
+                assetType.addUpgrade(upgrade)
             }
         }
         upgrades[PlayerCapability.nameToType(name: name).rawValue] = true
