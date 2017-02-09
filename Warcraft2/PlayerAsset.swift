@@ -33,49 +33,144 @@ class PlayerCapability {
     private(set) var name: String
     private(set) var assetCapabilityType: AssetCapabilityType
     private(set) var targetType: TargetType
+    private static var nameRegistry: [String: PlayerCapability] = [:]
+    private static var typeRegistry: [Int: PlayerCapability] = [:]
 
-    init(name: String, targetType: TargetType) {
-        fatalError("This method is not yet implemented.")
+    init(name: String = "None", targetType: TargetType = .none) {
+        self.name = name
+        self.assetCapabilityType = PlayerCapability.nameToType(name: name)
+        self.targetType = targetType
     }
 
-    private static func nameRegistry() -> [String: PlayerCapability] {
-        fatalError("This method is not yet implemented.")
-    }
-
-    private static func typeRegistry() -> [Int: PlayerCapability] {
-        fatalError("This method is not yet implemented.")
-    }
-
-    static func register(capability: PlayerCapability) -> Bool {
-        fatalError("This method is not yet implemented.")
+    private static func register(capability: PlayerCapability) -> Bool {
+        if let _ = nameRegistry[capability.name] {
+            return false
+        }
+        nameRegistry[capability.name] = capability
+        typeRegistry[PlayerCapability.nameToType(name: capability.name).rawValue] = capability
+        return true
     }
 
     static func findCapability(type: AssetCapabilityType) -> PlayerCapability {
-        fatalError("This method is not yet implemented.")
+        if let value = typeRegistry[type.rawValue] {
+            return value
+        }
+        return PlayerCapability()
     }
 
     static func findCapability(name: String) -> PlayerCapability {
-        fatalError("This method is not yet implemented.")
+        if let value = nameRegistry[name] {
+            return value
+        }
+        return PlayerCapability()
     }
 
     static func nameToType(name: String) -> AssetCapabilityType {
-        fatalError("This method is not yet implemented.")
+        var nameTypeTranslation: [String: AssetCapabilityType] = [:]
+        nameTypeTranslation["None"] = .none
+        nameTypeTranslation["BuildPeasant"] = .buildPeasant
+        nameTypeTranslation["BuildFootman"] = .buildFootman
+        nameTypeTranslation["BuildArcher"] = .buildArcher
+        nameTypeTranslation["BuildRanger"] = .buildRanger
+        nameTypeTranslation["BuildFarm"] = .buildFarm
+        nameTypeTranslation["BuildTownHall"] = .buildTownHall
+        nameTypeTranslation["BuildBarracks"] = .buildBarracks
+        nameTypeTranslation["BuildLumberMill"] = .buildLumberMill
+        nameTypeTranslation["BuildBlacksmith"] = .buildBlacksmith
+        nameTypeTranslation["BuildKeep"] = .buildKeep
+        nameTypeTranslation["BuildCastle"] = .buildCastle
+        nameTypeTranslation["BuildScoutTower"] = .buildScoutTower
+        nameTypeTranslation["BuildGuardTower"] = .buildGuardTower
+        nameTypeTranslation["BuildCannonTower"] = .buildCannonTower
+        nameTypeTranslation["Move"] = .move
+        nameTypeTranslation["Repair"] = .repair
+        nameTypeTranslation["Mine"] = .mine
+        nameTypeTranslation["BuildSimple"] = .buildSimple
+        nameTypeTranslation["BuildAdvanced"] = .buildAdvanced
+        nameTypeTranslation["Convey"] = .convey
+        nameTypeTranslation["Cancel"] = .cancel
+        nameTypeTranslation["BuildWall"] = .buildWall
+        nameTypeTranslation["Attack"] = .attack
+        nameTypeTranslation["StandGround"] = .standGround
+        nameTypeTranslation["Patrol"] = .patrol
+        nameTypeTranslation["WeaponUpgrade1"] = .weaponUpgrade1
+        nameTypeTranslation["WeaponUpgrade2"] = .weaponUpgrade2
+        nameTypeTranslation["WeaponUpgrade3"] = .weaponUpgrade3
+        nameTypeTranslation["ArrowUpgrade1"] = .arrowUpgrade1
+        nameTypeTranslation["ArrowUpgrade2"] = .arrowUpgrade2
+        nameTypeTranslation["ArrowUpgrade3"] = .arrowUpgrade3
+        nameTypeTranslation["ArmorUpgrade1"] = .armorUpgrade1
+        nameTypeTranslation["ArmorUpgrade2"] = .armorUpgrade2
+        nameTypeTranslation["ArmorUpgrade3"] = .armorUpgrade3
+        nameTypeTranslation["Longbow"] = .longbow
+        nameTypeTranslation["RangerScouting"] = .rangerScouting
+        nameTypeTranslation["Marksmanship"] = .marksmanship
+
+        if let value = nameTypeTranslation[name] {
+            return value
+        }
+        printError("Unknown capability name \"\(name)\"\n")
+        return .none
     }
 
     static func typeToName(type: AssetCapabilityType) -> String {
-        fatalError("This method is not yet implemented.")
+        let typeStrings = [
+            "None",
+            "BuildPeasant",
+            "BuildFootman",
+            "BuildArcher",
+            "BuildRanger",
+            "BuildFarm",
+            "BuildTownHall",
+            "BuildBarracks",
+            "BuildLumberMill",
+            "BuildBlacksmith",
+            "BuildKeep",
+            "BuildCastle",
+            "BuildScoutTower",
+            "BuildGuardTower",
+            "BuildCannonTower",
+            "Move",
+            "Repair",
+            "Mine",
+            "BuildSimple",
+            "BuildAdvanced",
+            "Convey",
+            "Cancel",
+            "BuildWall",
+            "Attack",
+            "StandGround",
+            "Patrol",
+            "WeaponUpgrade1",
+            "WeaponUpgrade2",
+            "WeaponUpgrade3",
+            "ArrowUpgrade1",
+            "ArrowUpgrade2",
+            "ArrowUpgrade3",
+            "ArmorUpgrade1",
+            "ArmorUpgrade2",
+            "ArmorUpgrade3",
+            "Longbow",
+            "RangerScouting",
+            "Marksmanship"
+        ]
+
+        if type.rawValue < 0 || type.rawValue >= typeStrings.count {
+            return ""
+        }
+        return typeStrings[type.rawValue]
     }
 
     func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 }
 
