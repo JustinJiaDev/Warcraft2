@@ -38,7 +38,7 @@ class PlayerCapability {
 
     init(name: String = "None", targetType: TargetType = .none) {
         self.name = name
-        self.assetCapabilityType = PlayerCapability.nameToType(name: name)
+        self.assetCapabilityType = PlayerCapability.findType(with: name)
         self.targetType = targetType
     }
 
@@ -47,25 +47,25 @@ class PlayerCapability {
             return false
         }
         nameRegistry[capability.name] = capability
-        typeRegistry[PlayerCapability.nameToType(name: capability.name).rawValue] = capability
+        typeRegistry[PlayerCapability.findType(with: capability.name).rawValue] = capability
         return true
     }
 
-    static func findCapability(type: AssetCapabilityType) -> PlayerCapability {
+    static func findCapability(with type: AssetCapabilityType) -> PlayerCapability {
         if let value = typeRegistry[type.rawValue] {
             return value
         }
         return PlayerCapability()
     }
 
-    static func findCapability(name: String) -> PlayerCapability {
+    static func findCapability(with name: String) -> PlayerCapability {
         if let value = nameRegistry[name] {
             return value
         }
         return PlayerCapability()
     }
 
-    static func nameToType(name: String) -> AssetCapabilityType {
+    static func findType(with name: String) -> AssetCapabilityType {
         var nameTypeTranslation: [String: AssetCapabilityType] = [:]
         nameTypeTranslation["None"] = .none
         nameTypeTranslation["BuildPeasant"] = .buildPeasant
@@ -113,7 +113,7 @@ class PlayerCapability {
         return .none
     }
 
-    static func typeToName(type: AssetCapabilityType) -> String {
+    static func findName(with type: AssetCapabilityType) -> String {
         let typeStrings = [
             "None",
             "BuildPeasant",
@@ -194,7 +194,7 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func loadUpgrades(from container: DataContainer) -> Bool {
+    static func loadUpgrades(from dataContainer: DataContainer) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
@@ -202,11 +202,11 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func upgrade(from type: AssetCapabilityType) -> PlayerUpgrade {
+    static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func upgrade(from name: String) -> PlayerUpgrade {
+    static func findUpgrade(with name: String) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 }
@@ -421,11 +421,11 @@ class PlayerAssetType {
         return PlayerAsset(playerAssetType: self)
     }
 
-    static func type(from name: String) -> AssetType {
+    static func findType(with name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func name(from type: AssetType) -> String {
+    static func findName(with type: AssetType) -> String {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
@@ -456,7 +456,7 @@ class PlayerAssetType {
             throw PlayerAssetTypeError.failedToGetResourceTypeName
         }
 
-        let assetType = type(from: name)
+        let assetType = findType(with: name)
 
         if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
             throw PlayerAssetTypeError.unknownResourceType(type: name)
@@ -554,7 +554,7 @@ class PlayerAssetType {
         }
         for _ in 0 ..< capabilityCount {
             if let capabilityString = lineSource.readLine() {
-                playerAssetType.addCapability(PlayerCapability.nameToType(name: capabilityString))
+                playerAssetType.addCapability(PlayerCapability.findType(with: capabilityString))
             } else {
                 throw PlayerAssetTypeError.failedToReadCapability
             }
@@ -565,22 +565,22 @@ class PlayerAssetType {
         }
         for _ in 0 ..< assetRequirementCount {
             if let assetRequirementString = lineSource.readLine() {
-                playerAssetType.assetRequirements.append(type(from: assetRequirementString))
+                playerAssetType.assetRequirements.append(findType(with: assetRequirementString))
             } else {
                 throw PlayerAssetTypeError.failedToReadAssetRequirement
             }
         }
     }
 
-    static func findDefault(from name: String) -> PlayerAssetType {
+    static func findDefault(with name: String) -> PlayerAssetType {
         return registry[name] ?? PlayerAssetType()
     }
 
-    static func findDefault(from type: AssetType) -> PlayerAssetType {
-        return findDefault(from: name(from: type))
+    static func findDefault(with type: AssetType) -> PlayerAssetType {
+        return findDefault(with: findName(with: type))
     }
 
-    static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
+    static func duplicateRegistry(changeColorTo color: PlayerColor) -> [String: PlayerAssetType] {
         var returnRegistry: [String: PlayerAssetType] = [:]
         for (key, value) in registry {
             let newAssetType = PlayerAssetType(playerAsset: value)
@@ -660,6 +660,7 @@ class PlayerAsset {
             position.y = newValue
         }
     }
+
     var direction: Direction
 
     private(set) var commands: [AssetCommand] = []
@@ -871,19 +872,19 @@ class PlayerAsset {
         step += 1
     }
 
-    func closestPosition(_ pos: Position) -> Position {
-        return pos.closestPosition(position, objSize: size)
+    func closestPosition(_ position: Position) -> Position {
+        return position.closestPosition(position, objectSize: size)
     }
 
     func clearCommand() {
         commands.removeAll()
     }
 
-    func pushCommand(command: AssetCommand) {
+    func pushCommand(_ command: AssetCommand) {
         commands.append(command)
     }
 
-    func enqueueCommand(command: AssetCommand) {
+    func enqueueCommand(_ command: AssetCommand) {
         commands.insert(command, at: 0)
     }
 
@@ -935,7 +936,7 @@ class PlayerAsset {
         }
     }
 
-    func changeType(_ type: PlayerAssetType) {
+    func changeType(to type: PlayerAssetType) {
         assetType = type
     }
 

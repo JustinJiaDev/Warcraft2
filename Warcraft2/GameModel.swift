@@ -80,7 +80,7 @@ class PlayerData {
         self.actualMap = map
         self.visibilityMap = actualMap.createVisibilityMap()
         self.playerMap = self.actualMap.createInitializeMap()
-        self.assetTypes = PlayerAssetType.duplicateRegistry(color: self.color)
+        self.assetTypes = PlayerAssetType.duplicateRegistry(changeColorTo: self.color)
         self.assets = []
         self.upgrades = []
         self.gameEvents = []
@@ -100,9 +100,9 @@ class PlayerData {
         for asset in actualMap.assetInitializationList {
             if asset.color == self.color {
                 printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
-                let initAsset = createAsset(name: asset.type)
+                let initAsset = createAsset(with: asset.type)
                 initAsset.tilePosition = asset.tilePosition
-                if PlayerAssetType.type(from: asset.type) == .goldMine {
+                if PlayerAssetType.findType(with: asset.type) == .goldMine {
                     initAsset.gold = self.gold
                 }
             }
@@ -144,7 +144,7 @@ class PlayerData {
         return newMarker
     }
 
-    func createAsset(name: String) -> PlayerAsset {
+    func createAsset(with name: String) -> PlayerAsset {
         let newAsset = assetTypes[name]!.construct()
         newAsset.creationCycle = gameCycle
         assets.append(newAsset)
@@ -308,7 +308,7 @@ class PlayerData {
     }
 
     func findBestAssetPlacement(at position: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
-        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.name(from: assetTypeInput)]!
+        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.findName(with: assetTypeInput)]!
         let placementSize = assetType.size + 2 * buffer
         let maxDistance = max(playerMap.width, playerMap.height)
 
@@ -410,14 +410,14 @@ class PlayerData {
     }
 
     func addUpgrade(with name: String) {
-        let upgrade = PlayerUpgrade.upgrade(from: name)
+        let upgrade = PlayerUpgrade.findUpgrade(with: name)
         for assetType in upgrade.affectedAssets {
-            let assetName = PlayerAssetType.name(from: assetType)
+            let assetName = PlayerAssetType.findName(with: assetType)
             if let assetType = assetTypes[assetName] {
                 assetType.addUpgrade(upgrade)
             }
         }
-        upgrades[PlayerCapability.nameToType(name: name).rawValue] = true
+        upgrades[PlayerCapability.findType(with: name).rawValue] = true
     }
 
     func hasUpgrade(with type: AssetCapabilityType) -> Bool {

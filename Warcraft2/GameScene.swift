@@ -43,7 +43,7 @@ class GameScene: SKScene {
             }
             let mapSource = try FileDataSource(url: mapURL)
             let terrainMap = TerrainMap()
-            try terrainMap.loadMap(source: mapSource)
+            try terrainMap.loadMap(from: mapSource)
 
             let terrainTileSize = 32
 

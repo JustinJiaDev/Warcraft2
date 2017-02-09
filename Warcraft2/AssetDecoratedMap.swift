@@ -80,8 +80,8 @@ class AssetDecoratedMap: TerrainMap {
         }
     }
 
-    static func loadMaps(container: DataContainer) throws {
-        guard let fileIterator = container.first() else {
+    static func loadMaps(from dataContainer: DataContainer) throws {
+        guard let fileIterator = dataContainer.first() else {
             throw GameError.missingFirstFileInterator
         }
         while fileIterator.isValid() {
@@ -90,7 +90,7 @@ class AssetDecoratedMap: TerrainMap {
             if filename.hasSuffix(".map") {
                 do {
                     let map = AssetDecoratedMap()
-                    try map.loadMap(source: container.dataSource(name: filename))
+                    try map.loadMap(from: dataContainer.dataSource(name: filename))
                     mapNameTranslation[map.mapName] = all.count
                     all.append(map)
                     printDebug("Loaded map \(filename).", level: .low)
@@ -198,7 +198,7 @@ class AssetDecoratedMap: TerrainMap {
                 for x in max(leftX, 0) ... toX {
                     if canPlaceAsset(at: Position(x: x, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: x, y: topY)
-                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
+                        let currentDistance = position.distanceSquared(from: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -213,7 +213,7 @@ class AssetDecoratedMap: TerrainMap {
                 for y in max(topY, 0) ... toY {
                     if canPlaceAsset(at: Position(x: rightX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: rightX, y: y)
-                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
+                        let currentDistance = position.distanceSquared(from: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -267,10 +267,10 @@ class AssetDecoratedMap: TerrainMap {
         return bestPosition
     }
 
-    override func loadMap(source: DataSource) throws {
-        try super.loadMap(source: source)
+    override func loadMap(from dataSource: DataSource) throws {
+        try super.loadMap(from: dataSource)
 
-        let lineSource = LineDataSource(dataSource: source)
+        let lineSource = LineDataSource(dataSource: dataSource)
 
         resourceInitializationList = []
         guard let resourceCountString = lineSource.readLine(), let resourceCount = Int(resourceCountString) else {
