@@ -114,12 +114,6 @@ class PlayerUpgrade {
     }
 }
 
-extension String {
-    func index(of string: String, options: String.CompareOptions = .literal) -> String.Index? {
-        return range(of: string, options: options)?.lowerBound
-
-} }
-
 class PlayerAssetType {
     enum PlayerAssetTypeError: Error {
         case nilDataSource
