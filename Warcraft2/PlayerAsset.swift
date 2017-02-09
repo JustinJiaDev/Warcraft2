@@ -138,6 +138,8 @@ class PlayerAssetType {
         case failedToReadCapability
         case failedToGetAssetRequirementCount
         case failedToReadAssetRequirement
+        case failedToLoadResource
+        case fileIteratorNull
     }
 
     private(set) var name = "None"
@@ -331,8 +333,24 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(container: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func loadTypes(container: DataContainer) throws -> Bool {
+        guard let fileIterator = container.first() else {
+            throw PlayerAssetTypeError.fileIteratorNull
+        }
+        while fileIterator != nil && fileIterator.isValid() {
+            let fileName = fileIterator.name()
+            fileIterator.next()
+            if fileName.hasSuffix(".dat") {
+                try load(source: container.dataSource(name: fileName))
+            }
+        }
+        let playerAssetType = PlayerAssetType()
+        playerAssetType.name = "None"
+        playerAssetType.type = .none
+        playerAssetType.color = .none
+        playerAssetType.hitPoints = 256
+        registry["None"] = playerAssetType
+        return true
     }
 
     static func load(source: DataSource?) throws {
@@ -472,7 +490,14 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("This method is not yet implemented.")
+
+        var returnRegistry = [String: PlayerAssetType]()
+        for (key, value) in registry {
+            let newAssetType = PlayerAssetType(playerAsset: value)
+            newAssetType.color = color
+            returnRegistry[key] = newAssetType
+        }
+        return returnRegistry
     }
 }
 
