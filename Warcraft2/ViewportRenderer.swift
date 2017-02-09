@@ -79,7 +79,7 @@ class ViewportRenderer {
     func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, currentCapability: AssetCapabilityType) throws {
         var tempRectangle = Rectangle()
         var placeType = AssetType.none
-        let builder = selectionMarkerList.first ?? PlayerAsset(playerAsset: PlayerAssetType())
+        let builder = selectionMarkerList.first ?? PlayerAsset(playerAssetType: PlayerAssetType())
 
         lastViewportWidth = surface.width
         lastViewportHeight = surface.height
