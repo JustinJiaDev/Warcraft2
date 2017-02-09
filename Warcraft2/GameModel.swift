@@ -128,6 +128,36 @@ class PlayerData {
         return self.lumber
     }
 
+    func decrementLumber(by lumber: Int) -> Int {
+        self.lumber -= lumber
+        return lumber
+    }
+
+    func foodConsumption() -> Int {
+        var totalConsumption: Int = 0
+
+        for asset in assets {
+            let assetConsumption = asset.foodConsumption
+            if assetConsumption > 0 {
+                totalConsumption += assetConsumption
+            }
+        }
+
+        return totalConsumption
+    }
+
+    func foodProduction() -> Int {
+        var totalProduction: Int = 0
+        for asset in assets {
+            let assetConsumption: Int = foodConsumption()
+            if (assetConsumption < 0) && ((AssetAction.construct != asset.action) || (asset.currentCommand().assetTarget == nil)) {
+                totalProduction += -assetConsumption
+            }
+        }
+
+        return totalProduction
+    }
+
     func createMarker(at position: Position, addToMap: Bool) -> PlayerAsset {
         let newMarker = assetTypes["None"]!.construct()
         let tilePosition = Position()
