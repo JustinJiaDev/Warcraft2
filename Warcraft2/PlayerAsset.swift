@@ -213,9 +213,8 @@ class PlayerUpgrade {
 
 class PlayerAssetType {
     enum PlayerAssetTypeError: Error {
-        case nilDataSource
-        case failedToGetResourceTypeName
         case unknownResourceType(type: String)
+        case failedToGetResourceTypeName
         case failedToGetHitPoints
         case failedToGetArmor
         case failedToGetSight
@@ -235,6 +234,8 @@ class PlayerAssetType {
         case failedToReadCapability
         case failedToGetAssetRequirementCount
         case failedToReadAssetRequirement
+        case failedToLoadResource
+        case fileIteratorNull
     }
 
     private(set) var name = "None"
@@ -428,16 +429,27 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(container: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func loadTypes(container: DataContainer) throws -> Bool {
+        guard let fileIterator = container.first() else {
+            throw PlayerAssetTypeError.fileIteratorNull
+        }
+        while fileIterator.isValid() {
+            let fileName = fileIterator.name()
+            fileIterator.next()
+            if fileName.hasSuffix(".dat") {
+                try load(from: container.dataSource(name: fileName))
+            }
+        }
+        let playerAssetType = PlayerAssetType()
+        playerAssetType.name = "None"
+        playerAssetType.type = .none
+        playerAssetType.color = .none
+        playerAssetType.hitPoints = 256
+        registry["None"] = playerAssetType
+        return true
     }
 
-    static func load(source: DataSource?) throws {
-
-        guard let dataSource = source else {
-            throw PlayerAssetTypeError.nilDataSource
-        }
-
+    static func load(from dataSource: DataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
 
         guard let name = lineSource.readLine() else {
@@ -446,7 +458,7 @@ class PlayerAssetType {
 
         let assetType = type(from: name)
 
-        if .none == assetType && name != typeStrings[AssetType.none.rawValue] {
+        if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
             throw PlayerAssetTypeError.unknownResourceType(type: name)
         }
 
@@ -569,10 +581,13 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        // FIXME: MAKE DUPLICATE GREAT AGAIN
-        // HACK - BEGIN
-        return registry
-        // HACK - END
+        var returnRegistry: [String: PlayerAssetType] = [:]
+        for (key, value) in registry {
+            let newAssetType = PlayerAssetType(playerAsset: value)
+            newAssetType.color = color
+            returnRegistry[key] = newAssetType
+        }
+        return returnRegistry
     }
 }
 
