@@ -6,17 +6,22 @@ class ActivatedPlayerCapability {
     var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
-        fatalError("This method should be overriden in the derived class.")
+        self.actor = actor
+        self.playerData = playerData
+        self.target = target
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("This method should be overriden in the derived class.")    }
+        fatalError("This method should be overriden in the derived class.")
+    }
 
     func incrementstep() {
-        fatalError("This method should be overriden in the derived class.")    }
+        fatalError("This method should be overriden in the derived class.")
+    }
 
     func cancel() {
-        fatalError("This method should be overriden in the derived class.")    }
+        fatalError("This method should be overriden in the derived class.")
+    }
 }
 
 class PlayerCapability {
@@ -28,49 +33,144 @@ class PlayerCapability {
     private(set) var name: String
     private(set) var assetCapabilityType: AssetCapabilityType
     private(set) var targetType: TargetType
+    private static var nameRegistry: [String: PlayerCapability] = [:]
+    private static var typeRegistry: [Int: PlayerCapability] = [:]
 
-    init(name: String, targetType: TargetType) {
-        fatalError("This method is not yet implemented.")
+    init(name: String = "None", targetType: TargetType = .none) {
+        self.name = name
+        self.assetCapabilityType = PlayerCapability.findType(with: name)
+        self.targetType = targetType
     }
 
-    private static func nameRegistry() -> [String: PlayerCapability] {
-        fatalError("This method is not yet implemented.")
+    private static func register(capability: PlayerCapability) -> Bool {
+        if let _ = nameRegistry[capability.name] {
+            return false
+        }
+        nameRegistry[capability.name] = capability
+        typeRegistry[PlayerCapability.findType(with: capability.name).rawValue] = capability
+        return true
     }
 
-    private static func typeRegistry() -> [Int: PlayerCapability] {
-        fatalError("This method is not yet implemented.")
+    static func findCapability(with type: AssetCapabilityType) -> PlayerCapability {
+        if let value = typeRegistry[type.rawValue] {
+            return value
+        }
+        return PlayerCapability()
     }
 
-    static func register(capability: PlayerCapability) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func findCapability(with name: String) -> PlayerCapability {
+        if let value = nameRegistry[name] {
+            return value
+        }
+        return PlayerCapability()
     }
 
-    static func findCapability(type: AssetCapabilityType) -> PlayerCapability {
-        fatalError("This method is not yet implemented.")
+    static func findType(with name: String) -> AssetCapabilityType {
+        var nameTypeTranslation: [String: AssetCapabilityType] = [:]
+        nameTypeTranslation["None"] = .none
+        nameTypeTranslation["BuildPeasant"] = .buildPeasant
+        nameTypeTranslation["BuildFootman"] = .buildFootman
+        nameTypeTranslation["BuildArcher"] = .buildArcher
+        nameTypeTranslation["BuildRanger"] = .buildRanger
+        nameTypeTranslation["BuildFarm"] = .buildFarm
+        nameTypeTranslation["BuildTownHall"] = .buildTownHall
+        nameTypeTranslation["BuildBarracks"] = .buildBarracks
+        nameTypeTranslation["BuildLumberMill"] = .buildLumberMill
+        nameTypeTranslation["BuildBlacksmith"] = .buildBlacksmith
+        nameTypeTranslation["BuildKeep"] = .buildKeep
+        nameTypeTranslation["BuildCastle"] = .buildCastle
+        nameTypeTranslation["BuildScoutTower"] = .buildScoutTower
+        nameTypeTranslation["BuildGuardTower"] = .buildGuardTower
+        nameTypeTranslation["BuildCannonTower"] = .buildCannonTower
+        nameTypeTranslation["Move"] = .move
+        nameTypeTranslation["Repair"] = .repair
+        nameTypeTranslation["Mine"] = .mine
+        nameTypeTranslation["BuildSimple"] = .buildSimple
+        nameTypeTranslation["BuildAdvanced"] = .buildAdvanced
+        nameTypeTranslation["Convey"] = .convey
+        nameTypeTranslation["Cancel"] = .cancel
+        nameTypeTranslation["BuildWall"] = .buildWall
+        nameTypeTranslation["Attack"] = .attack
+        nameTypeTranslation["StandGround"] = .standGround
+        nameTypeTranslation["Patrol"] = .patrol
+        nameTypeTranslation["WeaponUpgrade1"] = .weaponUpgrade1
+        nameTypeTranslation["WeaponUpgrade2"] = .weaponUpgrade2
+        nameTypeTranslation["WeaponUpgrade3"] = .weaponUpgrade3
+        nameTypeTranslation["ArrowUpgrade1"] = .arrowUpgrade1
+        nameTypeTranslation["ArrowUpgrade2"] = .arrowUpgrade2
+        nameTypeTranslation["ArrowUpgrade3"] = .arrowUpgrade3
+        nameTypeTranslation["ArmorUpgrade1"] = .armorUpgrade1
+        nameTypeTranslation["ArmorUpgrade2"] = .armorUpgrade2
+        nameTypeTranslation["ArmorUpgrade3"] = .armorUpgrade3
+        nameTypeTranslation["Longbow"] = .longbow
+        nameTypeTranslation["RangerScouting"] = .rangerScouting
+        nameTypeTranslation["Marksmanship"] = .marksmanship
+
+        if let value = nameTypeTranslation[name] {
+            return value
+        }
+        printError("Unknown capability name \"\(name)\"\n")
+        return .none
     }
 
-    static func findCapability(name: String) -> PlayerCapability {
-        fatalError("This method is not yet implemented.")
-    }
+    static func findName(with type: AssetCapabilityType) -> String {
+        let typeStrings = [
+            "None",
+            "BuildPeasant",
+            "BuildFootman",
+            "BuildArcher",
+            "BuildRanger",
+            "BuildFarm",
+            "BuildTownHall",
+            "BuildBarracks",
+            "BuildLumberMill",
+            "BuildBlacksmith",
+            "BuildKeep",
+            "BuildCastle",
+            "BuildScoutTower",
+            "BuildGuardTower",
+            "BuildCannonTower",
+            "Move",
+            "Repair",
+            "Mine",
+            "BuildSimple",
+            "BuildAdvanced",
+            "Convey",
+            "Cancel",
+            "BuildWall",
+            "Attack",
+            "StandGround",
+            "Patrol",
+            "WeaponUpgrade1",
+            "WeaponUpgrade2",
+            "WeaponUpgrade3",
+            "ArrowUpgrade1",
+            "ArrowUpgrade2",
+            "ArrowUpgrade3",
+            "ArmorUpgrade1",
+            "ArmorUpgrade2",
+            "ArmorUpgrade3",
+            "Longbow",
+            "RangerScouting",
+            "Marksmanship"
+        ]
 
-    static func nameToType(name: String) -> AssetCapabilityType {
-        fatalError("This method is not yet implemented.")
-    }
-
-    static func typeToName(type: AssetCapabilityType) -> String {
-        fatalError("This method is not yet implemented.")
+        if type.rawValue < 0 || type.rawValue >= typeStrings.count {
+            return ""
+        }
+        return typeStrings[type.rawValue]
     }
 
     func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 
     func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        fatalError("This method is not yet implemented.")
+        fatalError("You need to override this method.")
     }
 }
 
@@ -94,24 +194,50 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func loadUpgrades(container: DataContainer) -> Bool {
+    static func loadUpgrades(from dataContainer: DataContainer) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
-    static func load(source: DataSource) -> Bool {
+    static func load(from dataSource: DataSource) -> Bool {
         fatalError("This method is not yet implemented.")
     }
 
-    static func findUpgrade(type: AssetCapabilityType) -> PlayerUpgrade {
+    static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func findUpgrade(name: String) -> PlayerUpgrade {
+    static func findUpgrade(with name: String) -> PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 }
 
 class PlayerAssetType {
+    enum PlayerAssetTypeError: Error {
+        case unknownResourceType(type: String)
+        case failedToGetResourceTypeName
+        case failedToGetHitPoints
+        case failedToGetArmor
+        case failedToGetSight
+        case failedToGetConstructionSight
+        case failedToGetSize
+        case failedToGetSpeed
+        case failedToGetGoldCost
+        case failedToGetLumberCost
+        case failedToGetFoodConsumption
+        case failedToGetBuildTime
+        case failedToGetAttackSteps
+        case failedToGetReloadSteps
+        case failedToGetBasicDamage
+        case failedToGetPiercingDamage
+        case failedToGetRange
+        case failedToGetCapabilityCount
+        case failedToReadCapability
+        case failedToGetAssetRequirementCount
+        case failedToReadAssetRequirement
+        case failedToLoadResource
+        case fileIteratorNull
+    }
+
     private(set) var name = "None"
     private(set) var type = AssetType.none
     private(set) var color = PlayerColor.none
@@ -287,40 +413,181 @@ class PlayerAssetType {
         capabilities[capability] = false
     }
 
-    func addUpgrade(upgrade: PlayerUpgrade) {
+    func addUpgrade(_ upgrade: PlayerUpgrade) {
         assetUpgrades.append(upgrade)
     }
 
     func construct() -> PlayerAsset {
-        fatalError("This method is not yet implemented.")
+        return PlayerAsset(playerAssetType: self)
     }
 
-    static func type(from name: String) -> AssetType {
+    static func findType(with name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func name(from type: AssetType) -> String {
+    static func findName(with type: AssetType) -> String {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(container: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func loadTypes(from container: DataContainer) throws -> Bool {
+        guard let fileIterator = container.first() else {
+            throw PlayerAssetTypeError.fileIteratorNull
+        }
+        while fileIterator.isValid() {
+            let fileName = fileIterator.name()
+            fileIterator.next()
+            if fileName.hasSuffix(".dat") {
+                try load(from: container.dataSource(name: fileName))
+            }
+        }
+        let playerAssetType = PlayerAssetType()
+        playerAssetType.name = "None"
+        playerAssetType.type = .none
+        playerAssetType.color = .none
+        playerAssetType.hitPoints = 256
+        registry["None"] = playerAssetType
+        return true
     }
 
-    static func load(source: DataSource) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func load(from dataSource: DataSource) throws {
+        let lineSource = LineDataSource(dataSource: dataSource)
+
+        guard let name = lineSource.readLine() else {
+            throw PlayerAssetTypeError.failedToGetResourceTypeName
+        }
+
+        let assetType = findType(with: name)
+
+        if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
+            throw PlayerAssetTypeError.unknownResourceType(type: name)
+        }
+
+        let playerAssetType = registry[name] ?? PlayerAssetType()
+        if playerAssetType.name == "None" {
+            playerAssetType.name = name
+            registry[name] = playerAssetType
+        }
+        playerAssetType.type = assetType
+        playerAssetType.color = .none
+
+        if let hitPointsString = lineSource.readLine(), let hitPoints = Int(hitPointsString) {
+            playerAssetType.hitPoints = hitPoints
+        } else {
+            throw PlayerAssetTypeError.failedToGetHitPoints
+        }
+        if let armorString = lineSource.readLine(), let armor = Int(armorString) {
+            playerAssetType.armor = armor
+        } else {
+            throw PlayerAssetTypeError.failedToGetArmor
+        }
+        if let sightString = lineSource.readLine(), let sight = Int(sightString) {
+            playerAssetType.sight = sight
+        } else {
+            throw PlayerAssetTypeError.failedToGetSight
+        }
+        if let constructionSightString = lineSource.readLine(), let constructionSight = Int(constructionSightString) {
+            playerAssetType.constructionSight = constructionSight
+        } else {
+            throw PlayerAssetTypeError.failedToGetConstructionSight
+        }
+        if let sizeString = lineSource.readLine(), let size = Int(sizeString) {
+            playerAssetType.size = size
+        } else {
+            throw PlayerAssetTypeError.failedToGetSize
+        }
+        if let speedString = lineSource.readLine(), let speed = Int(speedString) {
+            playerAssetType.speed = speed
+        } else {
+            throw PlayerAssetTypeError.failedToGetSpeed
+        }
+        if let goldCostString = lineSource.readLine(), let goldCost = Int(goldCostString) {
+            playerAssetType.goldCost = goldCost
+        } else {
+            throw PlayerAssetTypeError.failedToGetGoldCost
+        }
+        if let lumberCostString = lineSource.readLine(), let lumberCost = Int(lumberCostString) {
+            playerAssetType.lumberCost = lumberCost
+        } else {
+            throw PlayerAssetTypeError.failedToGetLumberCost
+        }
+        if let foodConsumptionString = lineSource.readLine(), let foodConsumption = Int(foodConsumptionString) {
+            playerAssetType.foodConsumption = foodConsumption
+        } else {
+            throw PlayerAssetTypeError.failedToGetFoodConsumption
+        }
+        if let buildTimeString = lineSource.readLine(), let buildTime = Int(buildTimeString) {
+            playerAssetType.buildTime = buildTime
+        } else {
+            throw PlayerAssetTypeError.failedToGetBuildTime
+        }
+        if let attackStepsString = lineSource.readLine(), let attackSteps = Int(attackStepsString) {
+            playerAssetType.attackSteps = attackSteps
+        } else {
+            throw PlayerAssetTypeError.failedToGetAttackSteps
+        }
+        if let reloadStepsString = lineSource.readLine(), let reloadSteps = Int(reloadStepsString) {
+            playerAssetType.reloadSteps = reloadSteps
+        } else {
+            throw PlayerAssetTypeError.failedToGetReloadSteps
+        }
+        if let basicDamageString = lineSource.readLine(), let basicDamage = Int(basicDamageString) {
+            playerAssetType.basicDamage = basicDamage
+        } else {
+            throw PlayerAssetTypeError.failedToGetBasicDamage
+        }
+        if let piercingDamageString = lineSource.readLine(), let piercingDamage = Int(piercingDamageString) {
+            playerAssetType.piercingDamage = piercingDamage
+        } else {
+            throw PlayerAssetTypeError.failedToGetPiercingDamage
+        }
+        if let rangeString = lineSource.readLine(), let range = Int(rangeString) {
+            playerAssetType.range = range
+        } else {
+            throw PlayerAssetTypeError.failedToGetRange
+        }
+
+        guard let capabilityCountString = lineSource.readLine(), let capabilityCount = Int(capabilityCountString) else {
+            throw PlayerAssetTypeError.failedToGetCapabilityCount
+        }
+        for (capability, _) in playerAssetType.capabilities {
+            playerAssetType.capabilities[capability] = false
+        }
+        for _ in 0 ..< capabilityCount {
+            if let capabilityString = lineSource.readLine() {
+                playerAssetType.addCapability(PlayerCapability.findType(with: capabilityString))
+            } else {
+                throw PlayerAssetTypeError.failedToReadCapability
+            }
+        }
+
+        guard let assetRequirementCountString = lineSource.readLine(), let assetRequirementCount = Int(assetRequirementCountString) else {
+            throw PlayerAssetTypeError.failedToGetAssetRequirementCount
+        }
+        for _ in 0 ..< assetRequirementCount {
+            if let assetRequirementString = lineSource.readLine() {
+                playerAssetType.assetRequirements.append(findType(with: assetRequirementString))
+            } else {
+                throw PlayerAssetTypeError.failedToReadAssetRequirement
+            }
+        }
     }
 
-    static func findDefault(from name: String) -> PlayerAssetType {
+    static func findDefault(with name: String) -> PlayerAssetType {
         return registry[name] ?? PlayerAssetType()
     }
 
-    static func findDefault(from type: AssetType) -> PlayerAssetType {
-        return findDefault(from: name(from: type))
+    static func findDefault(with type: AssetType) -> PlayerAssetType {
+        return findDefault(with: findName(with: type))
     }
 
-    static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("This method is not yet implemented.")
+    static func duplicateRegistry(changeColorTo color: PlayerColor) -> [String: PlayerAssetType] {
+        var returnRegistry: [String: PlayerAssetType] = [:]
+        for (key, value) in registry {
+            let newAssetType = PlayerAssetType(playerAsset: value)
+            newAssetType.color = color
+            returnRegistry[key] = newAssetType
+        }
+        return returnRegistry
     }
 }
 
@@ -393,6 +660,7 @@ class PlayerAsset {
             position.y = newValue
         }
     }
+
     var direction: Direction
 
     private(set) var commands: [AssetCommand] = []
@@ -549,12 +817,12 @@ class PlayerAsset {
         }
     }
 
-    init(playerAsset: PlayerAssetType) {
+    init(playerAssetType: PlayerAssetType) {
         tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
 
-        assetType = playerAsset
-        hitPoints = playerAsset.hitPoints
+        assetType = playerAssetType
+        hitPoints = playerAssetType.hitPoints
         moveRemainderX = 0
         moveRemainderY = 0
         direction = .south
@@ -604,19 +872,19 @@ class PlayerAsset {
         step += 1
     }
 
-    func closestPosition(_ pos: Position) -> Position {
-        return pos.closestPosition(position, objSize: size)
+    func closestPosition(_ position: Position) -> Position {
+        return position.closestPosition(position, objectSize: size)
     }
 
     func clearCommand() {
         commands.removeAll()
     }
 
-    func pushCommand(command: AssetCommand) {
+    func pushCommand(_ command: AssetCommand) {
         commands.append(command)
     }
 
-    func enqueueCommand(command: AssetCommand) {
+    func enqueueCommand(_ command: AssetCommand) {
         commands.insert(command, at: 0)
     }
 
@@ -668,7 +936,7 @@ class PlayerAsset {
         }
     }
 
-    func changeType(_ type: PlayerAssetType) {
+    func changeType(to type: PlayerAssetType) {
         assetType = type
     }
 

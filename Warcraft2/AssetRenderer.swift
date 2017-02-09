@@ -674,7 +674,7 @@ class AssetRenderer {
         let screenBottomY = rect.yPosition + rect.height - 1
 
         var onScreen = true
-        let assetType = PlayerAssetType.findDefault(from: type)
+        let assetType = PlayerAssetType.findDefault(with: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
         let tempPosition = Position()
@@ -779,7 +779,7 @@ class AssetRenderer {
             }
         } else {
             for asset in playerMap.assetInitializationList {
-                let size = PlayerAssetType.findDefault(from: asset.type).size
+                let size = PlayerAssetType.findDefault(with: asset.type).size
                 let pixelColor = pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(x: asset.tilePosition.x, y: asset.tilePosition.y, width: size, height: size)
