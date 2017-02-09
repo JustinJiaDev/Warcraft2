@@ -1,8 +1,20 @@
 import UIKit
 import AVFoundation
 
-fileprivate func tileset(with name: String) throws -> GraphicMulticolorTileset {
-    let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat")!
+fileprivate func tileset(_ name: String) throws -> GraphicTileset {
+    guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
+        throw GraphicTileset.GameError.failedToGetPath
+    }
+    let tilesetSource = try FileDataSource(url: tilesetURL)
+    let tileset = GraphicTileset()
+    try tileset.loadTileset(from: tilesetSource)
+    return tileset
+}
+
+fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTileset {
+    guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
+        throw GraphicTileset.GameError.failedToGetPath
+    }
     let tilesetSource = try FileDataSource(url: tilesetURL)
     let tileset = GraphicMulticolorTileset()
     try tileset.loadTileset(from: tilesetSource)
@@ -27,7 +39,7 @@ class TestViewController: UIViewController {
             let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map")!
             let mapSource = try FileDataSource(url: mapURL)
             let map = AssetDecoratedMap()
-            try map.loadMap(source: mapSource)
+            try map.loadMap(from: mapSource)
             return map
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
@@ -38,7 +50,7 @@ class TestViewController: UIViewController {
         do {
             let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat")!
             let configuration = try FileDataSource(url: configurationURL)
-            let terrainTileset = try tileset(with: "Terrain")
+            let terrainTileset = try tileset("Terrain")
             return try MapRenderer(configuration: configuration, tileset: terrainTileset, map: self.map)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
@@ -49,27 +61,27 @@ class TestViewController: UIViewController {
         do {
             let colors = GraphicRecolorMap()
             var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
-            tilesets[AssetType.peasant.rawValue] = try tileset(with: "Peasant")
-            tilesets[AssetType.footman.rawValue] = try tileset(with: "Footman")
-            tilesets[AssetType.archer.rawValue] = try tileset(with: "Archer")
-            tilesets[AssetType.ranger.rawValue] = try tileset(with: "Ranger")
-            tilesets[AssetType.goldMine.rawValue] = try tileset(with: "GoldMine")
-            tilesets[AssetType.townHall.rawValue] = try tileset(with: "TownHall")
-            tilesets[AssetType.keep.rawValue] = try tileset(with: "Keep")
-            tilesets[AssetType.castle.rawValue] = try tileset(with: "Castle")
-            tilesets[AssetType.farm.rawValue] = try tileset(with: "Farm")
-            tilesets[AssetType.barracks.rawValue] = try tileset(with: "Barracks")
-            tilesets[AssetType.lumberMill.rawValue] = try tileset(with: "LumberMill")
-            tilesets[AssetType.blacksmith.rawValue] = try tileset(with: "Blacksmith")
-            tilesets[AssetType.scoutTower.rawValue] = try tileset(with: "ScoutTower")
-            tilesets[AssetType.guardTower.rawValue] = try tileset(with: "GuardTower")
-            tilesets[AssetType.cannonTower.rawValue] = try tileset(with: "CannonTower")
-            let markerTileset = try tileset(with: "Marker")
-            let corpseTileset = try tileset(with: "Corpse")
-            let fireTilesets = [try tileset(with: "FireSmall"), try tileset(with: "FireLarge")]
-            let buildingDeathTileset = try tileset(with: "BuildingDeath")
-            let arrowTileset = try tileset(with: "Arrow")
-            let playerData: PlayerData? = nil
+            tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
+            tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
+            tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer")
+            tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger")
+            tilesets[AssetType.goldMine.rawValue] = try multicolorTileset("GoldMine")
+            tilesets[AssetType.townHall.rawValue] = try multicolorTileset("TownHall")
+            tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep")
+            tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle")
+            tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm")
+            tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks")
+            tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill")
+            tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith")
+            tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower")
+            tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower")
+            tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower")
+            let markerTileset = try tileset("Marker")
+            let corpseTileset = try tileset("Corpse")
+            let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
+            let buildingDeathTileset = try tileset("BuildingDeath")
+            let arrowTileset = try tileset("Arrow")
+            // let playerData = PlayerData(map: self.map, color: .blue)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,
@@ -78,7 +90,7 @@ class TestViewController: UIViewController {
                 fireTilesets: fireTilesets,
                 buildingDeathTileset: buildingDeathTileset,
                 arrowTileset: arrowTileset,
-                player: playerData,
+                player: nil,
                 map: self.map
             )
             return assetRenderer

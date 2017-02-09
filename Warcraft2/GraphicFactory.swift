@@ -16,7 +16,7 @@ class GraphicFactory {
         return layer
     }
 
-    static func loadSurface(dataSource: DataSource) -> GraphicSurface? {
+    static func loadSurface(from dataSource: DataSource) -> GraphicSurface? {
         fatalError("This method is not yet implemented.")
     }
 

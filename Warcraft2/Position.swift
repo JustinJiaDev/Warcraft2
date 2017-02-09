@@ -131,8 +131,8 @@ class Position {
         self.y = y / Position.tileHeight
     }
 
-    func adjacentTileDirection(position: Position, objSize: Int) -> Direction {
-        if 1 == objSize {
+    func adjacentTileDirection(position: Position, objectSize: Int) -> Direction {
+        if objectSize == 1 {
             let deltaX = position.x - x
             let deltaY = position.y - y
 
@@ -148,26 +148,26 @@ class Position {
             thisPosition.setFromTile(self)
             targetPosition.setFromTile(position)
 
-            targetPosition.setToTile(thisPosition.closestPosition(targetPosition, objSize: objSize))
-            return adjacentTileDirection(position: targetPosition, objSize: 1)
+            targetPosition.setToTile(thisPosition.closestPosition(targetPosition, objectSize: objectSize))
+            return adjacentTileDirection(position: targetPosition, objectSize: 1)
         }
     }
 
-    func distanceSquared(_ pos: Position) -> Int {
-        let deltaX = pos.x - x
-        let deltaY = pos.y - y
+    func distanceSquared(_ position: Position) -> Int {
+        let deltaX = position.x - x
+        let deltaY = position.y - y
         return deltaX * deltaX + deltaY * deltaY
     }
 
-    func closestPosition(_ position: Position, objSize: Int) -> Position {
+    func closestPosition(_ position: Position, objectSize: Int) -> Position {
         let curPosition = Position(from: position)
         var bestPosition = Position()
         var bestDistance = -1
-        for _ in 0 ..< objSize {
-            for _ in 0 ..< objSize {
-                let curDistance = curPosition.distanceSquaredFrom(position: self)
-                if -1 == bestDistance || curDistance < bestDistance {
-                    bestDistance = curDistance
+        for _ in 0 ..< objectSize {
+            for _ in 0 ..< objectSize {
+                let currentDistance = curPosition.distanceSquared(from: self)
+                if -1 == bestDistance || currentDistance < bestDistance {
+                    bestDistance = currentDistance
                     bestPosition = curPosition
                 }
                 curPosition.x += Position.tileWidth
@@ -200,7 +200,7 @@ class Position {
         return delta.tileOctant
     }
 
-    func distanceSquaredFrom(position: Position) -> Int {
+    func distanceSquared(from position: Position) -> Int {
         let deltaX = position.x - x
         let deltaY = position.y - y
         return deltaX * deltaX + deltaY * deltaY
@@ -208,6 +208,6 @@ class Position {
 
     func distance(position: Position) -> Int {
         // Not as efficient as original implementation
-        return Int(sqrt(Double(self.distanceSquaredFrom(position: position))))
+        return Int(sqrt(Double(self.distanceSquared(from: position))))
     }
 }

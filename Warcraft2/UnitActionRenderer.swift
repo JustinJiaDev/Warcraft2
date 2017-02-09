@@ -140,7 +140,7 @@ class UnitActionRenderer {
         for i in 0 ..< displayedCommands.count {
             let capabilityType = displayedCommands[i]
             if capabilityType != .none {
-                let playerCapability = PlayerCapability.findCapability(type: capabilityType)
+                let playerCapability = PlayerCapability.findCapability(with: capabilityType)
                 try bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
                 try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[capabilityType]!)
 
