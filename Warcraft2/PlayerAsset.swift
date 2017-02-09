@@ -320,7 +320,7 @@ class PlayerAssetType {
     }
 
     func construct() -> PlayerAsset {
-        fatalError("This method is not yet implemented.")
+        return PlayerAsset(playerAssetType: self)
     }
 
     static func type(from name: String) -> AssetType {
@@ -701,12 +701,12 @@ class PlayerAsset {
         }
     }
 
-    init(playerAsset: PlayerAssetType) {
+    init(playerAssetType: PlayerAssetType) {
         tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
 
-        assetType = playerAsset
-        hitPoints = playerAsset.hitPoints
+        assetType = playerAssetType
+        hitPoints = playerAssetType.hitPoints
         moveRemainderX = 0
         moveRemainderY = 0
         direction = .south
