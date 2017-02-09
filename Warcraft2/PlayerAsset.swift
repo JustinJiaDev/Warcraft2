@@ -679,7 +679,7 @@ class PlayerAsset {
         return assetType.hasCapability(capability)
     }
 
-    func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
+    func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool?]]) -> Bool {
         let currentOctant = position.tileOctant
         let currentTile = tilePosition
         let currentPosition = position
@@ -734,7 +734,7 @@ class PlayerAsset {
             let diagonalX = min(currentTile.x, tilePositionX)
             let diagonalY = min(currentTile.y, tilePositionY)
 
-            if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
+            if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]!) {
                 var returnValue = false
                 if let occupancyMapSquare = occupancyMap[tilePositionY][tilePositionX], occupancyMapSquare.action == .walk {
                     returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
