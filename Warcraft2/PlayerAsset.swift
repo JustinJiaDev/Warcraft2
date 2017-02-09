@@ -117,9 +117,8 @@ class PlayerUpgrade {
 extension String {
     func index(of string: String, options: String.CompareOptions = .literal) -> String.Index? {
         return range(of: string, options: options)?.lowerBound
-        
-    
-    }}
+
+} }
 
 class PlayerAssetType {
     enum PlayerAssetTypeError: Error {
@@ -340,20 +339,18 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(container: DataContainer) -> Bool {
+    static func loadTypes(container: DataContainer) throws -> Bool {
         guard let fileIterator = container.first() else {
-            throw GameError.fileIteratorNull
+            throw PlayerAssetTypeError.fileIteratorNull
         }
         while fileIterator != nil && fileIterator.isValid() {
             let fileName = fileIterator.name()
             fileIterator.next()
-            if (fileName.hasSuffix(".dat")) {
-                if !load(source: fileName as! DataSource) {
-                    throw GameError.failedToLoadResource
-                }
+            if fileName.hasSuffix(".dat") {
+                try load(source: container.dataSource(name: fileName))
             }
         }
-        var playerAssetType: PlayerAssetType
+        let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
         playerAssetType.type = .none
         playerAssetType.color = .none
@@ -499,7 +496,7 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        
+
         var returnRegistry = [String: PlayerAssetType]()
         for (key, value) in registry {
             let newAssetType = PlayerAssetType(playerAsset: value)
@@ -937,4 +934,3 @@ class PlayerAsset {
         return true
     }
 }
-
