@@ -114,6 +114,13 @@ class PlayerUpgrade {
     }
 }
 
+extension String {
+    func index(of string: String, options: String.CompareOptions = .literal) -> String.Index? {
+        return range(of: string, options: options)?.lowerBound
+        
+    
+    }}
+
 class PlayerAssetType {
     enum PlayerAssetTypeError: Error {
         case nilDataSource
@@ -138,6 +145,8 @@ class PlayerAssetType {
         case failedToReadCapability
         case failedToGetAssetRequirementCount
         case failedToReadAssetRequirement
+        case failedToLoadResource
+        case fileIteratorNull
     }
 
     private(set) var name = "None"
@@ -332,7 +341,25 @@ class PlayerAssetType {
     }
 
     static func loadTypes(container: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
+        guard let fileIterator = container.first() else {
+            throw GameError.fileIteratorNull
+        }
+        while fileIterator != nil && fileIterator.isValid() {
+            let fileName = fileIterator.name()
+            fileIterator.next()
+            if (fileName.hasSuffix(".dat")) {
+                if !load(source: fileName as! DataSource) {
+                    throw GameError.failedToLoadResource
+                }
+            }
+        }
+        var playerAssetType: PlayerAssetType
+        playerAssetType.name = "None"
+        playerAssetType.type = .none
+        playerAssetType.color = .none
+        playerAssetType.hitPoints = 256
+        registry["None"] = playerAssetType
+        return true
     }
 
     static func load(source: DataSource?) throws {
@@ -472,7 +499,14 @@ class PlayerAssetType {
     }
 
     static func duplicateRegistry(color: PlayerColor) -> [String: PlayerAssetType] {
-        fatalError("This method is not yet implemented.")
+        
+        var returnRegistry = [String: PlayerAssetType]()
+        for (key, value) in registry {
+            let newAssetType = PlayerAssetType(playerAsset: value)
+            newAssetType.color = color
+            returnRegistry[key] = newAssetType
+        }
+        return returnRegistry
     }
 }
 
@@ -903,3 +937,4 @@ class PlayerAsset {
         return true
     }
 }
+
