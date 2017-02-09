@@ -115,6 +115,31 @@ class PlayerUpgrade {
 }
 
 class PlayerAssetType {
+    enum PlayerAssetTypeError: Error {
+        case nilDataSource
+        case failedToGetResourceTypeName
+        case unknownResourceType(type: String)
+        case failedToGetHitPoints
+        case failedToGetArmor
+        case failedToGetSight
+        case failedToGetConstructionSight
+        case failedToGetSize
+        case failedToGetSpeed
+        case failedToGetGoldCost
+        case failedToGetLumberCost
+        case failedToGetFoodConsumption
+        case failedToGetBuildTime
+        case failedToGetAttackSteps
+        case failedToGetReloadSteps
+        case failedToGetBasicDamage
+        case failedToGetPiercingDamage
+        case failedToGetRange
+        case failedToGetCapabilityCount
+        case failedToReadCapability
+        case failedToGetAssetRequirementCount
+        case failedToReadAssetRequirement
+    }
+
     private(set) var name = "None"
     private(set) var type = AssetType.none
     private(set) var color = PlayerColor.none
@@ -310,8 +335,132 @@ class PlayerAssetType {
         fatalError("This method is not yet implemented.")
     }
 
-    static func load(source: DataSource) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func load(source: DataSource?) throws {
+
+        guard let dataSource = source else {
+            throw PlayerAssetTypeError.nilDataSource
+        }
+
+        let lineSource = LineDataSource(dataSource: dataSource)
+
+        guard let name = lineSource.readLine() else {
+            throw PlayerAssetTypeError.failedToGetResourceTypeName
+        }
+
+        let assetType = type(from: name)
+
+        if .none == assetType && name != typeStrings[AssetType.none.rawValue] {
+            throw PlayerAssetTypeError.unknownResourceType(type: name)
+        }
+
+        let playerAssetType = registry[name] ?? PlayerAssetType()
+        if playerAssetType.name == "None" {
+            playerAssetType.name = name
+            registry[name] = playerAssetType
+        }
+        playerAssetType.type = assetType
+        playerAssetType.color = .none
+
+        if let hitPointsString = lineSource.readLine(), let hitPoints = Int(hitPointsString) {
+            playerAssetType.hitPoints = hitPoints
+        } else {
+            throw PlayerAssetTypeError.failedToGetHitPoints
+        }
+        if let armorString = lineSource.readLine(), let armor = Int(armorString) {
+            playerAssetType.armor = armor
+        } else {
+            throw PlayerAssetTypeError.failedToGetArmor
+        }
+        if let sightString = lineSource.readLine(), let sight = Int(sightString) {
+            playerAssetType.sight = sight
+        } else {
+            throw PlayerAssetTypeError.failedToGetSight
+        }
+        if let constructionSightString = lineSource.readLine(), let constructionSight = Int(constructionSightString) {
+            playerAssetType.constructionSight = constructionSight
+        } else {
+            throw PlayerAssetTypeError.failedToGetConstructionSight
+        }
+        if let sizeString = lineSource.readLine(), let size = Int(sizeString) {
+            playerAssetType.size = size
+        } else {
+            throw PlayerAssetTypeError.failedToGetSize
+        }
+        if let speedString = lineSource.readLine(), let speed = Int(speedString) {
+            playerAssetType.speed = speed
+        } else {
+            throw PlayerAssetTypeError.failedToGetSpeed
+        }
+        if let goldCostString = lineSource.readLine(), let goldCost = Int(goldCostString) {
+            playerAssetType.goldCost = goldCost
+        } else {
+            throw PlayerAssetTypeError.failedToGetGoldCost
+        }
+        if let lumberCostString = lineSource.readLine(), let lumberCost = Int(lumberCostString) {
+            playerAssetType.lumberCost = lumberCost
+        } else {
+            throw PlayerAssetTypeError.failedToGetLumberCost
+        }
+        if let foodConsumptionString = lineSource.readLine(), let foodConsumption = Int(foodConsumptionString) {
+            playerAssetType.foodConsumption = foodConsumption
+        } else {
+            throw PlayerAssetTypeError.failedToGetFoodConsumption
+        }
+        if let buildTimeString = lineSource.readLine(), let buildTime = Int(buildTimeString) {
+            playerAssetType.buildTime = buildTime
+        } else {
+            throw PlayerAssetTypeError.failedToGetBuildTime
+        }
+        if let attackStepsString = lineSource.readLine(), let attackSteps = Int(attackStepsString) {
+            playerAssetType.attackSteps = attackSteps
+        } else {
+            throw PlayerAssetTypeError.failedToGetAttackSteps
+        }
+        if let reloadStepsString = lineSource.readLine(), let reloadSteps = Int(reloadStepsString) {
+            playerAssetType.reloadSteps = reloadSteps
+        } else {
+            throw PlayerAssetTypeError.failedToGetReloadSteps
+        }
+        if let basicDamageString = lineSource.readLine(), let basicDamage = Int(basicDamageString) {
+            playerAssetType.basicDamage = basicDamage
+        } else {
+            throw PlayerAssetTypeError.failedToGetBasicDamage
+        }
+        if let piercingDamageString = lineSource.readLine(), let piercingDamage = Int(piercingDamageString) {
+            playerAssetType.piercingDamage = piercingDamage
+        } else {
+            throw PlayerAssetTypeError.failedToGetPiercingDamage
+        }
+        if let rangeString = lineSource.readLine(), let range = Int(rangeString) {
+            playerAssetType.range = range
+        } else {
+            throw PlayerAssetTypeError.failedToGetRange
+        }
+
+        guard let capabilityCountString = lineSource.readLine(), let capabilityCount = Int(capabilityCountString) else {
+            throw PlayerAssetTypeError.failedToGetCapabilityCount
+        }
+        for (capability, _) in playerAssetType.capabilities {
+            playerAssetType.capabilities[capability] = false
+        }
+        for _ in 0 ..< capabilityCount {
+            if let capabilityString = lineSource.readLine() {
+                playerAssetType.addCapability(PlayerCapability.nameToType(name: capabilityString))
+            } else {
+                throw PlayerAssetTypeError.failedToReadCapability
+            }
+        }
+
+        guard let assetRequirementCountString = lineSource.readLine(), let assetRequirementCount = Int(assetRequirementCountString) else {
+            throw PlayerAssetTypeError.failedToGetAssetRequirementCount
+        }
+        for _ in 0 ..< assetRequirementCount {
+            if let assetRequirementString = lineSource.readLine() {
+                playerAssetType.assetRequirements.append(type(from: assetRequirementString))
+            } else {
+                throw PlayerAssetTypeError.failedToReadAssetRequirement
+            }
+        }
     }
 
     static func findDefault(from name: String) -> PlayerAssetType {
