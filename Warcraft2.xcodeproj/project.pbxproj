@@ -121,6 +121,21 @@
 		8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */; };
 		8EA067881E33C8E00059CEC2 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */; };
 		8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */; };
+		8EB3DBEC1E4D5F5800B1264C /* ResArcher.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBDD1E4D5F5800B1264C /* ResArcher.dat */; };
+		8EB3DBED1E4D5F5800B1264C /* ResBarracks.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBDE1E4D5F5800B1264C /* ResBarracks.dat */; };
+		8EB3DBEE1E4D5F5800B1264C /* ResBlacksmith.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBDF1E4D5F5800B1264C /* ResBlacksmith.dat */; };
+		8EB3DBEF1E4D5F5800B1264C /* ResCannonTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE01E4D5F5800B1264C /* ResCannonTower.dat */; };
+		8EB3DBF01E4D5F5800B1264C /* ResCastle.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE11E4D5F5800B1264C /* ResCastle.dat */; };
+		8EB3DBF11E4D5F5800B1264C /* ResFarm.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE21E4D5F5800B1264C /* ResFarm.dat */; };
+		8EB3DBF21E4D5F5800B1264C /* ResFootman.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE31E4D5F5800B1264C /* ResFootman.dat */; };
+		8EB3DBF31E4D5F5800B1264C /* ResGoldMine.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE41E4D5F5800B1264C /* ResGoldMine.dat */; };
+		8EB3DBF41E4D5F5800B1264C /* ResGuardTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE51E4D5F5800B1264C /* ResGuardTower.dat */; };
+		8EB3DBF51E4D5F5800B1264C /* ResKeep.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE61E4D5F5800B1264C /* ResKeep.dat */; };
+		8EB3DBF61E4D5F5800B1264C /* ResLumberMill.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE71E4D5F5800B1264C /* ResLumberMill.dat */; };
+		8EB3DBF71E4D5F5800B1264C /* ResPeasant.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE81E4D5F5800B1264C /* ResPeasant.dat */; };
+		8EB3DBF81E4D5F5800B1264C /* ResRanger.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBE91E4D5F5800B1264C /* ResRanger.dat */; };
+		8EB3DBF91E4D5F5800B1264C /* ResScoutTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBEA1E4D5F5800B1264C /* ResScoutTower.dat */; };
+		8EB3DBFA1E4D5F5800B1264C /* ResTownHall.dat in Resources */ = {isa = PBXBuildFile; fileRef = 8EB3DBEB1E4D5F5800B1264C /* ResTownHall.dat */; };
 		8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */; };
 		8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C91E3D797000ACB660 /* RouterMap.swift */; };
 		9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */; };
@@ -270,6 +285,21 @@
 		8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainMap.swift; sourceTree = "<group>"; };
 		8EA0677D1E33C8E00059CEC2 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicSurface.swift; sourceTree = "<group>"; };
+		8EB3DBDD1E4D5F5800B1264C /* ResArcher.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResArcher.dat; sourceTree = "<group>"; };
+		8EB3DBDE1E4D5F5800B1264C /* ResBarracks.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResBarracks.dat; sourceTree = "<group>"; };
+		8EB3DBDF1E4D5F5800B1264C /* ResBlacksmith.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResBlacksmith.dat; sourceTree = "<group>"; };
+		8EB3DBE01E4D5F5800B1264C /* ResCannonTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResCannonTower.dat; sourceTree = "<group>"; };
+		8EB3DBE11E4D5F5800B1264C /* ResCastle.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResCastle.dat; sourceTree = "<group>"; };
+		8EB3DBE21E4D5F5800B1264C /* ResFarm.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResFarm.dat; sourceTree = "<group>"; };
+		8EB3DBE31E4D5F5800B1264C /* ResFootman.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResFootman.dat; sourceTree = "<group>"; };
+		8EB3DBE41E4D5F5800B1264C /* ResGoldMine.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResGoldMine.dat; sourceTree = "<group>"; };
+		8EB3DBE51E4D5F5800B1264C /* ResGuardTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResGuardTower.dat; sourceTree = "<group>"; };
+		8EB3DBE61E4D5F5800B1264C /* ResKeep.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResKeep.dat; sourceTree = "<group>"; };
+		8EB3DBE71E4D5F5800B1264C /* ResLumberMill.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResLumberMill.dat; sourceTree = "<group>"; };
+		8EB3DBE81E4D5F5800B1264C /* ResPeasant.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResPeasant.dat; sourceTree = "<group>"; };
+		8EB3DBE91E4D5F5800B1264C /* ResRanger.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResRanger.dat; sourceTree = "<group>"; };
+		8EB3DBEA1E4D5F5800B1264C /* ResScoutTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResScoutTower.dat; sourceTree = "<group>"; };
+		8EB3DBEB1E4D5F5800B1264C /* ResTownHall.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ResTownHall.dat; sourceTree = "<group>"; };
 		8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetDecoratedMap.swift; sourceTree = "<group>"; };
 		8EC6A5C91E3D797000ACB660 /* RouterMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterMap.swift; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -468,6 +498,28 @@
 			name = Music;
 			sourceTree = "<group>";
 		};
+		8EB3DBDC1E4D5F2D00B1264C /* res */ = {
+			isa = PBXGroup;
+			children = (
+				8EB3DBDD1E4D5F5800B1264C /* ResArcher.dat */,
+				8EB3DBDE1E4D5F5800B1264C /* ResBarracks.dat */,
+				8EB3DBDF1E4D5F5800B1264C /* ResBlacksmith.dat */,
+				8EB3DBE01E4D5F5800B1264C /* ResCannonTower.dat */,
+				8EB3DBE11E4D5F5800B1264C /* ResCastle.dat */,
+				8EB3DBE21E4D5F5800B1264C /* ResFarm.dat */,
+				8EB3DBE31E4D5F5800B1264C /* ResFootman.dat */,
+				8EB3DBE41E4D5F5800B1264C /* ResGoldMine.dat */,
+				8EB3DBE51E4D5F5800B1264C /* ResGuardTower.dat */,
+				8EB3DBE61E4D5F5800B1264C /* ResKeep.dat */,
+				8EB3DBE71E4D5F5800B1264C /* ResLumberMill.dat */,
+				8EB3DBE81E4D5F5800B1264C /* ResPeasant.dat */,
+				8EB3DBE91E4D5F5800B1264C /* ResRanger.dat */,
+				8EB3DBEA1E4D5F5800B1264C /* ResScoutTower.dat */,
+				8EB3DBEB1E4D5F5800B1264C /* ResTownHall.dat */,
+			);
+			name = res;
+			sourceTree = "<group>";
+		};
 		D02808AC1E472190001C1E0E /* Render */ = {
 			isa = PBXGroup;
 			children = (
@@ -631,6 +683,7 @@
 		D0D6FA6B1E2602AE00D92DA5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8EB3DBDC1E4D5F2D00B1264C /* res */,
 				8EA0676F1E33102E0059CEC2 /* Music */,
 				498584511E311B5500F6766C /* Maps */,
 				4985844E1E303F0300F6766C /* Images */,
@@ -714,11 +767,13 @@
 			files = (
 				D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */,
 				D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */,
+				8EB3DBF81E4D5F5800B1264C /* ResRanger.dat in Resources */,
 				D01B68121E35A4320003C408 /* maze.map in Resources */,
 				8EA067731E3310470059CEC2 /* intro.mid in Resources */,
 				493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */,
 				D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */,
 				493C06F31E3130F600C1C9E6 /* GuardTower.png in Resources */,
+				8EB3DBF01E4D5F5800B1264C /* ResCastle.dat in Resources */,
 				493C06F01E3130F600C1C9E6 /* FontKingthings24.png in Resources */,
 				493C06FE1E3130F600C1C9E6 /* Ranger.png in Resources */,
 				493C071A1E3130F600C1C9E6 /* FontKingthings12.dat in Resources */,
@@ -735,12 +790,14 @@
 				493C06E11E3130F600C1C9E6 /* CannonballDeath.png in Resources */,
 				493C071F1E3130F600C1C9E6 /* GuardTower.dat in Resources */,
 				493C06DB1E3130F600C1C9E6 /* AssetNone.png in Resources */,
+				8EB3DBEE1E4D5F5800B1264C /* ResBlacksmith.dat in Resources */,
 				493C06E91E3130F600C1C9E6 /* FireSmall.png in Resources */,
 				493C07161E3130F600C1C9E6 /* Fog.dat in Resources */,
 				4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */,
 				493C07181E3130F600C1C9E6 /* FontKingthings8.dat in Resources */,
 				493C07051E3130F600C1C9E6 /* Arrow.dat in Resources */,
 				493C07131E3130F600C1C9E6 /* Farm.dat in Resources */,
+				8EB3DBF21E4D5F5800B1264C /* ResFootman.dat in Resources */,
 				493C07121E3130F600C1C9E6 /* Cursors.dat in Resources */,
 				493C06FA1E3130F600C1C9E6 /* MiniBevel.png in Resources */,
 				493C07021E3130F600C1C9E6 /* Texture.png in Resources */,
@@ -748,32 +805,41 @@
 				493C071B1E3130F600C1C9E6 /* FontKingthings16.dat in Resources */,
 				493C06E61E3130F600C1C9E6 /* Cursors.png in Resources */,
 				493C07081E3130F600C1C9E6 /* Barracks.dat in Resources */,
+				8EB3DBFA1E4D5F5800B1264C /* ResTownHall.dat in Resources */,
 				493C06ED1E3130F600C1C9E6 /* FontKingthings10.png in Resources */,
 				493C06DE1E3130F600C1C9E6 /* BuildingDeath.png in Resources */,
 				493C06EF1E3130F600C1C9E6 /* FontKingthings16.png in Resources */,
 				493C07061E3130F600C1C9E6 /* AssetColor.dat in Resources */,
 				493C070E1E3130F600C1C9E6 /* CannonTower.dat in Resources */,
+				8EB3DBF41E4D5F5800B1264C /* ResGuardTower.dat in Resources */,
 				493C07301E3130F600C1C9E6 /* TownHall.dat in Resources */,
+				8EB3DBF71E4D5F5800B1264C /* ResPeasant.dat in Resources */,
 				493C07291E3130F600C1C9E6 /* OuterBevel.dat in Resources */,
 				493C07211E3130F600C1C9E6 /* InnerBevel.dat in Resources */,
 				493C06F71E3130F600C1C9E6 /* ListViewIcons.png in Resources */,
 				493C06FB1E3130F600C1C9E6 /* MiniIcons.png in Resources */,
+				8EB3DBF61E4D5F5800B1264C /* ResLumberMill.dat in Resources */,
 				D0D4A3DA1E3F1A07009460DE /* MapRendering.dat in Resources */,
 				493C06F21E3130F600C1C9E6 /* GoldMine.png in Resources */,
 				493C06EE1E3130F600C1C9E6 /* FontKingthings12.png in Resources */,
 				493C07261E3130F600C1C9E6 /* Marker.dat in Resources */,
 				493C072C1E3130F600C1C9E6 /* ScoutTower.dat in Resources */,
+				8EB3DBF31E4D5F5800B1264C /* ResGoldMine.dat in Resources */,
 				493C06DC1E3130F600C1C9E6 /* Barracks.png in Resources */,
 				493C06E31E3130F600C1C9E6 /* Castle.png in Resources */,
+				8EB3DBF11E4D5F5800B1264C /* ResFarm.dat in Resources */,
 				493C07151E3130F600C1C9E6 /* FireSmall.dat in Resources */,
 				493C07111E3130F600C1C9E6 /* Corpse.dat in Resources */,
 				D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */,
 				493C06F11E3130F600C1C9E6 /* Footman.png in Resources */,
 				493C07101E3130F600C1C9E6 /* Colors.dat in Resources */,
+				8EB3DBED1E4D5F5800B1264C /* ResBarracks.dat in Resources */,
 				493C06EC1E3130F600C1C9E6 /* FontKingthings8.png in Resources */,
 				493C06E71E3130F600C1C9E6 /* Farm.png in Resources */,
+				8EB3DBEC1E4D5F5800B1264C /* ResArcher.dat in Resources */,
 				493C06F41E3130F600C1C9E6 /* Icons.png in Resources */,
 				493C06F81E3130F600C1C9E6 /* LumberMill.png in Resources */,
+				8EB3DBF51E4D5F5800B1264C /* ResKeep.dat in Resources */,
 				493C070F1E3130F600C1C9E6 /* Castle.dat in Resources */,
 				493C07221E3130F600C1C9E6 /* Keep.dat in Resources */,
 				493C071E1E3130F600C1C9E6 /* GoldMine.dat in Resources */,
@@ -801,6 +867,7 @@
 				493C06F61E3130F600C1C9E6 /* Keep.png in Resources */,
 				493C072F1E3130F600C1C9E6 /* Texture.dat in Resources */,
 				493C07031E3130F600C1C9E6 /* TownHall.png in Resources */,
+				8EB3DBEF1E4D5F5800B1264C /* ResCannonTower.dat in Resources */,
 				493C06E21E3130F600C1C9E6 /* CannonTower.png in Resources */,
 				495F2EB81E3AD4EB0047BD0F /* selected4.wav in Resources */,
 				493C06DA1E3130F600C1C9E6 /* AssetColor.png in Resources */,
@@ -811,6 +878,7 @@
 				493C070C1E3130F600C1C9E6 /* Cannonball.dat in Resources */,
 				493C06F91E3130F600C1C9E6 /* Marker.png in Resources */,
 				493C07041E3130F600C1C9E6 /* Archer.dat in Resources */,
+				8EB3DBF91E4D5F5800B1264C /* ResScoutTower.dat in Resources */,
 				493C07201E3130F600C1C9E6 /* Icons.dat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

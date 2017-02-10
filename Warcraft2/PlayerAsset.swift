@@ -429,24 +429,48 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(from container: DataContainer) throws -> Bool {
-        guard let fileIterator = container.first() else {
-            throw PlayerAssetTypeError.fileIteratorNull
-        }
-        while fileIterator.isValid() {
-            let fileName = fileIterator.name()
-            fileIterator.next()
-            if fileName.hasSuffix(".dat") {
-                try load(from: container.dataSource(name: fileName))
+    static func loadTypes() throws {
+        let filenames = [
+            "ResArcher",
+            "ResBarracks",
+            "ResCannonTower",
+            "ResCastle",
+            "ResFarm",
+            "ResFootman",
+            "ResGoldMine",
+            "ResGuardTower",
+            "ResKeep",
+            "ResLumberMill",
+            "ResPeasant",
+            "ResRanger",
+            "ResScoutTower",
+            "ResTownHall"
+        ]
+
+        for filename in filenames {
+            guard let filenameURL = Bundle.main.url(forResource: filename, withExtension: "dat") else {
+                fatalError("file \(filename) not found")
             }
+            let fileDataSource = try FileDataSource(url: filenameURL)
+            try load(from: fileDataSource)
         }
+
+        //        guard let fileIterator = container.first() else {
+        //            throw PlayerAssetTypeError.fileIteratorNull
+        //        }
+        //        while fileIterator.isValid() {
+        //            let fileName = fileIterator.name()
+        //            fileIterator.next()
+        //            if fileName.hasSuffix(".dat") {
+        //                try load(from: container.dataSource(name: fileName))
+        //            }
+        //        }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
         playerAssetType.type = .none
         playerAssetType.color = .none
         playerAssetType.hitPoints = 256
         registry["None"] = playerAssetType
-        return true
     }
 
     static func load(from dataSource: DataSource) throws {
