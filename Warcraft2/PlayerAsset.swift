@@ -206,8 +206,7 @@ class PlayerUpgrade {
     static var registryByName: [String: PlayerUpgrade] = [:]
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
-    static func loadUpgrades(from dataContainer: DataContainer) throws -> Bool {
-
+    static func loadUpgrades(from dataContainer: DataContainer) throws {
         guard let fileIterator = dataContainer.first() else {
             throw GameError.fileIteratorNull
         }
@@ -218,7 +217,6 @@ class PlayerUpgrade {
                 try load(from: dataContainer.dataSource(name: fileName))
             }
         }
-        return true
     }
 
     static func load(from dataSource: DataSource) throws {
