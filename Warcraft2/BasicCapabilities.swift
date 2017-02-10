@@ -9,8 +9,7 @@
     }
 
     class ActivatedCapability: ActivatedPlayerCapability{ //ActivatedPlayerCapability
-        init(){}
-
+        
         override func percentComplete(max:Int)-> Int{
             return 0;
         }
@@ -28,7 +27,7 @@
             assetCommand.assetTarget = target
             
             if !actor.tileAligned {
-                actor.direction(directionOpposite(actor.position().tileOctant))
+                actor.direction = actor.position.tileOctant.opposite
             }
             
             actor.clearCommand()
@@ -96,7 +95,7 @@
             actor.pushCommand(assetCommand)
             assetCommand.action = AssetAction.walk
             if !actor.tileAligned {
-                actor.direction(directionOpposite(actor.position().tileOctant()))
+                actor.direction = actor.position.tileOctant.opposite
             }
             actor.pushCommand(assetCommand)
             return true
@@ -172,8 +171,7 @@
             
             if !actor.tileAligned {
                 assetCommand.action = AssetAction.walk
-                //fix line beneath
-                actor.direction(directionOpposite(actor.position.tileOctant()))
+                actor.direction = actor.position.tileOctant.opposite
                 actor.pushCommand(assetCommand)
             }
             return true
