@@ -1,7 +1,7 @@
 class PixelType {
 
-    enum AssetTerrainType: Int {
-        case none = 0
+    enum AssetTerrainType {
+        case none
         case grass
         case dirt
         case rock
@@ -26,18 +26,13 @@ class PixelType {
         case scoutTower
         case guardTower
         case cannonTower
-        case max
     }
 
     private(set) var type: AssetTerrainType
     private(set) var color: PlayerColor
 
-    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
     var pixelColor: UInt32 {
-        var colorCode = UInt32(color.index)
-        colorCode <<= 16
-        colorCode |= UInt32(type.rawValue) << 8
-        return colorCode
+        return color.pixelColor
     }
 
     var assetType: AssetType {
@@ -61,10 +56,9 @@ class PixelType {
         }
     }
 
-    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
-    init(red: UInt32, green: UInt32, blue: UInt32) {
-        color = PlayerColor(index: Int(red))!
-        type = AssetTerrainType(rawValue: Int(green))!
+    init(pixelColor: UInt32) {
+        color = PlayerColor(pixelColor: pixelColor)
+        type = .none
     }
 
     init(tileType: TerrainMap.TileType) {
@@ -115,7 +109,6 @@ class PixelType {
     }
 
     static func of(surface: GraphicSurface, x: Int, y: Int) -> PixelType {
-        let pixelColor = surface.pixelColorAt(x: x, y: y)
-        return PixelType(red: (pixelColor >> 16) & 0xff, green: (pixelColor >> 8) & 0xff, blue: (pixelColor & 0xff))
+        return PixelType(pixelColor: surface.pixelColorAt(x: x, y: y))
     }
 }
