@@ -2,13 +2,13 @@
 
  import Foundation
 
- class PlayerCapabilityMove: PlayerCapability{ // CPlayerCapability need to be implemented.
+ class PlayerCapabilityMove: PlayerCapability{ // PlayerCapability need to be implemented.
 
     class Registrant{
         init(){}
     }
 
-    class ActivatedCapability: ActivatedPlayerCapability{ //CActivatedPlayerCapability
+    class ActivatedCapability: ActivatedPlayerCapability{ //ActivatedPlayerCapability
         init(){}
 
         override func percentComplete(max:Int)-> Int{
@@ -127,12 +127,13 @@
     }
 
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)-> Bool{
-        var newCommand = AssetCommand()
-
-        newCommand.action = AssetAction.aaCapability //need to re-check this line!
-        newCommand.capabilty = AssetCapabilityType()
+        var newCommand: AssetCommand
+        
+        newCommand.action = AssetAction.capability
+        newCommand.capability = assetCapabilityType
         newCommand.assetTarget = target
-        newCommand.activatedCapability// need to check how to complete this line
+        //fix it!
+        newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
         actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
@@ -153,21 +154,22 @@
         }
 
         func incrementStep()->Bool{
-            var assetCommand = AssetCommand()
-            var tempEvent = GameEvent()
-
-            tempEvent.DType = EventType.acknowledge
-            tempEvent.asset = actor()//
-            PlayerData.addGameEvent(tempEvent)
-
-            assetCommand.DAssetTarget = PlayerData.CreateMaker(actor.position(), false)
-            assetCommand.DAction = AssetAction.aaStandGround//
-
+            var assetCommand: AssetCommand
+            var tempEvent: GameEvent
+            
+            tempEvent.type = EventType.acknowledge
+            tempEvent.asset = actor
+            playerData.addGameEvent(tempEvent) //fix it or got it?
+            //fix it or nah?
+            assetCommand.assetTarget = playerData.createMarker(at: actor.position,addToMap: false)
+            assetCommand.action = AssetAction.standGround
+            
             actor.clearCommand()
             actor.pushCommand(assetCommand)
-
+            
             if !actor.tileAligned {
-                assetCommand.DAction = AssetAction.aaWalk
+                assetCommand.action = AssetAction.walk
+                //fix line beneath
                 actor.direction(directionOpposite(actor.position.tileOctant()))
                 actor.pushCommand(assetCommand)
             }
@@ -188,12 +190,12 @@
     }
 
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
-        var newCommand = AssetCommand()
-
-        newCommand.DAction = AssetAction.aaCapability
-        newCommand.DCapability = AssetCapabilityType()
-        newCommand.DAssetTarget = target
-        newCommand.DActivatedCapability // need complete this line
+        var newCommand: AssetCommand
+        newCommand.action = AssetAction.capability
+        newCommand.capability = assetCapabilityType
+        newCommand.assetTarget = target
+        //re-check the line beneath.
+        newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
         actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
@@ -203,11 +205,37 @@
 
  class PlayerCapabilityCancel: PlayerCapability{
 
-    class CRegistrant{
+    class Registrant{
     }
 
-    class CActivatedCapability: ActivatedPlayerCapability{
-
+    class ActivatedCapability: ActivatedPlayerCapability{
+        override func percentComplete(max: Int)->Int{
+            return 0;
+        }
+        
+        func incrementStep()->Bool{
+            actor.popCommand()
+            
+            if AssetAction.none != actor.action {
+                var assetCommand: AssetCommand
+                assetCommand = actor.currentCommand()
+                
+                if AssetAction.construct == assetCommand.action {
+                    if assetCommand.assetTarget != nil {
+                        assetCommand.assetTarget?.currentCommand().activatedCapability?.cancel()
+                    }else if assetCommand.activatedCapability != nil {
+                        assetCommand.activatedCapability?.cancel()
+                    }
+                }else if assetCommand.activatedCapability != nil {
+                    assetCommand.activatedCapability?.cancel()
+                }
+            }
+            return true;
+        }
+        
+        override func cancel(){
+            actor.popCommand()
+        }
     }
 
     override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
@@ -219,15 +247,14 @@
     }
 
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
-        var newCommand = AssetCommand()
+        var newCommand: AssetCommand
 
-        newCommand.DAction = AssetAction.capability
-        newCommand.DCapability = AssetCapabilityType()
-        newCommand.DAssetTarget = target
-        newCommand.DActivatedCapability //need finish this line
-
+        newCommand.action = AssetAction.capability
+        newCommand.capability = assetCapabilityType
+        newCommand.assetTarget = target
+        //the line beneath, is it correctly written? need re-check this again.
+        newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
         actor.pushCommand(newCommand)
-
         return true
     }
  }
