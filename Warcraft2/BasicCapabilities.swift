@@ -16,19 +16,21 @@
         }
 
         func incrementStep()->Bool{
-            var assetCommand = AssetCommand()
-            var tempEvent = GameEvent()
-
+            var assetCommand: AssetCommand
+            var tempEvent: GameEvent
+            
             tempEvent.type = .acknowledge
-            tempEvent.DAsset = actor() //check if its a class or not.
+            tempEvent.asset = actor
+            //need fix it?
+            playerData.addGameEvent(tempEvent)
             playerData.addGameEvent(tempEvent) // re-check if I did this line correctly!
-            assetCommand.DAction = .walk
-            assetCommand.assetTarget = target //is DTarget a class or variable?
-
+            assetCommand.action = AssetAction.walk
+            assetCommand.assetTarget = target
+            
             if !actor.tileAligned {
                 actor.direction(directionOpposite(actor.position().tileOctant))
             }
-
+            
             actor.clearCommand()
             actor.pushCommand(assetCommand)
 
@@ -47,14 +49,14 @@
     override func canApply(actor:PlayerAsset, playerData:PlayerData, target: PlayerAsset)-> Bool{
         return actor.speed > 0;
     }
-
-    func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool {
+    
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool {
         if actor.tilePosition != target.tilePosition {
-            var newCommand = AssetCommand() //AssetCommand need to locate this
+            var newCommand: AssetCommand
             newCommand.action = .capability
-            newCommand.capability = AssetCapabilityType()
+            newCommand.capability = assetCapabilityType
             newCommand.assetTarget = target
-            newCommand.activatedCapability // need to fix this line!
+            newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target) // need to fix this line!
             actor.clearCommand()
             actor.pushCommand(newCommand)
             return true
@@ -72,28 +74,28 @@
 
     class ActivateCapability: ActivatedPlayerCapability{
         init(){}
-
+        
         override func percentComplete(max:Int)-> Int{
             return 0;
         }
-
+        
         func incrementStep()->Bool{
-            var assetCommand = AssetCommand()
-            var tempEvent = GameEvent()
-
-            tempEvent.DType = EventType.acknowledge
-            tempEvent.DAsset = actor() // actor is a class right? need to check this again.
-            PlayerData.addGameEvent(tempEvent) //DPlayerData? or just obj.addGameEvent()?
-            assetCommand.DAssetTarget = target
-
+            var assetCommand: AssetCommand
+            var tempEvent: GameEvent
+            
+            tempEvent.type = EventType.acknowledge
+            tempEvent.asset = actor
+            playerData.addGameEvent(tempEvent)
+            assetCommand.assetTarget = target
+            
             if AssetType.goldMine == target.type {
-                assetCommand.DAction = AssetAction.mineGold
+                assetCommand.action = AssetAction.mineGold
             }else{
-                assetCommand.DAction = AssetAction.harvestLumber
+                assetCommand.action = AssetAction.harvestLumber
             }
             actor.clearCommand()
             actor.pushCommand(assetCommand)
-            assetCommand.DAction = AssetAction.walk
+            assetCommand.action = AssetAction.walk
             if !actor.tileAligned {
                 actor.direction(directionOpposite(actor.position().tileOctant()))
             }
@@ -123,9 +125,10 @@
         if AssetType.none != target.type {
             return false
         }
+        //fix the line beneath!
         return TerrainMap.TileType.tree == playerdata.playerMap.tileType(target.tilePosition())
     }
-
+    
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)-> Bool{
         var newCommand: AssetCommand
         
