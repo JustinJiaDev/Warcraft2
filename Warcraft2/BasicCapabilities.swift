@@ -33,7 +33,7 @@
             
             actor.clearCommand()
             actor.pushCommand(assetCommand)
-
+            
             return true
         }
 
@@ -69,9 +69,8 @@
  class PlayerCapabilityMineHarvest: PlayerCapability{
 
     private class Registrant{
-
     }
-
+    
     class ActivateCapability: ActivatedPlayerCapability{
         init(){}
         
@@ -125,8 +124,9 @@
         if AssetType.none != target.type {
             return false
         }
-        //fix the line beneath!
-        return TerrainMap.TileType.tree == playerdata.playerMap.tileType(target.tilePosition())
+        
+        //fix the line beneath! re-check it!
+        return TerrainMap.TileType.tree == playerdata.playerMap.tileTypeAt(position: target.tilePosition)
     }
     
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)-> Bool{
