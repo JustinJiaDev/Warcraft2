@@ -174,7 +174,7 @@ class PlayerCapability {
     }
 }
 
-class PlayerUpgrade {
+class PlayerUpgrade  {
 
     private(set) var name: String
     private(set) var armor: Int
@@ -194,8 +194,20 @@ class PlayerUpgrade {
         fatalError("This method is not yet implemented.")
     }
 
-    static func loadUpgrades(from dataContainer: DataContainer) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func loadUpgrades(from dataContainer: DataContainer) throws -> Bool {
+        
+        guard let fileIterator = dataContainer.first() else {
+            throw PlayerUpgradeError.fileIteratorNull
+        }
+        while fileIterator.isValid() {
+            let fileName = fileIterator.name()
+            fileIterator.next()
+            if fileName.hasSuffix(".dat") {
+                try load(from: dataContainer.dataSource(name: fileName))
+            }
+        }
+        return true
+        
     }
 
     static func load(from dataSource: DataSource) -> Bool {
@@ -203,11 +215,11 @@ class PlayerUpgrade {
     }
 
     static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
-        fatalError("This method is not yet implemented.")
+        return registryByType[type.rawValue] ?? PlayerUpgrade()
     }
 
     static func findUpgrade(with name: String) -> PlayerUpgrade {
-        fatalError("This method is not yet implemented.")
+        return registryByName[name] ?? PlayerUpgrade()
     }
 }
 
