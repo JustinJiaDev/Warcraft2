@@ -20,17 +20,16 @@ struct GameEvent {
     var asset: PlayerAsset
 }
 
-func RangeToDistanceSquared(range: Int) -> Int {
-    var newRange: Int = range
+fileprivate func rangeToDistanceSquared(_ range: Int) -> Int {
+    var newRange = range
     newRange *= Position.tileWidth
     newRange *= range
     newRange += Position.tileWidth * Position.tileWidth
-
     return newRange
 }
 
 class PlayerData {
-    var isAi: Bool
+    var isAI: Bool
     private(set) var color: PlayerColor
     private var actualMap: AssetDecoratedMap
     private(set) var visibilityMap: VisibilityMap
@@ -43,13 +42,45 @@ class PlayerData {
     private(set) var lumber: Int
     private(set) var gameCycle: Int
 
+    var isAlive: Bool {
+        return assets.count != 0
+    }
+
+    var foodConsumption: Int {
+        var totalConsumption = 0
+        for asset in assets {
+            let assetConsumption = asset.foodConsumption
+            if assetConsumption > 0 {
+                totalConsumption += assetConsumption
+            }
+        }
+        return totalConsumption
+    }
+
+    var foodProduction: Int {
+        var totalProduction = 0
+        for asset in assets {
+            let assetConsumption = foodConsumption
+            if assetConsumption < 0 && (asset.action != .construct || asset.currentCommand().assetTarget == nil) {
+                totalProduction += -assetConsumption
+            }
+        }
+        return totalProduction
+    }
+
+    var idleAssets: [PlayerAsset] {
+        return assets.filter { asset in
+            return asset.action == .none && asset.type != .none
+        }
+    }
+
     init(map: AssetDecoratedMap, color: PlayerColor) {
-        self.isAi = true
+        self.isAI = true
         self.color = color
         self.actualMap = map
         self.visibilityMap = actualMap.createVisibilityMap()
         self.playerMap = self.actualMap.createInitializeMap()
-        self.assetTypes = PlayerAssetType.duplicateRegistry(color: self.color)
+        self.assetTypes = PlayerAssetType.duplicateRegistry(changeColorTo: self.color)
         self.assets = []
         self.upgrades = []
         self.gameEvents = []
@@ -59,19 +90,19 @@ class PlayerData {
 
         upgrades = Array(repeating: false, count: AssetCapabilityType.max.rawValue)
 
-        for resouceInit in actualMap.resourceInitializationList {
-            if resouceInit.color == self.color {
-                gold = resouceInit.gold
-                lumber = resouceInit.lumber
+        for resource in actualMap.resourceInitializationList {
+            if resource.color == self.color {
+                gold = resource.gold
+                lumber = resource.lumber
             }
         }
 
-        for assetInit in actualMap.assetInitializationList {
-            if assetInit.color == self.color {
-                printDebug("Asset Init Error")
-                let initAsset: PlayerAsset = createAsset(assetTypeName: assetInit.type)
-                initAsset.tilePosition = assetInit.tilePosition
-                if AssetType.goldMine == PlayerAssetType.type(from: assetInit.type) {
+        for asset in actualMap.assetInitializationList {
+            if asset.color == self.color {
+                printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
+                let initAsset = createAsset(with: asset.type)
+                initAsset.tilePosition = asset.tilePosition
+                if PlayerAssetType.findType(with: asset.type) == .goldMine {
                     initAsset.gold = self.gold
                 }
             }
@@ -80,10 +111,6 @@ class PlayerData {
 
     func incrementCycle() {
         gameCycle += 1
-    }
-
-    func isAlive() -> Bool {
-        return assets.count != 0
     }
 
     func incrementGold(by gold: Int) -> Int {
@@ -106,76 +133,43 @@ class PlayerData {
         return lumber
     }
 
-    func foodConsumption() -> Int {
-        var totalConsumption: Int = 0
-
-        for asset in assets {
-            let assetConsumption = asset.foodConsumption
-            if assetConsumption > 0 {
-                totalConsumption += assetConsumption
-            }
-        }
-
-        return totalConsumption
-    }
-
-    func foodProduction() -> Int {
-        var totalProduction: Int = 0
-        for asset in assets {
-            let assetConsumption: Int = foodConsumption()
-            if (assetConsumption < 0) && ((AssetAction.construct != asset.action) || (asset.currentCommand().assetTarget == nil)) {
-                totalProduction += -assetConsumption
-            }
-        }
-
-        return totalProduction
-    }
-
-    func createMarker(pos: Position, addToMap: Bool) -> PlayerAsset {
-        let newMarker: PlayerAsset = assetTypes["None"]!.construct()
+    func createMarker(at position: Position, addToMap: Bool) -> PlayerAsset {
+        let newMarker = assetTypes["None"]!.construct()
         let tilePosition = Position()
-        tilePosition.setToTile(pos)
+        tilePosition.setToTile(position)
         newMarker.tilePosition = tilePosition
         if addToMap {
             playerMap.addAsset(newMarker)
         }
-
         return newMarker
     }
 
-    func createAsset(assetTypeName: String) -> PlayerAsset {
-        let createdAsset: PlayerAsset = assetTypes[assetTypeName]!.construct()
-
-        createdAsset.creationCycle = gameCycle
-        assets.append(createdAsset)
-        actualMap.addAsset(createdAsset)
-        return createdAsset
+    func createAsset(with name: String) -> PlayerAsset {
+        let newAsset = assetTypes[name]!.construct()
+        newAsset.creationCycle = gameCycle
+        assets.append(newAsset)
+        actualMap.addAsset(newAsset)
+        return newAsset
     }
 
-    func deleteAsset(asset: PlayerAsset) {
+    func deleteAsset(_ asset: PlayerAsset) {
         if let index = assets.index(where: { $0 === asset }) {
             assets.remove(at: index)
             actualMap.removeAsset(asset)
         }
     }
 
-    func assetRequirementsMet(assetTypeName: String) -> Bool {
-        var assetCount: [Int] = Array(repeating: 0, count: AssetType.max.rawValue)
-
-        for asset in assets {
-            if AssetAction.construct != asset.action {
-                assetCount[asset.type.rawValue] += 1
-            }
+    func assetRequirementsIsMet(name: String) -> Bool {
+        var assetCount = Array(repeating: 0, count: AssetType.max.rawValue)
+        for asset in assets where asset.action != .construct {
+            assetCount[asset.type.rawValue] += 1
         }
-
-        guard let reqList = assetTypes[assetTypeName]?.assetRequirements else { assert(false) }
-
-        for requirement in reqList {
+        for requirement in assetTypes[name]!.assetRequirements {
             if assetCount[requirement.rawValue] == 0 {
-                if (AssetType.keep == requirement) && (assetCount[AssetType.castle.rawValue] != 0) {
+                if requirement == .keep && assetCount[AssetType.castle.rawValue] != 0 {
                     continue
                 }
-                if (AssetType.townHall == requirement) && ((assetCount[AssetType.castle.rawValue] != 0) || (assetCount[AssetType.keep.rawValue] != 0)) {
+                if requirement == .townHall && (assetCount[AssetType.castle.rawValue] != 0 || assetCount[AssetType.keep.rawValue] != 0) {
                     continue
                 }
                 return false
@@ -186,7 +180,6 @@ class PlayerData {
 
     func updateVisibility() {
         var removeList: [PlayerAsset] = []
-
         visibilityMap.update(assets: assets)
         playerMap.updateMap(visibilityMap: visibilityMap, assetDecoratedMap: actualMap)
         for asset in playerMap.assets {
@@ -202,14 +195,15 @@ class PlayerData {
         }
     }
 
-    func selectAssets(selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
+    func selectAssets(in selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
         var returnList: [PlayerAsset] = []
         if selectArea.width == 0 || selectArea.height == 0 {
-            let bestAsset = selectAsset(pos: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType)
-            returnList.append(bestAsset)
-            if selectIdentical && bestAsset.speed != 0 {
-                for asset in assets where bestAsset !== asset && asset.type == assetType {
-                    returnList.append(asset)
+            if let bestAsset = selectAsset(at: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType) {
+                returnList.append(bestAsset)
+                if selectIdentical && bestAsset.speed != 0 {
+                    for asset in assets where bestAsset !== asset && asset.type == assetType {
+                        returnList.append(asset)
+                    }
                 }
             }
         } else {
@@ -238,88 +232,74 @@ class PlayerData {
         return returnList
     }
 
-    func selectAsset(pos: Position, assetType: AssetType) -> PlayerAsset {
-        var bestAsset: PlayerAsset!
+    func selectAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
+        guard assetType != .none else {
+            return nil
+        }
+        var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
-
-        if .none != assetType {
-            for asset in assets {
-                if asset.type == assetType {
-                    let currentDistanceSquared = asset.position.distanceSquared(pos)
-                    if -1 == bestDistanceSquared || currentDistanceSquared < bestDistanceSquared {
-                        bestDistanceSquared = currentDistanceSquared
-                        bestAsset = asset
-                    }
-                }
+        for asset in assets where asset.type == assetType {
+            let currentDistanceSquared = asset.position.distanceSquared(position)
+            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                bestDistanceSquared = currentDistanceSquared
+                bestAsset = asset
             }
         }
         return bestAsset
     }
 
-    func findNearestOwnedAsset(pos: Position, assetTypes: [AssetType]) -> PlayerAsset {
-        var bestAsset: PlayerAsset!
-        var bestDistanceSquared: Int = -1
-
+    func findNearestOwnedAsset(at position: Position, assetTypes: [AssetType]) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
         for asset in assets {
-            for assetType in assetTypes {
-                if (asset.type == assetType) && ((AssetAction.construct != asset.action) || (AssetType.keep == assetType) || (AssetType.castle == assetType)) {
-                    let currentDistanceSquared = asset.position.distanceSquared(pos)
-
-                    if (bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared) {
-                        bestDistanceSquared = currentDistanceSquared
-                        bestAsset = asset
-                    }
-                    break
-                }
-            }
-        }
-        return bestAsset
-    }
-
-    func findNearestAsset(pos: Position, assetType: AssetType) -> PlayerAsset {
-        var bestAsset: PlayerAsset!
-        var bestDistanceSquared: Int = -1
-
-        for asset in playerMap.assets {
-            if asset.type == assetType {
-                let currentDistanceSquared = asset.position.distanceSquared(pos)
-
-                if (bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared) {
+            for assetType in assetTypes where asset.type == assetType && (asset.action != .construct || assetType == .keep || assetType == .castle) {
+                let currentDistanceSquared = asset.position.distanceSquared(position)
+                if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                     bestDistanceSquared = currentDistanceSquared
                     bestAsset = asset
                 }
+                break
             }
         }
         return bestAsset
     }
 
-    func findNearestEnemy(pos: Position, inputRange: Int) -> PlayerAsset {
-        var bestAsset: PlayerAsset!
-        var bestDistanceSquared: Int = -1
-        var range: Int = inputRange
+    func findNearestAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
+        for asset in playerMap.assets where asset.type == assetType {
+            let currentDistanceSquared = asset.position.distanceSquared(position)
+            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                bestDistanceSquared = currentDistanceSquared
+                bestAsset = asset
+            }
+        }
+        return bestAsset
+    }
 
+    func findNearestEnemy(at position: Position, inputRange: Int) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
+        var range = inputRange
         if range > 0 {
-            range = RangeToDistanceSquared(range: range)
+            range = rangeToDistanceSquared(range)
         }
 
-        for asset in playerMap.assets {
-            if (asset.color != self.color) && (asset.color != PlayerColor.none) && (asset.isAlive == true) {
-                let command: AssetCommand = asset.currentCommand()
-                if AssetAction.capability == command.action {
-                    if let tempTarget = command.assetTarget {
-                        if AssetAction.construct == tempTarget.action {
-                            continue
-                        }
+        for asset in playerMap.assets where asset.color != self.color && asset.color != .none && asset.isAlive {
+            let command = asset.currentCommand()
+            if command.action == .capability {
+                if let tempTarget = command.assetTarget {
+                    if tempTarget.action == .construct {
+                        continue
                     }
                 }
-                if (AssetAction.conveyGold != command.action) && (AssetAction.conveyLumber != command.action) && (AssetAction.mineGold != command.action) {
-                    let currentDistanceSquared: Int = asset.closestPosition(pos).distanceSquared(pos)
-
-                    if (range < 0) || (range >= currentDistanceSquared) {
-                        if (bestDistanceSquared == -1) || (bestDistanceSquared > currentDistanceSquared) {
-                            bestDistanceSquared = currentDistanceSquared
-                            bestAsset = asset
-                        }
+            }
+            if command.action != .conveyGold && command.action != .conveyLumber && command.action != .mineGold {
+                let currentDistanceSquared = asset.closestPosition(position).distanceSquared(position)
+                if range < 0 || range >= currentDistanceSquared {
+                    if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                        bestDistanceSquared = currentDistanceSquared
+                        bestAsset = asset
                     }
                 }
             }
@@ -327,24 +307,22 @@ class PlayerData {
         return bestAsset
     }
 
-    func findBestAssetPlacement(pos: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
-
-        guard let assetType: PlayerAssetType = assetTypes[PlayerAssetType.name(from: assetTypeInput)] else { assert(false) }
-        let placementSize: Int = assetType.size + 2 * buffer
-        let maxDistance: Int = max(playerMap.width, playerMap.height)
+    func findBestAssetPlacement(at position: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
+        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.findName(with: assetTypeInput)]!
+        let placementSize = assetType.size + 2 * buffer
+        let maxDistance = max(playerMap.width, playerMap.height)
 
         for distance in 0 ..< maxDistance {
-
             var bestPosition: Position!
-            var bestDistance: Int = -1
-            var leftX: Int = pos.x - distance
-            var topY: Int = pos.y - distance
-            var rightX: Int = pos.x + distance
-            var bottomY: Int = pos.y + distance
-            var leftValid: Bool = true
-            var rightValid: Bool = true
-            var topValid: Bool = true
-            var bottomValid: Bool = true
+            var bestDistance = -1
+            var leftX = position.x - distance
+            var topY = position.y - distance
+            var rightX = position.x + distance
+            var bottomY = position.y + distance
+            var leftValid = true
+            var rightValid = true
+            var topValid = true
+            var bottomValid = true
 
             if leftX < 0 {
                 leftValid = false
@@ -362,7 +340,6 @@ class PlayerData {
                 bottomValid = false
                 bottomY = playerMap.height - 1
             }
-
             if topValid {
                 for index in leftX ... rightX {
                     let tempPosition: Position = Position(x: index, y: topY)
@@ -420,82 +397,50 @@ class PlayerData {
         return Position(x: -1, y: -1)
     }
 
-    func playerAssetCount(type: AssetType) -> Int {
-        var count: Int = 0
-
-        for asset in playerMap.assets {
-            if (asset.color == self.color) && (asset.type == type) {
-                count = count + 1
-            }
-        }
-
-        return count
+    func playerAssetCount(of type: AssetType) -> Int {
+        return playerMap.assets.filter { asset in
+            return asset.type == type && asset.color == self.color
+        }.count
     }
 
-    func foundAssetCount(type: AssetType) -> Int {
-        var count: Int = 0
-
-        for asset in playerMap.assets {
-            if asset.type == type {
-                count = count + 1
-            }
-        }
-
-        return count
+    func assetCount(of type: AssetType) -> Int {
+        return playerMap.assets.filter { asset in
+            return asset.type == type
+        }.count
     }
 
-    func idleAssets() -> [PlayerAsset] {
-
-        var assetList: [PlayerAsset] = []
-
-        for asset in assets {
-            if (AssetAction.none == asset.action) && (AssetType.none != asset.type) {
-                assetList.append(asset)
-            }
-        }
-
-        return assetList
-    }
-
-    func addUpgrade(upgradeName: String) {
-
-        let upgrade: PlayerUpgrade = PlayerUpgrade.findUpgrade(name: upgradeName)
+    func addUpgrade(with name: String) {
+        let upgrade = PlayerUpgrade.findUpgrade(with: name)
         for assetType in upgrade.affectedAssets {
-            let assetName = PlayerAssetType.name(from: assetType)
-            if assetTypes[assetName] != nil {
-                assetTypes[assetName]?.addUpgrade(upgrade: upgrade)
+            let assetName = PlayerAssetType.findName(with: assetType)
+            if let assetType = assetTypes[assetName] {
+                assetType.addUpgrade(upgrade)
             }
         }
-
-        upgrades[(PlayerCapability.nameToType(name: upgradeName)).rawValue] = true
+        upgrades[PlayerCapability.findType(with: name).rawValue] = true
     }
 
-    func hasUpgrade(upgrade: AssetCapabilityType) -> Bool {
-        fatalError("not yet ported")
+    func hasUpgrade(with type: AssetCapabilityType) -> Bool {
+        guard type.rawValue >= 0 && type.rawValue < upgrades.count else {
+            return false
+        }
+        return upgrades[type.rawValue]
     }
 
     func clearGameEvents() {
         gameEvents.removeAll()
     }
 
-    func addGameEvent(event: GameEvent) {
+    func addGameEvent(_ event: GameEvent) {
         gameEvents.append(event)
     }
 
-    func appendGameEvents(events: [GameEvent]) {
-        fatalError("not yet ported")
+    func appendGameEvents(_ events: [GameEvent]) {
+        gameEvents.append(contentsOf: events)
     }
 }
 
 class GameModel {
-    private var randomNumberGenerator: RandomNumberGenerator
-    private var actualMap: AssetDecoratedMap
-    private var assetOccupancyMap: [[PlayerAsset?]]
-    private var diagonalOccupancyMap: [[Bool?]]
-    private var routerMap: RouterMap?
-    private var players: [PlayerData]
-    private var lumberAvailable: [[Int]]
-    private(set) var gameCycle: Int = 0
     private var harvestTime: Int
     private var harvestSteps: Int
     private var mineTime: Int
@@ -508,6 +453,17 @@ class GameModel {
     private var decaySteps: Int
     private var lumberPerHarvest: Int
     private var goldPerMining: Int
+    private var randomNumberGenerator: RandomNumberGenerator
+
+    private(set) var gameCycle: Int
+    private(set) var actualMap: AssetDecoratedMap
+    private var routerMap: RouterMap
+
+    private var players: [PlayerData]
+
+    private var assetOccupancyMap: [[PlayerAsset?]]
+    private var diagonalOccupancyMap: [[Bool?]]
+    private var lumberAvailable: [[Int]]
 
     init(mapIndex: Int, seed: UInt64, newColors: [PlayerColor]) {
         harvestTime = 5
@@ -522,41 +478,37 @@ class GameModel {
         decaySteps = PlayerAsset.updateFrequency * decayTime
         lumberPerHarvest = 100
         goldPerMining = 100
-        players = []
 
         randomNumberGenerator = RandomNumberGenerator()
         randomNumberGenerator.seed(seed)
-        actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+        gameCycle = 0
 
+        actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+        routerMap = RouterMap()
+
+        players = []
         for playerIndex in 0 ..< PlayerColor.numberOfColors {
             players.append(PlayerData(map: actualMap, color: PlayerColor(index: playerIndex)!))
         }
+
         assetOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
         diagonalOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
+
         lumberAvailable = Array(repeating: Array(repeating: 0, count: actualMap.width), count: actualMap.height)
         for row in 0 ..< actualMap.height {
-            for col in 0 ..< actualMap.width {
-                if actualMap.tileTypeAt(x: col, y: row) == .tree {
-                    lumberAvailable[row][col] = players[0].lumber
-                }
+            for column in 0 ..< actualMap.width where actualMap.tileTypeAt(x: column, y: row) == .tree {
+                lumberAvailable[row][column] = players[0].lumber
             }
         }
     }
 
-    func validAsset(playerAsset: PlayerAsset) -> Bool {
-        for asset in actualMap.assets {
-            if asset === playerAsset {
-                return true
-            }
-        }
-        return false
+    func isValidAsset(_ playerAsset: PlayerAsset) -> Bool {
+        return actualMap.assets.first { asset in
+            return asset === playerAsset
+        } != nil
     }
 
-    func map() -> AssetDecoratedMap {
-        return actualMap
-    }
-
-    func player(color: PlayerColor) -> PlayerData {
+    func player(with color: PlayerColor) -> PlayerData {
         return players[color.index]
     }
 
