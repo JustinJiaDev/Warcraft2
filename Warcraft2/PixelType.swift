@@ -1,6 +1,3 @@
-import Foundation
-import UIKit.UIColor
-
 class PixelType {
 
     enum AssetTerrainType: Int {
@@ -65,19 +62,9 @@ class PixelType {
     }
 
     // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
-    init(pixelColor: UIColor) {
-        switch pixelColor {
-        case pixelColor where pixelColor == UIColor.blue: color = .blue
-        case pixelColor where pixelColor == UIColor.red: color = .red
-        case pixelColor where pixelColor == UIColor.green: color = .green
-        case pixelColor where pixelColor == UIColor.purple: color = .purple
-        case pixelColor where pixelColor == UIColor.orange: color = .orange
-        case pixelColor where pixelColor == UIColor.yellow: color = .yellow
-        case pixelColor where pixelColor == UIColor.black: color = .black
-        case pixelColor where pixelColor == UIColor.white: color = .white
-        default: color = .none
-        }
-        type = .none
+    init(red: UInt32, green: UInt32, blue: UInt32) {
+        color = PlayerColor(index: Int(red))!
+        type = AssetTerrainType(rawValue: Int(green))!
     }
 
     init(tileType: TerrainMap.TileType) {
@@ -128,6 +115,7 @@ class PixelType {
     }
 
     static func of(surface: GraphicSurface, x: Int, y: Int) -> PixelType {
-        fatalError("This method is not yet implemented.")
+        let pixelColor = surface.pixelColorAt(x: x, y: y)
+        return PixelType(red: (pixelColor >> 16) & 0xff, green: (pixelColor >> 8) & 0xff, blue: (pixelColor & 0xff))
     }
 }
