@@ -174,28 +174,40 @@ class PlayerCapability {
     }
 }
 
-class PlayerUpgrade  {
+class PlayerUpgrade {
+    enum PlayerUpgradeError: Error {
+        case fileIteratorNull
+        case failedToGetName
+        case unknownUpgradeType(type: String)
+        case failedToGetArmor
+        case failedToGetSight
+        case failedToGetSpeed
+        case failedToGetBasicDamage
+        case failedToGetPiercingDamage
+        case failedToGetRange
+        case failedToGetGoldCost
+        case failedToGetLumberCost
+        case failedToGetResearchTime
+        case failedToGetAffectedAssetCountString
+        case failedToReadAffectedAsset
+    }
 
-    private(set) var name: String
-    private(set) var armor: Int
-    private(set) var sight: Int
-    private(set) var speed: Int
-    private(set) var basicDamage: Int
-    private(set) var piercingDamage: Int
-    private(set) var range: Int
-    private(set) var goldCost: Int
-    private(set) var lumberCost: Int
-    private(set) var researchTime: Int
-    private(set) var affectedAssets: [AssetType]
+    private(set) var name = ""
+    private(set) var armor = -1
+    private(set) var sight = -1
+    private(set) var speed = -1
+    private(set) var basicDamage = -1
+    private(set) var piercingDamage = -1
+    private(set) var range = -1
+    private(set) var goldCost = -1
+    private(set) var lumberCost = -1
+    private(set) var researchTime = -1
+    private(set) var affectedAssets = [AssetType]()
     static var registryByName: [String: PlayerUpgrade] = [:]
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
-    init() {
-        fatalError("This method is not yet implemented.")
-    }
-
     static func loadUpgrades(from dataContainer: DataContainer) throws -> Bool {
-        
+
         guard let fileIterator = dataContainer.first() else {
             throw PlayerUpgradeError.fileIteratorNull
         }
@@ -207,11 +219,84 @@ class PlayerUpgrade  {
             }
         }
         return true
-        
     }
 
-    static func load(from dataSource: DataSource) -> Bool {
-        fatalError("This method is not yet implemented.")
+    static func load(from dataSource: DataSource) throws {
+        let lineSource = LineDataSource(dataSource: dataSource)
+
+        guard let name = lineSource.readLine() else {
+            throw PlayerUpgradeError.failedToGetName
+        }
+        let upgradeType = PlayerCapability.findType(with: name)
+
+        if upgradeType == .none && name != PlayerCapability.findName(with: .none) {
+            throw PlayerUpgradeError.unknownUpgradeType(type: name)
+        }
+
+        let playerUpgrade = registryByName[name] ?? PlayerUpgrade()
+        if playerUpgrade.name == "None" {
+            playerUpgrade.name = name
+            registryByName[name] = playerUpgrade
+            registryByType[upgradeType.rawValue] = playerUpgrade
+        }
+
+        if let armorString = lineSource.readLine(), let armor = Int(armorString) {
+            playerUpgrade.armor = armor
+        } else {
+            throw PlayerUpgradeError.failedToGetArmor
+        }
+
+        if let sightString = lineSource.readLine(), let sight = Int(sightString) {
+            playerUpgrade.sight = sight
+        } else {
+            throw PlayerUpgradeError.failedToGetSight
+        }
+        if let speedString = lineSource.readLine(), let speed = Int(speedString) {
+            playerUpgrade.speed = speed
+        } else {
+            throw PlayerUpgradeError.failedToGetSpeed
+        }
+        if let basicDamageString = lineSource.readLine(), let basicDamage = Int(basicDamageString) {
+            playerUpgrade.basicDamage = basicDamage
+        } else {
+            throw PlayerUpgradeError.failedToGetBasicDamage
+        }
+        if let piercingDamageString = lineSource.readLine(), let piercingDamage = Int(piercingDamageString) {
+            playerUpgrade.piercingDamage = piercingDamage
+        } else {
+            throw PlayerUpgradeError.failedToGetPiercingDamage
+        }
+        if let rangeString = lineSource.readLine(), let range = Int(rangeString) {
+            playerUpgrade.range = range
+        } else {
+            throw PlayerUpgradeError.failedToGetRange
+        }
+        if let goldCostString = lineSource.readLine(), let goldCost = Int(goldCostString) {
+            playerUpgrade.goldCost = goldCost
+        } else {
+            throw PlayerUpgradeError.failedToGetGoldCost
+        }
+        if let lumberCostString = lineSource.readLine(), let lumberCost = Int(lumberCostString) {
+            playerUpgrade.lumberCost = lumberCost
+        } else {
+            throw PlayerUpgradeError.failedToGetLumberCost
+        }
+        if let researchTimeString = lineSource.readLine(), let researchTime = Int(researchTimeString) {
+            playerUpgrade.researchTime = researchTime
+        } else {
+            throw PlayerUpgradeError.failedToGetResearchTime
+        }
+
+        guard let affectedAssetCountString = lineSource.readLine(), let affectedAssetCount = Int(affectedAssetCountString) else {
+            throw PlayerUpgradeError.failedToGetAffectedAssetCountString
+        }
+        for _ in 0 ..< affectedAssetCount {
+            if let assetRequirementString = lineSource.readLine() {
+                playerUpgrade.affectedAssets.append(PlayerAssetType.findType(with: assetRequirementString))
+            } else {
+                throw PlayerUpgradeError.failedToReadAffectedAsset
+            }
+        }
     }
 
     static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
