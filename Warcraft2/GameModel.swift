@@ -462,7 +462,7 @@ class GameModel {
     private var players: [PlayerData]
 
     private var assetOccupancyMap: [[PlayerAsset?]]
-    private var diagonalOccupancyMap: [[Bool?]]
+    private var diagonalOccupancyMap: [[Bool]] = [[]]
     private var lumberAvailable: [[Int]]
 
     enum GameError: Error {
@@ -496,7 +496,7 @@ class GameModel {
         }
 
         assetOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
-        diagonalOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
+        diagonalOccupancyMap = Array(repeating: Array(repeating: false, count: actualMap.width), count: actualMap.height)
 
         lumberAvailable = Array(repeating: Array(repeating: 0, count: actualMap.width), count: actualMap.height)
         for row in 0 ..< actualMap.height {
@@ -518,20 +518,9 @@ class GameModel {
 
     func timestep() throws {
         var currentEvents: [GameEvent] = []
-        var tempEvent: GameEvent?
-        var index = 0
+        assetOccupancyMap = Array(repeating: Array(repeating: nil, count: assetOccupancyMap[0].count), count: assetOccupancyMap.count)
 
-        for row in assetOccupancyMap {
-            for var cell in row {
-                cell = nil
-            }
-        }
-
-        for var row in diagonalOccupancyMap {
-            for index in 0 ..< row.count {
-                row[index] = false
-            }
-        }
+        diagonalOccupancyMap = Array(repeating: Array(repeating: false, count: diagonalOccupancyMap[0].count), count: diagonalOccupancyMap.count)
 
         for asset in actualMap.assets where asset.action != .conveyGold && asset.action != .conveyLumber && asset.action != .mineGold {
             assetOccupancyMap[asset.tilePositionY][asset.tilePositionX] = asset
@@ -541,17 +530,14 @@ class GameModel {
             players[playerIndex].updateVisibility()
         }
 
-        let allAssets = actualMap.assets
-        for asset in allAssets {
+        for asset in actualMap.assets {
             if asset.action == .none {
                 asset.popCommand()
             }
             if asset.action == .capability {
                 let command = asset.currentCommand()
                 if command.activatedCapability != nil {
-                    if (command.activatedCapability?.incrementstep()) != nil {
-                        // All done
-                    }
+                    command.activatedCapability!.incrementstep()
                 } else {
                     let playerCapability = PlayerCapability.findCapability(with: command.capability)
                     asset.popCommand()
@@ -563,16 +549,16 @@ class GameModel {
                 }
             } else if asset.action == .harvestLumber {
                 var command = asset.currentCommand()
-                var tilePosition = (command.assetTarget?.tilePosition)!
-                var harvestDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 0)
+                var tilePosition = Position(from: command.assetTarget!.tilePosition)
+                var harvestDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
 
                 if actualMap.tileTypeAt(position: tilePosition) != .tree {
                     harvestDirection = .max
-                    tilePosition = asset.tilePosition
+                    tilePosition = Position(from: asset.tilePosition)
                 }
                 if harvestDirection == .max {
                     if tilePosition == asset.tilePosition {
-                        let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree)
+                        let newPosition = Position(from: players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree))
                         asset.popCommand()
                         if 0 <= newPosition.x {
                             newPosition.setFromTile(newPosition)
@@ -589,13 +575,12 @@ class GameModel {
                         asset.resetStep()
                     }
                 } else {
-                    tempEvent?.type = .harvest
-                    tempEvent?.asset = asset
-                    currentEvents.append(tempEvent!)
+                    var tempEvent = GameEvent(type: .harvest, asset: asset)
+                    currentEvents.append(tempEvent)
                     asset.direction = harvestDirection
                     asset.incrementStep()
                     if harvestSteps <= asset.step {
-                        let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [AssetType.townHall, .keep, .castle, .lumberMill])!
+                        let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle, .lumberMill])!
                         lumberAvailable[tilePosition.y][tilePosition.x] -= lumberPerHarvest
                         if 0 >= lumberAvailable[tilePosition.y][tilePosition.x] {
                             actualMap.changeTileType(at: tilePosition, to: .stump)
@@ -618,26 +603,24 @@ class GameModel {
             } else if asset.action == .mineGold {
                 var command = asset.currentCommand()
 
-                let closestPosition = (command.assetTarget?.closestPosition(asset.position))!
-                let tilePosition = asset.position
-                let mineDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 0)
+                let closestPosition = command.assetTarget!.closestPosition(asset.position)
+                let tilePosition = Position()
+                let mineDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
 
                 tilePosition.setToTile(closestPosition)
                 if mineDirection == .max && tilePosition != asset.tilePosition {
-                    var newCommand = asset.currentCommand()
+                    var newCommand = command
                     newCommand.action = .walk
                     asset.pushCommand(newCommand)
                     asset.resetStep()
                 } else {
                     if 0 == asset.step {
-                        if ((command.assetTarget?.commandCount)! + 1) * goldPerMining <= (command.assetTarget?.gold)! {
-                            var newCommand = asset.currentCommand()
-                            newCommand.action = .build
-                            newCommand.assetTarget = asset
+                        if (command.assetTarget!.commandCount + 1) * goldPerMining <= command.assetTarget!.gold {
+                            let newCommand = AssetCommand(action: .build, capability: .none, assetTarget: asset, activatedCapability: nil)
 
-                            command.assetTarget?.enqueueCommand(newCommand)
+                            command.assetTarget!.enqueueCommand(newCommand)
                             asset.incrementStep()
-                            asset.tilePosition.setToTile((command.assetTarget?.tilePosition)!)
+                            asset.tilePosition = command.assetTarget!.tilePosition
                         } else {
                             asset.popCommand()
                         }
@@ -645,19 +628,16 @@ class GameModel {
                         asset.incrementStep()
                         if mineSteps <= asset.step {
                             let oldTarget = command.assetTarget!
-                            let nearestRepository: PlayerAsset = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [AssetType.townHall, .keep, .castle])!
-                            var nextTarget = asset.position
-                            nextTarget.setXToTile(players[asset.color.index].playerMap.width - 1)
-                            nextTarget.setYToTile(players[asset.color.index].playerMap.height - 1)
+                            let nearestRepository: PlayerAsset = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle])!
+                            var nextTarget = Position(x: players[asset.color.index].playerMap.width - 1, y: players[asset.color.index].playerMap.height - 1)
 
-                            command.assetTarget?.decrementGold(goldPerMining)
-                            command.assetTarget?.popCommand()
-                            if 0 >= (command.assetTarget?.gold)! {
-                                var newCommand = asset.currentCommand()
-                                newCommand.action = .death
-                                command.assetTarget?.clearCommand()
-                                command.assetTarget?.pushCommand(newCommand)
-                                command.assetTarget?.resetStep()
+                            command.assetTarget!.decrementGold(goldPerMining)
+                            command.assetTarget!.popCommand()
+                            if 0 >= command.assetTarget!.gold {
+                                let newCommand = AssetCommand(action: .death, capability: .none, assetTarget: nil, activatedCapability: nil)
+                                command.assetTarget!.clearCommand()
+                                command.assetTarget!.pushCommand(newCommand)
+                                command.assetTarget!.resetStep()
                             }
                             asset.gold = goldPerMining
                             if nearestRepository != nil {
@@ -667,7 +647,7 @@ class GameModel {
                                 command.action = .walk
                                 asset.pushCommand(command)
                                 asset.resetStep()
-                                nextTarget = (command.assetTarget?.tilePosition)!
+                                nextTarget = command.assetTarget!.tilePosition
                             } else {
                                 asset.popCommand()
                             }
@@ -690,8 +670,8 @@ class GameModel {
             } else if asset.action == .repair {
                 var currentCommand = asset.currentCommand()
 
-                if (currentCommand.assetTarget?.isAlive)! {
-                    let repairDirection: Direction = asset.tilePosition.adjacentTileDirection(position: (currentCommand.assetTarget?.tilePosition)!, objectSize: (currentCommand.assetTarget?.size)!)
+                if currentCommand.assetTarget!.isAlive {
+                    let repairDirection = asset.tilePosition.adjacentTileDirection(position: currentCommand.assetTarget!.tilePosition, objectSize: currentCommand.assetTarget!.size)
                     if repairDirection == .max {
                         let nextCommand = asset.nextCommand()
                         currentCommand.action = .walk
@@ -702,17 +682,16 @@ class GameModel {
                         asset.incrementStep()
                         if asset.step == asset.attackSteps {
                             if players[asset.color.index].gold != 0 && players[asset.color.index].lumber != 0 {
-                                var repairPoints = (currentCommand.assetTarget?.maxHitPoints)! * (asset.attackSteps + asset.reloadSteps) / PlayerAsset.updateFrequency * (currentCommand.assetTarget?.buildTime)!
+                                var repairPoints = currentCommand.assetTarget!.maxHitPoints * (asset.attackSteps + asset.reloadSteps) / PlayerAsset.updateFrequency * currentCommand.assetTarget!.buildTime
                                 if 0 == repairPoints {
                                     repairPoints = 1
                                 }
                                 players[asset.color.index].decrementGold(by: 1)
                                 players[asset.color.index].decrementLumber(by: 1)
-                                currentCommand.assetTarget?.incrementHitPoints(repairPoints)
-                                if currentCommand.assetTarget?.hitPoints == currentCommand.assetTarget?.maxHitPoints {
-                                    tempEvent?.type = .workComplete
-                                    tempEvent?.asset = asset
-                                    players[asset.color.index].addGameEvent(tempEvent!)
+                                currentCommand.assetTarget!.incrementHitPoints(repairPoints)
+                                if currentCommand.assetTarget!.hitPoints == currentCommand.assetTarget!.maxHitPoints {
+                                    let tempEvent = GameEvent(type: .workComplete, asset: asset)
+                                    players[asset.color.index].addGameEvent(tempEvent)
                                     asset.popCommand()
                                 }
                             } else {
@@ -729,69 +708,63 @@ class GameModel {
             } else if asset.action == .attack {
                 var currentCommand = asset.currentCommand()
                 if asset.type == .none {
-                    let closestTargetPosition = (currentCommand.assetTarget?.closestPosition(asset.position))!
-                    let deltaPosition = asset.position
-                    deltaPosition.x = closestTargetPosition.x - asset.positionX
-                    deltaPosition.y = closestTargetPosition.y - asset.positionY
+                    let closestTargetPosition = currentCommand.assetTarget!.closestPosition(asset.position)
+                    let deltaPosition = Position(x: closestTargetPosition.x - asset.positionX, y: closestTargetPosition.y - asset.positionY)
 
                     let movement = Position.tileWidth * 5 / PlayerAsset.updateFrequency
                     let targetDistance = asset.position.distance(position: closestTargetPosition)
                     let divisor = (targetDistance + movement - 1) / movement
 
                     if divisor != 0 {
-                        deltaPosition.x = deltaPosition.x / divisor
-                        deltaPosition.y = deltaPosition.y / divisor
+                        let deltaPosition = Position(x: deltaPosition.x / divisor, y: deltaPosition.y / divisor)
                     }
-                    asset.positionX = (asset.positionX + deltaPosition.x)
-                    asset.positionY = (asset.positionY + deltaPosition.y)
+                    asset.position = Position(x: asset.positionX + deltaPosition.x, y: asset.positionY + deltaPosition.y)
+
                     asset.direction = asset.position.directionTo(closestTargetPosition)
                     if Position.halfTileWidth * Position.halfTileHeight > asset.position.distanceSquared(closestTargetPosition) {
-                        tempEvent?.type = .missleHit
-                        tempEvent?.asset = asset
-                        currentEvents.append(tempEvent!)
-                        if (currentCommand.assetTarget?.isAlive)! {
-                            let targetCommand = (currentCommand.assetTarget?.currentCommand())!
-                            tempEvent?.type = .attacked
-                            tempEvent?.asset = currentCommand.assetTarget!
-                            players[(currentCommand.assetTarget?.color.index)!].addGameEvent(tempEvent!)
+                        let tempEvent = GameEvent(type: .missleHit, asset: asset)
+
+                        currentEvents.append(tempEvent)
+                        if currentCommand.assetTarget!.isAlive {
+                            let targetCommand = currentCommand.assetTarget!.currentCommand()
+                            let tempEvent = GameEvent(type: .attacked, asset: currentCommand.assetTarget!)
+                            players[currentCommand.assetTarget!.color.index].addGameEvent(tempEvent)
                             if targetCommand.action != .mineGold {
                                 if targetCommand.action == .conveyGold || targetCommand.action == .conveyLumber {
                                     currentCommand.assetTarget = targetCommand.assetTarget
                                 } else if (.capability == targetCommand.action) && targetCommand.assetTarget != nil {
-                                    if ((currentCommand.assetTarget?.speed) != nil) && AssetAction.construct == targetCommand.assetTarget?.action {
+                                    if ((currentCommand.assetTarget!.speed) != 0) && .construct == targetCommand.assetTarget!.action {
                                         currentCommand.assetTarget = targetCommand.assetTarget
                                     }
                                 }
-                                currentCommand.assetTarget?.decrementHitPoints(asset.hitPoints)
-                                if !(currentCommand.assetTarget?.isAlive)! {
-                                    var command = (currentCommand.assetTarget?.currentCommand())!
-
-                                    tempEvent?.type = .death
-                                    tempEvent?.asset = currentCommand.assetTarget!
-                                    currentEvents.append(tempEvent!)
+                                currentCommand.assetTarget!.decrementHitPoints(asset.hitPoints)
+                                if !currentCommand.assetTarget!.isAlive {
+                                    var command = currentCommand.assetTarget!.currentCommand()
+                                    let tempEvent = GameEvent(type: .death, asset: currentCommand.assetTarget!)
+                                    currentEvents.append(tempEvent)
 
                                     if command.action == .capability && (command.assetTarget != nil) {
-                                        if command.assetTarget?.action == .construct {
-                                            players[(command.assetTarget?.color.index)!].deleteAsset(command.assetTarget!)
+                                        if command.assetTarget!.action == .construct {
+                                            players[command.assetTarget!.color.index].deleteAsset(command.assetTarget!)
                                         }
                                     } else if command.action == .construct {
                                         if command.assetTarget != nil {
-                                            command.assetTarget?.clearCommand()
+                                            command.assetTarget!.clearCommand()
                                         }
                                     }
-                                    currentCommand.assetTarget?.direction = asset.direction.opposite
+                                    currentCommand.assetTarget!.direction = asset.direction.opposite
                                     command.action = .death
-                                    currentCommand.assetTarget?.clearCommand()
-                                    currentCommand.assetTarget?.pushCommand(command)
-                                    currentCommand.assetTarget?.resetStep()
+                                    currentCommand.assetTarget!.clearCommand()
+                                    currentCommand.assetTarget!.pushCommand(command)
+                                    currentCommand.assetTarget!.resetStep()
                                 }
                             }
                         }
                         players[asset.color.index].deleteAsset(asset)
                     }
-                } else if (currentCommand.assetTarget?.isAlive)! {
+                } else if currentCommand.assetTarget!.isAlive {
                     if 1 == asset.effectiveRange {
-                        let attackDirection = asset.tilePosition.adjacentTileDirection(position: (currentCommand.assetTarget?.tilePosition)!, objectSize: (currentCommand.assetTarget?.size)!)
+                        let attackDirection = asset.tilePosition.adjacentTileDirection(position: currentCommand.assetTarget!.tilePosition, objectSize: currentCommand.assetTarget!.size)
                         if attackDirection == .max {
                             let nextCommand = asset.nextCommand()
 
@@ -806,41 +779,39 @@ class GameModel {
                             asset.direction = attackDirection
                             asset.incrementStep()
                             if asset.step == asset.attackSteps {
-                                var damage = asset.effectiveBasicDamage - (currentCommand.assetTarget?.effectiveArmor)!
+                                var damage = asset.effectiveBasicDamage - currentCommand.assetTarget!.effectiveArmor
                                 damage = 0 > damage ? 0 : damage
                                 damage += asset.effectivePiercingDamage
                                 if Int(randomNumberGenerator.random()) & 0x1 != 0 {
                                     damage /= 2
                                 }
-                                currentCommand.assetTarget?.decrementHitPoints(damage)
-                                tempEvent?.type = .missleHit
-                                tempEvent?.asset = asset
-                                currentEvents.append(tempEvent!)
-                                tempEvent?.type = .attacked
-                                tempEvent?.asset = currentCommand.assetTarget!
-                                players[(currentCommand.assetTarget?.color.index)!].addGameEvent(tempEvent!)
-                                if !(currentCommand.assetTarget?.isAlive)! {
-                                    var command = (currentCommand.assetTarget?.currentCommand())!
-                                    tempEvent?.type = .death
-                                    tempEvent?.asset = currentCommand.assetTarget!
-                                    currentEvents.append(tempEvent!)
+                                currentCommand.assetTarget!.decrementHitPoints(damage)
+                                var tempEvent = GameEvent(type: .missleHit, asset: asset)
+
+                                currentEvents.append(tempEvent)
+                                tempEvent = GameEvent(type: .attacked, asset: currentCommand.assetTarget!)
+                                players[currentCommand.assetTarget!.color.index].addGameEvent(tempEvent)
+                                if !currentCommand.assetTarget!.isAlive {
+                                    var command = currentCommand.assetTarget!.currentCommand()
+                                    tempEvent = GameEvent(type: .death, asset: currentCommand.assetTarget!)
+                                    currentEvents.append(tempEvent)
                                     if command.action == .capability && (command.assetTarget != nil) {
-                                        if command.assetTarget?.action == .construct {
-                                            players[(command.assetTarget?.color.index)!].deleteAsset(command.assetTarget!)
+                                        if command.assetTarget!.action == .construct {
+                                            players[(command.assetTarget!.color.index)].deleteAsset(command.assetTarget!)
                                         }
                                     } else if command.action == .construct {
                                         if command.assetTarget != nil {
-                                            command.assetTarget?.clearCommand()
+                                            command.assetTarget!.clearCommand()
                                         }
                                     }
                                     command.capability = .none
                                     command.assetTarget = nil
                                     command.activatedCapability = nil
-                                    currentCommand.assetTarget?.direction = attackDirection.opposite
+                                    currentCommand.assetTarget!.direction = attackDirection.opposite
                                     command.action = .death
-                                    currentCommand.assetTarget?.clearCommand()
-                                    currentCommand.assetTarget?.pushCommand(command)
-                                    currentCommand.assetTarget?.resetStep()
+                                    currentCommand.assetTarget!.clearCommand()
+                                    currentCommand.assetTarget!.pushCommand(command)
+                                    currentCommand.assetTarget!.resetStep()
                                 }
                             }
                             if asset.step >= asset.attackSteps + asset.reloadSteps {
@@ -848,7 +819,7 @@ class GameModel {
                             }
                         }
                     } else {
-                        let closestTargetPosition: Position = (currentCommand.assetTarget?.closestPosition(asset.position))!
+                        let closestTargetPosition = currentCommand.assetTarget!.closestPosition(asset.position)
                         if closestTargetPosition.distanceSquared(asset.position) > rangeToDistanceSquared(asset.effectiveRange) {
                             let nextCommand = asset.nextCommand()
 
@@ -864,17 +835,15 @@ class GameModel {
                             asset.direction = attackDirection
                             asset.incrementStep()
                             if asset.step == asset.attackSteps {
-                                var attackCommand = currentCommand
                                 let arrowAsset = players[PlayerColor.none.index].createAsset(with: "None")
-                                var damage = asset.effectiveBasicDamage - (currentCommand.assetTarget?.effectiveArmor)!
+                                var damage = asset.effectiveBasicDamage - currentCommand.assetTarget!.effectiveArmor
                                 damage = 0 > damage ? 0 : damage
                                 damage += asset.effectivePiercingDamage
                                 if Int(randomNumberGenerator.random()) & 0x1 != 0 {
                                     damage /= 2
                                 }
-                                tempEvent?.type = .missleFire
-                                tempEvent?.asset = asset
-                                currentEvents.append(tempEvent!)
+                                let tempEvent = GameEvent(type: .missleFire, asset: asset)
+                                currentEvents.append(tempEvent)
 
                                 arrowAsset.hitPoints = damage
                                 arrowAsset.position = asset.position
@@ -890,11 +859,11 @@ class GameModel {
                                     arrowAsset.positionY = arrowAsset.positionY - Position.halfTileHeight
                                 }
                                 arrowAsset.direction = attackDirection
-                                attackCommand.action = .construct
-                                attackCommand.assetTarget = asset
+                                var attackCommand = AssetCommand(action: .construct, capability: .none, assetTarget: asset, activatedCapability: nil)
                                 arrowAsset.pushCommand(attackCommand)
                                 attackCommand.action = .attack
                                 attackCommand.assetTarget = currentCommand.assetTarget
+
                                 arrowAsset.pushCommand(attackCommand)
                             }
                             if asset.step >= asset.attackSteps + asset.reloadSteps {
@@ -919,9 +888,7 @@ class GameModel {
                 asset.incrementStep()
                 if conveySteps <= asset.step {
                     let command = asset.currentCommand()
-                    var nextTarget: Position?
-                    nextTarget?.setXToTile(players[asset.color.index].playerMap.width - 1)
-                    nextTarget?.setYToTile(players[asset.color.index].playerMap.height - 1)
+                    var nextTarget = Position(x: players[asset.color.index].playerMap.width - 1, y: players[asset.color.index].playerMap.height - 1)
                     players[asset.color.index].incrementGold(by: asset.gold)
                     players[asset.color.index].incrementLumber(by: asset.lumber)
                     asset.gold = 0
@@ -931,25 +898,24 @@ class GameModel {
                     if .none != asset.action {
                         nextTarget = (asset.currentCommand().assetTarget?.tilePosition)!
                     }
-                    asset.position = players[asset.color.index].playerMap.findAssetPlacement(placeAsset: asset, fromAsset: command.assetTarget!, nextTileTarget: nextTarget!)
+                    asset.tilePosition = players[asset.color.index].playerMap.findAssetPlacement(placeAsset: asset, fromAsset: command.assetTarget!, nextTileTarget: nextTarget)
                 }
             } else if asset.action == .construct {
                 let command = asset.currentCommand()
                 if command.activatedCapability != nil {
-                    if (command.activatedCapability?.incrementstep()) != nil {
-                        // All Done
-                    }
+                    command.activatedCapability!.incrementstep()
+                    // All Done
                 }
             } else if asset.action == .death {
                 asset.incrementStep()
                 if asset.step > deathSteps {
                     if asset.speed != 0 {
-                        var decayCommand: AssetCommand?
+
                         let corpseAsset = players[PlayerColor.none.index].createAsset(with: "None")
-                        decayCommand?.action = .decay
+                        let decayCommand = AssetCommand(action: .decay, capability: .none, assetTarget: nil, activatedCapability: nil)
                         corpseAsset.position = asset.position
                         corpseAsset.direction = asset.direction
-                        corpseAsset.pushCommand(decayCommand!)
+                        corpseAsset.pushCommand(decayCommand)
                     }
                     players[asset.color.index].deleteAsset(asset)
                 }
@@ -963,33 +929,31 @@ class GameModel {
                 if asset.tileAligned {
                     var command = asset.currentCommand()
                     let nextCommand = asset.nextCommand()
-                    var travelDirection: Direction
-                    let mapTarget = (command.assetTarget?.closestPosition(asset.position))!
+                    let mapTarget = command.assetTarget!.closestPosition(asset.position)
 
                     if nextCommand.action == .attack {
-                        if (nextCommand.assetTarget?.closestPosition(asset.position).distanceSquared(asset.position))! <= rangeToDistanceSquared(asset.effectiveRange) {
+                        if nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
                             asset.popCommand()
                             asset.resetStep()
                             continue
                         }
                     }
 
-                    travelDirection = (routerMap.findRoute(resMap: players[asset.color.index].playerMap, asset: asset, target: mapTarget))
+                    let travelDirection = (routerMap.findRoute(resMap: players[asset.color.index].playerMap, asset: asset, target: mapTarget))
                     if travelDirection != .max {
                         asset.direction = travelDirection
                     } else {
-                        let tilePosition = asset.position
-                        tilePosition.setToTile(mapTarget)
+                        let tilePosition = Position(from: mapTarget)
                         if tilePosition == asset.tilePosition || .max != asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 0) {
                             asset.popCommand()
                             asset.resetStep()
                             continue
                         } else if nextCommand.action == .harvestLumber {
-                            let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
+                            var newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
                             asset.popCommand()
                             asset.popCommand()
                             if 0 <= newPosition.x {
-                                newPosition.setFromTile(newPosition)
+                                newPosition = Position(from: newPosition)
                                 command.action = .harvestLumber
                                 command.assetTarget = players[asset.color.index].createMarker(at: newPosition, addToMap: false)
                                 asset.pushCommand(command)
