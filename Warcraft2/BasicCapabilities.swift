@@ -15,16 +15,11 @@
         }
 
         func incrementStep()->Bool{
-            var assetCommand: AssetCommand
-            var tempEvent: GameEvent
-            
-            tempEvent.type = .acknowledge
-            tempEvent.asset = actor
+            let assetCommand: AssetCommand = AssetCommand(action: AssetAction.walk,capability: nil,assetTarget: target,activatedCapability: nil)
+            let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge,asset: actor)
             //need fix it?
             playerData.addGameEvent(tempEvent)
             playerData.addGameEvent(tempEvent) // re-check if I did this line correctly!
-            assetCommand.action = AssetAction.walk
-            assetCommand.assetTarget = target
             
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
@@ -51,11 +46,7 @@
     
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool {
         if actor.tilePosition != target.tilePosition {
-            var newCommand: AssetCommand
-            newCommand.action = .capability
-            newCommand.capability = assetCapabilityType
-            newCommand.assetTarget = target
-            newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target) // need to fix this line!
+            let newCommand: AssetCommand = AssetCommand(action: AssetAction.capability,capability: assetCapabilityType,assetTarget: target,activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) //did implement the last parameter correctly? fix it!
             actor.clearCommand()
             actor.pushCommand(newCommand)
             return true
@@ -71,20 +62,15 @@
     }
     
     class ActivateCapability: ActivatedPlayerCapability{
-        init(){}
         
         override func percentComplete(max:Int)-> Int{
             return 0;
         }
         
         func incrementStep()->Bool{
-            var assetCommand: AssetCommand
-            var tempEvent: GameEvent
-            
-            tempEvent.type = EventType.acknowledge
-            tempEvent.asset = actor
+            var assetCommand: AssetCommand = AssetCommand(action:AssetAction.mineGold, capability:nil, assetTarget:target, activatedCapability: nil)
+            let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset:actor)
             playerData.addGameEvent(tempEvent)
-            assetCommand.assetTarget = target
             
             if AssetType.goldMine == target.type {
                 assetCommand.action = AssetAction.mineGold
@@ -129,13 +115,7 @@
     }
     
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)-> Bool{
-        var newCommand: AssetCommand
-        
-        newCommand.action = AssetAction.capability
-        newCommand.capability = assetCapabilityType
-        newCommand.assetTarget = target
-        //fix it!
-        newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        let newCommand: AssetCommand = AssetCommand(action:AssetAction.capability, capability:assetCapabilityType, assetTarget:target, activatedCapability:ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) // last argument need fix it?
         actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
@@ -156,15 +136,9 @@
         }
 
         func incrementStep()->Bool{
-            var assetCommand: AssetCommand
-            var tempEvent: GameEvent
-            
-            tempEvent.type = EventType.acknowledge
-            tempEvent.asset = actor
-            playerData.addGameEvent(tempEvent) //fix it or got it?
-            //fix it or nah?
-            assetCommand.assetTarget = playerData.createMarker(at: actor.position,addToMap: false)
-            assetCommand.action = AssetAction.standGround
+            var assetCommand: AssetCommand = AssetCommand(action: AssetAction.standGround, capability:nil, assetTarget:playerData.createMarker(at: actor.position,addToMap: false), activatedCapability:nil) //fix it? assetTarget?
+            let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
+            playerData.addGameEvent(tempEvent)
             
             actor.clearCommand()
             actor.pushCommand(assetCommand)
@@ -191,12 +165,7 @@
     }
 
     override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
-        var newCommand: AssetCommand
-        newCommand.action = AssetAction.capability
-        newCommand.capability = assetCapabilityType
-        newCommand.assetTarget = target
-        //re-check the line beneath.
-        newCommand.activatedCapability = ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        let newCommand: AssetCommand = AssetCommand(action:AssetAction.capability, capability:assetCapabilityType, assetTarget:target, activatedCapability:ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) // last argument got it right? fix it!
         actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
