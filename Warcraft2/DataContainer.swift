@@ -1,5 +1,6 @@
 import Foundation
 
 protocol DataContainer {
-    var urls: [URL] { get }
+    var url: URL { get }
+    var contentURLs: [URL] { get }
 }

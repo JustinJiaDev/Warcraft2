@@ -1,21 +1,21 @@
 import UIKit
 import AVFoundation
 
+fileprivate func url(_ pathComponents: String...) -> URL {
+    return pathComponents.reduce(Bundle.main.url(forResource: "data", withExtension: nil)!, { result, pathComponent in
+        return result.appendingPathComponent(pathComponent)
+    })
+}
+
 fileprivate func tileset(_ name: String) throws -> GraphicTileset {
-    guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
-        throw GraphicTileset.GameError.failedToGetPath
-    }
-    let tilesetSource = try FileDataSource(url: tilesetURL)
+    let tilesetSource = try FileDataSource(url: url("img", name.appending(".dat")))
     let tileset = GraphicTileset()
     try tileset.loadTileset(from: tilesetSource)
     return tileset
 }
 
 fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTileset {
-    guard let tilesetURL = Bundle.main.url(forResource: name, withExtension: "dat") else {
-        throw GraphicTileset.GameError.failedToGetPath
-    }
-    let tilesetSource = try FileDataSource(url: tilesetURL)
+    let tilesetSource = try FileDataSource(url: url("img", name.appending(".dat")))
     let tileset = GraphicMulticolorTileset()
     try tileset.loadTileset(from: tilesetSource)
     return tileset
@@ -25,19 +25,15 @@ class TestViewController: UIViewController {
 
     private lazy var midiPlayer: AVMIDIPlayer = {
         do {
-            let soundFont = Bundle.main.url(forResource: "generalsoundfont", withExtension: "sf2")!
-            let midiFile = Bundle.main.url(forResource: "intro", withExtension: "mid")!
-            return try AVMIDIPlayer(contentsOf: midiFile, soundBankURL: soundFont)
+            return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
-
     }()
 
     private lazy var map: AssetDecoratedMap = {
         do {
-            let mapURL = Bundle.main.url(forResource: "maze", withExtension: "map")!
-            let mapSource = try FileDataSource(url: mapURL)
+            let mapSource = try FileDataSource(url: url("map", "maze.map"))
             let map = AssetDecoratedMap()
             try map.loadMap(from: mapSource)
             return map
@@ -48,8 +44,7 @@ class TestViewController: UIViewController {
 
     private lazy var mapRenderer: MapRenderer = {
         do {
-            let configurationURL = Bundle.main.url(forResource: "MapRendering", withExtension: "dat")!
-            let configuration = try FileDataSource(url: configurationURL)
+            let configuration = try FileDataSource(url: url("img", "MapRendering.dat"))
             let terrainTileset = try tileset("Terrain")
             return try MapRenderer(configuration: configuration, tileset: terrainTileset, map: self.map)
         } catch {
@@ -81,7 +76,7 @@ class TestViewController: UIViewController {
             let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
             let buildingDeathTileset = try tileset("BuildingDeath")
             let arrowTileset = try tileset("Arrow")
-            try PlayerAssetType.loadTypes()
+            try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
             let playerData = PlayerData(map: self.map, color: .blue)
             let assetRenderer = AssetRenderer(
                 colors: colors,

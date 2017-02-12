@@ -240,19 +240,12 @@ class GraphicTileset {
 
     func loadTileset(from dataSource: DataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
-        // FIXME: MAKE TILESET GREAT AGAIN
-        // HACK - START
-        let name = lineSource.readLine()!
-        let surfaceTileset = GraphicFactory.loadPNGTilesetSurface(name: name)
-        // HACK - END
-        // ORIGINAL - START
-        //        guard let pngPath = lineSource.readLine(), let surfaceSource = dataSource.container()?.dataSource(name: pngPath) else {
-        //            throw GameError.failedToGetPath
-        //        }
-        //        guard let surfaceTileset = GraphicFactory.loadSurface(dataSource: surfaceSource) else {
-        //            throw GameError.failedToLoadFile(path: pngPath)
-        //        }
-        // ORIGINAL - END
+        guard let pngPath = lineSource.readLine() else {
+            throw GameError.failedToGetPath
+        }
+        guard let surfaceTileset = GraphicFactory.loadSurface(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
+            throw GameError.failedToLoadFile(path: pngPath)
+        }
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GameError.failedToReadTileCount
         }

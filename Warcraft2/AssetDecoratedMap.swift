@@ -80,7 +80,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     static func loadMaps(from dataContainer: DataContainer) {
-        dataContainer.urls.filter { url in
+        dataContainer.contentURLs.filter { url in
             return url.pathExtension == "map"
         }.forEach { url in
             do {

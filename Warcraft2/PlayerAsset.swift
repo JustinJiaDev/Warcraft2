@@ -207,7 +207,7 @@ class PlayerUpgrade {
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
     static func loadUpgrades(from dataContainer: DataContainer) throws {
-        try dataContainer.urls.filter { url in
+        try dataContainer.contentURLs.filter { url in
             return url.pathExtension == "dat"
         }.forEach { url in
             try load(from: FileDataSource(url: url))
@@ -522,11 +522,12 @@ class PlayerAssetType {
     }
 
     static func loadTypes(from dataContainer: DataContainer) throws {
-        try dataContainer.urls.filter { url in
+        try dataContainer.contentURLs.filter { url in
             return url.pathExtension == "dat"
         }.forEach { url in
             try load(from: FileDataSource(url: url))
             printDebug("Loaded type \(url.lastPathComponent).", level: .low)
+        }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
         playerAssetType.type = .none

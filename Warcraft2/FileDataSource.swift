@@ -1,8 +1,12 @@
 import Foundation
 
 class FileDataSource: DataSource {
-    private var url: URL
+    private(set) var url: URL
     private var fileHandle: FileHandle
+
+    var containerURL: URL {
+        return url.deletingLastPathComponent()
+    }
 
     init(url: URL) throws {
         self.url = url
