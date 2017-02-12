@@ -454,7 +454,7 @@
 				D0773FC11E3847C200FF7DD7 /* Graphic */,
 				D0773FC41E38485500FF7DD7 /* GameType */,
 				D0773FC31E38483200FF7DD7 /* Player */,
-				D02808AC1E472190001C1E0E /* Render */,
+				D02808AC1E472190001C1E0E /* Renderer */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
 				D0773FC21E3847F100FF7DD7 /* Temporary */,
 			);
@@ -472,7 +472,7 @@
 			name = Music;
 			sourceTree = "<group>";
 		};
-		D02808AC1E472190001C1E0E /* Render */ = {
+		D02808AC1E472190001C1E0E /* Renderer */ = {
 			isa = PBXGroup;
 			children = (
 				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
@@ -480,7 +480,7 @@
 				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
 				C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */,
 			);
-			name = Render;
+			name = Renderer;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
