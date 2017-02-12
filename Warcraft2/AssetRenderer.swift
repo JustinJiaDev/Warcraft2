@@ -299,10 +299,8 @@ class AssetRenderer {
 
             var renderData = Data()
             renderData.type = asset.type
-            renderData.x = 100
-            renderData.y = 100
-            //            renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[asset.type.rawValue].tileHalfWidth
-            //            renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[asset.type.rawValue].tileHalfHeight
+            renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[asset.type.rawValue].tileHalfWidth
+            renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[asset.type.rawValue].tileHalfHeight
             renderData.bottomY = renderData.y + tilesets[asset.type.rawValue].tileHeight - 1
             renderData.pixelColor = PixelType(playerAsset: asset).pixelColor
 

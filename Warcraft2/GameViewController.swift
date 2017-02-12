@@ -46,6 +46,7 @@ class GameViewController: UIViewController {
         do {
             let configuration = try FileDataSource(url: url("img", "MapRendering.dat"))
             let terrainTileset = try tileset("Terrain")
+            Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
             return try MapRenderer(configuration: configuration, tileset: terrainTileset, map: self.map)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
