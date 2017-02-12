@@ -17,7 +17,7 @@ class FileDataSource: DataSource {
         return fileHandle.readData(ofLength: length)
     }
 
-    func container() -> DataContainer? {
-        fatalError("This method is not yet implemented.")
+    func container() throws -> DataContainer {
+        return try FileDataContainer(url: url.deletingLastPathComponent())
     }
 }

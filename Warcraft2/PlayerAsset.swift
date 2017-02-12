@@ -207,16 +207,13 @@ class PlayerUpgrade {
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
     static func loadUpgrades(from dataContainer: DataContainer) throws {
-        guard let fileIterator = dataContainer.first() else {
-            throw GameError.fileIteratorNull
+        try dataContainer.urls.filter { url in
+            return url.pathExtension == "dat"
+        }.forEach { url in
+            try load(from: FileDataSource(url: url))
+            printDebug("Loaded upgrade \(url.lastPathComponent).", level: .low)
         }
-        while fileIterator.isValid() {
-            let fileName = fileIterator.name()
-            fileIterator.next()
-            if fileName.hasSuffix(".dat") {
-                try load(from: dataContainer.dataSource(name: fileName))
-            }
-        }
+        printDebug("Upgrades loaded.", level: .low)
     }
 
     static func load(from dataSource: DataSource) throws {
@@ -524,16 +521,12 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(from container: DataContainer) throws -> Bool {
-        guard let fileIterator = container.first() else {
-            throw GameError.fileIteratorNull
-        }
-        while fileIterator.isValid() {
-            let fileName = fileIterator.name()
-            fileIterator.next()
-            if fileName.hasSuffix(".dat") {
-                try load(from: container.dataSource(name: fileName))
-            }
+    static func loadTypes(from dataContainer: DataContainer) throws {
+        try dataContainer.urls.filter { url in
+            return url.pathExtension == "dat"
+        }.forEach { url in
+            try load(from: FileDataSource(url: url))
+            printDebug("Loaded type \(url.lastPathComponent).", level: .low)
         }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
@@ -541,7 +534,7 @@ class PlayerAssetType {
         playerAssetType.color = .none
         playerAssetType.hitPoints = 256
         registry["None"] = playerAssetType
-        return true
+        printDebug("Types loaded.", level: .low)
     }
 
     static func load(from dataSource: DataSource) throws {
