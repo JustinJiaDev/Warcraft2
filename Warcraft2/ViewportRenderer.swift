@@ -1,13 +1,14 @@
 class ViewportRenderer {
     private var mapRenderer: MapRenderer
     private var assetRenderer: AssetRenderer
-    private var fogRenderer: FogRenderer
+    private var fogRenderer: FogRenderer! // FIXME: MAKE FOG RENDERER GREAT AGAIN
     var viewportX: Int
     var viewportY: Int
     var lastViewportWidth: Int
     var lastViewportHeight: Int
 
-    init(mapRender: MapRenderer, assetRender: AssetRenderer, fogRender: FogRenderer) {
+    // FIXME: MAKE FOG RENDERER GREAT AGAIN
+    init(mapRender: MapRenderer, assetRender: AssetRenderer, fogRender: FogRenderer! = nil) {
         mapRenderer = mapRender
         assetRenderer = assetRender
         fogRenderer = fogRender
@@ -112,6 +113,7 @@ class ViewportRenderer {
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
         try assetRenderer.drawOverlays(on: surface, in: tempRectangle)
         try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.xPosition, y: selectRect.yPosition), type: placeType, builder: builder)
-        try fogRenderer.drawMap(on: surface, rectangle: tempRectangle)
+        // FIXME: MAKE FOG RENDERER GREAT AGAIN
+        // try fogRenderer.drawMap(on: surface, rectangle: tempRectangle)
     }
 }

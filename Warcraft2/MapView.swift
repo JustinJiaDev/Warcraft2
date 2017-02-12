@@ -2,13 +2,11 @@ import UIKit
 
 class MapView: UIView {
 
-    weak var mapRenderer: MapRenderer?
-    weak var assetRenderer: AssetRenderer?
+    weak var viewportRenderer: ViewportRenderer?
 
-    convenience init(frame: CGRect, mapRenderer: MapRenderer, assetRenderer: AssetRenderer) {
+    convenience init(frame: CGRect, viewportRenderer: ViewportRenderer) {
         self.init(frame: frame)
-        self.mapRenderer = mapRenderer
-        self.assetRenderer = assetRenderer
+        self.viewportRenderer = viewportRenderer
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -22,22 +20,17 @@ class MapView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let mapRenderer = mapRenderer, let assetRenderer = assetRenderer else {
+        guard let viewportRenderer = viewportRenderer else {
             return
         }
         do {
-            let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
-            let layer = GraphicFactory.createSurface(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight, format: .a1)!
-            let typeLayer = GraphicFactory.createSurface(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight, format: .a1)!
-            try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 0)
-            try assetRenderer.drawAssets(on: layer, typeSurface: layer, in: rectangle)
-            try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 1)
-            let builder = PlayerAsset(playerAssetType: PlayerAssetType())
-            try assetRenderer.drawPlacement(on: layer, in: rectangle, position: Position(x: 100, y: 100), type: .goldMine, builder: builder)
-            try assetRenderer.drawOverlays(on: layer, in: rectangle)
+            let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+            let surface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, format: .a1)!
+            let typeSurface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, format: .a1)!
+            try viewportRenderer.drawViewport(on: surface, typeSurface: typeSurface, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
             let context = UIGraphicsGetCurrentContext()!
-            context.draw(layer as! CGLayer, in: rect)
-            context.draw(typeLayer as! CGLayer, in: rect)
+            context.draw(surface as! CGLayer, in: rect)
+            context.draw(typeSurface as! CGLayer, in: rect)
         } catch {
             print(error.localizedDescription) // TODO: Handle Error
         }

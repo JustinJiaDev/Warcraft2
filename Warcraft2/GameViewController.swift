@@ -95,13 +95,17 @@ class GameViewController: UIViewController {
         }
     }()
 
+    private lazy var viewportRenderer: ViewportRenderer = {
+        return ViewportRenderer(mapRender: self.mapRenderer, assetRender: self.assetRenderer)
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
-        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), mapRenderer: mapRenderer, assetRenderer: assetRenderer)
+        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
