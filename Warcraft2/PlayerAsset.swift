@@ -527,7 +527,6 @@ class PlayerAssetType {
         }.forEach { url in
             try load(from: FileDataSource(url: url))
             printDebug("Loaded type \(url.lastPathComponent).", level: .low)
-        }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
         playerAssetType.type = .none
