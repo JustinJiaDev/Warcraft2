@@ -1,10 +1,6 @@
 import Foundation
 import CoreGraphics
-
-// FIXME: MAKE IMAGE GREAT AGAIN
-// HACK - START
 import UIKit
-// HACK - END
 
 class GraphicFactory {
     static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
