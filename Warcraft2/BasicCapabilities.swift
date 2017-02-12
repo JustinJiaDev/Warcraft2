@@ -248,3 +248,100 @@ class PlayerCapabilityConvey: PlayerCapability{
     }
 }
 
+//header#2
+class PlayerCapabilityPatrol: PlayerCapability{
+    class Registrant{
+    }
+    
+    class ActivatedCapability:ActivatedPlayerCapability{
+        override func percentComplete(max:Int) -> Int {
+            return 0;
+        }
+        
+        func incrementStep()->Bool{
+            return true;
+        }
+        
+        override func cancel(){
+            
+        }
+    }
+    
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return true;
+    }
+    
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+    
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+}
+
+
+//header#3
+class PlayerCapabilityAttack: PlayerCapability{
+    class Registrant{
+    }
+    
+    class ActivatedCapability:ActivatedPlayerCapability{
+        override func percentComplete(max:Int) -> Int {
+            return 0;
+        }
+        
+        func incrementStep()->Bool{
+            return true;
+        }
+        
+        override func cancel(){
+            
+        }
+    }
+    
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return true;
+    }
+    
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+    
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+}
+
+
+//header#4
+class PlayerCapabilityRepair: PlayerCapability{
+    class Registrant{
+    }
+    
+    class ActivatedCapability:ActivatedPlayerCapability{
+        override func percentComplete(max:Int) -> Int {
+            return 0;
+        }
+        
+        func incrementStep()->Bool{
+            return true;
+        }
+        
+        override func cancel(){
+            
+        }
+    }
+    
+    override func canInitiate(actor:PlayerAsset, playerData:PlayerData)->Bool{
+        return true;
+    }
+    
+    override func canApply(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+    
+    override func applyCapability(actor:PlayerAsset, playerData:PlayerData, target:PlayerAsset)->Bool{
+        return true;
+    }
+}
