@@ -86,7 +86,7 @@ class FogRenderer {
         }
     }
 
-    func drawMap(on surface: GraphicSurface, rectangle: Rectangle) throws {
+    func drawMap(on surface: GraphicSurface, in rectangle: Rectangle) throws {
         var unknownFog = Array(repeating: false, count: 0x100)
         var unknownBlack = Array(repeating: false, count: 0x100)
 
