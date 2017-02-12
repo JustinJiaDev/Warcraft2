@@ -95,8 +95,17 @@ class GameViewController: UIViewController {
         }
     }()
 
+    private lazy var fogRenderer: FogRenderer = {
+        do {
+            let fogTileset = try tileset("Fog")
+            return try FogRenderer(tileset: fogTileset, map: self.map.createVisibilityMap())
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
+    }()
+
     private lazy var viewportRenderer: ViewportRenderer = {
-        return ViewportRenderer(mapRender: self.mapRenderer, assetRender: self.assetRenderer)
+        return ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
     }()
 
     override func viewDidLoad() {

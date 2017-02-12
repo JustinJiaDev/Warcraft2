@@ -1,21 +1,20 @@
 class ViewportRenderer {
     private var mapRenderer: MapRenderer
     private var assetRenderer: AssetRenderer
-    private var fogRenderer: FogRenderer! // FIXME: MAKE FOG RENDERER GREAT AGAIN
+    private var fogRenderer: FogRenderer
     var viewportX: Int
     var viewportY: Int
     var lastViewportWidth: Int
     var lastViewportHeight: Int
 
-    // FIXME: MAKE FOG RENDERER GREAT AGAIN
-    init(mapRender: MapRenderer, assetRender: AssetRenderer, fogRender: FogRenderer! = nil) {
-        mapRenderer = mapRender
-        assetRenderer = assetRender
-        fogRenderer = fogRender
-        viewportX = 0
-        viewportY = 0
-        lastViewportWidth = mapRender.detailedMapWidth
-        lastViewportHeight = mapRender.detailedMapHeight
+    init(mapRenderer: MapRenderer, assetRenderer: AssetRenderer, fogRenderer: FogRenderer) {
+        self.mapRenderer = mapRenderer
+        self.assetRenderer = assetRenderer
+        self.fogRenderer = fogRenderer
+        self.viewportX = 0
+        self.viewportY = 0
+        self.lastViewportWidth = mapRenderer.detailedMapWidth
+        self.lastViewportHeight = mapRenderer.detailedMapHeight
     }
 
     func initViewportDimensions(width: Int, height: Int) {
@@ -113,7 +112,6 @@ class ViewportRenderer {
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
         try assetRenderer.drawOverlays(on: surface, in: tempRectangle)
         try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.xPosition, y: selectRect.yPosition), type: placeType, builder: builder)
-        // FIXME: MAKE FOG RENDERER GREAT AGAIN
-        // try fogRenderer.drawMap(on: surface, rectangle: tempRectangle)
+        try fogRenderer.drawMap(on: surface, rectangle: tempRectangle)
     }
 }

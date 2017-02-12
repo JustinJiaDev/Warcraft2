@@ -189,43 +189,49 @@ class GraphicTileset {
     }
 
     func duplicateClippedTile(destinationIndex: Int, tileName: String, sourceIndex: Int, clipIndex: Int) throws {
-        guard sourceIndex > 0, sourceIndex < tileCount else {
-            throw GameError.indexOutOfBound(index: sourceIndex)
-        }
-        guard destinationIndex > 0, destinationIndex < tileCount else {
-            throw GameError.indexOutOfBound(index: destinationIndex)
-        }
-        guard let maskSurface = clippingMasks[clipIndex] else {
-            throw GameError.indexOutOfBound(index: clipIndex)
-        }
-        guard let surfaceTileset = surfaceTileset else {
-            throw GameError.missingTileset
-        }
-        guard !tileName.isEmpty else {
-            throw GameError.missingTileName
-        }
-        try clearTile(at: destinationIndex)
-        try surfaceTileset.copy(
-            from: surfaceTileset,
-            dx: 0,
-            dy: destinationIndex * tileHeight,
-            maskSurface: maskSurface,
-            sx: 0,
-            sy: sourceIndex * tileHeight
-        )
-        tileIndex[tileNames[destinationIndex]] = nil
-        tileNames[destinationIndex] = tileName
-        tileIndex[tileName] = destinationIndex
-        clippingMasks[destinationIndex] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
-        try clippingMasks[destinationIndex]?.copy(
-            from: surfaceTileset,
-            dx: 0,
-            dy: 0,
-            width: tileWidth,
-            height: tileHeight,
-            sx: 0,
-            sy: destinationIndex * tileHeight
-        )
+        // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
+        // HACK - BEGIN
+        //
+        // HACK - END
+        // ORIGINAL - BEGIN
+        //        guard sourceIndex > 0, sourceIndex < tileCount else {
+        //            throw GameError.indexOutOfBound(index: sourceIndex)
+        //        }
+        //        guard destinationIndex > 0, destinationIndex < tileCount else {
+        //            throw GameError.indexOutOfBound(index: destinationIndex)
+        //        }
+        //        guard let maskSurface = clippingMasks[clipIndex] else {
+        //            throw GameError.indexOutOfBound(index: clipIndex)
+        //        }
+        //        guard let surfaceTileset = surfaceTileset else {
+        //            throw GameError.missingTileset
+        //        }
+        //        guard !tileName.isEmpty else {
+        //            throw GameError.missingTileName
+        //        }
+        //        try clearTile(at: destinationIndex)
+        //        try surfaceTileset.copy(
+        //            from: surfaceTileset,
+        //            dx: 0,
+        //            dy: destinationIndex * tileHeight,
+        //            maskSurface: maskSurface,
+        //            sx: 0,
+        //            sy: sourceIndex * tileHeight
+        //        )
+        //        tileIndex[tileNames[destinationIndex]] = nil
+        //        tileNames[destinationIndex] = tileName
+        //        tileIndex[tileName] = destinationIndex
+        //        clippingMasks[destinationIndex] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
+        //        try clippingMasks[destinationIndex]?.copy(
+        //            from: surfaceTileset,
+        //            dx: 0,
+        //            dy: 0,
+        //            width: tileWidth,
+        //            height: tileHeight,
+        //            sx: 0,
+        //            sy: destinationIndex * tileHeight
+        //        )
+        // ORIGINAL - END
     }
 
     func createClippingMasks() throws {
