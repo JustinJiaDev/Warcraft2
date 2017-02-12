@@ -1,6 +1,6 @@
 import Foundation
 
-class FileDataSource: DataSource {
+class FileDataSink: DataSink {
     private var url: URL
     private var fileHandle: FileHandle
 
@@ -13,7 +13,7 @@ class FileDataSource: DataSource {
         fileHandle.closeFile()
     }
 
-    func readData(ofLength length: Int) -> Data {
-        return fileHandle.readData(ofLength: length)
+    func write(data: Data) {
+        fileHandle.write(data)
     }
 }
