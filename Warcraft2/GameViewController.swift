@@ -86,7 +86,7 @@ class GameViewController: UIViewController {
                 fireTilesets: fireTilesets,
                 buildingDeathTileset: buildingDeathTileset,
                 arrowTileset: arrowTileset,
-                player: nil,
+                player: playerData,
                 map: self.map
             )
             return assetRenderer

@@ -32,9 +32,9 @@ class MapView: UIView {
             try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 0)
             try assetRenderer.drawAssets(on: layer, typeSurface: layer, in: rectangle)
             try mapRenderer.drawMap(on: layer, typeSurface: typeLayer, in: rectangle, level: 1)
-            // let builder = PlayerAsset(playerAsset: PlayerAssetType())
-            // try assetRenderer.drawPlacement(on: layer, in: rectangle, position: Position(x: 100, y: 100), type: .goldMine, builder: builder)
-            // try assetRenderer.drawOverlays(on: layer, in: rectangle)
+            let builder = PlayerAsset(playerAssetType: PlayerAssetType())
+            try assetRenderer.drawPlacement(on: layer, in: rectangle, position: Position(x: 100, y: 100), type: .goldMine, builder: builder)
+            try assetRenderer.drawOverlays(on: layer, in: rectangle)
             let context = UIGraphicsGetCurrentContext()!
             context.draw(layer as! CGLayer, in: rect)
             context.draw(typeLayer as! CGLayer, in: rect)
