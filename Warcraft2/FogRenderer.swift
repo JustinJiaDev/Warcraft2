@@ -42,7 +42,7 @@ class FogRenderer {
         blackIndices[0x28] = blackIndices[0x29]
 
         var nextIndex = tileset.tileCount
-        _ = tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
+        tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
         try tileset.createClippingMasks()
 
         for allowedHamming in 1 ..< 8 {

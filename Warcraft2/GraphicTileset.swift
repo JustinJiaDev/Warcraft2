@@ -68,7 +68,7 @@ class GraphicTileset {
         }
     }
 
-    func setTileCount(_ count: Int) -> Int {
+    @discardableResult func setTileCount(_ count: Int) -> Int {
         guard count > 0, tileWidth > 0, tileHeight > 0, let surfaceTileset = surfaceTileset else {
             return tileCount
         }
