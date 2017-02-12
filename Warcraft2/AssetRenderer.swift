@@ -483,7 +483,6 @@ class AssetRenderer {
             resourceContext.stroke()
         }
 
-        // FIXME: C++ implementation called lock()
         if let asset = selectionList.first {
             if asset.color == .none {
                 rectangleColor = pixelColors[.none]!
@@ -660,15 +659,9 @@ class AssetRenderer {
         guard type != .none else {
             return
         }
-        // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
-        // HACK - BEGIN
-        //
-        // HACK - END
-        // ORIGINAL - BEGIN
-        // guard let playerData = playerData else {
-        //     throw GameError.missingPlayerData
-        // }
-        // ORIGINAL - END
+        guard let playerData = playerData else {
+            throw GameError.missingPlayerData
+        }
 
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
@@ -746,13 +739,7 @@ class AssetRenderer {
             if onScreen {
                 position.x -= rect.xPosition
                 position.y -= position.y - rect.yPosition
-                // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
-                // HACK - BEGIN
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: 1)
-                // HACK - END
-                // ORIGINAL - BEGIN
-                // try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
-                // ORIGINAL - END
+                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {
