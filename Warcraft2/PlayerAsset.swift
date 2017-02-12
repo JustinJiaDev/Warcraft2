@@ -169,7 +169,7 @@ class PlayerCapability {
         fatalError("You need to override this method.")
     }
 
-    func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+    @discardableResult func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         fatalError("You need to override this method.")
     }
 }
@@ -817,6 +817,20 @@ class PlayerAsset {
         }
     }
 
+    var currentCommand: AssetCommand {
+        guard let last = commands.last else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return last
+    }
+
+    var nextCommand: AssetCommand {
+        guard commands.count > 1 else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return commands[commands.count - 2]
+    }
+
     init(playerAssetType: PlayerAssetType) {
         tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
@@ -832,34 +846,34 @@ class PlayerAsset {
         tilePosition = Position()
     }
 
-    func incrementHitPoints(_ increments: Int) -> Int {
+    @discardableResult func incrementHitPoints(_ increments: Int) -> Int {
         hitPoints += increments
         hitPoints = min(hitPoints, maxHitPoints)
         return hitPoints
     }
 
-    func decrementHitPoints(_ decrements: Int) -> Int {
+    @discardableResult func decrementHitPoints(_ decrements: Int) -> Int {
         hitPoints -= decrements
         hitPoints = max(hitPoints, 0)
         return hitPoints
     }
 
-    func incrementGold(_ increments: Int) -> Int {
+    @discardableResult func incrementGold(_ increments: Int) -> Int {
         gold += increments
         return gold
     }
 
-    func decrementGold(_ decrements: Int) -> Int {
+    @discardableResult func decrementGold(_ decrements: Int) -> Int {
         gold -= decrements
         return gold
     }
 
-    func incrementLumber(_ increments: Int) -> Int {
+    @discardableResult func incrementLumber(_ increments: Int) -> Int {
         lumber += increments
         return lumber
     }
 
-    func decrementLumber(_ decrements: Int) -> Int {
+    @discardableResult func decrementLumber(_ decrements: Int) -> Int {
         lumber -= decrements
         return lumber
     }
@@ -895,20 +909,6 @@ class PlayerAsset {
         commands.removeLast()
     }
 
-    func currentCommand() -> AssetCommand {
-        guard let last = commands.last else {
-            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
-        }
-        return last
-    }
-
-    func nextCommand() -> AssetCommand {
-        guard commands.count > 1 else {
-            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
-        }
-        return commands[commands.count - 2]
-    }
-
     func hasAction(_ action: AssetAction) -> Bool {
         return commands.first { command in
             return command.action == action
@@ -922,7 +922,7 @@ class PlayerAsset {
     }
 
     func interruptible() -> Bool {
-        let command = currentCommand()
+        let command = currentCommand
         switch command.action {
         case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
             return false

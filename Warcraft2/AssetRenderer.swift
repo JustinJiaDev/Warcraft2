@@ -380,7 +380,7 @@ class AssetRenderer {
                 renderData.tileIndex = currentIndices[asset.type.rawValue][asset.direction.index * actionSteps]
             case .capability:
                 if asset.speed > 0 {
-                    if asset.currentCommand().capability == .patrol || asset.currentCommand().capability == .standGround {
+                    if asset.currentCommand.capability == .patrol || asset.currentCommand.capability == .standGround {
                         renderData.tileIndex = noneIndices[asset.type.rawValue][asset.direction.index]
                     }
                 } else {
@@ -615,9 +615,9 @@ class AssetRenderer {
                 if currentAction != .death {
                     var hitRange = asset.hitPoints * fireTilesets.count * 2 / asset.maxHitPoints
                     if currentAction == .construct {
-                        var command = asset.currentCommand()
+                        var command = asset.currentCommand
                         if let assetTarget = command.assetTarget {
-                            command = assetTarget.currentCommand()
+                            command = assetTarget.currentCommand
                             if command.activatedCapability != nil {
                                 var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
                                 divisor = divisor != 0 ? divisor : 1
