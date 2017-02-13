@@ -21,7 +21,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         private var gold: Int
 
         init(actor: PlayerAsset, playerData: PlayerAsset, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
-            ActivatedPlayerCapability(actor, playerData, target)
+            super.init(actor, playerData, target)
             let assetCommand: AssetCommand
 
             self.originalType = originalType
