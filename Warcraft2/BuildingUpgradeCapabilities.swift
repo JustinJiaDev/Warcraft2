@@ -20,12 +20,12 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         private var lumber: Int
         private var gold: Int
 
-        init(actor: PlayerAsset, playerdata: PlayerAsset, target: PlayerAsset, origtype: PlayerAssetType, upgradetype: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
-            ActivatedPlayerCapability(actor, playerdata, target)
+        init(actor: PlayerAsset, playerData: PlayerAsset, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
+            ActivatedPlayerCapability(actor, playerData, target)
             let assetCommand: AssetCommand
 
-            self.originalType = origtype
-            self.upgradeType = upgradetype
+            self.originalType = originalType
+            self.upgradeType = upgradeType
             self.currentStep = 0
             self.totalSteps = steps
             self.lumber = lumber
@@ -85,23 +85,23 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
     private var buildingName: String
 
-    init(buildingname: String) {
-        PlayerCapability(name: "Build" + buildingname, targetType: .ttNone)
-        self.buildingName = buildingname
+    init(buildingName: String) {
+        PlayerCapability(name: "Build" + buildingName, targetType: .ttNone)
+        self.buildingName = buildingName
     }
 
-    override func canInitiate(actor: PlayerAsset, playerdata: PlayerData) -> Bool {
-        let iterator = playerdata.assetTypes().find(buildingName)
+    override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
+        let iterator = playerData.assetTypes().find(buildingName)
 
-        if iterator != playerdata.assetTypes().end() {
+        if iterator != playerData.assetTypes().end() {
             let assetType = iterator.second
-            if assetType.lumberCost > playerdata.lumber {
+            if assetType.lumberCost > playerData.lumber {
                 return false
             }
-            if AssetType.goldCost > playerdata.gold {
+            if AssetType.goldCost > playerData.gold {
                 return false
             }
-            if !playerdata.assetRequirementsMet(buildingName) {
+            if !playerData.assetRequirementsMet(buildingName) {
                 return false
             }
         }
@@ -109,14 +109,14 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         return true
     }
 
-    override func canApply(actor: PlayerAsset, playerdata: PlayerData, target: PlayerAsset) -> Bool {
-        return canInitiate(actor, playerdata)
+    override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+        return canInitiate(actor, playerData)
     }
 
-    override func applyCapability(actor: PlayerAsset, playerdata: PlayerData, target: PlayerAsset) -> Bool {
-        let iterator = playerdata.assetTypes().find(buildingName)
+    override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+        let iterator = playerData.assetTypes().find(buildingName)
 
-        if iterator != playerdata.assetTypes().end() {
+        if iterator != playerData.assetTypes().end() {
             let newCommand: AssetCommand
             let assetType = iterator.second
 
@@ -124,7 +124,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             newCommand.action = AssetAction.capability
             newCommand.capability = assetCapabilityType.none
             newCommand.assetTarget = newAsset
-            newCommand.activatedCapability = PlayerCapabilityBuildingUpgrade.ActivatedCapability(actor, playerdata, target, actor.assetType(), assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency() * assetType.buildTime)
+            newCommand.activatedCapability = PlayerCapabilityBuildingUpgrade.ActivatedCapability(actor, playerData, target, actor.assetType(), assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency() * assetType.buildTime)
             actor.pushCommand(newCommand)
 
             return true
