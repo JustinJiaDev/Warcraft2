@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<UInt8>, _ source: UInt32) -> UInt32
+typealias GraphicSurfaceTransformCallback = () -> UInt32
 
 enum GraphicSurfaceError: Error {
     case cannotCreateLayer
@@ -29,7 +29,7 @@ protocol GraphicSurface {
     func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws
-    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: Any, callback: GraphicSurfaceTransformCallback) throws
 }
 
 extension CGLayer: GraphicSurface {
@@ -99,7 +99,7 @@ extension CGLayer: GraphicSurface {
         return
     }
 
-    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws {
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: Any, callback: GraphicSurfaceTransformCallback) throws {
         fatalError("This method is not yet implemented.")
     }
 }
