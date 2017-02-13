@@ -407,7 +407,7 @@ class AssetRenderer {
                 finalRenderList.append(renderData)
             }
 
-            finalRenderList.sort { first, second -> Bool in
+            finalRenderList.sort { first, second in
                 return compareRenderData(first: first, second: second)
             }
 
