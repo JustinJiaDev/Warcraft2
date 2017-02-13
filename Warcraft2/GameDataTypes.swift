@@ -11,6 +11,20 @@ enum PlayerColor {
     case black
     case white
 
+    var pixelColor: UInt32 {
+        switch self {
+        case .none: return 0x808080
+        case .blue: return 0x0000ff
+        case .red: return 0xff0000
+        case .green: return 0x008000
+        case .purple: return 0x800080
+        case .orange: return 0x808000
+        case .yellow: return 0xffff00
+        case .black: return 0x000000
+        case .white: return 0xffffff
+        }
+    }
+
     var index: Int {
         switch self {
         case .none: return 0
@@ -27,6 +41,20 @@ enum PlayerColor {
 
     static var numberOfColors: Int {
         return 9
+    }
+
+    init(pixelColor: UInt32) {
+        switch pixelColor {
+        case 0x0000ff: self = .blue
+        case 0xff0000: self = .red
+        case 0x008000: self = .green
+        case 0x800080: self = .purple
+        case 0x808000: self = .orange
+        case 0xffff00: self = .yellow
+        case 0x000000: self = .black
+        case 0xffffff: self = .white
+        default: self = .none
+        }
     }
 
     init?(index: Int) {
