@@ -150,13 +150,13 @@ class TerrainMap {
         map[y + 1][x + 1] = type
     }
 
-    func changeTileType(position: Position, to type: TileType) {
+    func changeTileType(at position: Position, to type: TileType) {
         changeTileType(x: position.x, y: position.y, to: type)
     }
 
-    func loadMap(source: DataSource) throws {
+    func loadMap(from dataSource: DataSource) throws {
         map.removeAll()
-        let lineSource = LineDataSource(dataSource: source)
+        let lineSource = LineDataSource(dataSource: dataSource)
 
         guard let mapName = lineSource.readLine() else {
             throw TerrainMapError.failedToReadMapName

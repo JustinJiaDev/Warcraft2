@@ -4,7 +4,6 @@ import os.log
 class AssetDecoratedMap: TerrainMap {
 
     enum GameError: Error {
-        case missingFirstFileInterator
         case failedToReadResourceCount
         case failedToReadResource(index: Int)
         case tooFewTokensForResource(index: Int)
@@ -80,23 +79,18 @@ class AssetDecoratedMap: TerrainMap {
         }
     }
 
-    static func loadMaps(container: DataContainer) throws {
-        guard let fileIterator = container.first() else {
-            throw GameError.missingFirstFileInterator
-        }
-        while fileIterator.isValid() {
-            let filename = fileIterator.name()
-            fileIterator.next()
-            if filename.hasSuffix(".map") {
-                do {
-                    let map = AssetDecoratedMap()
-                    try map.loadMap(source: container.dataSource(name: filename))
-                    mapNameTranslation[map.mapName] = all.count
-                    all.append(map)
-                    printDebug("Loaded map \(filename).", level: .low)
-                } catch {
-                    printError("Failed to load map \(filename) (Error: \(error)).")
-                }
+    static func loadMaps(from dataContainer: DataContainer) {
+        dataContainer.contentURLs.filter { url in
+            return url.pathExtension == "map"
+        }.forEach { url in
+            do {
+                let map = AssetDecoratedMap()
+                try map.loadMap(from: FileDataSource(url: url))
+                mapNameTranslation[map.mapName] = all.count
+                all.append(map)
+                printDebug("Loaded map \(url.lastPathComponent).", level: .low)
+            } catch {
+                printError("Failed to load map \(url.lastPathComponent). \(error.localizedDescription)")
             }
         }
         printDebug("Maps loaded.", level: .low)
@@ -198,7 +192,7 @@ class AssetDecoratedMap: TerrainMap {
                 for x in max(leftX, 0) ... toX {
                     if canPlaceAsset(at: Position(x: x, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: x, y: topY)
-                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
+                        let currentDistance = position.distanceSquared(from: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -213,7 +207,7 @@ class AssetDecoratedMap: TerrainMap {
                 for y in max(topY, 0) ... toY {
                     if canPlaceAsset(at: Position(x: rightX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: rightX, y: y)
-                        let currentDistance = position.distanceSquaredFrom(position: nextTileTarget)
+                        let currentDistance = position.distanceSquared(from: nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -267,10 +261,10 @@ class AssetDecoratedMap: TerrainMap {
         return bestPosition
     }
 
-    override func loadMap(source: DataSource) throws {
-        try super.loadMap(source: source)
+    override func loadMap(from dataSource: DataSource) throws {
+        try super.loadMap(from: dataSource)
 
-        let lineSource = LineDataSource(dataSource: source)
+        let lineSource = LineDataSource(dataSource: dataSource)
 
         resourceInitializationList = []
         guard let resourceCountString = lineSource.readLine(), let resourceCount = Int(resourceCountString) else {

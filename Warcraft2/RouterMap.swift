@@ -27,9 +27,9 @@ class RouterMap {
         return normalizedAngle <= 45
     }
 
-    func findRoute(resMap: AssetDecoratedMap, asset: PlayerAsset, target: Position) -> Direction {
-        let mapWidth = resMap.width
-        let mapHeight = resMap.height
+    func findRoute(assetMap: AssetDecoratedMap, asset: PlayerAsset, target: Position) -> Direction {
+        let mapWidth = assetMap.width
+        let mapHeight = assetMap.height
         let startX = asset.tilePositionX
         let startY = asset.tilePositionY
         var tempSearch = SearchTarget()
@@ -94,7 +94,7 @@ class RouterMap {
             }
         }
 
-        for res in resMap.assets {
+        for res in assetMap.assets {
             if asset !== res {
                 if res.type != .none {
                     if res.action != .walk || asset.color != res.color {
@@ -138,7 +138,7 @@ class RouterMap {
                 let tempDirection = Direction(index: SearchStatus.occupied.rawValue - map[tempTile.y + 1][tempTile.x + 1].rawValue)!
                 if SearchStatus.unvisited == map[tempTile.y + 1][tempTile.x + 1] || RouterMap.movingAway(searchDirections[index], tempDirection) {
                     map[tempTile.y + 1][tempTile.x + 1] = SearchStatus(rawValue: index)!
-                    let currentTileType = resMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
+                    let currentTileType = assetMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
                     if currentTileType == .grass
                         || currentTileType == .dirt
                         || currentTileType == .stump
@@ -175,7 +175,7 @@ class RouterMap {
             currentTile.y -= resMapYOffsets[index]
         }
         if directionBeforeLast != lastInDirection {
-            let currentTileType = resMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.index], y: startY + diagCheckYOffset[directionBeforeLast.index])
+            let currentTileType = assetMap.tileTypeAt(x: startX + diagCheckXOffset[directionBeforeLast.index], y: startY + diagCheckYOffset[directionBeforeLast.index])
             if currentTileType == .grass
                 || currentTileType == .dirt
                 || currentTileType == .stump

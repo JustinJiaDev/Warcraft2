@@ -42,8 +42,9 @@ extension CGLayer: GraphicSurface {
         return Int(size.height)
     }
 
+    // FIXME: MAKE FORMAT GREAT AGAIN
     var format: GraphicSurfaceFormat {
-        fatalError("This method is not yet implemented.")
+        return .a1
     }
 
     var resourceContext: GraphicResourceContext {
@@ -88,12 +89,14 @@ extension CGLayer: GraphicSurface {
         }
     }
 
+    // FIXME: MAKE COPY GREAT AGAIN
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
-        fatalError("This method is not yet implemented.")
+        return try draw(from: surface, dx: dx, dy: dy, width: width, height: height, sx: sx, sy: sy)
     }
 
+    // FIXME: MAKE COPY GREAT AGAIN
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws {
-        fatalError("This method is not yet implemented.")
+        return
     }
 
     func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws {

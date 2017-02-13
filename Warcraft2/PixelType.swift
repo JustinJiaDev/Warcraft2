@@ -1,10 +1,7 @@
-import Foundation
-import UIKit.UIColor
-
 class PixelType {
 
-    enum AssetTerrainType: Int {
-        case none = 0
+    enum AssetTerrainType {
+        case none
         case grass
         case dirt
         case rock
@@ -29,18 +26,13 @@ class PixelType {
         case scoutTower
         case guardTower
         case cannonTower
-        case max
     }
 
     private(set) var type: AssetTerrainType
     private(set) var color: PlayerColor
 
-    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
     var pixelColor: UInt32 {
-        var colorCode = UInt32(color.index)
-        colorCode <<= 16
-        colorCode |= UInt32(type.rawValue) << 8
-        return colorCode
+        return color.pixelColor
     }
 
     var assetType: AssetType {
@@ -64,19 +56,8 @@ class PixelType {
         }
     }
 
-    // FIXME: https://github.com/UCDClassNitta/ECS160Linux/issues/94
-    init(pixelColor: UIColor) {
-        switch pixelColor {
-        case pixelColor where pixelColor == UIColor.blue: color = .blue
-        case pixelColor where pixelColor == UIColor.red: color = .red
-        case pixelColor where pixelColor == UIColor.green: color = .green
-        case pixelColor where pixelColor == UIColor.purple: color = .purple
-        case pixelColor where pixelColor == UIColor.orange: color = .orange
-        case pixelColor where pixelColor == UIColor.yellow: color = .yellow
-        case pixelColor where pixelColor == UIColor.black: color = .black
-        case pixelColor where pixelColor == UIColor.white: color = .white
-        default: color = .none
-        }
+    init(pixelColor: UInt32) {
+        color = PlayerColor(pixelColor: pixelColor)
         type = .none
     }
 
@@ -128,6 +109,6 @@ class PixelType {
     }
 
     static func of(surface: GraphicSurface, x: Int, y: Int) -> PixelType {
-        fatalError("This method is not yet implemented.")
+        return PixelType(pixelColor: surface.pixelColorAt(x: x, y: y))
     }
 }

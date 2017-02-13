@@ -380,7 +380,7 @@ class AssetRenderer {
                 renderData.tileIndex = currentIndices[asset.type.rawValue][asset.direction.index * actionSteps]
             case .capability:
                 if asset.speed > 0 {
-                    if asset.currentCommand().capability == .patrol || asset.currentCommand().capability == .standGround {
+                    if asset.currentCommand.capability == .patrol || asset.currentCommand.capability == .standGround {
                         renderData.tileIndex = noneIndices[asset.type.rawValue][asset.direction.index]
                     }
                 } else {
@@ -483,7 +483,6 @@ class AssetRenderer {
             resourceContext.stroke()
         }
 
-        // FIXME: C++ implementation called lock()
         if let asset = selectionList.first {
             if asset.color == .none {
                 rectangleColor = pixelColors[.none]!
@@ -615,9 +614,9 @@ class AssetRenderer {
                 if currentAction != .death {
                     var hitRange = asset.hitPoints * fireTilesets.count * 2 / asset.maxHitPoints
                     if currentAction == .construct {
-                        var command = asset.currentCommand()
+                        var command = asset.currentCommand
                         if let assetTarget = command.assetTarget {
-                            command = assetTarget.currentCommand()
+                            command = assetTarget.currentCommand
                             if command.activatedCapability != nil {
                                 var divisor = command.activatedCapability?.percentComplete(max: asset.maxHitPoints)
                                 divisor = divisor != 0 ? divisor : 1
@@ -660,21 +659,15 @@ class AssetRenderer {
         guard type != .none else {
             return
         }
-        // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
-        // HACK - BEGIN
-        //
-        // HACK - END
-        // ORIGINAL - BEGIN
-        // guard let playerData = playerData else {
-        //     throw GameError.missingPlayerData
-        // }
-        // ORIGINAL - END
+        guard let playerData = playerData else {
+            throw GameError.missingPlayerData
+        }
 
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
 
         var onScreen = true
-        let assetType = PlayerAssetType.findDefault(from: type)
+        let assetType = PlayerAssetType.findDefault(with: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
         let tempPosition = Position()
@@ -746,13 +739,7 @@ class AssetRenderer {
             if onScreen {
                 position.x -= rect.xPosition
                 position.y -= position.y - rect.yPosition
-                // FIXME: MAKE DRAW PLACEMENT GREAT AGAIN
-                // HACK - BEGIN
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: 1)
-                // HACK - END
-                // ORIGINAL - BEGIN
-                // try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
-                // ORIGINAL - END
+                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {
@@ -779,7 +766,7 @@ class AssetRenderer {
             }
         } else {
             for asset in playerMap.assetInitializationList {
-                let size = PlayerAssetType.findDefault(from: asset.type).size
+                let size = PlayerAssetType.findDefault(with: asset.type).size
                 let pixelColor = pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(x: asset.tilePosition.x, y: asset.tilePosition.y, width: size, height: size)

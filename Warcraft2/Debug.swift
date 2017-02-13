@@ -5,23 +5,9 @@ enum DebugLevel {
 }
 
 func printDebug(_ message: String, level: DebugLevel = .normal) {
-    print("[DEBUG]: \(message)")
-}
-
-func openDebug() {
-    fatalError("not implemented")
+    print("[debug-\(level)]: \(message)")
 }
 
 func printError(_ message: String, level: DebugLevel = .normal) {
-    print("[ERROR]: \(message)")
-}
-
-class Debug {
-
-    init(debug: Debug) {
-    }
-
-    static func debugLevel() {
-        fatalError("not implemented")
-    }
+    print("[error-\(level)]: \(message)")
 }
