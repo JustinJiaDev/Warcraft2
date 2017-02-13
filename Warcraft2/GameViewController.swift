@@ -33,7 +33,7 @@ class GameViewController: UIViewController {
 
     private lazy var map: AssetDecoratedMap = {
         do {
-            let mapSource = try FileDataSource(url: url("map", "maze.map"))
+            let mapSource = try FileDataSource(url: url("map", "2playerdivide.map"))
             let map = AssetDecoratedMap()
             try map.loadMap(from: mapSource)
             return map
@@ -79,6 +79,8 @@ class GameViewController: UIViewController {
             let arrowTileset = try tileset("Arrow")
             try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
             let playerData = PlayerData(map: self.map, color: .blue)
+            _ = PlayerData(map: self.map, color: .none)
+            _ = PlayerData(map: self.map, color: .red)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,

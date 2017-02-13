@@ -43,7 +43,6 @@
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */; };
-		D0A3C7241E485BA400B24AC5 /* AssetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7231E485BA400B24AC5 /* AssetView.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
 		D0D4A3DC1E3F265A009460DE /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3DB1E3F265A009460DE /* MapView.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
@@ -96,7 +95,6 @@
 		D08F47461E35D89800F7FED1 /* GraphicTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicTileset.swift; sourceTree = "<group>"; };
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
 		D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
-		D0A3C7231E485BA400B24AC5 /* AssetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetView.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
 		D0D4A3DB1E3F265A009460DE /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -293,7 +291,6 @@
 				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
 				D0D4A3DB1E3F265A009460DE /* MapView.swift */,
 				D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */,
-				D0A3C7231E485BA400B24AC5 /* AssetView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -483,7 +480,6 @@
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 				D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */,
 				D0DF813D1E3F2ECE000F9BC4 /* GameViewController.swift in Sources */,
-				D0A3C7241E485BA400B24AC5 /* AssetView.swift in Sources */,
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
 				8E663E8C1E41447F00FD4727 /* RandomNumberGenerator.swift in Sources */,
 				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
