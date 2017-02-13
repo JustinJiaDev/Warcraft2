@@ -21,7 +21,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         private var gold: Int
 
         init(actor: PlayerAsset, playerData: PlayerAsset, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
-            super.init(actor, playerData, target)
+            super.init(actor: actor, playerData: playerData, target: target)
             let assetCommand: AssetCommand
 
             self.originalType = originalType
@@ -34,26 +34,26 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             self.playerData.decrementGold(by: gold)
         }
 
-        func percentComplete(max: Int) -> Int {
+        override func percentComplete(max: Int) -> Int {
             return self.currentStep * max / self.totalSteps
         }
 
         func incrementStep() -> Bool {
-            var AddHitPoInts = ((self.upgradeType.hitPoints - self.originalType-.hitPoints) * (self.currentStep + 1) / self.totalSteps) - ((self.upgradeType.hitPoints - self.originalType.hitPoints) * self.currentStep / self.totalSteps)
+            var addHitPoints = ((self.upgradeType.hitPoints - self.originalType.hitPoints) * (self.currentStep + 1) / self.totalSteps) - ((self.upgradeType.hitPoints - self.originalType.hitPoints) * self.currentStep / self.totalSteps)
 
             if 0 == self.currentStep {
-                let assetCommand: AssetCommand = actor.currentCommand
+                var assetCommand: AssetCommand = actor.currentCommand
                 assetCommand.action = AssetAction.construct
                 self.actor.popCommand()
                 self.actor.pushCommand(assetCommand)
-                self.actor.changeType(self.upgradeType)
+                self.actor.changeType(to: self.upgradeType)
                 self.actor.resetStep()
             }
 
             actor.incrementHitPoints(addHitPoints)
 
-            if self.actor.hitPoints > self.actor.maxHitPoInts {
-                self.actor.hitPoints(self.actor.maxHitPoints)
+            if self.actor.hitPoints > self.actor.maxHitPoints {
+                self.actor.hitPoints = self.actor.maxHitPoints
             }
 
             self.currentStep += 1
@@ -66,7 +66,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
                 playerData.addGameEvent(tempEvent)
 
                 self.actor.popCommand()
-                if self.actor.range {
+                if self.actor.range != 0 {
                     let command: AssetCommand
                     command.action = AssetAction.standGround
                     self.actor.pushCommand(command)
@@ -76,9 +76,9 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             return false
         }
         func cancel() -> Bool {
-            self.playerData.incrementLumber(self.lumber)
-            self.playerData.incrementGold(self.gold)
-            self.actor.changeType(self.originalType)
+            self.playerData.incrementLumber(by: self.lumber)
+            self.playerData.incrementGold(by: self.gold)
+            self.actor.changeType(to: self.originalType)
             self.actor.popCommand()
         }
     }
@@ -86,22 +86,22 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     private var buildingName: String
 
     init(buildingName: String) {
-        PlayerCapability(name: "Build" + buildingName, targetType: .ttNone)
+        PlayerCapability(name: "Build" + buildingName, targetType: .none)
         self.buildingName = buildingName
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        let iterator = playerData.assetTypes().find(buildingName)
+        let iterator = playerData.assetTypes.find(buildingName)
 
         if iterator != playerData.assetTypes().end() {
             let assetType = iterator.second
             if assetType.lumberCost > playerData.lumber {
                 return false
             }
-            if AssetType.goldCost > playerData.gold {
+            if assetType.goldCost > playerData.gold {
                 return false
             }
-            if !playerData.assetRequirementsMet(buildingName) {
+            if !playerData.assetRequirementsIsMet(name: buildingName) {
                 return false
             }
         }
@@ -110,11 +110,11 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        return canInitiate(actor, playerData)
+        return canInitiate(actor: actor, playerData: playerData)
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        let iterator = playerData.assetTypes().find(buildingName)
+        let iterator = playerData.assetTypes.find(buildingName)
 
         if iterator != playerData.assetTypes().end() {
             let newCommand: AssetCommand
@@ -122,8 +122,8 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
             actor.clearCommand()
             newCommand.action = AssetAction.capability
-            newCommand.capability = assetCapabilityType.none
-            newCommand.assetTarget = newAsset
+            newCommand.capability = assetCapabilityType
+            newCommand.assetTarget = target
             newCommand.activatedCapability = PlayerCapabilityBuildingUpgrade.ActivatedCapability(actor, playerData, target, actor.assetType(), assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency() * assetType.buildTime)
             actor.pushCommand(newCommand)
 
