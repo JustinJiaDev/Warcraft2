@@ -24,12 +24,18 @@ class GraphicMulticolorTileset: GraphicTileset {
     }
 
     func drawTile(on surface: GraphicSurface, x: Int, y: Int, tileIndex: Int, colorIndex: Int) throws {
-        guard tileIndex >= 0 && tileIndex < tileCount else {
-            throw GameError.indexOutOfBound(index: tileIndex)
-        }
-        guard colorIndex >= 0 && colorIndex < coloredTilesets.count else {
-            throw GameError.indexOutOfBound(index: colorIndex)
-        }
-        try surface.draw(from: coloredTilesets[colorIndex], dx: x, dy: y, width: tileWidth, height: tileHeight, sx: 0, sy: tileIndex * tileHeight)
+        // FIXME: MAKE DRAW TILE GREAT AGAIN
+        // HACK - BEGIN
+        try surface.draw(from: surfaceTileset!, dx: x, dy: y, width: tileWidth, height: tileHeight, sx: 0, sy: tileIndex * tileHeight)
+        // HACK - END
+        // ORIGINAL - BEGIN
+        //        guard tileIndex >= 0 && tileIndex < tileCount else {
+        //            throw GameError.indexOutOfBound(index: tileIndex)
+        //        }
+        //        guard colorIndex >= 0 && colorIndex < coloredTilesets.count else {
+        //            throw GameError.indexOutOfBound(index: colorIndex)
+        //        }
+        //        try surface.draw(from: coloredTilesets[colorIndex], dx: x, dy: y, width: tileWidth, height: tileHeight, sx: 0, sy: tileIndex * tileHeight)
+        // ORIGINAL - END
     }
 }

@@ -82,7 +82,7 @@ extension CGLayer: GraphicSurface {
             layer.context!.saveGState()
             layer.context!.translateBy(x: 0, y: size.height)
             layer.context!.scaleBy(x: 1, y: -1)
-            layer.context!.draw(surface, at: CGPoint(x: -sx, y: -surface.height + 32 + sy))
+            layer.context!.draw(surface, at: CGPoint(x: -sx, y: -surface.height + height + sy))
             layer.context!.restoreGState()
             UIGraphicsEndImageContext()
             try draw(from: layer, dx: dx, dy: dy, width: width, height: height, sx: 0, sy: 0)

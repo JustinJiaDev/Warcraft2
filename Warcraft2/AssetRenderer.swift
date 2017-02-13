@@ -287,7 +287,7 @@ class AssetRenderer {
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) throws {
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
-        var finalRenderList = Array<Data>()
+        var finalRenderList: [Data] = []
 
         for asset in playerMap.assets {
             guard asset.type != .none else {
