@@ -1,6 +1,6 @@
-class PlayerCapabilityBuildingUpgrade: CPlayerCapability {
+class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
-    private class CRegistrant {
+    private class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
