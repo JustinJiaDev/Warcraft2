@@ -441,35 +441,37 @@ class AssetRenderer {
                 if renderData.type == AssetType.none {
                     continue
                 }
-                if 0 <= renderData.type.rawValue && renderData.type.rawValue < tilesets.count {
-                    if asset.speed == 0 {
-                        let offset = AssetType.goldMine == renderData.type ? 1 : 0
+                guard renderData.type.rawValue >= 0 && renderData.type.rawValue < tilesets.count else {
+                    continue
+                }
+                guard asset.speed == 0 else {
+                    continue
+                }
+                let offset = AssetType.goldMine == renderData.type ? 1 : 0
 
-                        renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[renderData.type.rawValue].tileHalfWidth
-                        renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[renderData.type.rawValue].tileHalfHeight
-                        renderData.x -= offset * Position.tileWidth
-                        renderData.y -= offset * Position.tileHeight
+                renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[renderData.type.rawValue].tileHalfWidth
+                renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[renderData.type.rawValue].tileHalfHeight
+                renderData.x -= offset * Position.tileWidth
+                renderData.y -= offset * Position.tileHeight
 
-                        let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth) - 1
-                        renderData.bottomY = renderData.y + tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight) - 1
-                        var onScreen = true
-                        if (rightX < rect.xPosition) || (renderData.x > screenRightX) {
-                            onScreen = false
-                        } else if (renderData.bottomY < rect.yPosition) || (renderData.y > screenBottomY) {
-                            onScreen = false
-                        }
-                        renderData.x -= rect.xPosition
-                        renderData.y -= rect.yPosition
-                        if onScreen {
-                            resourceContext.rectangle(
-                                x: renderData.x,
-                                y: renderData.y,
-                                width: tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth),
-                                height: tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight)
-                            )
-                            resourceContext.stroke()
-                        }
-                    }
+                let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth) - 1
+                renderData.bottomY = renderData.y + tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight) - 1
+                var onScreen = true
+                if rightX < rect.xPosition || renderData.x > screenRightX {
+                    onScreen = false
+                } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                    onScreen = false
+                }
+                renderData.x -= rect.xPosition
+                renderData.y -= rect.yPosition
+                if onScreen {
+                    resourceContext.rectangle(
+                        x: renderData.x,
+                        y: renderData.y,
+                        width: tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth),
+                        height: tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight)
+                    )
+                    resourceContext.stroke()
                 }
             }
             rectangleColor = selfPixelColor
