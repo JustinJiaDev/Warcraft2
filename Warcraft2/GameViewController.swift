@@ -78,7 +78,9 @@ class GameViewController: UIViewController {
             let buildingDeathTileset = try tileset("BuildingDeath")
             let arrowTileset = try tileset("Arrow")
             try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
-            let playerData = PlayerData(map: self.map, color: .none)
+            let playerData = PlayerData(map: self.map, color: .blue)
+            _ = PlayerData(map: self.map, color: .none)
+            _ = PlayerData(map: self.map, color: .red)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,
