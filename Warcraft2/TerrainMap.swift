@@ -77,7 +77,7 @@ class TerrainMap {
     }
 
     var height: Int {
-        return map.count - 2
+        return max(0, map.count - 2)
     }
 
     func tileTypeAt(x: Int, y: Int) -> TileType {
