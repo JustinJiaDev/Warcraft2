@@ -71,6 +71,14 @@ enum PlayerColor {
         default: return nil
         }
     }
+
+    static func getAllValues() -> [PlayerColor] {
+        var values: [PlayerColor] = []
+        for i in 0 ..< PlayerColor.numberOfColors {
+            values.append(PlayerColor(index: i)!)
+        }
+        return values
+    }
 }
 
 enum AssetAction: Int {

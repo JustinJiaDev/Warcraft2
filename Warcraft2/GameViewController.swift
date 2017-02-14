@@ -33,10 +33,9 @@ class GameViewController: UIViewController {
 
     private lazy var map: AssetDecoratedMap = {
         do {
-            let mapSource = try FileDataSource(url: url("map", "2playerdivide.map"))
-            let map = AssetDecoratedMap()
-            try map.loadMap(from: mapSource)
-            return map
+            let mapsContainer = try FileDataContainer(url: url("map"))
+            AssetDecoratedMap.loadMaps(from: mapsContainer)
+            return AssetDecoratedMap.map(at: 1)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
@@ -121,6 +120,13 @@ class GameViewController: UIViewController {
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
+
+        let gameModel = GameModel(mapIndex: 0, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
+        do {
+            try gameModel.timestep()
+        } catch {
+            fatalError("Error Thrown By Timestep")
+        }
     }
 
     override var prefersStatusBarHidden: Bool {
