@@ -5,7 +5,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
+            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower")) //removed private from player capability.register
         }
     }
 
@@ -21,7 +21,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         private var gold: Int
 
         init(actor: PlayerAsset, playerData: PlayerAsset, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
-            super.init(actor: actor, playerData: playerData, target: target)
+            super.init(actor: actor, playerData: playerData, target: target) //can't convert playerasset to playerdata
             let assetCommand: AssetCommand
 
             self.originalType = originalType
@@ -41,7 +41,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         func incrementStep() -> Bool {
             var addHitPoints = ((self.upgradeType.hitPoints - self.originalType.hitPoints) * (self.currentStep + 1) / self.totalSteps) - ((self.upgradeType.hitPoints - self.originalType.hitPoints) * self.currentStep / self.totalSteps)
 
-            if 0 == self.currentStep {
+            if self.currentStep == 0 {
                 var assetCommand: AssetCommand = actor.currentCommand
                 assetCommand.action = AssetAction.construct
                 self.actor.popCommand()
@@ -59,16 +59,14 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             self.currentStep += 1
             actor.incrementStep()
             if self.currentStep >= self.totalSteps {
-                let tempEvent: GameEvent
+                let tempEvent = GameEvent(type: .workComplete, asset: actor)
 
-                tempEvent.type = EventType.workComplete
-                tempEvent.asset = actor
                 playerData.addGameEvent(tempEvent)
 
                 self.actor.popCommand()
                 if self.actor.range != 0 {
-                    let command: AssetCommand
-                    command.action = AssetAction.standGround
+                    let command = AssetCommand(action: .standGround) //capability and other values not initialized in original code
+                    
                     self.actor.pushCommand(command)
                 }
                 return true
@@ -86,15 +84,15 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     private var buildingName: String
 
     init(buildingName: String) {
-        PlayerCapability(name: "Build" + buildingName, targetType: .none)
+        super.init(name: "Build" + buildingName, targetType: .none)
         self.buildingName = buildingName
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        let iterator = playerData.assetTypes.find(buildingName)
+        var iterator = playerData.assetTypes.makeIterator() // original: playerData.assetTypes.find(buildingName) not sure if this is right
 
-        if iterator != playerData.assetTypes().end() {
-            let assetType = iterator.second
+        if iterator != playerData.assetTypes.last() { //how to get last element of dictionary
+            let assetType = iterator.value //iterator.second?
             if assetType.lumberCost > playerData.lumber {
                 return false
             }
@@ -114,7 +112,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        let iterator = playerData.assetTypes.find(buildingName)
+        let iterator = playerData.assetTypes[buildingName]
 
         if iterator != playerData.assetTypes().end() {
             let newCommand: AssetCommand
