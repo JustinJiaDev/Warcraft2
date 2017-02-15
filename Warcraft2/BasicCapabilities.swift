@@ -55,6 +55,9 @@ class PlayerCapabilityMove: PlayerCapability {
 class PlayerCapabilityMineHarvest: PlayerCapability {
 
     private class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivateCapability: ActivatedPlayerCapability {
@@ -120,6 +123,9 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
 class PlayerCapabityStandGround: PlayerCapability {
 
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -168,6 +174,9 @@ class PlayerCapabityStandGround: PlayerCapability {
 class PlayerCapabilityCancel: PlayerCapability {
 
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -215,9 +224,11 @@ class PlayerCapabilityCancel: PlayerCapability {
     }
 }
 
-// header#1
 class PlayerCapabilityConvey: PlayerCapability {
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -226,7 +237,6 @@ class PlayerCapabilityConvey: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            // var nearestRepository: PlayerAsset
             var assetCommand: AssetCommand = AssetCommand(action: AssetAction.conveyLumber, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -237,7 +247,7 @@ class PlayerCapabilityConvey: PlayerCapability {
                 assetCommand.action = AssetAction.walk
                 actor.pushCommand(assetCommand)
                 actor.resetStep()
-            } else if actor.gold != 0 { // verify this logic! fix it!
+            } else if actor.gold > 0 {
                 assetCommand.action = AssetAction.conveyGold
                 assetCommand.assetTarget = target
                 actor.pushCommand(assetCommand)
@@ -282,9 +292,11 @@ class PlayerCapabilityConvey: PlayerCapability {
     }
 }
 
-// header#2
 class PlayerCapabilityPatrol: PlayerCapability {
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -332,9 +344,11 @@ class PlayerCapabilityPatrol: PlayerCapability {
     }
 }
 
-// header#3
 class PlayerCapabilityAttack: PlayerCapability {
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -384,9 +398,11 @@ class PlayerCapabilityAttack: PlayerCapability {
     }
 }
 
-// header#4
 class PlayerCapabilityRepair: PlayerCapability {
     class Registrant {
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
     class ActivatedCapability: ActivatedPlayerCapability {
@@ -415,8 +431,7 @@ class PlayerCapabilityRepair: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        // verify again this line! fix it!
-        return actor.speed > 0 && playerData.gold != 0 && playerData.lumber != 0
+        return actor.speed > 0 && playerData.gold > 0 && playerData.lumber > 0
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
