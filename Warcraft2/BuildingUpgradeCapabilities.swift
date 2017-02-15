@@ -89,10 +89,9 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        var iterator = playerData.assetTypes.makeIterator() // original: playerData.assetTypes.find(buildingName) not sure if this is right
 
-        if iterator != playerData.assetTypes.last() { //how to get last element of dictionary
-            let assetType = iterator.value //iterator.second?
+        if var iterator = playerData.assetTypes[buildingName] {
+            let assetType = iterator //iterator.second?
             if assetType.lumberCost > playerData.lumber {
                 return false
             }
@@ -112,17 +111,14 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        let iterator = playerData.assetTypes[buildingName]
 
-        if iterator != playerData.assetTypes().end() {
-            let newCommand: AssetCommand
-            let assetType = iterator.second
+        if var iterator = playerData.assetTypes[buildingName] {
+           
+            let assetType = iterator //iterator.second??
+            let newCommand = AssetCommand(action: .capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: self.ActivatedCapability(actor, playerData, target, actor.assetType, assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency * assetType.buildTime))
 
             actor.clearCommand()
-            newCommand.action = AssetAction.capability
-            newCommand.capability = assetCapabilityType
-            newCommand.assetTarget = target
-            newCommand.activatedCapability = PlayerCapabilityBuildingUpgrade.ActivatedCapability(actor, playerData, target, actor.assetType(), assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency() * assetType.buildTime)
+
             actor.pushCommand(newCommand)
 
             return true
