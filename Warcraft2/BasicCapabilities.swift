@@ -1,23 +1,23 @@
 import Foundation
 
-class PlayerCapabilityMove: PlayerCapability { // PlayerCapability need to be implemented.
+class PlayerCapabilityMove: PlayerCapability {
 
     class Registrant {
-        init() {}
+        init() {
+            PlayerCapability.register(capability: PlayerCapabilityMove())
+        }
     }
 
-    class ActivatedCapability: ActivatedPlayerCapability { // ActivatedPlayerCapability
+    class ActivatedCapability: ActivatedPlayerCapability {
 
         override func percentComplete(max: Int) -> Int {
             return 0
         }
 
-        func incrementStep() -> Bool {
-            let assetCommand: AssetCommand = AssetCommand(action: AssetAction.walk, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
-            // need fix it?
+        override func incrementStep() -> Bool {
+            let assetCommand = AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil)
+            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
-            playerData.addGameEvent(tempEvent) // re-check if I did this line correctly!
 
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
@@ -25,7 +25,6 @@ class PlayerCapabilityMove: PlayerCapability { // PlayerCapability need to be im
 
             actor.clearCommand()
             actor.pushCommand(assetCommand)
-
             return true
         }
 
@@ -34,7 +33,7 @@ class PlayerCapabilityMove: PlayerCapability { // PlayerCapability need to be im
         }
     }
 
-    override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool { // PlayerAsset
+    override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
         return actor.speed > 0
     }
 
@@ -64,7 +63,7 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             var assetCommand: AssetCommand = AssetCommand(action: AssetAction.mineGold, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -90,25 +89,24 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        return actor.hasCapability(AssetCapabilityType.mine) // re-check this line again
+        return actor.hasCapability(.mine)
     }
 
-    func canApply(actor: PlayerAsset, playerdata: PlayerData, target: PlayerAsset) -> Bool {
+    override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         if !actor.hasCapability(AssetCapabilityType.mine) {
             return false
         }
-        if actor.lumber != 0 || actor.gold != 0 {
+        if actor.lumber > 0 || actor.gold > 0 {
             return false
         }
-        if AssetType.goldMine == target.type {
+        if target.type == .goldMine {
             return true
         }
-        if AssetType.none != target.type {
+        if target.type != AssetType.none {
             return false
         }
-
-        // fix the line beneath! re-check it!
-        return TerrainMap.TileType.tree == playerdata.playerMap.tileTypeAt(position: target.tilePosition)
+        
+        return playerData.playerMap.tileTypeAt(position: target.tilePosition) == .tree
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
@@ -130,7 +128,7 @@ class PlayerCapabityStandGround: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             var assetCommand: AssetCommand = AssetCommand(action: AssetAction.standGround, capability: nil, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: nil) // fix it? assetTarget?
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -177,7 +175,7 @@ class PlayerCapabilityCancel: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             actor.popCommand()
 
             if AssetAction.none != actor.action {
@@ -227,19 +225,19 @@ class PlayerCapabilityConvey: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
-            //var nearestRepository: PlayerAsset
-            var assetCommand: AssetCommand = AssetCommand(action:AssetAction.conveyLumber, capability:nil, assetTarget:target, activatedCapability:nil)
-            let tempEvent: GameEvent = GameEvent(type:EventType.acknowledge, asset:actor)
+        override func incrementStep() -> Bool {
+            // var nearestRepository: PlayerAsset
+            var assetCommand: AssetCommand = AssetCommand(action: AssetAction.conveyLumber, capability: nil, assetTarget: target, activatedCapability: nil)
+            let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
-            
+
             actor.popCommand()
-            if actor.lumber != 0 {//fix the logic here! fix it!
+            if actor.lumber > 0 {
                 actor.pushCommand(assetCommand)
                 assetCommand.action = AssetAction.walk
                 actor.pushCommand(assetCommand)
                 actor.resetStep()
-            }else if actor.gold != 0 { //verify this logic! fix it!
+            } else if actor.gold != 0 { // verify this logic! fix it!
                 assetCommand.action = AssetAction.conveyGold
                 assetCommand.assetTarget = target
                 actor.pushCommand(assetCommand)
@@ -256,12 +254,12 @@ class PlayerCapabilityConvey: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        //verify the logic of this line! fix it!
-        return actor.speed > 0 && (actor.lumber != 0 || actor.gold != 0)
+        // verify the logic of this line! fix it!
+        return actor.speed > 0 && (actor.lumber > 0 || actor.gold > 0)
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        //verify the logic here! fix it!
+        // verify the logic here! fix it!
         if actor.speed > 0 && (actor.lumber != 0 || actor.gold != 0) {
             if AssetAction.construct == target.action {
                 return false
@@ -277,7 +275,7 @@ class PlayerCapabilityConvey: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        let newCommand: AssetCommand = AssetCommand(action:AssetAction.capability, capability:assetCapabilityType, assetTarget:target, activatedCapability:ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) //fix it?
+        let newCommand: AssetCommand = AssetCommand(action: AssetAction.capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) // fix it?
         actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
@@ -294,7 +292,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             let patrolCommand: AssetCommand = AssetCommand(action: AssetAction.capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)) // fix it or no?
             let walkCommand: AssetCommand = AssetCommand(action: AssetAction.walk, capability: nil, assetTarget: target, activatedCapability: nil) // third argument?
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
@@ -344,7 +342,7 @@ class PlayerCapabilityAttack: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             var assetCommand: AssetCommand = AssetCommand(action: AssetAction.attack, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -396,7 +394,7 @@ class PlayerCapabilityRepair: PlayerCapability {
             return 0
         }
 
-        func incrementStep() -> Bool {
+        override func incrementStep() -> Bool {
             var assetCommand: AssetCommand = AssetCommand(action: AssetAction.repair, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent: GameEvent = GameEvent(type: EventType.acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)

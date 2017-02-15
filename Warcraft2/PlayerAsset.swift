@@ -15,7 +15,7 @@ class ActivatedPlayerCapability {
         fatalError("This method should be overriden in the derived class.")
     }
 
-    func incrementstep() {
+    func incrementStep() -> Bool {
         fatalError("This method should be overriden in the derived class.")
     }
 
@@ -42,7 +42,7 @@ class PlayerCapability {
         self.targetType = targetType
     }
 
-    private static func register(capability: PlayerCapability) -> Bool {
+    @discardableResult static func register(capability: PlayerCapability) -> Bool {
         if let _ = nameRegistry[capability.name] {
             return false
         }
