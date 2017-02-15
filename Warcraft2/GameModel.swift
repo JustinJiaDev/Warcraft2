@@ -505,6 +505,13 @@ class GameModel {
                 lumberAvailable[row][column] = players[0].lumber
             }
         }
+
+        for i in 0 ..< actualMap.assets.count {
+            if actualMap.assets[i].type == .peasant && actualMap.assets[i].tilePositionX == 10 && actualMap.assets[i].tilePositionY == 10 {
+                print("peasant index \(i)")
+                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: actualMap.assets[i], activatedCapability: nil))
+            }
+        }
     }
 
     func isValidAsset(_ playerAsset: PlayerAsset) -> Bool {
@@ -927,7 +934,8 @@ class GameModel {
                 if asset.tileAligned {
                     var command = asset.currentCommand
                     let nextCommand = asset.nextCommand
-                    let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
+                    let mapTarget = Position(x: 10 * Position.tileWidth, y: 11 * Position.tileHeight) //
+                    //                                        let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
 
                     if nextCommand.action == .attack {
                         if nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
@@ -937,7 +945,7 @@ class GameModel {
                         }
                     }
 
-                    let travelDirection = (routerMap.findRoute(assetMap: players[asset.color.index].playerMap, asset: asset, target: mapTarget))
+                    let travelDirection = routerMap.findRoute(assetMap: players[asset.color.index].playerMap, asset: asset, target: mapTarget)
                     if travelDirection != .max {
                         asset.direction = travelDirection
                     } else {

@@ -9,13 +9,11 @@ class RouterMap {
         var inDirection = Direction.max
     }
 
-    enum SearchStatus: Int {
-        case unvisited = -1
-        case visited = -2
-        case occupied = -3
-    }
+    let SEARCH_STATUS_UNVISTED = -1
+    let SEARCH_STATUS_VISTED = -2
+    let SEARCH_STATUS_OCCUPIED = -3
 
-    var map: [[SearchStatus]] = []
+    var map: [[Int]] = []
     var searchTargets: [SearchTarget] = []
 
     static var idealSearchDirection = Direction.north
@@ -38,7 +36,7 @@ class RouterMap {
         let tempTile = Position()
         var currentTile = Position()
         let targetTile = Position()
-        var searchDirections: [Direction] = [.north, .east, .south, .west]
+        let searchDirections: [Direction] = [.north, .east, .south, .west]
         let resMapXOffsets = [0, 1, 0, -1]
         let resMapYOffsets = [ -1, 0, 1, 0]
         let diagCheckXOffset = [0, 1, 1, 1, 0, -1, -1, -1]
@@ -50,14 +48,17 @@ class RouterMap {
         if map.count != mapHeight + 2 || map[0].count != mapWidth + 2 {
             let lastYIndex = mapHeight + 1
             let lastXIndex = mapWidth + 1
-            map = Array(repeating: Array(repeating: .unvisited, count: mapWidth + 2), count: mapHeight + 2)
+            map = Array(repeating: Array(repeating: SEARCH_STATUS_UNVISTED, count: mapWidth + 2), count: mapHeight + 2)
+            // Set first and last column to visited
             for index in 0 ..< map.count {
-                map[index][0] = .visited
-                map[index][lastXIndex] = .visited
+                map[index][0] = SEARCH_STATUS_VISTED
+                map[index][lastXIndex] = SEARCH_STATUS_VISTED
             }
+            // Set remaining border to visited (note that the corners were
+            // already set to visited by the previous for loop)
             for index in 0 ..< mapWidth {
-                map[0][index + 1] = .visited
-                map[lastYIndex][index + 1] = .visited
+                map[0][index + 1] = SEARCH_STATUS_VISTED
+                map[lastYIndex][index + 1] = SEARCH_STATUS_VISTED
             }
             RouterMap.mapWidth = mapWidth + 2
         }
@@ -88,9 +89,10 @@ class RouterMap {
             }
             return .max
         }
+        // Set all non-border nodes to unvisited
         for y in 0 ..< mapHeight {
             for x in 0 ..< mapWidth {
-                map[y + 1][x + 1] = SearchStatus.unvisited
+                map[y + 1][x + 1] = SEARCH_STATUS_UNVISTED
             }
         }
 
@@ -101,12 +103,12 @@ class RouterMap {
                         if asset.color != res.color || .conveyGold != res.action && .conveyLumber != res.action && .mineGold != res.action {
                             for yOff in 0 ..< res.size {
                                 for xOff in 0 ..< res.size {
-                                    map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = .visited
+                                    map[res.tilePositionY + yOff + 1][res.tilePositionX + xOff + 1] = SEARCH_STATUS_VISTED
                                 }
                             }
                         }
                     } else {
-                        map[res.tilePositionY + 1][res.tilePositionX + 1] = SearchStatus(rawValue: SearchStatus.occupied.rawValue - res.direction.index)!
+                        map[res.tilePositionY + 1][res.tilePositionX + 1] = SEARCH_STATUS_OCCUPIED - res.direction.index
                     }
                 }
             }
@@ -123,7 +125,7 @@ class RouterMap {
         currentSearch.targetDistanceSquared = bestSearch.targetDistanceSquared
         bestSearch.inDirection = .max
         currentSearch.inDirection = bestSearch.inDirection
-        map[startY + 1][startX + 1] = .visited
+        map[startY + 1][startX + 1] = SEARCH_STATUS_VISTED
         while true {
             if currentTile == targetTile {
                 bestSearch = currentSearch
@@ -135,9 +137,9 @@ class RouterMap {
             for index in 0 ..< searchDirections.count {
                 tempTile.x = currentSearch.x + resMapXOffsets[index]
                 tempTile.y = currentSearch.y + resMapYOffsets[index]
-                let tempDirection = Direction(index: SearchStatus.occupied.rawValue - map[tempTile.y + 1][tempTile.x + 1].rawValue)!
-                if SearchStatus.unvisited == map[tempTile.y + 1][tempTile.x + 1] || RouterMap.movingAway(searchDirections[index], tempDirection) {
-                    map[tempTile.y + 1][tempTile.x + 1] = SearchStatus(rawValue: index)!
+                let tempDirectionIndex = SEARCH_STATUS_OCCUPIED - map[tempTile.y + 1][tempTile.x + 1]
+                if SEARCH_STATUS_UNVISTED == map[tempTile.y + 1][tempTile.x + 1] || tempDirectionIndex >= 0 && RouterMap.movingAway(searchDirections[index], Direction(index: tempDirectionIndex)!) {
+                    map[tempTile.y + 1][tempTile.x + 1] = index
                     let currentTileType = assetMap.tileTypeAt(x: tempTile.x, y: tempTile.y)
                     if currentTileType == .grass
                         || currentTileType == .dirt
@@ -167,7 +169,7 @@ class RouterMap {
         currentTile.x = bestSearch.x
         currentTile.y = bestSearch.y
         while currentTile.x != startX || currentTile.y != startY {
-            let index = map[currentTile.y + 1][currentTile.x + 1].rawValue
+            let index = map[currentTile.y + 1][currentTile.x + 1]
 
             directionBeforeLast = lastInDirection
             lastInDirection = searchDirections[index]

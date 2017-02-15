@@ -23,6 +23,8 @@ fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTi
 
 class GameViewController: UIViewController {
 
+    private let mapIndex = 0
+
     private lazy var midiPlayer: AVMIDIPlayer = {
         do {
             return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
@@ -35,7 +37,7 @@ class GameViewController: UIViewController {
         do {
             let mapsContainer = try FileDataContainer(url: url("map"))
             AssetDecoratedMap.loadMaps(from: mapsContainer)
-            return AssetDecoratedMap.map(at: 1)
+            return AssetDecoratedMap.map(at: self.mapIndex)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
@@ -121,9 +123,11 @@ class GameViewController: UIViewController {
         view.addSubview(mapView)
         view.addSubview(miniMapView)
 
-        let gameModel = GameModel(mapIndex: 0, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
+        let gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
         do {
-            try gameModel.timestep()
+            for _ in 0 ..< 4 {
+                try gameModel.timestep()
+            }
         } catch {
             fatalError("Error Thrown By Timestep")
         }

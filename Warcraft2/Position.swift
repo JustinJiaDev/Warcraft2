@@ -44,7 +44,7 @@ class Position {
     }
 
     static func !=(left: Position, right: Position) -> Bool {
-        return left != right
+        return !(left == right)
     }
 
     static func setTileDimensions(width: Int, height: Int) {
