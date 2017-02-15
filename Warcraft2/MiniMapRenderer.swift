@@ -20,49 +20,43 @@ class MiniMapRenderer {
 
         workingSurface = GraphicFactory.createSurface(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight, format: format)!
 
-        // In GraphicSurface, CreateResourceContext() is a virtual function, which doesn't exist in Swift file
-        // just want to make sure if I'm calling the right thing here?
-        // C++: auto ResourceContext = surface->CreateResourceContext();
         let resourceContext = workingSurface.resourceContext
         resourceContext.setSourceRGB(0x000000)
         resourceContext.rectangle(x: 0, y: 0, width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)
         resourceContext.fill()
     }
 
-    func viewportColor(color: UInt32) -> UInt32 {
+    func viewportColor(_ color: UInt32) -> UInt32 {
         viewportColor = color
         return viewportColor
     }
 
-    func drawMiniMap(surface: GraphicSurface) {
-        // same problem as above. C++: auto ResourceContext = surface->CreateResourceContext();
+    func drawMiniMap(on surface: GraphicSurface) {
         let resourceContext = surface.resourceContext
         let miniMapWidth = surface.width
         let miniMapHeight = surface.height
-        let MMW_MH = miniMapWidth * mapRenderer.mapHeight
-        let MMH_MW = miniMapHeight * mapRenderer.mapWidth
         var drawWidth: Int
         var drawHeight: Int
-        var SX = Double(miniMapWidth) / Double(mapRenderer.mapWidth)
-        var SY = Double(miniMapHeight) / Double(mapRenderer.mapHeight)
+        var sx = Double(miniMapWidth) / Double(mapRenderer.mapWidth)
+        var sy = Double(miniMapHeight) / Double(mapRenderer.mapHeight)
 
-        if SX < SY {
+        if sx < sy {
             drawWidth = miniMapWidth
-            drawHeight = Int(SX) * mapRenderer.mapHeight
-            SY = SX
-        } else if SX > SY {
-            drawWidth = Int(SY) * mapRenderer.mapWidth
+            drawHeight = Int(sx) * mapRenderer.mapHeight
+            sy = sx
+        } else if sx > sy {
+            drawWidth = Int(sy) * mapRenderer.mapWidth
             drawHeight = miniMapHeight
-            SX = SY
+            sx = sy
         } else {
             drawWidth = miniMapWidth
             drawHeight = miniMapHeight
         }
 
-        if MMH_MW > MMW_MH {
+        if miniMapHeight * mapRenderer.mapWidth > miniMapWidth * mapRenderer.mapHeight {
             visibleWidth = miniMapWidth
             visibleHeight = (mapRenderer.mapHeight * miniMapWidth) / mapRenderer.mapWidth
-        } else if MMH_MW < MMW_MH {
+        } else if miniMapHeight * mapRenderer.mapWidth < miniMapWidth * mapRenderer.mapHeight {
             visibleWidth = (mapRenderer.mapWidth * miniMapHeight) / mapRenderer.mapHeight
             visibleHeight = miniMapHeight
         } else {
@@ -75,7 +69,7 @@ class MiniMapRenderer {
         fogRenderer.drawMiniMap(on: workingSurface)
 
         resourceContext.save()
-        resourceContext.scale(x: SX, y: SY)
+        resourceContext.scale(x: sx, y: sy)
         resourceContext.setSourceSurface(workingSurface, x: 0, y: 0)
         resourceContext.rectangle(x: 0, y: 0, width: drawWidth, height: drawHeight)
         resourceContext.fill()
