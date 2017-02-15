@@ -112,21 +112,28 @@ class GameViewController: UIViewController {
         return ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
     }()
 
+    private var mapView: MapView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
-        let mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
+        mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
+    }
 
+    override func viewDidAppear(_ animated: Bool) {
         let gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
         do {
-            for _ in 0 ..< 4 {
+            for _ in 0 ..< 2 {
                 try gameModel.timestep()
+                mapView.setNeedsDisplay()
+                usleep(300_000)
+                print("loop")
             }
         } catch {
             fatalError("Error Thrown By Timestep")
