@@ -93,7 +93,6 @@ class UnitActionRenderer {
         return .none
     }
 
-    // FIXME: GitHub Issue https://github.com/UCDClassNitta/ECS160Linux/issues/105
     func drawUnitAction(on surface: GraphicSurface, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) throws {
         guard !selectionList.isEmpty else {
             return

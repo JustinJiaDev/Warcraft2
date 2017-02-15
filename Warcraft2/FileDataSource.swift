@@ -1,8 +1,12 @@
 import Foundation
 
 class FileDataSource: DataSource {
-    private var url: URL
+    private(set) var url: URL
     private var fileHandle: FileHandle
+
+    var containerURL: URL {
+        return url.deletingLastPathComponent()
+    }
 
     init(url: URL) throws {
         self.url = url
@@ -15,9 +19,5 @@ class FileDataSource: DataSource {
 
     func readData(ofLength length: Int) -> Data {
         return fileHandle.readData(ofLength: length)
-    }
-
-    func container() -> DataContainer? {
-        fatalError("This method is not yet implemented.")
     }
 }

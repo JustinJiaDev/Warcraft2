@@ -7,98 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		493C06D81E3130F600C1C9E6 /* Archer.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C067F1E3130F600C1C9E6 /* Archer.png */; };
-		493C06D91E3130F600C1C9E6 /* Arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06801E3130F600C1C9E6 /* Arrow.png */; };
-		493C06DA1E3130F600C1C9E6 /* AssetColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06811E3130F600C1C9E6 /* AssetColor.png */; };
-		493C06DB1E3130F600C1C9E6 /* AssetNone.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06821E3130F600C1C9E6 /* AssetNone.png */; };
-		493C06DC1E3130F600C1C9E6 /* Barracks.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06831E3130F600C1C9E6 /* Barracks.png */; };
-		493C06DD1E3130F600C1C9E6 /* Blacksmith.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06841E3130F600C1C9E6 /* Blacksmith.png */; };
-		493C06DE1E3130F600C1C9E6 /* BuildingDeath.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06851E3130F600C1C9E6 /* BuildingDeath.png */; };
-		493C06DF1E3130F600C1C9E6 /* ButtonColors.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06861E3130F600C1C9E6 /* ButtonColors.png */; };
-		493C06E01E3130F600C1C9E6 /* Cannonball.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06871E3130F600C1C9E6 /* Cannonball.png */; };
-		493C06E11E3130F600C1C9E6 /* CannonballDeath.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06881E3130F600C1C9E6 /* CannonballDeath.png */; };
-		493C06E21E3130F600C1C9E6 /* CannonTower.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06891E3130F600C1C9E6 /* CannonTower.png */; };
-		493C06E31E3130F600C1C9E6 /* Castle.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068A1E3130F600C1C9E6 /* Castle.png */; };
-		493C06E41E3130F600C1C9E6 /* Colors.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068B1E3130F600C1C9E6 /* Colors.png */; };
-		493C06E51E3130F600C1C9E6 /* Corpse.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068C1E3130F600C1C9E6 /* Corpse.png */; };
-		493C06E61E3130F600C1C9E6 /* Cursors.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068D1E3130F600C1C9E6 /* Cursors.png */; };
-		493C06E71E3130F600C1C9E6 /* Farm.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068E1E3130F600C1C9E6 /* Farm.png */; };
-		493C06E81E3130F600C1C9E6 /* FireLarge.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C068F1E3130F600C1C9E6 /* FireLarge.png */; };
-		493C06E91E3130F600C1C9E6 /* FireSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06901E3130F600C1C9E6 /* FireSmall.png */; };
-		493C06EA1E3130F600C1C9E6 /* Fog.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06911E3130F600C1C9E6 /* Fog.png */; };
-		493C06EB1E3130F600C1C9E6 /* FontColors.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06921E3130F600C1C9E6 /* FontColors.png */; };
-		493C06EC1E3130F600C1C9E6 /* FontKingthings8.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06931E3130F600C1C9E6 /* FontKingthings8.png */; };
-		493C06ED1E3130F600C1C9E6 /* FontKingthings10.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06941E3130F600C1C9E6 /* FontKingthings10.png */; };
-		493C06EE1E3130F600C1C9E6 /* FontKingthings12.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06951E3130F600C1C9E6 /* FontKingthings12.png */; };
-		493C06EF1E3130F600C1C9E6 /* FontKingthings16.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06961E3130F600C1C9E6 /* FontKingthings16.png */; };
-		493C06F01E3130F600C1C9E6 /* FontKingthings24.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06971E3130F600C1C9E6 /* FontKingthings24.png */; };
-		493C06F11E3130F600C1C9E6 /* Footman.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06981E3130F600C1C9E6 /* Footman.png */; };
-		493C06F21E3130F600C1C9E6 /* GoldMine.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06991E3130F600C1C9E6 /* GoldMine.png */; };
-		493C06F31E3130F600C1C9E6 /* GuardTower.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069A1E3130F600C1C9E6 /* GuardTower.png */; };
-		493C06F41E3130F600C1C9E6 /* Icons.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069B1E3130F600C1C9E6 /* Icons.png */; };
-		493C06F51E3130F600C1C9E6 /* InnerBevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069C1E3130F600C1C9E6 /* InnerBevel.png */; };
-		493C06F61E3130F600C1C9E6 /* Keep.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069D1E3130F600C1C9E6 /* Keep.png */; };
-		493C06F71E3130F600C1C9E6 /* ListViewIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069E1E3130F600C1C9E6 /* ListViewIcons.png */; };
-		493C06F81E3130F600C1C9E6 /* LumberMill.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C069F1E3130F600C1C9E6 /* LumberMill.png */; };
-		493C06F91E3130F600C1C9E6 /* Marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A01E3130F600C1C9E6 /* Marker.png */; };
-		493C06FA1E3130F600C1C9E6 /* MiniBevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A11E3130F600C1C9E6 /* MiniBevel.png */; };
-		493C06FB1E3130F600C1C9E6 /* MiniIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A21E3130F600C1C9E6 /* MiniIcons.png */; };
-		493C06FC1E3130F600C1C9E6 /* OuterBevel.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A31E3130F600C1C9E6 /* OuterBevel.png */; };
-		493C06FD1E3130F600C1C9E6 /* Peasant.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A41E3130F600C1C9E6 /* Peasant.png */; };
-		493C06FE1E3130F600C1C9E6 /* Ranger.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A51E3130F600C1C9E6 /* Ranger.png */; };
-		493C06FF1E3130F600C1C9E6 /* ScoutTower.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A61E3130F600C1C9E6 /* ScoutTower.png */; };
-		493C07001E3130F600C1C9E6 /* Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A71E3130F600C1C9E6 /* Splash.png */; };
-		493C07011E3130F600C1C9E6 /* Terrain.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A81E3130F600C1C9E6 /* Terrain.png */; };
-		493C07021E3130F600C1C9E6 /* Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06A91E3130F600C1C9E6 /* Texture.png */; };
-		493C07031E3130F600C1C9E6 /* TownHall.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AA1E3130F600C1C9E6 /* TownHall.png */; };
-		493C07041E3130F600C1C9E6 /* Archer.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AB1E3130F600C1C9E6 /* Archer.dat */; };
-		493C07051E3130F600C1C9E6 /* Arrow.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AC1E3130F600C1C9E6 /* Arrow.dat */; };
-		493C07061E3130F600C1C9E6 /* AssetColor.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AD1E3130F600C1C9E6 /* AssetColor.dat */; };
-		493C07071E3130F600C1C9E6 /* AssetNone.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AE1E3130F600C1C9E6 /* AssetNone.dat */; };
-		493C07081E3130F600C1C9E6 /* Barracks.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06AF1E3130F600C1C9E6 /* Barracks.dat */; };
-		493C07091E3130F600C1C9E6 /* Blacksmith.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B01E3130F600C1C9E6 /* Blacksmith.dat */; };
-		493C070A1E3130F600C1C9E6 /* BuildingDeath.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B11E3130F600C1C9E6 /* BuildingDeath.dat */; };
-		493C070B1E3130F600C1C9E6 /* ButtonColors.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B21E3130F600C1C9E6 /* ButtonColors.dat */; };
-		493C070C1E3130F600C1C9E6 /* Cannonball.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B31E3130F600C1C9E6 /* Cannonball.dat */; };
-		493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B41E3130F600C1C9E6 /* CannonballDeath.dat */; };
-		493C070E1E3130F600C1C9E6 /* CannonTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B51E3130F600C1C9E6 /* CannonTower.dat */; };
-		493C070F1E3130F600C1C9E6 /* Castle.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B61E3130F600C1C9E6 /* Castle.dat */; };
-		493C07101E3130F600C1C9E6 /* Colors.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B71E3130F600C1C9E6 /* Colors.dat */; };
-		493C07111E3130F600C1C9E6 /* Corpse.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B81E3130F600C1C9E6 /* Corpse.dat */; };
-		493C07121E3130F600C1C9E6 /* Cursors.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06B91E3130F600C1C9E6 /* Cursors.dat */; };
-		493C07131E3130F600C1C9E6 /* Farm.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BA1E3130F600C1C9E6 /* Farm.dat */; };
-		493C07141E3130F600C1C9E6 /* FireLarge.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BB1E3130F600C1C9E6 /* FireLarge.dat */; };
-		493C07151E3130F600C1C9E6 /* FireSmall.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BC1E3130F600C1C9E6 /* FireSmall.dat */; };
-		493C07161E3130F600C1C9E6 /* Fog.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BD1E3130F600C1C9E6 /* Fog.dat */; };
-		493C07171E3130F600C1C9E6 /* FontColors.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BE1E3130F600C1C9E6 /* FontColors.dat */; };
-		493C07181E3130F600C1C9E6 /* FontKingthings8.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06BF1E3130F600C1C9E6 /* FontKingthings8.dat */; };
-		493C07191E3130F600C1C9E6 /* FontKingthings10.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C01E3130F600C1C9E6 /* FontKingthings10.dat */; };
-		493C071A1E3130F600C1C9E6 /* FontKingthings12.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C11E3130F600C1C9E6 /* FontKingthings12.dat */; };
-		493C071B1E3130F600C1C9E6 /* FontKingthings16.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C21E3130F600C1C9E6 /* FontKingthings16.dat */; };
-		493C071C1E3130F600C1C9E6 /* FontKingthings24.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C31E3130F600C1C9E6 /* FontKingthings24.dat */; };
-		493C071D1E3130F600C1C9E6 /* Footman.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C41E3130F600C1C9E6 /* Footman.dat */; };
-		493C071E1E3130F600C1C9E6 /* GoldMine.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C51E3130F600C1C9E6 /* GoldMine.dat */; };
-		493C071F1E3130F600C1C9E6 /* GuardTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C61E3130F600C1C9E6 /* GuardTower.dat */; };
-		493C07201E3130F600C1C9E6 /* Icons.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C71E3130F600C1C9E6 /* Icons.dat */; };
-		493C07211E3130F600C1C9E6 /* InnerBevel.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C81E3130F600C1C9E6 /* InnerBevel.dat */; };
-		493C07221E3130F600C1C9E6 /* Keep.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06C91E3130F600C1C9E6 /* Keep.dat */; };
-		493C07231E3130F600C1C9E6 /* ListViewIcons.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06CA1E3130F600C1C9E6 /* ListViewIcons.dat */; };
-		493C07241E3130F600C1C9E6 /* LumberMill.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06CB1E3130F600C1C9E6 /* LumberMill.dat */; };
-		493C07261E3130F600C1C9E6 /* Marker.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06CD1E3130F600C1C9E6 /* Marker.dat */; };
-		493C07271E3130F600C1C9E6 /* MiniBevel.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06CE1E3130F600C1C9E6 /* MiniBevel.dat */; };
-		493C07281E3130F600C1C9E6 /* MiniIcons.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06CF1E3130F600C1C9E6 /* MiniIcons.dat */; };
-		493C07291E3130F600C1C9E6 /* OuterBevel.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D01E3130F600C1C9E6 /* OuterBevel.dat */; };
-		493C072A1E3130F600C1C9E6 /* Peasant.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D11E3130F600C1C9E6 /* Peasant.dat */; };
-		493C072B1E3130F600C1C9E6 /* Ranger.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D21E3130F600C1C9E6 /* Ranger.dat */; };
-		493C072C1E3130F600C1C9E6 /* ScoutTower.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D31E3130F600C1C9E6 /* ScoutTower.dat */; };
-		493C072D1E3130F600C1C9E6 /* Splash.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D41E3130F600C1C9E6 /* Splash.dat */; };
-		493C072F1E3130F600C1C9E6 /* Texture.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D61E3130F600C1C9E6 /* Texture.dat */; };
-		493C07301E3130F600C1C9E6 /* TownHall.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C06D71E3130F600C1C9E6 /* TownHall.dat */; };
-		493C07381E3136A100C1C9E6 /* Terrain.dat in Resources */ = {isa = PBXBuildFile; fileRef = 493C07371E3136A100C1C9E6 /* Terrain.dat */; };
-		495F2EB81E3AD4EB0047BD0F /* selected4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 495F2EB71E3AD4EB0047BD0F /* selected4.wav */; };
-		495F2EBD1E3AE4F80047BD0F /* generalsoundfont.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 495F2EBC1E3AE01B0047BD0F /* generalsoundfont.sf2 */; };
-		4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */; };
-		498584501E303F6B00F6766C /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4985844F1E303F6B00F6766C /* TerrainManager.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
 		8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B3B161E48656000BA4832 /* FogRenderer.swift */; };
 		8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */; };
@@ -108,9 +16,6 @@
 		8E663E8C1E41447F00FD4727 /* RandomNumberGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E663E8B1E41447F00FD4727 /* RandomNumberGenerator.swift */; };
 		8E663E901E41492100FD4727 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E663E8F1E41492100FD4727 /* GameModel.swift */; };
 		8E7737051E4ADBE80058A7C6 /* BasicCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */; };
-		8EA067681E3023880059CEC2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067671E3023880059CEC2 /* GameScene.swift */; };
-		8EA0676A1E3026CC0059CEC2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067691E3026CC0059CEC2 /* GameScene.sks */; };
-		8EA067731E3310470059CEC2 /* intro.mid in Resources */ = {isa = PBXBuildFile; fileRef = 8EA067711E3310470059CEC2 /* intro.mid */; };
 		8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067741E33C8E00059CEC2 /* DataSource.swift */; };
 		8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067751E33C8E00059CEC2 /* DataContainer.swift */; };
 		8EA067811E33C8E00059CEC2 /* DataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA067761E33C8E00059CEC2 /* DataSink.swift */; };
@@ -130,124 +35,28 @@
 		C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */; };
 		C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */; };
 		C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */; };
-		D01B68121E35A4320003C408 /* maze.map in Resources */ = {isa = PBXBuildFile; fileRef = D01B68111E35A3DE0003C408 /* maze.map */; };
+		D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24D1E504C4300F8736B /* FileDataContainer.swift */; };
+		D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24F1E504CA600F8736B /* FileDataSink.swift */; };
+		D022B2521E504FCD00F8736B /* data in Resources */ = {isa = PBXBuildFile; fileRef = D022B2511E504FCD00F8736B /* data */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
-		D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC61E384A7E00FF7DD7 /* 2player.map */; };
-		D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */ = {isa = PBXBuildFile; fileRef = D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */; };
 		D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47421E35BE6300F7FED1 /* PixelType.swift */; };
 		D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47441E35D80600F7FED1 /* MapRenderer.swift */; };
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */; };
-		D0A3C7241E485BA400B24AC5 /* AssetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7231E485BA400B24AC5 /* AssetView.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
-		D0D4A3DA1E3F1A07009460DE /* MapRendering.dat in Resources */ = {isa = PBXBuildFile; fileRef = D0D4A3D91E3F1A07009460DE /* MapRendering.dat */; };
 		D0D4A3DC1E3F265A009460DE /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3DB1E3F265A009460DE /* MapView.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
-		D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA561E26015E00D92DA5 /* GameViewController.swift */; };
 		D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA581E26015E00D92DA5 /* Main.storyboard */; };
 		D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */; };
 		D0D6FA5F1E26015E00D92DA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */; };
 		D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */; };
-		D0DF813D1E3F2ECE000F9BC4 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */; };
+		D0DF813D1E3F2ECE000F9BC4 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DF813C1E3F2ECE000F9BC4 /* GameViewController.swift */; };
 		F9A93CCBDD3B6E1591845090 /* Pods_Warcraft2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
-		493C067F1E3130F600C1C9E6 /* Archer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Archer.png; path = Image_Data_Assets/Archer.png; sourceTree = "<group>"; };
-		493C06801E3130F600C1C9E6 /* Arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Arrow.png; path = Image_Data_Assets/Arrow.png; sourceTree = "<group>"; };
-		493C06811E3130F600C1C9E6 /* AssetColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AssetColor.png; path = Image_Data_Assets/AssetColor.png; sourceTree = "<group>"; };
-		493C06821E3130F600C1C9E6 /* AssetNone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AssetNone.png; path = Image_Data_Assets/AssetNone.png; sourceTree = "<group>"; };
-		493C06831E3130F600C1C9E6 /* Barracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Barracks.png; path = Image_Data_Assets/Barracks.png; sourceTree = "<group>"; };
-		493C06841E3130F600C1C9E6 /* Blacksmith.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Blacksmith.png; path = Image_Data_Assets/Blacksmith.png; sourceTree = "<group>"; };
-		493C06851E3130F600C1C9E6 /* BuildingDeath.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BuildingDeath.png; path = Image_Data_Assets/BuildingDeath.png; sourceTree = "<group>"; };
-		493C06861E3130F600C1C9E6 /* ButtonColors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ButtonColors.png; path = Image_Data_Assets/ButtonColors.png; sourceTree = "<group>"; };
-		493C06871E3130F600C1C9E6 /* Cannonball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cannonball.png; path = Image_Data_Assets/Cannonball.png; sourceTree = "<group>"; };
-		493C06881E3130F600C1C9E6 /* CannonballDeath.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CannonballDeath.png; path = Image_Data_Assets/CannonballDeath.png; sourceTree = "<group>"; };
-		493C06891E3130F600C1C9E6 /* CannonTower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CannonTower.png; path = Image_Data_Assets/CannonTower.png; sourceTree = "<group>"; };
-		493C068A1E3130F600C1C9E6 /* Castle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Castle.png; path = Image_Data_Assets/Castle.png; sourceTree = "<group>"; };
-		493C068B1E3130F600C1C9E6 /* Colors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Colors.png; path = Image_Data_Assets/Colors.png; sourceTree = "<group>"; };
-		493C068C1E3130F600C1C9E6 /* Corpse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Corpse.png; path = Image_Data_Assets/Corpse.png; sourceTree = "<group>"; };
-		493C068D1E3130F600C1C9E6 /* Cursors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cursors.png; path = Image_Data_Assets/Cursors.png; sourceTree = "<group>"; };
-		493C068E1E3130F600C1C9E6 /* Farm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Farm.png; path = Image_Data_Assets/Farm.png; sourceTree = "<group>"; };
-		493C068F1E3130F600C1C9E6 /* FireLarge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FireLarge.png; path = Image_Data_Assets/FireLarge.png; sourceTree = "<group>"; };
-		493C06901E3130F600C1C9E6 /* FireSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FireSmall.png; path = Image_Data_Assets/FireSmall.png; sourceTree = "<group>"; };
-		493C06911E3130F600C1C9E6 /* Fog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Fog.png; path = Image_Data_Assets/Fog.png; sourceTree = "<group>"; };
-		493C06921E3130F600C1C9E6 /* FontColors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontColors.png; path = Image_Data_Assets/FontColors.png; sourceTree = "<group>"; };
-		493C06931E3130F600C1C9E6 /* FontKingthings8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontKingthings8.png; path = Image_Data_Assets/FontKingthings8.png; sourceTree = "<group>"; };
-		493C06941E3130F600C1C9E6 /* FontKingthings10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontKingthings10.png; path = Image_Data_Assets/FontKingthings10.png; sourceTree = "<group>"; };
-		493C06951E3130F600C1C9E6 /* FontKingthings12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontKingthings12.png; path = Image_Data_Assets/FontKingthings12.png; sourceTree = "<group>"; };
-		493C06961E3130F600C1C9E6 /* FontKingthings16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontKingthings16.png; path = Image_Data_Assets/FontKingthings16.png; sourceTree = "<group>"; };
-		493C06971E3130F600C1C9E6 /* FontKingthings24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FontKingthings24.png; path = Image_Data_Assets/FontKingthings24.png; sourceTree = "<group>"; };
-		493C06981E3130F600C1C9E6 /* Footman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Footman.png; path = Image_Data_Assets/Footman.png; sourceTree = "<group>"; };
-		493C06991E3130F600C1C9E6 /* GoldMine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = GoldMine.png; path = Image_Data_Assets/GoldMine.png; sourceTree = "<group>"; };
-		493C069A1E3130F600C1C9E6 /* GuardTower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = GuardTower.png; path = Image_Data_Assets/GuardTower.png; sourceTree = "<group>"; };
-		493C069B1E3130F600C1C9E6 /* Icons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icons.png; path = Image_Data_Assets/Icons.png; sourceTree = "<group>"; };
-		493C069C1E3130F600C1C9E6 /* InnerBevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = InnerBevel.png; path = Image_Data_Assets/InnerBevel.png; sourceTree = "<group>"; };
-		493C069D1E3130F600C1C9E6 /* Keep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Keep.png; path = Image_Data_Assets/Keep.png; sourceTree = "<group>"; };
-		493C069E1E3130F600C1C9E6 /* ListViewIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ListViewIcons.png; path = Image_Data_Assets/ListViewIcons.png; sourceTree = "<group>"; };
-		493C069F1E3130F600C1C9E6 /* LumberMill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LumberMill.png; path = Image_Data_Assets/LumberMill.png; sourceTree = "<group>"; };
-		493C06A01E3130F600C1C9E6 /* Marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Marker.png; path = Image_Data_Assets/Marker.png; sourceTree = "<group>"; };
-		493C06A11E3130F600C1C9E6 /* MiniBevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MiniBevel.png; path = Image_Data_Assets/MiniBevel.png; sourceTree = "<group>"; };
-		493C06A21E3130F600C1C9E6 /* MiniIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MiniIcons.png; path = Image_Data_Assets/MiniIcons.png; sourceTree = "<group>"; };
-		493C06A31E3130F600C1C9E6 /* OuterBevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OuterBevel.png; path = Image_Data_Assets/OuterBevel.png; sourceTree = "<group>"; };
-		493C06A41E3130F600C1C9E6 /* Peasant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Peasant.png; path = Image_Data_Assets/Peasant.png; sourceTree = "<group>"; };
-		493C06A51E3130F600C1C9E6 /* Ranger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Ranger.png; path = Image_Data_Assets/Ranger.png; sourceTree = "<group>"; };
-		493C06A61E3130F600C1C9E6 /* ScoutTower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ScoutTower.png; path = Image_Data_Assets/ScoutTower.png; sourceTree = "<group>"; };
-		493C06A71E3130F600C1C9E6 /* Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Splash.png; path = Image_Data_Assets/Splash.png; sourceTree = "<group>"; };
-		493C06A81E3130F600C1C9E6 /* Terrain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Terrain.png; path = Image_Data_Assets/Terrain.png; sourceTree = "<group>"; };
-		493C06A91E3130F600C1C9E6 /* Texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Texture.png; path = Image_Data_Assets/Texture.png; sourceTree = "<group>"; };
-		493C06AA1E3130F600C1C9E6 /* TownHall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = TownHall.png; path = Image_Data_Assets/TownHall.png; sourceTree = "<group>"; };
-		493C06AB1E3130F600C1C9E6 /* Archer.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Archer.dat; path = Image_Data_Assets/Archer.dat; sourceTree = "<group>"; };
-		493C06AC1E3130F600C1C9E6 /* Arrow.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Arrow.dat; path = Image_Data_Assets/Arrow.dat; sourceTree = "<group>"; };
-		493C06AD1E3130F600C1C9E6 /* AssetColor.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AssetColor.dat; path = Image_Data_Assets/AssetColor.dat; sourceTree = "<group>"; };
-		493C06AE1E3130F600C1C9E6 /* AssetNone.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AssetNone.dat; path = Image_Data_Assets/AssetNone.dat; sourceTree = "<group>"; };
-		493C06AF1E3130F600C1C9E6 /* Barracks.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Barracks.dat; path = Image_Data_Assets/Barracks.dat; sourceTree = "<group>"; };
-		493C06B01E3130F600C1C9E6 /* Blacksmith.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Blacksmith.dat; path = Image_Data_Assets/Blacksmith.dat; sourceTree = "<group>"; };
-		493C06B11E3130F600C1C9E6 /* BuildingDeath.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BuildingDeath.dat; path = Image_Data_Assets/BuildingDeath.dat; sourceTree = "<group>"; };
-		493C06B21E3130F600C1C9E6 /* ButtonColors.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ButtonColors.dat; path = Image_Data_Assets/ButtonColors.dat; sourceTree = "<group>"; };
-		493C06B31E3130F600C1C9E6 /* Cannonball.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Cannonball.dat; path = Image_Data_Assets/Cannonball.dat; sourceTree = "<group>"; };
-		493C06B41E3130F600C1C9E6 /* CannonballDeath.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CannonballDeath.dat; path = Image_Data_Assets/CannonballDeath.dat; sourceTree = "<group>"; };
-		493C06B51E3130F600C1C9E6 /* CannonTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CannonTower.dat; path = Image_Data_Assets/CannonTower.dat; sourceTree = "<group>"; };
-		493C06B61E3130F600C1C9E6 /* Castle.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Castle.dat; path = Image_Data_Assets/Castle.dat; sourceTree = "<group>"; };
-		493C06B71E3130F600C1C9E6 /* Colors.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Colors.dat; path = Image_Data_Assets/Colors.dat; sourceTree = "<group>"; };
-		493C06B81E3130F600C1C9E6 /* Corpse.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Corpse.dat; path = Image_Data_Assets/Corpse.dat; sourceTree = "<group>"; };
-		493C06B91E3130F600C1C9E6 /* Cursors.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Cursors.dat; path = Image_Data_Assets/Cursors.dat; sourceTree = "<group>"; };
-		493C06BA1E3130F600C1C9E6 /* Farm.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Farm.dat; path = Image_Data_Assets/Farm.dat; sourceTree = "<group>"; };
-		493C06BB1E3130F600C1C9E6 /* FireLarge.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FireLarge.dat; path = Image_Data_Assets/FireLarge.dat; sourceTree = "<group>"; };
-		493C06BC1E3130F600C1C9E6 /* FireSmall.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FireSmall.dat; path = Image_Data_Assets/FireSmall.dat; sourceTree = "<group>"; };
-		493C06BD1E3130F600C1C9E6 /* Fog.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Fog.dat; path = Image_Data_Assets/Fog.dat; sourceTree = "<group>"; };
-		493C06BE1E3130F600C1C9E6 /* FontColors.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontColors.dat; path = Image_Data_Assets/FontColors.dat; sourceTree = "<group>"; };
-		493C06BF1E3130F600C1C9E6 /* FontKingthings8.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontKingthings8.dat; path = Image_Data_Assets/FontKingthings8.dat; sourceTree = "<group>"; };
-		493C06C01E3130F600C1C9E6 /* FontKingthings10.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontKingthings10.dat; path = Image_Data_Assets/FontKingthings10.dat; sourceTree = "<group>"; };
-		493C06C11E3130F600C1C9E6 /* FontKingthings12.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontKingthings12.dat; path = Image_Data_Assets/FontKingthings12.dat; sourceTree = "<group>"; };
-		493C06C21E3130F600C1C9E6 /* FontKingthings16.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontKingthings16.dat; path = Image_Data_Assets/FontKingthings16.dat; sourceTree = "<group>"; };
-		493C06C31E3130F600C1C9E6 /* FontKingthings24.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FontKingthings24.dat; path = Image_Data_Assets/FontKingthings24.dat; sourceTree = "<group>"; };
-		493C06C41E3130F600C1C9E6 /* Footman.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Footman.dat; path = Image_Data_Assets/Footman.dat; sourceTree = "<group>"; };
-		493C06C51E3130F600C1C9E6 /* GoldMine.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GoldMine.dat; path = Image_Data_Assets/GoldMine.dat; sourceTree = "<group>"; };
-		493C06C61E3130F600C1C9E6 /* GuardTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GuardTower.dat; path = Image_Data_Assets/GuardTower.dat; sourceTree = "<group>"; };
-		493C06C71E3130F600C1C9E6 /* Icons.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Icons.dat; path = Image_Data_Assets/Icons.dat; sourceTree = "<group>"; };
-		493C06C81E3130F600C1C9E6 /* InnerBevel.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = InnerBevel.dat; path = Image_Data_Assets/InnerBevel.dat; sourceTree = "<group>"; };
-		493C06C91E3130F600C1C9E6 /* Keep.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Keep.dat; path = Image_Data_Assets/Keep.dat; sourceTree = "<group>"; };
-		493C06CA1E3130F600C1C9E6 /* ListViewIcons.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ListViewIcons.dat; path = Image_Data_Assets/ListViewIcons.dat; sourceTree = "<group>"; };
-		493C06CB1E3130F600C1C9E6 /* LumberMill.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LumberMill.dat; path = Image_Data_Assets/LumberMill.dat; sourceTree = "<group>"; };
-		493C06CC1E3130F600C1C9E6 /* MapRendering.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MapRendering.dat; path = Image_Data_Assets/MapRendering.dat; sourceTree = "<group>"; };
-		493C06CD1E3130F600C1C9E6 /* Marker.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Marker.dat; path = Image_Data_Assets/Marker.dat; sourceTree = "<group>"; };
-		493C06CE1E3130F600C1C9E6 /* MiniBevel.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MiniBevel.dat; path = Image_Data_Assets/MiniBevel.dat; sourceTree = "<group>"; };
-		493C06CF1E3130F600C1C9E6 /* MiniIcons.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MiniIcons.dat; path = Image_Data_Assets/MiniIcons.dat; sourceTree = "<group>"; };
-		493C06D01E3130F600C1C9E6 /* OuterBevel.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OuterBevel.dat; path = Image_Data_Assets/OuterBevel.dat; sourceTree = "<group>"; };
-		493C06D11E3130F600C1C9E6 /* Peasant.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Peasant.dat; path = Image_Data_Assets/Peasant.dat; sourceTree = "<group>"; };
-		493C06D21E3130F600C1C9E6 /* Ranger.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Ranger.dat; path = Image_Data_Assets/Ranger.dat; sourceTree = "<group>"; };
-		493C06D31E3130F600C1C9E6 /* ScoutTower.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ScoutTower.dat; path = Image_Data_Assets/ScoutTower.dat; sourceTree = "<group>"; };
-		493C06D41E3130F600C1C9E6 /* Splash.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Splash.dat; path = Image_Data_Assets/Splash.dat; sourceTree = "<group>"; };
-		493C06D61E3130F600C1C9E6 /* Texture.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Texture.dat; path = Image_Data_Assets/Texture.dat; sourceTree = "<group>"; };
-		493C06D71E3130F600C1C9E6 /* TownHall.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TownHall.dat; path = Image_Data_Assets/TownHall.dat; sourceTree = "<group>"; };
-		493C07371E3136A100C1C9E6 /* Terrain.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Terrain.dat; path = Image_Data_Assets/Terrain.dat; sourceTree = "<group>"; };
-		495F2EB71E3AD4EB0047BD0F /* selected4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = selected4.wav; sourceTree = "<group>"; };
-		495F2EBC1E3AE01B0047BD0F /* generalsoundfont.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = generalsoundfont.sf2; sourceTree = "<group>"; };
-		4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = blacksmith.wav; sourceTree = "<group>"; };
-		4985844F1E303F6B00F6766C /* TerrainManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		8E0B3B161E48656000BA4832 /* FogRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FogRenderer.swift; sourceTree = "<group>"; };
 		8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameDataTypes.swift; sourceTree = "<group>"; };
@@ -258,9 +67,6 @@
 		8E663E8B1E41447F00FD4727 /* RandomNumberGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomNumberGenerator.swift; sourceTree = "<group>"; };
 		8E663E8F1E41492100FD4727 /* GameModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCapabilities.swift; sourceTree = "<group>"; };
-		8EA067671E3023880059CEC2 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
-		8EA067691E3026CC0059CEC2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		8EA067711E3310470059CEC2 /* intro.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = intro.mid; sourceTree = "<group>"; };
 		8EA067741E33C8E00059CEC2 /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		8EA067751E33C8E00059CEC2 /* DataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		8EA067761E33C8E00059CEC2 /* DataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSink.swift; sourceTree = "<group>"; };
@@ -281,30 +87,27 @@
 		C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatter.swift; sourceTree = "<group>"; };
 		C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicMulticolorTileset.swift; sourceTree = "<group>"; };
 		C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetRenderer.swift; sourceTree = "<group>"; };
-		D01B68111E35A3DE0003C408 /* maze.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = maze.map; sourceTree = "<group>"; };
+		D022B24D1E504C4300F8736B /* FileDataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataContainer.swift; sourceTree = "<group>"; };
+		D022B24F1E504CA600F8736B /* FileDataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataSink.swift; sourceTree = "<group>"; };
+		D022B2511E504FCD00F8736B /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
-		D0773FC61E384A7E00FF7DD7 /* 2player.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2player.map; sourceTree = "<group>"; };
-		D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = 2playerdivide.map; sourceTree = "<group>"; };
 		D08F47421E35BE6300F7FED1 /* PixelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelType.swift; sourceTree = "<group>"; };
 		D08F47441E35D80600F7FED1 /* MapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRenderer.swift; sourceTree = "<group>"; };
 		D08F47461E35D89800F7FED1 /* GraphicTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicTileset.swift; sourceTree = "<group>"; };
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
 		D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
-		D0A3C7231E485BA400B24AC5 /* AssetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetView.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
-		D0D4A3D91E3F1A07009460DE /* MapRendering.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MapRendering.dat; sourceTree = "<group>"; };
 		D0D4A3DB1E3F265A009460DE /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D0D6FA561E26015E00D92DA5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		D0D6FA591E26015E00D92DA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D0D6FA5E1E26015E00D92DA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D0D6FA601E26015E00D92DA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
-		D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		D0DF813C1E3F2ECE000F9BC4 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,113 +122,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4985844E1E303F0300F6766C /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				493C06AB1E3130F600C1C9E6 /* Archer.dat */,
-				493C067F1E3130F600C1C9E6 /* Archer.png */,
-				493C06AC1E3130F600C1C9E6 /* Arrow.dat */,
-				493C06801E3130F600C1C9E6 /* Arrow.png */,
-				493C06AD1E3130F600C1C9E6 /* AssetColor.dat */,
-				493C06811E3130F600C1C9E6 /* AssetColor.png */,
-				493C06AE1E3130F600C1C9E6 /* AssetNone.dat */,
-				493C06821E3130F600C1C9E6 /* AssetNone.png */,
-				493C06AF1E3130F600C1C9E6 /* Barracks.dat */,
-				493C06831E3130F600C1C9E6 /* Barracks.png */,
-				493C06B01E3130F600C1C9E6 /* Blacksmith.dat */,
-				493C06841E3130F600C1C9E6 /* Blacksmith.png */,
-				493C06B11E3130F600C1C9E6 /* BuildingDeath.dat */,
-				493C06851E3130F600C1C9E6 /* BuildingDeath.png */,
-				493C06B21E3130F600C1C9E6 /* ButtonColors.dat */,
-				493C06861E3130F600C1C9E6 /* ButtonColors.png */,
-				493C06B31E3130F600C1C9E6 /* Cannonball.dat */,
-				493C06871E3130F600C1C9E6 /* Cannonball.png */,
-				493C06B41E3130F600C1C9E6 /* CannonballDeath.dat */,
-				493C06881E3130F600C1C9E6 /* CannonballDeath.png */,
-				493C06B51E3130F600C1C9E6 /* CannonTower.dat */,
-				493C06891E3130F600C1C9E6 /* CannonTower.png */,
-				493C06B61E3130F600C1C9E6 /* Castle.dat */,
-				493C068A1E3130F600C1C9E6 /* Castle.png */,
-				493C06B71E3130F600C1C9E6 /* Colors.dat */,
-				493C068B1E3130F600C1C9E6 /* Colors.png */,
-				493C06B81E3130F600C1C9E6 /* Corpse.dat */,
-				493C068C1E3130F600C1C9E6 /* Corpse.png */,
-				493C06B91E3130F600C1C9E6 /* Cursors.dat */,
-				493C068D1E3130F600C1C9E6 /* Cursors.png */,
-				493C06BA1E3130F600C1C9E6 /* Farm.dat */,
-				493C068E1E3130F600C1C9E6 /* Farm.png */,
-				493C06BB1E3130F600C1C9E6 /* FireLarge.dat */,
-				493C068F1E3130F600C1C9E6 /* FireLarge.png */,
-				493C06BC1E3130F600C1C9E6 /* FireSmall.dat */,
-				493C06901E3130F600C1C9E6 /* FireSmall.png */,
-				493C06BD1E3130F600C1C9E6 /* Fog.dat */,
-				493C06911E3130F600C1C9E6 /* Fog.png */,
-				493C06BE1E3130F600C1C9E6 /* FontColors.dat */,
-				493C06921E3130F600C1C9E6 /* FontColors.png */,
-				493C06BF1E3130F600C1C9E6 /* FontKingthings8.dat */,
-				493C06931E3130F600C1C9E6 /* FontKingthings8.png */,
-				493C06C01E3130F600C1C9E6 /* FontKingthings10.dat */,
-				493C06941E3130F600C1C9E6 /* FontKingthings10.png */,
-				493C06C11E3130F600C1C9E6 /* FontKingthings12.dat */,
-				493C06951E3130F600C1C9E6 /* FontKingthings12.png */,
-				493C06C21E3130F600C1C9E6 /* FontKingthings16.dat */,
-				493C06961E3130F600C1C9E6 /* FontKingthings16.png */,
-				493C06C31E3130F600C1C9E6 /* FontKingthings24.dat */,
-				493C06971E3130F600C1C9E6 /* FontKingthings24.png */,
-				493C06C41E3130F600C1C9E6 /* Footman.dat */,
-				493C06981E3130F600C1C9E6 /* Footman.png */,
-				493C06C51E3130F600C1C9E6 /* GoldMine.dat */,
-				493C06991E3130F600C1C9E6 /* GoldMine.png */,
-				493C06C61E3130F600C1C9E6 /* GuardTower.dat */,
-				493C069A1E3130F600C1C9E6 /* GuardTower.png */,
-				493C06C71E3130F600C1C9E6 /* Icons.dat */,
-				493C069B1E3130F600C1C9E6 /* Icons.png */,
-				493C06C81E3130F600C1C9E6 /* InnerBevel.dat */,
-				493C069C1E3130F600C1C9E6 /* InnerBevel.png */,
-				493C06C91E3130F600C1C9E6 /* Keep.dat */,
-				493C069D1E3130F600C1C9E6 /* Keep.png */,
-				493C06CA1E3130F600C1C9E6 /* ListViewIcons.dat */,
-				493C069E1E3130F600C1C9E6 /* ListViewIcons.png */,
-				493C06CB1E3130F600C1C9E6 /* LumberMill.dat */,
-				493C069F1E3130F600C1C9E6 /* LumberMill.png */,
-				493C06CC1E3130F600C1C9E6 /* MapRendering.dat */,
-				493C06CD1E3130F600C1C9E6 /* Marker.dat */,
-				493C06A01E3130F600C1C9E6 /* Marker.png */,
-				493C06CE1E3130F600C1C9E6 /* MiniBevel.dat */,
-				493C06A11E3130F600C1C9E6 /* MiniBevel.png */,
-				493C06CF1E3130F600C1C9E6 /* MiniIcons.dat */,
-				493C06A21E3130F600C1C9E6 /* MiniIcons.png */,
-				493C06D01E3130F600C1C9E6 /* OuterBevel.dat */,
-				493C06A31E3130F600C1C9E6 /* OuterBevel.png */,
-				493C06D11E3130F600C1C9E6 /* Peasant.dat */,
-				493C06A41E3130F600C1C9E6 /* Peasant.png */,
-				493C06D21E3130F600C1C9E6 /* Ranger.dat */,
-				493C06A51E3130F600C1C9E6 /* Ranger.png */,
-				493C06D31E3130F600C1C9E6 /* ScoutTower.dat */,
-				493C06A61E3130F600C1C9E6 /* ScoutTower.png */,
-				493C06D41E3130F600C1C9E6 /* Splash.dat */,
-				493C06A71E3130F600C1C9E6 /* Splash.png */,
-				493C07371E3136A100C1C9E6 /* Terrain.dat */,
-				493C06A81E3130F600C1C9E6 /* Terrain.png */,
-				493C06D61E3130F600C1C9E6 /* Texture.dat */,
-				493C06A91E3130F600C1C9E6 /* Texture.png */,
-				493C06D71E3130F600C1C9E6 /* TownHall.dat */,
-				493C06AA1E3130F600C1C9E6 /* TownHall.png */,
-			);
-			name = Images;
-			sourceTree = "<group>";
-		};
-		498584511E311B5500F6766C /* Maps */ = {
-			isa = PBXGroup;
-			children = (
-				D0D4A3D91E3F1A07009460DE /* MapRendering.dat */,
-				D0773FC61E384A7E00FF7DD7 /* 2player.map */,
-				D0773FC71E384A7E00FF7DD7 /* 2playerdivide.map */,
-				D01B68111E35A3DE0003C408 /* maze.map */,
-			);
-			name = Maps;
-			sourceTree = "<group>";
-		};
 		49F506811E41924100DB1362 /* GameLogic */ = {
 			isa = PBXGroup;
 			children = (
@@ -453,9 +149,8 @@
 				D0773FC11E3847C200FF7DD7 /* Graphic */,
 				D0773FC41E38485500FF7DD7 /* GameType */,
 				D0773FC31E38483200FF7DD7 /* Player */,
-				D02808AC1E472190001C1E0E /* Render */,
+				D02808AC1E472190001C1E0E /* Renderer */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
-				D0773FC21E3847F100FF7DD7 /* Temporary */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -468,18 +163,7 @@
 			name = Capabilities;
 			sourceTree = "<group>";
 		};
-		8EA0676F1E33102E0059CEC2 /* Music */ = {
-			isa = PBXGroup;
-			children = (
-				495F2EBC1E3AE01B0047BD0F /* generalsoundfont.sf2 */,
-				495F2EB71E3AD4EB0047BD0F /* selected4.wav */,
-				4960FAFA1E35AA0C008D8A2E /* blacksmith.wav */,
-				8EA067711E3310470059CEC2 /* intro.mid */,
-			);
-			name = Music;
-			sourceTree = "<group>";
-		};
-		D02808AC1E472190001C1E0E /* Render */ = {
+		D02808AC1E472190001C1E0E /* Renderer */ = {
 			isa = PBXGroup;
 			children = (
 				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
@@ -487,7 +171,7 @@
 				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
 				C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */,
 			);
-			name = Render;
+			name = Renderer;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
@@ -505,7 +189,9 @@
 				8EA067751E33C8E00059CEC2 /* DataContainer.swift */,
 				8EA067741E33C8E00059CEC2 /* DataSource.swift */,
 				8EA067761E33C8E00059CEC2 /* DataSink.swift */,
+				D022B24D1E504C4300F8736B /* FileDataContainer.swift */,
 				8EA067771E33C8E00059CEC2 /* FileDataSource.swift */,
+				D022B24F1E504CA600F8736B /* FileDataSink.swift */,
 				8EA067791E33C8E00059CEC2 /* LineDataSource.swift */,
 			);
 			name = DataContainer;
@@ -535,14 +221,6 @@
 				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
 			);
 			name = Graphic;
-			sourceTree = "<group>";
-		};
-		D0773FC21E3847F100FF7DD7 /* Temporary */ = {
-			isa = PBXGroup;
-			children = (
-				4985844F1E303F6B00F6766C /* TerrainManager.swift */,
-			);
-			name = Temporary;
 			sourceTree = "<group>";
 		};
 		D0773FC31E38483200FF7DD7 /* Player */ = {
@@ -602,7 +280,6 @@
 				8E1B515A1E2D58CA008E968C /* Models */,
 				D0D6FA681E26028000D92DA5 /* ViewControllers */,
 				D0D6FA691E26028B00D92DA5 /* Views */,
-				D0D6FA6C1E2602C200D92DA5 /* Scenes */,
 				D0D6FA6B1E2602AE00D92DA5 /* Resources */,
 				8E1B515D1E2D5DE9008E968C /* MyPlayground.playground */,
 			);
@@ -613,8 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
-				D0D6FA561E26015E00D92DA5 /* GameViewController.swift */,
-				D0DF813C1E3F2ECE000F9BC4 /* TestViewController.swift */,
+				D0DF813C1E3F2ECE000F9BC4 /* GameViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -626,7 +302,6 @@
 				D0D6FA5D1E26015E00D92DA5 /* LaunchScreen.storyboard */,
 				D0D4A3DB1E3F265A009460DE /* MapView.swift */,
 				D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */,
-				D0A3C7231E485BA400B24AC5 /* AssetView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -642,22 +317,11 @@
 		D0D6FA6B1E2602AE00D92DA5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8EA0676F1E33102E0059CEC2 /* Music */,
-				498584511E311B5500F6766C /* Maps */,
-				4985844E1E303F0300F6766C /* Images */,
-				D0D6FA601E26015E00D92DA5 /* Info.plist */,
+				D022B2511E504FCD00F8736B /* data */,
 				D0D6FA5B1E26015E00D92DA5 /* Assets.xcassets */,
+				D0D6FA601E26015E00D92DA5 /* Info.plist */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		D0D6FA6C1E2602C200D92DA5 /* Scenes */ = {
-			isa = PBXGroup;
-			children = (
-				8EA067671E3023880059CEC2 /* GameScene.swift */,
-				8EA067691E3026CC0059CEC2 /* GameScene.sks */,
-			);
-			name = Scenes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -723,106 +387,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0773FC81E384AE100FF7DD7 /* 2player.map in Resources */,
-				D0773FC91E384AE100FF7DD7 /* 2playerdivide.map in Resources */,
-				D01B68121E35A4320003C408 /* maze.map in Resources */,
-				8EA067731E3310470059CEC2 /* intro.mid in Resources */,
-				493C070D1E3130F600C1C9E6 /* CannonballDeath.dat in Resources */,
 				D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */,
-				493C06F31E3130F600C1C9E6 /* GuardTower.png in Resources */,
-				493C06F01E3130F600C1C9E6 /* FontKingthings24.png in Resources */,
-				493C06FE1E3130F600C1C9E6 /* Ranger.png in Resources */,
-				493C071A1E3130F600C1C9E6 /* FontKingthings12.dat in Resources */,
-				493C06E01E3130F600C1C9E6 /* Cannonball.png in Resources */,
-				493C072D1E3130F600C1C9E6 /* Splash.dat in Resources */,
-				493C07281E3130F600C1C9E6 /* MiniIcons.dat in Resources */,
-				493C06DF1E3130F600C1C9E6 /* ButtonColors.png in Resources */,
-				493C06D81E3130F600C1C9E6 /* Archer.png in Resources */,
-				493C06E41E3130F600C1C9E6 /* Colors.png in Resources */,
-				493C07381E3136A100C1C9E6 /* Terrain.dat in Resources */,
-				493C07241E3130F600C1C9E6 /* LumberMill.dat in Resources */,
-				493C071D1E3130F600C1C9E6 /* Footman.dat in Resources */,
-				493C07191E3130F600C1C9E6 /* FontKingthings10.dat in Resources */,
-				493C06E11E3130F600C1C9E6 /* CannonballDeath.png in Resources */,
-				493C071F1E3130F600C1C9E6 /* GuardTower.dat in Resources */,
-				493C06DB1E3130F600C1C9E6 /* AssetNone.png in Resources */,
-				493C06E91E3130F600C1C9E6 /* FireSmall.png in Resources */,
-				493C07161E3130F600C1C9E6 /* Fog.dat in Resources */,
-				4960FAFB1E35AA0C008D8A2E /* blacksmith.wav in Resources */,
-				493C07181E3130F600C1C9E6 /* FontKingthings8.dat in Resources */,
-				493C07051E3130F600C1C9E6 /* Arrow.dat in Resources */,
-				493C07131E3130F600C1C9E6 /* Farm.dat in Resources */,
-				493C07121E3130F600C1C9E6 /* Cursors.dat in Resources */,
-				493C06FA1E3130F600C1C9E6 /* MiniBevel.png in Resources */,
-				493C07021E3130F600C1C9E6 /* Texture.png in Resources */,
-				495F2EBD1E3AE4F80047BD0F /* generalsoundfont.sf2 in Resources */,
-				493C071B1E3130F600C1C9E6 /* FontKingthings16.dat in Resources */,
-				493C06E61E3130F600C1C9E6 /* Cursors.png in Resources */,
-				493C07081E3130F600C1C9E6 /* Barracks.dat in Resources */,
-				493C06ED1E3130F600C1C9E6 /* FontKingthings10.png in Resources */,
-				493C06DE1E3130F600C1C9E6 /* BuildingDeath.png in Resources */,
-				493C06EF1E3130F600C1C9E6 /* FontKingthings16.png in Resources */,
-				493C07061E3130F600C1C9E6 /* AssetColor.dat in Resources */,
-				493C070E1E3130F600C1C9E6 /* CannonTower.dat in Resources */,
-				493C07301E3130F600C1C9E6 /* TownHall.dat in Resources */,
-				493C07291E3130F600C1C9E6 /* OuterBevel.dat in Resources */,
-				493C07211E3130F600C1C9E6 /* InnerBevel.dat in Resources */,
-				493C06F71E3130F600C1C9E6 /* ListViewIcons.png in Resources */,
-				493C06FB1E3130F600C1C9E6 /* MiniIcons.png in Resources */,
-				D0D4A3DA1E3F1A07009460DE /* MapRendering.dat in Resources */,
-				493C06F21E3130F600C1C9E6 /* GoldMine.png in Resources */,
-				493C06EE1E3130F600C1C9E6 /* FontKingthings12.png in Resources */,
-				493C07261E3130F600C1C9E6 /* Marker.dat in Resources */,
-				493C072C1E3130F600C1C9E6 /* ScoutTower.dat in Resources */,
-				493C06DC1E3130F600C1C9E6 /* Barracks.png in Resources */,
-				493C06E31E3130F600C1C9E6 /* Castle.png in Resources */,
-				493C07151E3130F600C1C9E6 /* FireSmall.dat in Resources */,
-				493C07111E3130F600C1C9E6 /* Corpse.dat in Resources */,
 				D0D6FA5C1E26015E00D92DA5 /* Assets.xcassets in Resources */,
-				493C06F11E3130F600C1C9E6 /* Footman.png in Resources */,
-				493C07101E3130F600C1C9E6 /* Colors.dat in Resources */,
-				493C06EC1E3130F600C1C9E6 /* FontKingthings8.png in Resources */,
-				493C06E71E3130F600C1C9E6 /* Farm.png in Resources */,
-				493C06F41E3130F600C1C9E6 /* Icons.png in Resources */,
-				493C06F81E3130F600C1C9E6 /* LumberMill.png in Resources */,
-				493C070F1E3130F600C1C9E6 /* Castle.dat in Resources */,
-				493C07221E3130F600C1C9E6 /* Keep.dat in Resources */,
-				493C071E1E3130F600C1C9E6 /* GoldMine.dat in Resources */,
 				D0D6FA5F1E26015E00D92DA5 /* LaunchScreen.storyboard in Resources */,
-				493C06FF1E3130F600C1C9E6 /* ScoutTower.png in Resources */,
-				493C072B1E3130F600C1C9E6 /* Ranger.dat in Resources */,
-				493C07231E3130F600C1C9E6 /* ListViewIcons.dat in Resources */,
-				493C07171E3130F600C1C9E6 /* FontColors.dat in Resources */,
-				493C070B1E3130F600C1C9E6 /* ButtonColors.dat in Resources */,
-				493C07271E3130F600C1C9E6 /* MiniBevel.dat in Resources */,
-				493C06EA1E3130F600C1C9E6 /* Fog.png in Resources */,
-				493C06FD1E3130F600C1C9E6 /* Peasant.png in Resources */,
-				493C07071E3130F600C1C9E6 /* AssetNone.dat in Resources */,
-				493C070A1E3130F600C1C9E6 /* BuildingDeath.dat in Resources */,
-				493C071C1E3130F600C1C9E6 /* FontKingthings24.dat in Resources */,
-				493C06E51E3130F600C1C9E6 /* Corpse.png in Resources */,
-				493C07091E3130F600C1C9E6 /* Blacksmith.dat in Resources */,
-				493C06F51E3130F600C1C9E6 /* InnerBevel.png in Resources */,
-				493C07011E3130F600C1C9E6 /* Terrain.png in Resources */,
-				493C06FC1E3130F600C1C9E6 /* OuterBevel.png in Resources */,
-				493C07141E3130F600C1C9E6 /* FireLarge.dat in Resources */,
-				8EA0676A1E3026CC0059CEC2 /* GameScene.sks in Resources */,
-				493C072A1E3130F600C1C9E6 /* Peasant.dat in Resources */,
-				493C07001E3130F600C1C9E6 /* Splash.png in Resources */,
-				493C06F61E3130F600C1C9E6 /* Keep.png in Resources */,
-				493C072F1E3130F600C1C9E6 /* Texture.dat in Resources */,
-				493C07031E3130F600C1C9E6 /* TownHall.png in Resources */,
-				493C06E21E3130F600C1C9E6 /* CannonTower.png in Resources */,
-				495F2EB81E3AD4EB0047BD0F /* selected4.wav in Resources */,
-				493C06DA1E3130F600C1C9E6 /* AssetColor.png in Resources */,
-				493C06D91E3130F600C1C9E6 /* Arrow.png in Resources */,
-				493C06DD1E3130F600C1C9E6 /* Blacksmith.png in Resources */,
-				493C06EB1E3130F600C1C9E6 /* FontColors.png in Resources */,
-				493C06E81E3130F600C1C9E6 /* FireLarge.png in Resources */,
-				493C070C1E3130F600C1C9E6 /* Cannonball.dat in Resources */,
-				493C06F91E3130F600C1C9E6 /* Marker.png in Resources */,
-				493C07041E3130F600C1C9E6 /* Archer.dat in Resources */,
-				493C07201E3130F600C1C9E6 /* Icons.dat in Resources */,
+				D022B2521E504FCD00F8736B /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -904,16 +472,13 @@
 				8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */,
 				8EA067851E33C8E00059CEC2 /* PeriodicTimeout.swift in Sources */,
 				A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */,
-				8EA067681E3023880059CEC2 /* GameScene.swift in Sources */,
 				8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */,
 				D0D4A3DC1E3F265A009460DE /* MapView.swift in Sources */,
 				D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */,
 				C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */,
 				8E7737051E4ADBE80058A7C6 /* BasicCapabilities.swift in Sources */,
 				C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */,
-				D0D6FA571E26015E00D92DA5 /* GameViewController.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
-				498584501E303F6B00F6766C /* TerrainManager.swift in Sources */,
 				8EA067861E33C8E00059CEC2 /* PlayerAsset.swift in Sources */,
 				D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */,
 				8EA067831E33C8E00059CEC2 /* GraphicResourceContext.swift in Sources */,
@@ -926,18 +491,19 @@
 				49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */,
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 				D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */,
-				D0DF813D1E3F2ECE000F9BC4 /* TestViewController.swift in Sources */,
-				D0A3C7241E485BA400B24AC5 /* AssetView.swift in Sources */,
+				D0DF813D1E3F2ECE000F9BC4 /* GameViewController.swift in Sources */,
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
 				8E663E8C1E41447F00FD4727 /* RandomNumberGenerator.swift in Sources */,
 				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
 				8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */,
+				D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */,
 				C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */,
 				9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */,
 				D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
 				8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */,
 				8E663E901E41492100FD4727 /* GameModel.swift in Sources */,
+				D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

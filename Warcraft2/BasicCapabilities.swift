@@ -188,11 +188,11 @@ class PlayerCapabilityCancel: PlayerCapability {
 
             if AssetAction.none != actor.action {
                 var assetCommand: AssetCommand
-                assetCommand = actor.currentCommand()
+                assetCommand = actor.currentCommand
 
                 if AssetAction.construct == assetCommand.action {
                     if assetCommand.assetTarget != nil {
-                        assetCommand.assetTarget?.currentCommand().activatedCapability?.cancel()
+                        assetCommand.assetTarget?.currentCommand.activatedCapability?.cancel()
                     } else if assetCommand.activatedCapability != nil {
                         assetCommand.activatedCapability?.cancel()
                     }
