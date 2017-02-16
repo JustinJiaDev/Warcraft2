@@ -26,11 +26,6 @@ class MiniMapRenderer {
         resourceContext.fill()
     }
 
-    func viewportColor(_ color: UInt32) -> UInt32 {
-        viewportColor = color
-        return viewportColor
-    }
-
     func drawMiniMap(on surface: GraphicSurface) {
         let resourceContext = surface.resourceContext
         let miniMapWidth = surface.width
