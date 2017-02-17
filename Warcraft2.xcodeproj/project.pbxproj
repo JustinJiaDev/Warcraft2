@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */; };
 		493C06D81E3130F600C1C9E6 /* Archer.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C067F1E3130F600C1C9E6 /* Archer.png */; };
 		493C06D91E3130F600C1C9E6 /* Arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06801E3130F600C1C9E6 /* Arrow.png */; };
 		493C06DA1E3130F600C1C9E6 /* AssetColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 493C06811E3130F600C1C9E6 /* AssetColor.png */; };
@@ -154,6 +155,7 @@
 
 /* Begin PBXFileReference section */
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
+		200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		493C067F1E3130F600C1C9E6 /* Archer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Archer.png; path = Image_Data_Assets/Archer.png; sourceTree = "<group>"; };
 		493C06801E3130F600C1C9E6 /* Arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Arrow.png; path = Image_Data_Assets/Arrow.png; sourceTree = "<group>"; };
 		493C06811E3130F600C1C9E6 /* AssetColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AssetColor.png; path = Image_Data_Assets/AssetColor.png; sourceTree = "<group>"; };
@@ -539,6 +541,7 @@
 			children = (
 				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
 				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
+				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Player;
 			sourceTree = "<group>";
@@ -907,6 +910,7 @@
 				8EA067831E33C8E00059CEC2 /* GraphicResourceContext.swift in Sources */,
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
+				200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */,
 				8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */,
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
 				8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */,

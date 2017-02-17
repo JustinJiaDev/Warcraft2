@@ -42,7 +42,7 @@ class PlayerCapability {
         self.targetType = targetType
     }
 
-    private static func register(capability: PlayerCapability) -> Bool {
+     static func register(capability: PlayerCapability) -> Bool {
         if let _ = nameRegistry[capability.name] {
             return false
         }

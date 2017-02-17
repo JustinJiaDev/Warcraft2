@@ -2,27 +2,23 @@ import Foundation
 
 class PlayerCapabilityUnitUpgrade: PlayerCapability {
     class Registrant {
-        init() { // MARK: Registrant init
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "WeaponUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "WeaponUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "ArmorUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "ArmorUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "ArrowUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "ArrowUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "Longbow"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "RangerScouting"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(UpgradeName: "Marksmanship"))
+        init() {
+            
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade2"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade3"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade2"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade3"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade2"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade3"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Longbow"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "RangerScouting"))
+            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Marksmanship"))
         }
     }
 
-    private static var registrant: Registrant {
-        get {
-            return self.registrant
-        }
-        set(reg) {
-            self.registrant = reg
-        }
-    }
+    private let registrant: Registrant
+    
+    private var upgradeName: String
 
     class ActivatedCapability: ActivatedPlayerCapability {
         private var upgradingType: PlayerAssetType
@@ -32,7 +28,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
         private var lumber: Int
         private var gold: Int
 
-        // MARK: ActivatedCapability init
+        
         init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset, upgradingType: PlayerAssetType, upgradeName: String, lumber: Int, gold: Int, steps: Int) {
             var assetCommand: AssetCommand
 
@@ -62,12 +58,12 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
                 playerData.addUpgrade(with: self.upgradeName)
                 actor.popCommand()
 
-                let range: Range<String.Index> = upgradeName.range(of: "2")!
-                let index: Int = upgradeName.distance(from: upgradeName.startIndex, to: range.lowerBound)
-                let nsUpgradeName = NSString(string: upgradeName)
-
-                if index == (nsUpgradeName.length - 1) {
-                    upgradingType.addCapability(PlayerCapability.findType(with: nsUpgradeName.substring(to: nsUpgradeName.length - 1) + "3"))
+                let range = upgradeName.range(of: "2")!
+                let index = upgradeName.distance(from: upgradeName.startIndex, to: range.lowerBound)
+                
+                if index == (upgradeName.characters.count - 1) {
+                    let i = upgradeName.index(upgradeName.endIndex, offsetBy: 3)
+                    upgradingType.addCapability(PlayerCapability.findType(with: upgradeName[i..<upgradeName.endIndex]))
                 }
 
                 return true
@@ -83,16 +79,14 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
         }
     }
 
-    private var upgradeName: String
-    init(UpgradeName: String) {
-        self.upgradeName = UpgradeName
-        super.init(name: UpgradeName, targetType: TargetType.none)
+    
+    init(upgradeName: String) {
+        super.init(name: upgradeName, targetType: TargetType.none)
+        self.upgradeName = upgradeName
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        let upgrade: PlayerUpgrade? = PlayerUpgrade.findUpgrade(with: upgradeName)
-
-        if upgrade != nil {
+        if let upgrade: PlayerUpgrade? = PlayerUpgrade.findUpgrade(with: upgradeName) {
             if upgrade!.lumberCost > playerData.lumber {
                 return false
             }
@@ -107,19 +101,15 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
         return canInitiate(actor: actor, playerData: playerData)
     }
 
-    // MARK: Line 100
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         let upgrade: PlayerUpgrade? = PlayerUpgrade.findUpgrade(with: upgradeName)
 
         if upgrade != nil {
-            var newCommand: AssetCommand?
+            let newCommand = AssetCommand(action: AssetAction.capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target, upgradingType: actor.assetType, upgradeName: upgradeName, lumber: upgrade!.lumberCost, gold: upgrade!.goldCost, steps: upgrade!.researchTime))
 
-            actor.clearCommand()
-            newCommand!.action = AssetAction.capability // = AssetAction.capability
-            newCommand!.capability = assetCapabilityType
-            newCommand!.assetTarget = target
-            newCommand!.activatedCapability = ActivatedCapability(actor: actor, playerData: playerData, target: target, upgradingType: actor.assetType, upgradeName: upgradeName, lumber: upgrade!.lumberCost, gold: upgrade!.goldCost, steps: upgrade!.researchTime)
-            actor.pushCommand(newCommand!)
+//            actor.clearCommand()
+
+            actor.pushCommand(newCommand)
 
             return true
         }
@@ -128,19 +118,14 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
 }
 
 class PlayerCapabilityBuildRanger: PlayerCapability {
-    class Registrant {
-        init() {    // MARK: Registrant init
+    private class Registrant {
+        init() {
             PlayerCapability.register(capability: PlayerCapabilityBuildRanger(unitName: "Ranger"))
         }
     }
-    private static var registrant: Registrant {
-        get {
-            return registrant
-        }
-        set(Registrant) {
-            self.registrant = Registrant
-        }
-    }
+    private let registrant: Registrant
+    
+    private var unitName: String
 
     class ActivatedCapability: ActivatedPlayerCapability {
         private var upgrandingType: PlayerAssetType
@@ -150,7 +135,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
         private var lumber: Int
         private var gold: Int
 
-        // MARK: ActivatedCapability init
+        
         init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset, upgradingType: PlayerAssetType, unitName: String, lumber: Int, gold: Int, steps: Int) {
             self.unitName = unitName
             self.currentStep = 0
@@ -164,11 +149,11 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
             self.playerData.decrementLumber(by: self.lumber)
             self.playerData.decrementGold(by: self.gold)
 
-            if AssetType.lumberMill == actor.type {
+            if actor.type == .lumberMill {
                 self.upgrandingType = upgradingType
                 self.upgrandingType.removeCapability(PlayerCapability.findType(with: ("Build" + self.unitName)))
 
-            } else if AssetType.barracks == actor.type {
+            } else if actor.type == .barracks  {
                 var assetCommand: AssetCommand?
 
                 assetCommand!.action = AssetAction.construct
@@ -215,7 +200,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
                     // Upgrade all Archers
                     for var asset in playerData.assets {
                         if AssetType.archer == asset.type {
-                            let hitPointIncrement = (ranger?.hitPoints)! - asset.maxHitPoints
+                            let hitPointIncrement = ranger!.hitPoints - asset.maxHitPoints
 
                             asset.changeType(to: ranger!)
                             asset.incrementHitPoints(hitPointIncrement)
@@ -249,8 +234,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
         }
     }
 
-    private var unitName: String
-    init(unitName: String) { // MARK: PlayerCapabilityBuildRanger init
+    init(unitName: String) {
         self.unitName = unitName
         super.init(name: "Build" + unitName, targetType: TargetType.none)
     }
@@ -292,9 +276,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         if AssetType.lumberMill == actor.type {
-            let upgrade: PlayerUpgrade? = PlayerUpgrade.findUpgrade(with: "Build" + unitName)
-
-            if upgrade != nil {
+            if let upgrade: PlayerUpgrade? = PlayerUpgrade.findUpgrade(with: "Build" + unitName) {
                 var newCommand: AssetCommand?
 
                 actor.clearCommand()
