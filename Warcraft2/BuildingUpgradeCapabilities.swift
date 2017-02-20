@@ -35,49 +35,49 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         }
 
         override func percentComplete(max: Int) -> Int {
-            return self.currentStep * max / self.totalSteps
+            return currentStep * max / totalSteps
         }
 
         func incrementStep() -> Bool {
-            var addHitPoints = ((self.upgradeType.hitPoints - self.originalType.hitPoints) * (self.currentStep + 1) / self.totalSteps) - ((self.upgradeType.hitPoints - self.originalType.hitPoints) * self.currentStep / self.totalSteps)
+            var addHitPoints = ((upgradeType.hitPoints - originalType.hitPoints) * (currentStep + 1) / totalSteps) - ((upgradeType.hitPoints - originalType.hitPoints) * currentStep / totalSteps)
 
-            if self.currentStep == 0 {
+            if currentStep == 0 {
                 var assetCommand: AssetCommand = actor.currentCommand
                 assetCommand.action = AssetAction.construct
-                self.actor.popCommand()
-                self.actor.pushCommand(assetCommand)
-                self.actor.changeType(to: self.upgradeType)
-                self.actor.resetStep()
+                actor.popCommand()
+                actor.pushCommand(assetCommand)
+                actor.changeType(to: self.upgradeType)
+                actor.resetStep()
             }
 
             actor.incrementHitPoints(addHitPoints)
 
-            if self.actor.hitPoints > self.actor.maxHitPoints {
-                self.actor.hitPoints = self.actor.maxHitPoints
+            if actor.hitPoints > actor.maxHitPoints {
+                actor.hitPoints = actor.maxHitPoints
             }
 
-            self.currentStep += 1
+            currentStep += 1
             actor.incrementStep()
-            if self.currentStep >= self.totalSteps {
+            if currentStep >= totalSteps {
                 let tempEvent = GameEvent(type: .workComplete, asset: actor)
 
                 playerData.addGameEvent(tempEvent)
 
-                self.actor.popCommand()
-                if self.actor.range != 0 {
+                actor.popCommand()
+                if actor.range != 0 {
                     let command = AssetCommand(action: .standGround) //capability and other values not initialized in original code
                     
-                    self.actor.pushCommand(command)
+                    actor.pushCommand(command)
                 }
                 return true
             }
             return false
         }
         func cancel() -> Bool {
-            self.playerData.incrementLumber(by: self.lumber)
-            self.playerData.incrementGold(by: self.gold)
-            self.actor.changeType(to: self.originalType)
-            self.actor.popCommand()
+            playerData.incrementLumber(by: lumber)
+            playerData.incrementGold(by: gold)
+            actor.changeType(to: originalType)
+            actor.popCommand()
         }
     }
 
@@ -90,8 +90,7 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
 
-        if var iterator = playerData.assetTypes[buildingName] {
-            let assetType = iterator //iterator.second?
+        if let assetType = playerData.assetTypes[buildingName] {
             if assetType.lumberCost > playerData.lumber {
                 return false
             }
@@ -112,9 +111,8 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
 
-        if var iterator = playerData.assetTypes[buildingName] {
+        if let assetType = playerData.assetTypes[buildingName] {
            
-            let assetType = iterator //iterator.second??
             let newCommand = AssetCommand(action: .capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: self.ActivatedCapability(actor, playerData, target, actor.assetType, assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency * assetType.buildTime))
 
             actor.clearCommand()
