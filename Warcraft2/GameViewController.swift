@@ -24,7 +24,13 @@ fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTi
 class GameViewController: UIViewController {
 
     private let mapIndex = 0
-    var gameModel: GameModel?
+    var gameModel: GameModel!
+    var mapRenderer: MapRenderer!
+    var assetRenderer: AssetRenderer!
+    var map: AssetDecoratedMap!
+    var fogRenderer: FogRenderer!
+    var viewportRenderer: ViewportRenderer!
+
     private lazy var midiPlayer: AVMIDIPlayer = {
         do {
             return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
@@ -33,7 +39,7 @@ class GameViewController: UIViewController {
         }
     }()
 
-    private lazy var map: AssetDecoratedMap = {
+    private func createAssetDecoratedMap() -> AssetDecoratedMap {
         do {
             let mapsContainer = try FileDataContainer(url: url("map"))
             AssetDecoratedMap.loadMaps(from: mapsContainer)
@@ -41,9 +47,20 @@ class GameViewController: UIViewController {
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
-    }()
+    }
 
-    private lazy var mapRenderer: MapRenderer = {
+    private func createFogRenderer() -> FogRenderer {
+        do {
+            let fogTileset = try tileset("Fog")
+            return try FogRenderer(tileset: fogTileset, map: self.map.createVisibilityMap())
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
+    }
+
+    private var mapView: MapView!
+
+    private func createMapRenderer() -> MapRenderer {
         do {
             let configuration = try FileDataSource(url: url("img", "MapRendering.dat"))
             let terrainTileset = try tileset("Terrain")
@@ -52,9 +69,9 @@ class GameViewController: UIViewController {
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
-    }()
+    }
 
-    private lazy var assetRenderer: AssetRenderer = {
+    private func createAssetRenderer() -> AssetRenderer {
         do {
             let colors = GraphicRecolorMap()
             var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
@@ -78,10 +95,9 @@ class GameViewController: UIViewController {
             let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
             let buildingDeathTileset = try tileset("BuildingDeath")
             let arrowTileset = try tileset("Arrow")
-            try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
-            let playerData = PlayerData(map: self.map, color: .blue)
-            // _ = PlayerData(map: self.map, color: .none)
-            // _ = PlayerData(map: self.map, color: .red)
+            //            _ = PlayerData(map: self.map, color: .blue)
+            //            _ = PlayerData(map: self.map, color: .none)
+            //            _ = PlayerData(map: self.map, color: .red)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,
@@ -90,35 +106,32 @@ class GameViewController: UIViewController {
                 fireTilesets: fireTilesets,
                 buildingDeathTileset: buildingDeathTileset,
                 arrowTileset: arrowTileset,
-                player: playerData,
+                player: gameModel.player(with: .blue),
                 map: self.map
             )
             return assetRenderer
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
-    }()
-
-    private lazy var fogRenderer: FogRenderer = {
-        do {
-            let fogTileset = try tileset("Fog")
-            return try FogRenderer(tileset: fogTileset, map: self.map.createVisibilityMap())
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }()
-
-    private lazy var viewportRenderer: ViewportRenderer = {
-        return ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    }()
-
-    private var mapView: MapView!
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
+
+        do {
+            try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
+        map = createAssetDecoratedMap()
+        gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
+        mapRenderer = createMapRenderer()
+        assetRenderer = createAssetRenderer()
+        fogRenderer = createFogRenderer()
+        viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
 
         mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
@@ -127,8 +140,6 @@ class GameViewController: UIViewController {
 
         let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(triggerAnimation))
         self.view.addGestureRecognizer(myTapGestureRecognizer)
-
-        gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
     }
 
     func triggerAnimation() {
