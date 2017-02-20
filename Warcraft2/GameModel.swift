@@ -509,7 +509,9 @@ class GameModel {
         for i in 0 ..< actualMap.assets.count {
             if actualMap.assets[i].type == .peasant && actualMap.assets[i].tilePositionX == 10 && actualMap.assets[i].tilePositionY == 10 {
                 print("peasant index \(i)")
-                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: actualMap.assets[i], activatedCapability: nil))
+                let randomMapAsset = PlayerAsset(playerAssetType: PlayerAssetType())
+                randomMapAsset.position = Position(x: 10 * 32 + 16, y: 11 * 32 + 16)
+                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: randomMapAsset, activatedCapability: nil))
             }
         }
     }
@@ -934,8 +936,12 @@ class GameModel {
                 if asset.tileAligned {
                     var command = asset.currentCommand
                     let nextCommand = asset.nextCommand
-                    let mapTarget = Position(x: 10 * Position.tileWidth, y: 11 * Position.tileHeight) //
-                    //                                        let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
+                    // HACK
+                    // let mapTarget = Position(x: 20 * Position.tileWidth, y: 11 * Position.tileHeight)
+                    // END HACK
+                    // ORIGINAL
+                    let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
+                    // END ORIGINAL
 
                     if nextCommand.action == .attack {
                         if nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {

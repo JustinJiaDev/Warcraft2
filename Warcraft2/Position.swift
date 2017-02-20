@@ -168,7 +168,7 @@ class Position {
                 let currentDistance = curPosition.distanceSquared(from: self)
                 if -1 == bestDistance || currentDistance < bestDistance {
                     bestDistance = currentDistance
-                    bestPosition = curPosition
+                    bestPosition = Position(from: curPosition)
                 }
                 curPosition.x += Position.tileWidth
             }

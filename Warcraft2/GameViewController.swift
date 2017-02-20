@@ -24,7 +24,7 @@ fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTi
 class GameViewController: UIViewController {
 
     private let mapIndex = 0
-
+    var gameModel: GameModel?
     private lazy var midiPlayer: AVMIDIPlayer = {
         do {
             return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
@@ -80,8 +80,8 @@ class GameViewController: UIViewController {
             let arrowTileset = try tileset("Arrow")
             try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
             let playerData = PlayerData(map: self.map, color: .blue)
-            _ = PlayerData(map: self.map, color: .none)
-            _ = PlayerData(map: self.map, color: .red)
+            // _ = PlayerData(map: self.map, color: .none)
+            // _ = PlayerData(map: self.map, color: .red)
             let assetRenderer = AssetRenderer(
                 colors: colors,
                 tilesets: tilesets,
@@ -124,20 +124,41 @@ class GameViewController: UIViewController {
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
+
+        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(triggerAnimation))
+        self.view.addGestureRecognizer(myTapGestureRecognizer)
+
+        gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        let gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
+    func triggerAnimation() {
+
+        let displayLink = CADisplayLink(target: self, selector: #selector(test))
+        displayLink.frameInterval = 4
+        displayLink.add(to: .current, forMode: .defaultRunLoopMode)
+    }
+
+    func test() {
+
+        let start = Date()
+
         do {
-            for _ in 0 ..< 2 {
-                try gameModel.timestep()
-                mapView.setNeedsDisplay()
-                usleep(300_000)
-                print("loop")
-            }
+
+            try gameModel?.timestep()
+            // print("loop")
+
         } catch {
             fatalError("Error Thrown By Timestep")
         }
+
+        mapView.setNeedsDisplay()
+
+        let finish = Date()
+
+        let time = finish.timeIntervalSince(start)
+        print(time)
+
+        // print("hi")
     }
 
     override var prefersStatusBarHidden: Bool {
