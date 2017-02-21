@@ -1,18 +1,17 @@
 class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
-    private class Registrant {
+    class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
             PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower")) //removed private from player capability.register
+            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
         }
     }
 
-    private let registrant: Registrant
+    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
-
         private var originalType: PlayerAssetType
         private var upgradeType: PlayerAssetType
         private var currentStep: Int
@@ -20,16 +19,14 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         private var lumber: Int
         private var gold: Int
 
-        init(actor: PlayerAsset, playerData: PlayerAsset, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
-            super.init(actor: actor, playerData: playerData, target: target) //can't convert playerasset to playerdata
-            let assetCommand: AssetCommand
-
+        init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset, originalType: PlayerAssetType, upgradeType: PlayerAssetType, lumber: Int, gold: Int, steps: Int) {
             self.originalType = originalType
             self.upgradeType = upgradeType
             self.currentStep = 0
             self.totalSteps = steps
             self.lumber = lumber
             self.gold = gold
+            super.init(actor: actor, playerData: playerData, target: target)
             self.playerData.decrementLumber(by: lumber)
             self.playerData.decrementGold(by: gold)
         }
@@ -38,15 +35,15 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             return currentStep * max / totalSteps
         }
 
-        func incrementStep() -> Bool {
-            var addHitPoints = ((upgradeType.hitPoints - originalType.hitPoints) * (currentStep + 1) / totalSteps) - ((upgradeType.hitPoints - originalType.hitPoints) * currentStep / totalSteps)
+        override func incrementStep() -> Bool {
+            let addHitPoints = ((upgradeType.hitPoints - originalType.hitPoints) * (currentStep + 1) / totalSteps) - ((upgradeType.hitPoints - originalType.hitPoints) * currentStep / totalSteps)
 
             if currentStep == 0 {
-                var assetCommand: AssetCommand = actor.currentCommand
+                var assetCommand = actor.currentCommand
                 assetCommand.action = AssetAction.construct
                 actor.popCommand()
                 actor.pushCommand(assetCommand)
-                actor.changeType(to: self.upgradeType)
+                actor.changeType(to: upgradeType)
                 actor.resetStep()
             }
 
@@ -59,21 +56,18 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             currentStep += 1
             actor.incrementStep()
             if currentStep >= totalSteps {
-                let tempEvent = GameEvent(type: .workComplete, asset: actor)
-
-                playerData.addGameEvent(tempEvent)
-
+                playerData.addGameEvent(GameEvent(type: .workComplete, asset: actor))
                 actor.popCommand()
                 if actor.range != 0 {
-                    let command = AssetCommand(action: .standGround) //capability and other values not initialized in original code
-                    
+                    let command = AssetCommand(action: .standGround, capability: nil, assetTarget: nil, activatedCapability: nil)
                     actor.pushCommand(command)
                 }
                 return true
             }
             return false
         }
-        func cancel() -> Bool {
+
+        override func cancel() {
             playerData.incrementLumber(by: lumber)
             playerData.incrementGold(by: gold)
             actor.changeType(to: originalType)
@@ -84,12 +78,11 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     private var buildingName: String
 
     init(buildingName: String) {
-        super.init(name: "Build" + buildingName, targetType: .none)
         self.buildingName = buildingName
+        super.init(name: "Build" + buildingName, targetType: .none)
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-
         if let assetType = playerData.assetTypes[buildingName] {
             if assetType.lumberCost > playerData.lumber {
                 return false
@@ -101,7 +94,6 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
                 return false
             }
         }
-
         return true
     }
 
@@ -110,15 +102,24 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-
         if let assetType = playerData.assetTypes[buildingName] {
-           
-            let newCommand = AssetCommand(action: .capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: self.ActivatedCapability(actor, playerData, target, actor.assetType, assetType, assetType.lumberCost, assetType.goldCost, PlayerAsset.updateFrequency * assetType.buildTime))
-
+            let newCommand = AssetCommand(
+                action: .capability,
+                capability: assetCapabilityType,
+                assetTarget: target,
+                activatedCapability: ActivatedCapability(
+                    actor: actor,
+                    playerData: playerData,
+                    target: target,
+                    originalType: actor.assetType,
+                    upgradeType: assetType,
+                    lumber: assetType.lumberCost,
+                    gold: assetType.goldCost,
+                    steps: PlayerAsset.updateFrequency * assetType.buildTime
+                )
+            )
             actor.clearCommand()
-
             actor.pushCommand(newCommand)
-
             return true
         }
         return false
