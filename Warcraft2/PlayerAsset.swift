@@ -681,7 +681,7 @@ class PlayerAssetType {
 
 struct AssetCommand {
     var action: AssetAction
-    var capability: AssetCapabilityType? // It could also be nil
+    var capability: AssetCapabilityType?
     var assetTarget: PlayerAsset?
     var activatedCapability: ActivatedPlayerCapability?
 }
