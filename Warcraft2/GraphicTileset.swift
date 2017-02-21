@@ -12,7 +12,7 @@ class GraphicTileset {
         case missingTileName
     }
 
-    private var surfaceTileset: GraphicSurface?
+    private(set) var surfaceTileset: GraphicSurface?
     private var clippingMasks: [Int: GraphicSurface] = [:]
 
     private var tileIndex: [String: Int] = [:]

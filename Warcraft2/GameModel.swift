@@ -537,9 +537,9 @@ class GameModel {
             if asset.action == .capability {
                 let command = asset.currentCommand
                 if let activatedCapability = command.activatedCapability {
-                    activatedCapability.incrementstep()
+                    activatedCapability.incrementStep()
                 } else {
-                    let playerCapability = PlayerCapability.findCapability(with: command.capability)
+                    let playerCapability = PlayerCapability.findCapability(with: command.capability!)
                     asset.popCommand()
                     guard let target = command.assetTarget else {
                         throw GameError.missingAssetTarget
@@ -903,7 +903,7 @@ class GameModel {
             } else if asset.action == .construct {
                 let command = asset.currentCommand
                 if let activatedCapability = command.activatedCapability {
-                    activatedCapability.incrementstep()
+                    activatedCapability.incrementStep()
                 }
             } else if asset.action == .death {
                 asset.incrementStep()
