@@ -42,7 +42,7 @@ class FogRenderer {
         blackIndices[0x28] = blackIndices[0x29]
 
         var nextIndex = tileset.tileCount
-        _ = tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
+        tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
         try tileset.createClippingMasks()
 
         for allowedHamming in 1 ..< 8 {
@@ -51,30 +51,27 @@ class FogRenderer {
                     var bestMatch = -1
                     var bestHamming = 8
 
-                    for orig in originalValues {
-                        let currentHamming = FogRenderer.hammingDistance(orig, value)
-
-                        if currentHamming == FogRenderer.hammingDistance(0, ~orig & value) {
+                    for originalValue in originalValues {
+                        let currentHamming = FogRenderer.hammingDistance(originalValue, value)
+                        if currentHamming == FogRenderer.hammingDistance(0, ~originalValue & value) {
                             if currentHamming < bestHamming {
                                 bestHamming = currentHamming
-                                bestMatch = orig
+                                bestMatch = originalValue
                             }
                         }
                     }
                     if bestHamming <= allowedHamming {
                         let firstBest = bestMatch
-                        // FIXME: FIGURE OUT IF WE NEED CURRENT VALUE
-                        // let currentValue = value & ~bestMatch
+                        let currentValue = value & ~bestMatch
                         bestMatch = -1
                         bestHamming = 8
 
-                        for orig in originalValues {
-                            let currentHamming = FogRenderer.hammingDistance(orig, value)
-
-                            if currentHamming == FogRenderer.hammingDistance(0, ~orig & value) {
+                        for originalValue in originalValues {
+                            let currentHamming = FogRenderer.hammingDistance(originalValue, currentValue)
+                            if currentHamming == FogRenderer.hammingDistance(0, ~originalValue & currentValue) {
                                 if currentHamming < bestHamming {
                                     bestHamming = currentHamming
-                                    bestMatch = orig
+                                    bestMatch = originalValue
                                 }
                             }
                         }
@@ -89,7 +86,7 @@ class FogRenderer {
         }
     }
 
-    func drawMap(on surface: GraphicSurface, rectangle: Rectangle) throws {
+    func drawMap(on surface: GraphicSurface, in rectangle: Rectangle) throws {
         var unknownFog = Array(repeating: false, count: 0x100)
         var unknownBlack = Array(repeating: false, count: 0x100)
 
@@ -128,7 +125,7 @@ class FogRenderer {
                     }
                     if fogIndices[visibilityIndex] == -1 {
                         if !unknownFog[visibilityIndex] {
-                            printError("Unknown fog \(visibilityIndex) @ (\(xIndex), \(yIndex))\n")
+                            printError("Unknown fog \(visibilityIndex) @ (\(xIndex), \(yIndex))")
                             unknownFog[visibilityIndex] = true
                         }
                     }

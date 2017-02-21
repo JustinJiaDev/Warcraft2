@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-typealias GraphicSurfaceTransformCallback = (_ callData: UnsafeMutablePointer<UInt8>, _ source: UInt32) -> UInt32
+typealias GraphicSurfaceTransformCallback = () -> UInt32
 
 enum GraphicSurfaceError: Error {
     case cannotCreateLayer
@@ -29,7 +29,7 @@ protocol GraphicSurface {
     func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws
-    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: Any, callback: GraphicSurfaceTransformCallback) throws
 }
 
 extension CGLayer: GraphicSurface {
@@ -42,8 +42,9 @@ extension CGLayer: GraphicSurface {
         return Int(size.height)
     }
 
+    // FIXME: MAKE FORMAT GREAT AGAIN
     var format: GraphicSurfaceFormat {
-        fatalError("This method is not yet implemented.")
+        return .a1
     }
 
     var resourceContext: GraphicResourceContext {
@@ -66,37 +67,39 @@ extension CGLayer: GraphicSurface {
     }
 
     func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
+        let surface = surface as! CGLayer
+        let size = CGSize(width: width, height: height)
+        UIGraphicsBeginImageContext(size)
+        guard let newContext = UIGraphicsGetCurrentContext(), let layer = CGLayer(newContext, size: size, auxiliaryInfo: nil) else {
+            throw GraphicSurfaceError.cannotCreateLayer
+        }
+        layer.context!.saveGState()
+        layer.context!.translateBy(x: 0, y: size.height)
+        layer.context!.scaleBy(x: 1, y: -1)
+        layer.context!.draw(surface, at: CGPoint(x: -sx, y: -surface.height + height + sy))
+        layer.context!.restoreGState()
+        UIGraphicsEndImageContext()
+        try drawWithoutScale(from: layer, dx: dx, dy: dy, width: width, height: height, sx: 0, sy: 0)
+    }
+
+    // FIXME: MAKE COPY GREAT AGAIN
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
+        return
+    }
+
+    // FIXME: MAKE COPY GREAT AGAIN
+    func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws {
+        return
+    }
+
+    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: Any, callback: GraphicSurfaceTransformCallback) throws {
+        fatalError("This method is not yet implemented.")
+    }
+
+    private func drawWithoutScale(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
         guard let context = context else {
             throw GraphicSurfaceError.missingContext
         }
-        let surface = surface as! CGLayer
-        if sx == 0 && sy == 0 {
-            context.draw(surface, in: CGRect(x: dx, y: dy, width: width, height: height))
-        } else {
-            let size = CGSize(width: width, height: height)
-            UIGraphicsBeginImageContext(size)
-            guard let newContext = UIGraphicsGetCurrentContext(), let layer = CGLayer(newContext, size: size, auxiliaryInfo: nil) else {
-                throw GraphicSurfaceError.cannotCreateLayer
-            }
-            layer.context!.saveGState()
-            layer.context!.translateBy(x: 0, y: size.height)
-            layer.context!.scaleBy(x: 1, y: -1)
-            layer.context!.draw(surface, at: CGPoint(x: -sx, y: -surface.height + 32 + sy))
-            layer.context!.restoreGState()
-            UIGraphicsEndImageContext()
-            try draw(from: layer, dx: dx, dy: dy, width: width, height: height, sx: 0, sy: 0)
-        }
-    }
-
-    func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) throws {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func copy(from surface: GraphicSurface, dx: Int, dy: Int, maskSurface: GraphicSurface, sx: Int, sy: Int) throws {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func transform(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int, callData: UnsafeMutablePointer<Any>, callback: GraphicSurfaceTransformCallback) throws {
-        fatalError("This method is not yet implemented.")
+        context.draw(surface as! CGLayer, in: CGRect(x: dx, y: dy, width: width, height: height))
     }
 }

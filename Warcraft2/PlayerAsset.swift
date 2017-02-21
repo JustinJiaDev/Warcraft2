@@ -12,15 +12,15 @@ class ActivatedPlayerCapability {
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 
-    func incrementstep() {
-        fatalError("You need to override this method.")
+    @discardableResult func incrementStep() -> Bool {
+        fatalError("This method should be overriden in the derived class.")
     }
 
     func cancel() {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 }
 
@@ -42,7 +42,7 @@ class PlayerCapability {
         self.targetType = targetType
     }
 
-     static func register(capability: PlayerCapability) -> Bool {
+    @discardableResult static func register(capability: PlayerCapability) -> Bool {
         if let _ = nameRegistry[capability.name] {
             return false
         }
@@ -169,7 +169,7 @@ class PlayerCapability {
         fatalError("You need to override this method.")
     }
 
-    func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+    @discardableResult func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         fatalError("You need to override this method.")
     }
 }
@@ -207,16 +207,13 @@ class PlayerUpgrade {
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
     static func loadUpgrades(from dataContainer: DataContainer) throws {
-        guard let fileIterator = dataContainer.first() else {
-            throw GameError.fileIteratorNull
+        try dataContainer.contentURLs.filter { url in
+            return url.pathExtension == "dat"
+        }.forEach { url in
+            try load(from: FileDataSource(url: url))
+            printDebug("Loaded upgrade \(url.lastPathComponent).", level: .low)
         }
-        while fileIterator.isValid() {
-            let fileName = fileIterator.name()
-            fileIterator.next()
-            if fileName.hasSuffix(".dat") {
-                try load(from: dataContainer.dataSource(name: fileName))
-            }
-        }
+        printDebug("Upgrades loaded.", level: .low)
     }
 
     static func load(from dataSource: DataSource) throws {
@@ -524,16 +521,12 @@ class PlayerAssetType {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
-    static func loadTypes(from container: DataContainer) throws -> Bool {
-        guard let fileIterator = container.first() else {
-            throw GameError.fileIteratorNull
-        }
-        while fileIterator.isValid() {
-            let fileName = fileIterator.name()
-            fileIterator.next()
-            if fileName.hasSuffix(".dat") {
-                try load(from: container.dataSource(name: fileName))
-            }
+    static func loadTypes(from dataContainer: DataContainer) throws {
+        try dataContainer.contentURLs.filter { url in
+            return url.pathExtension == "dat"
+        }.forEach { url in
+            try load(from: FileDataSource(url: url))
+            printDebug("Loaded type \(url.lastPathComponent).", level: .low)
         }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"
@@ -541,7 +534,7 @@ class PlayerAssetType {
         playerAssetType.color = .none
         playerAssetType.hitPoints = 256
         registry["None"] = playerAssetType
-        return true
+        printDebug("Types loaded.", level: .low)
     }
 
     static func load(from dataSource: DataSource) throws {
@@ -688,7 +681,7 @@ class PlayerAssetType {
 
 struct AssetCommand {
     var action: AssetAction
-    var capability: AssetCapabilityType
+    var capability: AssetCapabilityType? // It could also be nil
     var assetTarget: PlayerAsset?
     var activatedCapability: ActivatedPlayerCapability?
 }
@@ -912,6 +905,20 @@ class PlayerAsset {
         }
     }
 
+    var currentCommand: AssetCommand {
+        guard let last = commands.last else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return last
+    }
+
+    var nextCommand: AssetCommand {
+        guard commands.count > 1 else {
+            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
+        }
+        return commands[commands.count - 2]
+    }
+
     init(playerAssetType: PlayerAssetType) {
         tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
@@ -927,34 +934,34 @@ class PlayerAsset {
         tilePosition = Position()
     }
 
-    func incrementHitPoints(_ increments: Int) -> Int {
+    @discardableResult func incrementHitPoints(_ increments: Int) -> Int {
         hitPoints += increments
         hitPoints = min(hitPoints, maxHitPoints)
         return hitPoints
     }
 
-    func decrementHitPoints(_ decrements: Int) -> Int {
+    @discardableResult func decrementHitPoints(_ decrements: Int) -> Int {
         hitPoints -= decrements
         hitPoints = max(hitPoints, 0)
         return hitPoints
     }
 
-    func incrementGold(_ increments: Int) -> Int {
+    @discardableResult func incrementGold(_ increments: Int) -> Int {
         gold += increments
         return gold
     }
 
-    func decrementGold(_ decrements: Int) -> Int {
+    @discardableResult func decrementGold(_ decrements: Int) -> Int {
         gold -= decrements
         return gold
     }
 
-    func incrementLumber(_ increments: Int) -> Int {
+    @discardableResult func incrementLumber(_ increments: Int) -> Int {
         lumber += increments
         return lumber
     }
 
-    func decrementLumber(_ decrements: Int) -> Int {
+    @discardableResult func decrementLumber(_ decrements: Int) -> Int {
         lumber -= decrements
         return lumber
     }
@@ -990,20 +997,6 @@ class PlayerAsset {
         commands.removeLast()
     }
 
-    func currentCommand() -> AssetCommand {
-        guard let last = commands.last else {
-            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
-        }
-        return last
-    }
-
-    func nextCommand() -> AssetCommand {
-        guard commands.count > 1 else {
-            return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
-        }
-        return commands[commands.count - 2]
-    }
-
     func hasAction(_ action: AssetAction) -> Bool {
         return commands.first { command in
             return command.action == action
@@ -1017,7 +1010,7 @@ class PlayerAsset {
     }
 
     func interruptible() -> Bool {
-        let command = currentCommand()
+        let command = currentCommand
         switch command.action {
         case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
             return false
