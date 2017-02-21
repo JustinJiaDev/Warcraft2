@@ -306,6 +306,7 @@ class AssetDecoratedMap: TerrainMap {
             guard let color = PlayerColor(index: playerColorIndex) else {
                 throw GameError.unknownColorIndex(index: playerColorIndex)
             }
+
             let position = Position(x: x, y: y)
             assetInitializationList.append(AssetInitialization(type: type, color: color, tilePosition: position))
         }

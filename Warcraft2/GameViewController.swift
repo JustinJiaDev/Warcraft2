@@ -106,8 +106,8 @@ class GameViewController: UIViewController {
                 fireTilesets: fireTilesets,
                 buildingDeathTileset: buildingDeathTileset,
                 arrowTileset: arrowTileset,
-                player: gameModel.player(with: .blue),
-                map: self.map
+                player: gameModel.player(with: .red),
+                map: gameModel.player(with: .red).playerMap
             )
             return assetRenderer
         } catch {
