@@ -8,8 +8,9 @@ class PlayerCapabilityMove: PlayerCapability {
         }
     }
 
-    class ActivatedCapability: ActivatedPlayerCapability {
+    static let registrant = Registrant()
 
+    class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
         }
@@ -58,14 +59,15 @@ class PlayerCapabilityMove: PlayerCapability {
 
 class PlayerCapabilityMineHarvest: PlayerCapability {
 
-    private class Registrant {
+    class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityMove())
         }
     }
 
-    class ActivateCapability: ActivatedPlayerCapability {
+    static let registrant = Registrant()
 
+    class ActivateCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
         }
@@ -136,6 +138,8 @@ class PlayerCapabityStandGround: PlayerCapability {
         }
     }
 
+    static let registrant = Registrant()
+
     class ActivatedCapability: ActivatedPlayerCapability {
 
         func percentCompelte(max: Int) -> Int {
@@ -192,6 +196,8 @@ class PlayerCapabilityCancel: PlayerCapability {
         }
     }
 
+    static let registrant = Registrant()
+
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
@@ -240,11 +246,14 @@ class PlayerCapabilityCancel: PlayerCapability {
 }
 
 class PlayerCapabilityConvey: PlayerCapability {
+
     class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityMove())
         }
     }
+
+    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -306,11 +315,14 @@ class PlayerCapabilityConvey: PlayerCapability {
 }
 
 class PlayerCapabilityPatrol: PlayerCapability {
+
     class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityMove())
         }
     }
+
+    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -362,11 +374,14 @@ class PlayerCapabilityPatrol: PlayerCapability {
 }
 
 class PlayerCapabilityAttack: PlayerCapability {
+
     class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityMove())
         }
     }
+
+    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -421,11 +436,14 @@ class PlayerCapabilityAttack: PlayerCapability {
 }
 
 class PlayerCapabilityRepair: PlayerCapability {
+
     class Registrant {
         init() {
             PlayerCapability.register(capability: PlayerCapabilityMove())
         }
     }
+
+    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
