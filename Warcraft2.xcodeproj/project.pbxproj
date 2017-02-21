@@ -45,6 +45,7 @@
 		D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47441E35D80600F7FED1 /* MapRenderer.swift */; };
 		D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47461E35D89800F7FED1 /* GraphicTileset.swift */; };
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
+		D0A216BE1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */; };
 		D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
 		D0D4A3DC1E3F265A009460DE /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3DB1E3F265A009460DE /* MapView.swift */; };
@@ -100,6 +101,7 @@
 		D08F47441E35D80600F7FED1 /* MapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRenderer.swift; sourceTree = "<group>"; };
 		D08F47461E35D89800F7FED1 /* GraphicTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicTileset.swift; sourceTree = "<group>"; };
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
+		D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildingUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
+				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
 			sourceTree = "<group>";
@@ -492,6 +495,7 @@
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
 				200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */,
+				D0A216BE1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift in Sources */,
 				8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */,
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
 				8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */,
