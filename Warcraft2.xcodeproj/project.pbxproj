@@ -166,6 +166,7 @@
 			children = (
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
+				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
 			sourceTree = "<group>";
@@ -236,7 +237,6 @@
 			children = (
 				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
 				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
-				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Player;
 			sourceTree = "<group>";
