@@ -146,15 +146,29 @@ class GameViewController: UIViewController {
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
         view.addSubview(mapView)
         view.addSubview(miniMapView)
+        triggerAnimation()
+        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(click))
+        self.mapView.addGestureRecognizer(myTapGestureRecognizer)
+    }
 
-        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(triggerAnimation))
-        self.view.addGestureRecognizer(myTapGestureRecognizer)
+    func click(sender: UITapGestureRecognizer) {
+        let target = PlayerAsset(playerAssetType: PlayerAssetType())
+        let touchLocation = sender.location(ofTouch: 0, in: self.mapView)
+        let xLocation = (Int(touchLocation.x) - Int(touchLocation.x) % 32) + 16
+        let yLocation = (Int(touchLocation.y) - Int(touchLocation.y) % 32) + 16
+        target.position = Position(x: xLocation, y: yLocation)
+        for asset in gameModel.actualMap.assets {
+            if asset.assetType.name == "Peasant" {
+                asset.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
+            }
+        }
+        print(sender.location(ofTouch: 0, in: self.mapView))
     }
 
     func triggerAnimation() {
 
         let displayLink = CADisplayLink(target: self, selector: #selector(test))
-        displayLink.frameInterval = 4
+        displayLink.frameInterval = 1
         displayLink.add(to: .current, forMode: .defaultRunLoopMode)
     }
 
@@ -165,20 +179,16 @@ class GameViewController: UIViewController {
         do {
 
             try gameModel?.timestep()
-            // print("loop")
 
         } catch {
             fatalError("Error Thrown By Timestep")
         }
 
-        mapView.setNeedsDisplay()
-
+        // mapView.setNeedsDisplay()
         let finish = Date()
 
         let time = finish.timeIntervalSince(start)
         print(time)
-
-        // print("hi")
     }
 
     override var prefersStatusBarHidden: Bool {

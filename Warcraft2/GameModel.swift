@@ -506,14 +506,15 @@ class GameModel {
             }
         }
 
-        for i in 0 ..< actualMap.assets.count {
-            if actualMap.assets[i].assetType.name == "Peasant" {
-                print("peasant index \(i)")
-                let randomMapAsset = PlayerAsset(playerAssetType: PlayerAssetType())
-                randomMapAsset.position.setFromTile(Position(x: 10, y: 10))
-                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: randomMapAsset, activatedCapability: nil))
-            }
-        }
+        //        for i in 0 ..< actualMap.assets.count {
+        //            if actualMap.assets[i].assetType.name == "Peasant" && actualMap.assets[i].tilePosition == Position(x: 10, y: 10) {
+        //                print("peasant index \(i)")
+        //                let randomMapAsset = PlayerAsset(playerAssetType: PlayerAssetType())
+        //                randomMapAsset.position.setFromTile(Position(x: 16, y: 10))
+        //                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: randomMapAsset, activatedCapability: nil))
+        //                break
+        //            }
+        //        }
     }
 
     func isValidAsset(_ playerAsset: PlayerAsset) -> Bool {
