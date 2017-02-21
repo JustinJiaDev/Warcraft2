@@ -507,10 +507,12 @@ class GameModel {
         }
 
         for i in 0 ..< actualMap.assets.count {
-            print("peasant index \(i)")
-            let randomMapAsset = PlayerAsset(playerAssetType: PlayerAssetType())
-            randomMapAsset.position.setFromTile(Position(x: 94, y: 55))
-            actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: randomMapAsset, activatedCapability: nil))
+            if actualMap.assets[i].assetType.name == "Peasant" {
+                print("peasant index \(i)")
+                let randomMapAsset = PlayerAsset(playerAssetType: PlayerAssetType())
+                randomMapAsset.position.setFromTile(Position(x: 10, y: 10))
+                actualMap.assets[i].pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: randomMapAsset, activatedCapability: nil))
+            }
         }
     }
 
