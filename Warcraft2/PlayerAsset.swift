@@ -12,15 +12,15 @@ class ActivatedPlayerCapability {
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 
-    func incrementstep() {
-        fatalError("You need to override this method.")
+    @discardableResult func incrementStep() -> Bool {
+        fatalError("This method should be overriden in the derived class.")
     }
 
     func cancel() {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 }
 
@@ -42,7 +42,7 @@ class PlayerCapability {
         self.targetType = targetType
     }
 
-    private static func register(capability: PlayerCapability) -> Bool {
+    @discardableResult static func register(capability: PlayerCapability) -> Bool {
         if let _ = nameRegistry[capability.name] {
             return false
         }
@@ -298,8 +298,8 @@ class PlayerUpgrade {
         return registryByType[type.rawValue] ?? PlayerUpgrade()
     }
 
-    static func findUpgrade(with name: String) -> PlayerUpgrade {
-        return registryByName[name] ?? PlayerUpgrade()
+    static func findUpgrade(with name: String) -> PlayerUpgrade? {
+        return registryByName[name]
     }
 }
 
@@ -681,7 +681,7 @@ class PlayerAssetType {
 
 struct AssetCommand {
     var action: AssetAction
-    var capability: AssetCapabilityType
+    var capability: AssetCapabilityType?
     var assetTarget: PlayerAsset?
     var activatedCapability: ActivatedPlayerCapability?
 }
