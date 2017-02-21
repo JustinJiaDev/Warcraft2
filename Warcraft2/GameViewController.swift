@@ -26,6 +26,7 @@ class GameViewController: UIViewController {
     private let mapIndex = 0
     private var terrainTileset: GraphicTileset!
     private var mapConfiguration: FileDataSource!
+    private var selectedPeasant: PlayerAsset?
     var gameModel: GameModel!
     var mapRenderer: MapRenderer!
     var assetRenderer: AssetRenderer!
@@ -155,11 +156,19 @@ class GameViewController: UIViewController {
         let target = PlayerAsset(playerAssetType: PlayerAssetType())
         let touchLocation = sender.location(ofTouch: 0, in: self.mapView)
         let xLocation = (Int(touchLocation.x) - Int(touchLocation.x) % 32) + 16
+        let xTileLocation = xLocation / 32
         let yLocation = (Int(touchLocation.y) - Int(touchLocation.y) % 32) + 16
+        let yTileLocation = yLocation / 32
         target.position = Position(x: xLocation, y: yLocation)
-        for asset in gameModel.actualMap.assets {
-            if asset.assetType.name == "Peasant" {
-                asset.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
+        let tileTargetPosition = Position(x: xTileLocation, y: yTileLocation)
+        if selectedPeasant != nil {
+            selectedPeasant!.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
+            selectedPeasant = nil
+        } else {
+            for asset in gameModel.actualMap.assets {
+                if asset.assetType.name == "Peasant" && asset.position.distance(position: target.position) < 64 {
+                    selectedPeasant = asset
+                }
             }
         }
         print(sender.location(ofTouch: 0, in: self.mapView))
@@ -184,7 +193,7 @@ class GameViewController: UIViewController {
             fatalError("Error Thrown By Timestep")
         }
 
-        // mapView.setNeedsDisplay()
+        mapView.setNeedsDisplay()
         let finish = Date()
 
         let time = finish.timeIntervalSince(start)
