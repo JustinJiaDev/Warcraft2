@@ -937,12 +937,7 @@ class GameModel {
                 if asset.tileAligned {
                     var command = asset.currentCommand
                     let nextCommand = asset.nextCommand
-                    // HACK
-                    // let mapTarget = Position(x: 20 * Position.tileWidth, y: 11 * Position.tileHeight)
-                    // END HACK
-                    // ORIGINAL
                     let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
-                    // END ORIGINAL
 
                     if nextCommand.action == .attack {
                         if nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
