@@ -24,6 +24,8 @@ fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTi
 class GameViewController: UIViewController {
 
     private let mapIndex = 0
+    private var terrainTileset: GraphicTileset!
+    private var mapConfiguration: FileDataSource!
     var gameModel: GameModel!
     var mapRenderer: MapRenderer!
     var assetRenderer: AssetRenderer!
@@ -62,10 +64,7 @@ class GameViewController: UIViewController {
 
     private func createMapRenderer() -> MapRenderer {
         do {
-            let configuration = try FileDataSource(url: url("img", "MapRendering.dat"))
-            let terrainTileset = try tileset("Terrain")
-            Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
-            return try MapRenderer(configuration: configuration, tileset: terrainTileset, map: self.map)
+            return try MapRenderer(configuration: mapConfiguration, tileset: terrainTileset, map: self.map)
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
@@ -126,6 +125,16 @@ class GameViewController: UIViewController {
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
+
+        do {
+            mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
+            terrainTileset = try tileset("Terrain")
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
+
+        Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
+
         map = createAssetDecoratedMap()
         gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
         mapRenderer = createMapRenderer()
