@@ -33,14 +33,15 @@ class GameViewController: UIViewController {
     var map: AssetDecoratedMap!
     var fogRenderer: FogRenderer!
     var viewportRenderer: ViewportRenderer!
+    var midiPlayer: AVMIDIPlayer!
 
-    private lazy var midiPlayer: AVMIDIPlayer = {
+    private func createMidiPlayer() -> AVMIDIPlayer {
         do {
             return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
         } catch {
             fatalError(error.localizedDescription) // TODO: Handle Error
         }
-    }()
+    }
 
     private func createAssetDecoratedMap() -> AssetDecoratedMap {
         do {
@@ -118,6 +119,8 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        midiPlayer = createMidiPlayer()
+
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
@@ -148,19 +151,16 @@ class GameViewController: UIViewController {
         view.addSubview(mapView)
         view.addSubview(miniMapView)
         triggerAnimation()
-        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(click))
+        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(clickHandler))
         self.mapView.addGestureRecognizer(myTapGestureRecognizer)
     }
 
-    func click(sender: UITapGestureRecognizer) {
+    func clickHandler(sender: UITapGestureRecognizer) {
         let target = PlayerAsset(playerAssetType: PlayerAssetType())
         let touchLocation = sender.location(ofTouch: 0, in: self.mapView)
         let xLocation = (Int(touchLocation.x) - Int(touchLocation.x) % 32) + 16
-        let xTileLocation = xLocation / 32
         let yLocation = (Int(touchLocation.y) - Int(touchLocation.y) % 32) + 16
-        let yTileLocation = yLocation / 32
         target.position = Position(x: xLocation, y: yLocation)
-        let tileTargetPosition = Position(x: xTileLocation, y: yTileLocation)
         if selectedPeasant != nil {
             selectedPeasant!.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
             selectedPeasant = nil
@@ -171,7 +171,6 @@ class GameViewController: UIViewController {
                 }
             }
         }
-        print(sender.location(ofTouch: 0, in: self.mapView))
     }
 
     func triggerAnimation() {
@@ -186,9 +185,7 @@ class GameViewController: UIViewController {
         let start = Date()
 
         do {
-
-            try gameModel?.timestep()
-
+            try gameModel.timestep()
         } catch {
             fatalError("Error Thrown By Timestep")
         }
