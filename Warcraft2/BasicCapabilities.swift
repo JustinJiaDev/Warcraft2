@@ -19,7 +19,6 @@ class PlayerCapabilityMove: PlayerCapability {
             let assetCommand = AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent = GameEvent(type: .acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
-
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
@@ -42,18 +41,18 @@ class PlayerCapabilityMove: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.tilePosition != target.tilePosition {
-            let newCommand = AssetCommand(
-                action: .capability,
-                capability: assetCapabilityType,
-                assetTarget: target,
-                activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
-            )
-            actor.clearCommand()
-            actor.pushCommand(newCommand)
-            return true
+        guard actor.tilePosition != target.tilePosition else {
+            return false
         }
-        return false
+        actor.clearCommand()
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        )
+        actor.pushCommand(newCommand)
+        return true
     }
 }
 
@@ -118,13 +117,13 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
             activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
         )
-        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -176,13 +175,13 @@ class PlayerCapabityStandGround: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
             activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
         )
-        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -234,6 +233,7 @@ class PlayerCapabilityCancel: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
+        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
@@ -307,8 +307,13 @@ class PlayerCapabilityConvey: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        let newCommand = AssetCommand(action: .capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target))
         actor.clearCommand()
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        )
         actor.pushCommand(newCommand)
         return true
     }
@@ -358,18 +363,18 @@ class PlayerCapabilityPatrol: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.tilePosition != target.tilePosition {
-            let newCommand = AssetCommand(
-                action: .capability,
-                capability: assetCapabilityType,
-                assetTarget: target,
-                activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
-            )
-            actor.clearCommand()
-            actor.pushCommand(newCommand)
-            return true
+        guard actor.tilePosition != target.tilePosition else {
+            return false
         }
-        return false
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        )
+        actor.clearCommand()
+        actor.pushCommand(newCommand)
+        return true
     }
 }
 
@@ -397,7 +402,7 @@ class PlayerCapabilityAttack: PlayerCapability {
 
             assetCommand.action = AssetAction.walk
             if !actor.tileAligned {
-                actor.direction = actor.position.tileOctant.opposite // fix it? is it right?
+                actor.direction = actor.position.tileOctant.opposite
             }
             actor.pushCommand(assetCommand)
             return true
@@ -420,18 +425,18 @@ class PlayerCapabilityAttack: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.tilePosition != target.tilePosition {
-            let newCommand = AssetCommand(
-                action: .capability,
-                capability: assetCapabilityType,
-                assetTarget: target,
-                activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
-            )
-            actor.clearCommand()
-            actor.pushCommand(newCommand)
-            return true
+        guard actor.tilePosition != target.tilePosition else {
+            return false
         }
-        return false
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        )
+        actor.clearCommand()
+        actor.pushCommand(newCommand)
+        return true
     }
 }
 
@@ -487,17 +492,17 @@ class PlayerCapabilityRepair: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.tilePosition != target.tilePosition {
-            let newCommand = AssetCommand(
-                action: .capability,
-                capability: assetCapabilityType,
-                assetTarget: target,
-                activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
-            )
-            actor.clearCommand()
-            actor.pushCommand(newCommand)
-            return true
+        guard actor.tilePosition != target.tilePosition else {
+            return false
         }
-        return false
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+        )
+        actor.clearCommand()
+        actor.pushCommand(newCommand)
+        return true
     }
 }

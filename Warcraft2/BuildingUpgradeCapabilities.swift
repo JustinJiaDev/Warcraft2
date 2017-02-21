@@ -27,8 +27,8 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             self.lumber = lumber
             self.gold = gold
             super.init(actor: actor, playerData: playerData, target: target)
-            self.playerData.decrementLumber(by: lumber)
-            self.playerData.decrementGold(by: gold)
+            self.playerData.decrementLumber(by: self.lumber)
+            self.playerData.decrementGold(by: self.gold)
         }
 
         override func percentComplete(max: Int) -> Int {
@@ -102,26 +102,26 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if let assetType = playerData.assetTypes[buildingName] {
-            let newCommand = AssetCommand(
-                action: .capability,
-                capability: assetCapabilityType,
-                assetTarget: target,
-                activatedCapability: ActivatedCapability(
-                    actor: actor,
-                    playerData: playerData,
-                    target: target,
-                    originalType: actor.assetType,
-                    upgradeType: assetType,
-                    lumber: assetType.lumberCost,
-                    gold: assetType.goldCost,
-                    steps: PlayerAsset.updateFrequency * assetType.buildTime
-                )
-            )
-            actor.clearCommand()
-            actor.pushCommand(newCommand)
-            return true
+        guard let assetType = playerData.assetTypes[buildingName] else {
+            return false
         }
-        return false
+        actor.clearCommand()
+        let newCommand = AssetCommand(
+            action: .capability,
+            capability: assetCapabilityType,
+            assetTarget: target,
+            activatedCapability: ActivatedCapability(
+                actor: actor,
+                playerData: playerData,
+                target: target,
+                originalType: actor.assetType,
+                upgradeType: assetType,
+                lumber: assetType.lumberCost,
+                gold: assetType.goldCost,
+                steps: PlayerAsset.updateFrequency * assetType.buildTime
+            )
+        )
+        actor.pushCommand(newCommand)
+        return true
     }
 }

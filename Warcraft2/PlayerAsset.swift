@@ -298,8 +298,8 @@ class PlayerUpgrade {
         return registryByType[type.rawValue] ?? PlayerUpgrade()
     }
 
-    static func findUpgrade(with name: String) -> PlayerUpgrade {
-        return registryByName[name] ?? PlayerUpgrade()
+    static func findUpgrade(with name: String) -> PlayerUpgrade? {
+        return registryByName[name]
     }
 }
 

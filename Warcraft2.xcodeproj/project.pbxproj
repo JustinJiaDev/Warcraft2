@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
 		8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B3B161E48656000BA4832 /* FogRenderer.swift */; };
 		8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */; };
@@ -59,6 +60,7 @@
 
 /* Begin PBXFileReference section */
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
+		200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		8E0B3B161E48656000BA4832 /* FogRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FogRenderer.swift; sourceTree = "<group>"; };
 		8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameDataTypes.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			children = (
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
+				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				8EA067831E33C8E00059CEC2 /* GraphicResourceContext.swift in Sources */,
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
+				200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */,
 				D0A216BE1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift in Sources */,
 				8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */,
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
