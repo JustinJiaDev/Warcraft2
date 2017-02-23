@@ -406,18 +406,17 @@ class AssetRenderer {
             if renderData.tileIndex >= 0 {
                 finalRenderList.append(renderData)
             }
+        }
+        finalRenderList.sort { first, second in
+            return compareRenderData(first: first, second: second)
+        }
 
-            finalRenderList.sort { first, second in
-                return compareRenderData(first: first, second: second)
-            }
-
-            for renderData in finalRenderList {
-                if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
-                    try tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
-                    try tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
-                } else {
-                    try buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
-                }
+        for renderData in finalRenderList {
+            if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
+                try tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
+                try tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
+            } else {
+                try buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
             }
         }
     }
