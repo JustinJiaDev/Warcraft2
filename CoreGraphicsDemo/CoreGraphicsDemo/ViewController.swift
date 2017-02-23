@@ -14,9 +14,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let displayLink = CADisplayLink(target: self, selector: #selector(run))
-        displayLink.preferredFramesPerSecond = 100
-        displayLink.add(to: .current, forMode: .defaultRunLoopMode)
+        CADisplayLink(target: self, selector: #selector(run)).add(to: .current, forMode: .defaultRunLoopMode)
         elementsLabel.text = "Number of Elements: \(subview.elements.count)"
     }
 
