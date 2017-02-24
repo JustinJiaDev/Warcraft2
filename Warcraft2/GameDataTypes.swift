@@ -72,7 +72,7 @@ enum PlayerColor {
         }
     }
 
-    static func getAllValues() -> [PlayerColor] {
+    static var allValues: [PlayerColor] {
         var values: [PlayerColor] = []
         for i in 0 ..< PlayerColor.numberOfColors {
             values.append(PlayerColor(index: i)!)
