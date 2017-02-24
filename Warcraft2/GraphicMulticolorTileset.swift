@@ -1,5 +1,7 @@
+import SpriteKit
+
 class GraphicMulticolorTileset: GraphicTileset {
-    private var coloredTilesets: [GraphicSurface] = []
+    private var coloredTilesets: [[SKTexture]] = []
     private var colorMap: GraphicRecolorMap?
 
     var colorCount: Int {
@@ -15,18 +17,18 @@ class GraphicMulticolorTileset: GraphicTileset {
             throw GameError.missingTileset
         }
         try loadTileset(from: dataSource)
-        coloredTilesets.removeAll()
-        coloredTilesets.append(surfaceTileset)
-        for colorIndex in 1 ..< colorMap.groupCount {
-            coloredTilesets.append(try colorMap.recolorSurface(at: colorIndex, on: surfaceTileset))
-        }
-        self.colorMap = colorMap
+        //        coloredTilesets.removeAll()
+        //        coloredTilesets.append(surfaceTileset)
+        //        for colorIndex in 1 ..< colorMap.groupCount {
+        //            coloredTilesets.append(try colorMap.recolorSurface(at: colorIndex, on: surfaceTileset))
+        //        }
+        //        self.colorMap = colorMap
     }
 
     func drawTile(on surface: GraphicSurface, x: Int, y: Int, tileIndex: Int, colorIndex: Int) throws {
         // FIXME: MAKE DRAW TILE GREAT AGAIN
         // HACK - BEGIN
-        try surface.draw(from: surfaceTileset!, dx: x, dy: y, width: tileWidth, height: tileHeight, sx: 0, sy: tileIndex * tileHeight)
+        surface.draw(from: surfaceTileset![tileIndex], x: x, y: y, width: tileWidth, height: tileHeight)
         // HACK - END
         // ORIGINAL - BEGIN
         //        guard tileIndex >= 0 && tileIndex < tileCount else {

@@ -28,6 +28,7 @@
 		8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */; };
 		8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */; };
 		8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC6A5C91E3D797000ACB660 /* RouterMap.swift */; };
+		8EE98F371E5FDBBC00FE1DAF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */; };
 		9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */; };
 		A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */; };
 		C834BE931E49AA5A00941BFF /* ViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */; };
@@ -78,6 +79,7 @@
 		8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicSurface.swift; sourceTree = "<group>"; };
 		8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetDecoratedMap.swift; sourceTree = "<group>"; };
 		8EC6A5C91E3D797000ACB660 /* RouterMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterMap.swift; sourceTree = "<group>"; };
+		8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		9158D995DDE23C9C5DE22BC7 /* Pods_Warcraft2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Warcraft2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicRecolorMap.swift; sourceTree = "<group>"; };
 		A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitActionRenderer.swift; sourceTree = "<group>"; };
@@ -150,6 +152,14 @@
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		8EE98F351E5FDBAD00FE1DAF /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */,
+			);
+			name = Scenes;
 			sourceTree = "<group>";
 		};
 		D02808AC1E472190001C1E0E /* Renderer */ = {
@@ -268,6 +278,7 @@
 				D0D6FA6A1E26029500D92DA5 /* AppDelegate */,
 				8E1B515A1E2D58CA008E968C /* Models */,
 				D0D6FA681E26028000D92DA5 /* ViewControllers */,
+				8EE98F351E5FDBAD00FE1DAF /* Scenes */,
 				D0D6FA691E26028B00D92DA5 /* Views */,
 				D0D6FA6B1E2602AE00D92DA5 /* Resources */,
 				8E1B515D1E2D5DE9008E968C /* MyPlayground.playground */,
@@ -349,6 +360,7 @@
 				TargetAttributes = {
 					D0D6FA4A1E26015E00D92DA5 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 5KPAFRAJ2Y;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -482,6 +494,7 @@
 				D0DF813D1E3F2ECE000F9BC4 /* GameViewController.swift in Sources */,
 				D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */,
 				8E663E8C1E41447F00FD4727 /* RandomNumberGenerator.swift in Sources */,
+				8EE98F371E5FDBBC00FE1DAF /* GameScene.swift in Sources */,
 				8E4B67F21E36FF80001EF533 /* VisibilityMap.swift in Sources */,
 				8EA067801E33C8E00059CEC2 /* DataContainer.swift in Sources */,
 				D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */,
@@ -616,7 +629,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5KPAFRAJ2Y;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -633,7 +646,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5KPAFRAJ2Y;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

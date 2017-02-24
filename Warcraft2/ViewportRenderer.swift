@@ -107,11 +107,11 @@ class ViewportRenderer {
         }
 
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 0)
-        try assetRenderer.drawSelections(on: surface, in: tempRectangle, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
+        // try assetRenderer.drawSelections(on: surface, in: tempRectangle, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
         try assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: tempRectangle)
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
         try assetRenderer.drawOverlays(on: surface, in: tempRectangle)
         try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.xPosition, y: selectRect.yPosition), type: placeType, builder: builder)
-        try fogRenderer.drawMap(on: surface, in: tempRectangle)
+        //        try fogRenderer.drawMap(on: surface, in: tempRectangle)
     }
 }

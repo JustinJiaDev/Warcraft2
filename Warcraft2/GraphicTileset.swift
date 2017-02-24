@@ -1,4 +1,5 @@
 import Foundation
+import SpriteKit
 
 class GraphicTileset {
 
@@ -12,8 +13,7 @@ class GraphicTileset {
         case missingTileName
     }
 
-    private(set) var surfaceTileset: GraphicSurface?
-    private var clippingMasks: [Int: GraphicSurface] = [:]
+    private(set) var surfaceTileset: [SKTexture]?
 
     private var tileIndex: [String: Int] = [:]
     private var tileNames: [String] = []
@@ -69,31 +69,31 @@ class GraphicTileset {
     }
 
     @discardableResult func setTileCount(_ count: Int) -> Int {
-        guard count > 0, tileWidth > 0, tileHeight > 0, let surfaceTileset = surfaceTileset else {
-            return tileCount
-        }
-
-        guard count >= tileCount else {
-            tileCount = count
-            tileIndex.keys.filter { key in
-                return self.tileIndex[key]! >= self.tileCount
-            }.forEach { key in
-                self.tileIndex.removeValue(forKey: key)
-            }
-            updateGroupNames()
-            return tileCount
-        }
-
-        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format) else {
-            return tileCount
-        }
-        do {
-            try newSurface.copy(from: surfaceTileset, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0)
-        } catch {
-            return tileCount
-        }
-        self.surfaceTileset = newSurface
-        tileCount = count
+        //        guard count > 0, tileWidth > 0, tileHeight > 0, let surfaceTileset = surfaceTileset else {
+        //            return tileCount
+        //        }
+        //
+        //        guard count >= tileCount else {
+        //            tileCount = count
+        //            tileIndex.keys.filter { key in
+        //                return self.tileIndex[key]! >= self.tileCount
+        //            }.forEach { key in
+        //                self.tileIndex.removeValue(forKey: key)
+        //            }
+        //            updateGroupNames()
+        //            return tileCount
+        //        }
+        //
+        //        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format) else {
+        //            return tileCount
+        //        }
+        //        do {
+        //            try newSurface.copy(from: surfaceTileset, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0)
+        //        } catch {
+        //            return tileCount
+        //        }
+        //        self.surfaceTileset = newSurface
+        //        tileCount = count
         return tileCount
     }
 
@@ -123,15 +123,7 @@ class GraphicTileset {
         guard let surfaceTileset = surfaceTileset else {
             throw GameError.missingTileset
         }
-        try surface.draw(
-            from: surfaceTileset,
-            dx: x,
-            dy: y,
-            width: tileWidth,
-            height: tileHeight,
-            sx: 0,
-            sy: index * tileHeight
-        )
+        surface.draw(from: surfaceTileset[index], x: x, y: y, width: tileWidth, height: tileHeight)
     }
 
     func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) throws {
@@ -150,16 +142,6 @@ class GraphicTileset {
         // ORIGINAL - END
     }
 
-    func clearTile(at index: Int) throws {
-        guard index >= 0 || index < tileCount else {
-            throw GameError.indexOutOfBound(index: index)
-        }
-        guard let surfaceTileset = surfaceTileset else {
-            throw GameError.missingTileset
-        }
-        try surfaceTileset.clear(x: 0, y: index * tileHeight, width: tileWidth, height: tileHeight)
-    }
-
     func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) throws {
         guard sourceIndex > 0, sourceIndex < tileCount else {
             throw GameError.indexOutOfBound(index: sourceIndex)
@@ -167,22 +149,13 @@ class GraphicTileset {
         guard destinationIndex > 0, destinationIndex < tileCount else {
             throw GameError.indexOutOfBound(index: destinationIndex)
         }
-        guard let surfaceTileset = surfaceTileset else {
+        guard var surfaceTileset = surfaceTileset else {
             throw GameError.missingTileset
         }
         guard !tileName.isEmpty else {
             throw GameError.missingTileName
         }
-        try clearTile(at: destinationIndex)
-        try surfaceTileset.copy(
-            from: surfaceTileset,
-            dx: 0,
-            dy: destinationIndex * tileHeight,
-            width: tileWidth,
-            height: tileHeight,
-            sx: 0,
-            sy: sourceIndex * tileHeight
-        )
+        surfaceTileset[destinationIndex] = SKTexture(rect: CGRect(origin: .zero, size: CGSize(width: tileWidth, height: tileHeight)), in: surfaceTileset[sourceIndex])
         tileIndex[tileNames[destinationIndex]] = nil
         tileNames[destinationIndex] = tileName
         tileIndex[tileName] = destinationIndex
@@ -234,31 +207,19 @@ class GraphicTileset {
         // ORIGINAL - END
     }
 
-    func createClippingMasks() throws {
-        guard let surfaceTileset = surfaceTileset else {
-            throw GameError.missingTileset
-        }
-        for i in 0 ..< tileCount {
-            clippingMasks[i] = GraphicFactory.createSurface(width: tileWidth, height: tileHeight, format: .a1)
-            try clippingMasks[i]?.copy(from: surfaceTileset, dx: 0, dy: 0, width: tileWidth, height: tileHeight, sx: 0, sy: i * tileHeight)
-        }
-    }
-
     func loadTileset(from dataSource: DataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
         guard let pngPath = lineSource.readLine() else {
             throw GameError.failedToGetPath
         }
-        guard let surfaceTileset = GraphicFactory.loadSurface(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
-            throw GameError.failedToLoadFile(path: pngPath)
-        }
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GameError.failedToReadTileCount
         }
-        self.surfaceTileset = surfaceTileset
+        let tileset = GraphicFactory.splitVerticalSpriteSheet(from: dataSource.containerURL.appendingPathComponent(pngPath), numSprites: count)
+        self.surfaceTileset = tileset
         self.tileCount = count
-        self.tileWidth = surfaceTileset.width
-        self.tileHeight = surfaceTileset.height / tileCount
+        self.tileWidth = Int(tileset[0].size().width)
+        self.tileHeight = Int(tileset[0].size().height)
         for i in 0 ..< tileCount {
             guard let tileName = lineSource.readLine() else {
                 throw GameError.failedToReadTileName

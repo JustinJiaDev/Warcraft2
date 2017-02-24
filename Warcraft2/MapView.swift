@@ -1,4 +1,5 @@
 import UIKit
+import SpriteKit
 
 class MapView: UIView {
 
@@ -25,8 +26,8 @@ class MapView: UIView {
         }
         do {
             let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
-            let surface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, format: .a1)!
-            let typeSurface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, format: .a1)!
+            let surface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, type: GameScene.self)
+            let typeSurface = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight, type: SKScene.self)
             try viewportRenderer.drawViewport(on: surface, typeSurface: typeSurface, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
             let context = UIGraphicsGetCurrentContext()!
             context.draw(surface as! CGLayer, in: rect)
