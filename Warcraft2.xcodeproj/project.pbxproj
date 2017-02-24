@@ -122,12 +122,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		49F506811E41924100DB1362 /* GameLogic */ = {
+		49F506811E41924100DB1362 /* Game */ = {
 			isa = PBXGroup;
 			children = (
 				8E663E8F1E41492100FD4727 /* GameModel.swift */,
+				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
+				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
 			);
-			name = GameLogic;
+			name = Game;
 			sourceTree = "<group>";
 		};
 		804A99FEFEE41B06F89EB89D /* Pods */ = {
@@ -142,12 +144,11 @@
 		8E1B515A1E2D58CA008E968C /* LinuxPort */ = {
 			isa = PBXGroup;
 			children = (
-				D0773FBF1E38477F00FF7DD7 /* DataLogic */,
-				49F506811E41924100DB1362 /* GameLogic */,
-				D0773FC01E3847A800FF7DD7 /* MapLogic */,
-				D0773FC11E3847C200FF7DD7 /* GraphicLogic */,
-				D0773FC41E38485500FF7DD7 /* GameType */,
-				D0773FC31E38483200FF7DD7 /* Player */,
+				D0773FBF1E38477F00FF7DD7 /* Data */,
+				49F506811E41924100DB1362 /* Game */,
+				D0773FC01E3847A800FF7DD7 /* Map */,
+				D0773FC11E3847C200FF7DD7 /* Graphic */,
+				D0773FC41E38485500FF7DD7 /* Type */,
 				D02808AC1E472190001C1E0E /* Renderer */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
 			);
@@ -183,7 +184,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D0773FBF1E38477F00FF7DD7 /* DataLogic */ = {
+		D0773FBF1E38477F00FF7DD7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
 				8EA067751E33C8E00059CEC2 /* DataContainer.swift */,
@@ -194,10 +195,10 @@
 				D022B24F1E504CA600F8736B /* FileDataSink.swift */,
 				8EA067791E33C8E00059CEC2 /* LineDataSource.swift */,
 			);
-			name = DataLogic;
+			name = Data;
 			sourceTree = "<group>";
 		};
-		D0773FC01E3847A800FF7DD7 /* MapLogic */ = {
+		D0773FC01E3847A800FF7DD7 /* Map */ = {
 			isa = PBXGroup;
 			children = (
 				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
@@ -205,10 +206,10 @@
 				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
 			);
-			name = MapLogic;
+			name = Map;
 			sourceTree = "<group>";
 		};
-		D0773FC11E3847C200FF7DD7 /* GraphicLogic */ = {
+		D0773FC11E3847C200FF7DD7 /* Graphic */ = {
 			isa = PBXGroup;
 			children = (
 				D0D4A3D71E3ED46B009460DE /* Bevel.swift */,
@@ -219,19 +220,10 @@
 				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
 				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
 			);
-			name = GraphicLogic;
+			name = Graphic;
 			sourceTree = "<group>";
 		};
-		D0773FC31E38483200FF7DD7 /* Player */ = {
-			isa = PBXGroup;
-			children = (
-				8EA0677B1E33C8E00059CEC2 /* PlayerAsset.swift */,
-				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
-			);
-			name = Player;
-			sourceTree = "<group>";
-		};
-		D0773FC41E38485500FF7DD7 /* GameType */ = {
+		D0773FC41E38485500FF7DD7 /* Type */ = {
 			isa = PBXGroup;
 			children = (
 				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
@@ -239,7 +231,7 @@
 				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
 				8E1B51601E2D694C008E968C /* Position.swift */,
 			);
-			name = GameType;
+			name = Type;
 			sourceTree = "<group>";
 		};
 		D0773FC51E38485C00FF7DD7 /* Utilities */ = {
