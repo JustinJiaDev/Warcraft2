@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B71D4221E5FC4EE004AA783 /* BattleMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B71D4211E5FC4EE004AA783 /* BattleMode.swift */; };
 		200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
 		8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0B3B161E48656000BA4832 /* FogRenderer.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B71D4211E5FC4EE004AA783 /* BattleMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BattleMode.swift; sourceTree = "<group>"; };
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
 		200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				D0773FC31E38483200FF7DD7 /* Player */,
 				D02808AC1E472190001C1E0E /* Renderer */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
+				1B71D4211E5FC4EE004AA783 /* BattleMode.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -511,6 +514,7 @@
 				D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */,
 				C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */,
 				9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */,
+				1B71D4221E5FC4EE004AA783 /* BattleMode.swift in Sources */,
 				D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
 				8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */,
