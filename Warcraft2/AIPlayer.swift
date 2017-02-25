@@ -132,65 +132,65 @@ class CAIPlayer{
             break
         }
         
-        for(auto WeakAsset : DPlayerData->Assets()){
+        for var weakAsset in playerData.assets {
             if let asset = weakAsset.lock {
-                if(Asset->HasCapability(BuildAction) && Asset->Interruptible()){
-                    if(!BuilderAsset || (!AssetIsIdle && (EAssetAction::aaNone == Asset->Action()))){
-                        BuilderAsset = Asset
-                        AssetIsIdle = EAssetAction::aaNone == Asset->Action()
+                if(asset.hasCapability(buildAction) && asset.interruptible()){
+                    if !builderAsset || (!assetIsIdle && (AssetAction.none == asset.action )) {
+                        builderAsset = asset
+                        assetIsIdle = AssetAction.one == asset.action
                     }
                 }
-                if(Asset->HasCapability(EAssetCapabilityType::actBuildPeasant)){
-                    TownHallAsset = Asset
+                if asset.hasCapability(AssetCapabilityType.buildPeasant) {
+                    townHallAsset = asset
                 }
-                if(Asset->HasActiveCapability(BuildAction)){
+                if asset.hasActiveCapability(buildAction) {
                     return false
                 }
-                if((neartype == Asset->Type())&&(EAssetAction::aaConstruct != Asset->Action())){
-                    NearAsset = Asset
+                if (nearType == asset.type ) && (AssetAction.construct != asset.action ) {
+                    nearAsset = asset
                 }
-                if(buildingtype == Asset->Type()){
-                    if(EAssetAction::aaConstruct == Asset->Action()){
+                if buildingType == asset.type {
+                    if AssetAction.construct == asset.action {
                         return false
                     }
                 }
             }
         }
-        if((buildingtype != neartype) && !NearAsset){
+        if (buildingType != nearType) && nearAsset != nil {
             return false
         }
-        if(BuilderAsset){
-            auto PlayerCapability = CPlayerCapability::FindCapability(BuildAction)
-            CPosition SourcePosition = TownHallAsset->TilePosition()
-            CPosition MapCenter(DPlayerData->PlayerMap()->Width()/2, DPlayerData->PlayerMap()->Height()/2)
+        if builderAsset != nil {
+            var playerCapability = PlayerCapability.findCapability(buildAction) //fix
+            var sourcePosition = townHallAsset.tilePosition
+            var mapCenter = Position(x: playerData.playerMap.width/2, y: playerData.playerMap.height/2)
             
             
-            if(NearAsset){
-                SourcePosition = NearAsset->TilePosition()
+            if nearAsset != nil {
+                sourcePosition = nearAsset.tilePosition
             }
-            if(MapCenter.X() < SourcePosition.X()){
-                SourcePosition.DecrementX(TownHallAsset->Size()/2)
+            if mapCenter.x < sourcePosition.x {
+                sourcePosition.decrementX(townHallAsset.size/2) //fix
             }
-            else if(MapCenter.X() > SourcePosition.X()){
-                SourcePosition.IncrementX(TownHallAsset->Size()/2)
+            else if mapCenter.x > sourcePosition.x {
+                sourcePosition.incrementX(townHallAsset.size/2)
             }
-            if(MapCenter.Y() < SourcePosition.Y()){
-                SourcePosition.DecrementY(TownHallAsset->Size()/2)
+            if mapCenter.y < sourcePosition.y {
+                sourcePosition.decrementY(townHallAsset.size/2)
             }
-            else if(MapCenter.Y() > SourcePosition.Y()){
-                SourcePosition.IncrementY(TownHallAsset->Size()/2)
+            else if mapCenter.y > sourcePosition.y {
+                sourcePosition.incrementY(townHallAsset.size/2)
             }
             
-            CPosition Placement = DPlayerData->FindBestAssetPlacement(SourcePosition, BuilderAsset, buildingtype, 1)
-            if(0 > Placement.X()){
-                return SearchMap(command)
+            var placement = playerData.findBestAssetPlacement(at: sourcePosition, builder: builderAsset, assetTypeInput: buildingType, buffer: 1)
+            if placement.x > 0 {
+                return searchMap(command: command)
             }
-            if(PlayerCapability){
-                if(PlayerCapability->CanInitiate(BuilderAsset, DPlayerData)){
-                    if(0 <= Placement.X()){
-                        command.DAction = BuildAction
-                        command.DActors.push_back(BuilderAsset)
-                        command.DTargetLocation.SetFromTile(Placement)
+            if(playerCapability){
+                if(playerCapability.canInitiate(builderAsset, playerData)){
+                    if placement.x >= 0 {
+                        command.action = buildAction
+                        command.actors.append(builderAsset)
+                        command.targetLocation.setFromTile(placement)
                         return true
                     }
                 }
@@ -201,16 +201,168 @@ class CAIPlayer{
         
     }
     private func activatePeasants(command: PlayerCommandRequest, trainMore: Bool) -> Bool {
+        var miningAsset: PlayerAsset
+        var interruptibleAsset: PlayerAsset
+        var townHallAsset: PlayerAsset
+        var goldMiners = 0
+        var lumberHarvesters = 0
+        var switchToGold = false
+        var switchToLumber = false
+        
+        for var weakAsset in playerData.assets {
+            if let asset = weakAsset.lock() {
+                if asset.hasCapability(AssetCapabilityType.mine) {
+                    if miningAsset != nil && (AssetAction.none == asset.action ){
+                        miningAsset = asset
+                    }
+                    
+                    if asset.hasAction(AssetAction.mineGold) {
+                        goldMiners += 1
+                        if asset.interruptible && (AssetAction.none != asset.action ){
+                            interruptibleAsset = asset
+                        }
+                    }
+                    else if asset.hasAction(AssetAction.harvestLumber) {
+                        lumberHarvesters += 1
+                        if asset.interruptible && (AssetAction.none != assetaction ) {
+                            interruptibleAsset = asset
+                        }
+                    }
+                }
+                if asset.hasCapability(AssetCapabilityType.buildPeasant) && (AssetAction.none == asset.action){
+                    townHallAsset = asset
+                }
+            }
+        }
+        if goldMiners >= 2 && lumberHarvesters == 0 {
+            switchToLumber = true
+        }
+        else if lumberHarvesters >= 2 && goldMiners == 0 {
+            switchToGold = true
+        }
+        if miningAsset != nil || (interruptibleAsset && (switchToLumber != nil || switchToGold != nil)) {
+            if miningAsset != nil && (miningAsset.lumber != 0 || miningAsset.gold != 0) {
+                command.action = AssetCapabilityType.convey //fix
+                command.targetColor = townHallAsset.color
+                command.actors.append(miningAsset)
+                command.targetType = townHallAsset.type
+                command.targetLocation = townHallAsset.position
+            }
+            else {
+                if miningAsset == nil {
+                    miningAsset = interruptibleAsset
+                }
+                var goldMineAsset = playerData.findNearestAsset(at: miningAsset.position, assetType: AssetType.goldMine)
+                if goldMiners != 0 && ((playerData.gold > playerData.lumber * 3) || switchToLumber != nil) {
+                    var lumberLocation = playerData.playerMap.findNearestReachableTileType(at: miningAsset.tilePosition(), type: TerrainMap.tileType.tree)
+                    if lumberLocation.x >= 0 {
+                        command.action = AssetCapabilityType.mine
+                        command.actors.append(miningAsset)
+                        command.targetLocation.setFromTile(lumberLocation)
+                    }
+                    else{
+                        return searchMap(command: command)
+                    }
+                }
+                else{
+                    command.action = AssetCapabilityType.mine
+                    command.actors.append(miningAsset)
+                    command.targetType = AssetType.goldMine
+                    command.targetLocation = goldMineAsset?.position
+                }
+            }
+            return true
+        }
+        else if townHallAsset != nil && trainmore != nil {
+            var playerCapability = PlayerCapability.findCapability(AssetCapabilityType.buildPeasant)
+            
+            if playerCapability != nil {
+                if playerCapability.canApply(townHallAsset, playerData, townHallAsset) {
+                    command.action = AssetCapabilityType.buildPeasant
+                    command.actors.append(townHallAsset)
+                    command.targetLocation = townHallAsset.position
+                    return true
+                }
+            }
+        }
+        return false
         
     }
     private func activateFighters(command: PlayerCommandRequest) -> Bool {
+        var idleAssets = playerData.idleAssets
         
+        for var weakAsset in idleAssets {
+            if var asset = weakAsset.lock() {
+                if asset.speed && (assetTypepeasant != asset.type) {
+                    if !asset.hasAction(AssetAction.standGround) && !asset.hasActiveCapability(AssetCapabilityType.standGround)){
+                        command.actors.append(asset)
+                    }
+                }
+            }
+        }
+        if command.actors.count != 0 {
+            command.action = AssetCapabilityType.standGround
+            return true
+        }
+        return false
     }
     private func trainFootman(command: PlayerCommandRequest) -> Bool {
+        auto IdleAssets = playerData->IdleAssets()
+        std.shared_ptr< CPlayerAsset > TrainingAsset
         
+        for(auto WeakAsset : IdleAssets){
+            if(auto Asset = WeakAsset.lock()){
+                if(Asset->HasCapability(AssetCapabililtyType.actBuildFootman)){
+                    TrainingAsset = Asset
+                    break
+                }
+            }
+        }
+        if(TrainingAsset){
+            auto PlayerCapability = CPlayerCapability.FindCapability(AssetCapabililtyType.actBuildFootman)
+            
+            if(PlayerCapability){
+                if(PlayerCapability->CanApply(TrainingAsset, playerData, TrainingAsset)){
+                    command.action = AssetCapabililtyType.actBuildFootman
+                    command.actors.push_back(TrainingAsset)
+                    command.DTargetLocation = TrainingAsset->Position()
+                    return true
+                }
+            }
+        }
+        return false
     }
     private func trainArcher(command: PlayerCommandRequest) -> Bool {
-        
+        auto IdleAssets = playerData->IdleAssets()
+        std.shared_ptr< CPlayerAsset > TrainingAsset
+        AssetCapabililtyType BuildType = AssetCapabililtyType.actBuildArcher
+        for(auto WeakAsset : IdleAssets){
+            if(auto Asset = WeakAsset.lock()){
+                if(Asset->HasCapability(AssetCapabililtyType.actBuildArcher)){
+                    TrainingAsset = Asset
+                    BuildType = AssetCapabililtyType.actBuildArcher
+                    break
+                }
+                if(Asset->HasCapability(AssetCapabililtyType.actBuildRanger)){
+                    TrainingAsset = Asset
+                    BuildType = AssetCapabililtyType.actBuildRanger
+                    break
+                }
+                
+            }
+        }
+        if(TrainingAsset){
+            auto PlayerCapability = CPlayerCapability.FindCapability(BuildType)
+            if(PlayerCapability){
+                if(PlayerCapability->CanApply(TrainingAsset, playerData, TrainingAsset)){
+                    command.action = BuildType
+                    command.actors.push_back(TrainingAsset)
+                    command.DTargetLocation = TrainingAsset->Position()
+                    return true
+                }
+            }
+        }
+        return false
     }
     
     init(playerData: PlayerData, downSample: Int){
@@ -220,236 +372,65 @@ class CAIPlayer{
     }
     
     func calculateCommand(command: PlayerCommandRequest) -> Void {
-    
-    }
-}
-
-bool CAIPlayer::ActivatePeasants(SPlayerCommandRequest &command, bool trainmore){
-    // Mine and build peasants
-    //auto IdleAssets = DPlayerData->IdleAssets()
-    std::shared_ptr< CPlayerAsset > MiningAsset
-    std::shared_ptr< CPlayerAsset > InterruptibleAsset
-    std::shared_ptr< CPlayerAsset > TownHallAsset
-    int GoldMiners = 0
-    int LumberHarvesters = 0
-    bool SwitchToGold = false
-    bool SwitchToLumber = false
-    
-    for(auto WeakAsset : DPlayerData->Assets()){
-        if(auto Asset = WeakAsset.lock()){
-            if(Asset->HasCapability(EAssetCapabilityType::actMine)){
-                if(!MiningAsset && (EAssetAction::aaNone == Asset->Action())){
-                    MiningAsset = Asset
-                }
-                
-                if(Asset->HasAction(EAssetAction::aaMineGold)){
-                    GoldMiners++
-                    if(Asset->Interruptible() && (EAssetAction::aaNone != Asset->Action())){
-                        InterruptibleAsset = Asset
-                    }
-                }
-                else if(Asset->HasAction(EAssetAction::aaHarvestLumber)){
-                    LumberHarvesters++
-                    if(Asset->Interruptible() && (EAssetAction::aaNone != Asset->Action())){
-                        InterruptibleAsset = Asset
-                    }
-                }
+        command.action = AssetCapabililtyType.actNone
+        command.actors.clear()
+        command.targetColor = EPlayerColor.pcNone
+        command.targetType = AssetType.atNone
+        if((DCycle % DDownSample) == 0){
+            // Do decision
+            
+            if(0 == playerData->FoundAssetCount(AssetType.atGoldMine)){
+                // Search for gold mine
+                SearchMap(command)
             }
-            if(Asset->HasCapability(EAssetCapabilityType::actBuildPeasant) && (EAssetAction::aaNone == Asset->Action())){
-                TownHallAsset = Asset
+            else if((0 == playerData->PlayerAssetCount(AssetType.atTownHall))&&(0 == playerData->PlayerAssetCount(AssetType.atKeep))&&(0 == playerData->PlayerAssetCount(AssetType.atCastle))){
+                BuildTownHall(command)
             }
-        }
-    }
-    if((2 <= GoldMiners)&&(0 == LumberHarvesters)){
-        SwitchToLumber = true
-    }
-    else if((2 <= LumberHarvesters)&&(0 == GoldMiners)){
-        SwitchToGold = true
-    }
-    if(MiningAsset || (InterruptibleAsset && (SwitchToLumber || SwitchToGold))){
-        if(MiningAsset && (MiningAsset->Lumber() || MiningAsset->Gold())){
-            command.DAction = EAssetCapabilityType::actConvey
-            command.DTargetColor = TownHallAsset->Color()
-            command.DActors.push_back(MiningAsset)
-            command.DTargetType = TownHallAsset->Type()
-            command.DTargetLocation = TownHallAsset->Position()
-        }
-        else{
-            if(!MiningAsset){
-                MiningAsset = InterruptibleAsset
+            else if(5 > playerData->PlayerAssetCount(AssetType.atPeasant)){
+                ActivatePeasants(command, true)
             }
-            auto GoldMineAsset = DPlayerData->FindNearestAsset(MiningAsset->Position(), EAssetType::atGoldMine)
-            if(GoldMiners && ((DPlayerData->Gold() > DPlayerData->Lumber() * 3) || SwitchToLumber)){
-                CPosition LumberLocation = DPlayerData->PlayerMap()->FindNearestReachableTileType(MiningAsset->TilePosition(), CTerrainMap::ETileType::ttTree)
-                if(0 <= LumberLocation.X()){
-                    command.DAction = EAssetCapabilityType::actMine
-                    command.DActors.push_back(MiningAsset)
-                    command.DTargetLocation.SetFromTile(LumberLocation)
-                }
-                else{
-                    return SearchMap(command)
-                }
+            else if(12 > playerData->VisibilityMap()->SeenPercent(100)){
+                SearchMap(command)
             }
             else{
-                command.DAction = EAssetCapabilityType::actMine
-                command.DActors.push_back(MiningAsset)
-                command.DTargetType = EAssetType::atGoldMine
-                command.DTargetLocation = GoldMineAsset->Position()
-            }
-        }
-        return true
-    }
-    else if(TownHallAsset && trainmore){
-        auto PlayerCapability = CPlayerCapability::FindCapability(EAssetCapabilityType::actBuildPeasant)
-        
-        if(PlayerCapability){
-            if(PlayerCapability->CanApply(TownHallAsset, DPlayerData, TownHallAsset)){
-                command.DAction = EAssetCapabilityType::actBuildPeasant
-                command.DActors.push_back(TownHallAsset)
-                command.DTargetLocation = TownHallAsset->Position()
-                return true
-            }
-        }
-    }
-    return false
-}
-
-bool CAIPlayer::ActivateFighters(SPlayerCommandRequest &command){
-    auto IdleAssets = DPlayerData->IdleAssets()
-    
-    for(auto WeakAsset : IdleAssets){
-        if(auto Asset = WeakAsset.lock()){
-            if(Asset->Speed() && (EAssetType::atPeasant != Asset->Type())){
-                if(!Asset->HasAction(EAssetAction::aaStandGround) && !Asset->HasActiveCapability(EAssetCapabilityType::actStandGround)){
-                    command.DActors.push_back(Asset)
+                bool CompletedAction = false
+                int BarracksCount = 0
+                int FootmanCount = playerData->PlayerAssetCount(AssetType.atFootman)
+                int ArcherCount = playerData->PlayerAssetCount(AssetType.atArcher)+playerData->PlayerAssetCount(AssetType.atRanger)
+                
+                if(!CompletedAction && (playerData->FoodConsumption() >= playerData->FoodProduction())){
+                    CompletedAction = BuildBuilding(command, AssetType.atFarm, AssetType.atFarm)
+                }
+                if(!CompletedAction){
+                    CompletedAction = ActivatePeasants(command, false)
+                }
+                if(!CompletedAction && (0 == (BarracksCount = playerData->PlayerAssetCount(AssetType.atBarracks)))){
+                    CompletedAction = BuildBuilding(command, AssetType.atBarracks, AssetType.atFarm)
+                }
+                if(!CompletedAction && (5 > FootmanCount)){
+                    CompletedAction = TrainFootman(command)
+                }
+                if(!CompletedAction && (0 == playerData->PlayerAssetCount(AssetType.atLumberMill))){
+                    CompletedAction = BuildBuilding(command, AssetType.atLumberMill, AssetType.atBarracks)
+                }
+                if(!CompletedAction &&  (5 > ArcherCount)){
+                    CompletedAction = TrainArcher(command)
+                }
+                if(!CompletedAction && playerData->PlayerAssetCount(AssetType.atFootman)){
+                    CompletedAction = FindEnemies(command)
+                }
+                if(!CompletedAction){
+                    CompletedAction = ActivateFighters(command)
+                }
+                if(!CompletedAction && ((5 <= FootmanCount) && (5 <= ArcherCount))){
+                    CompletedAction = AttackEnemies(command)
                 }
             }
         }
+        cycle += 1
     }
-    if(command.DActors.size()){
-        command.DAction = EAssetCapabilityType::actStandGround
-        return true
-    }
-    return false
-}
-
-bool CAIPlayer::TrainFootman(SPlayerCommandRequest &command){
-    auto IdleAssets = DPlayerData->IdleAssets()
-    std::shared_ptr< CPlayerAsset > TrainingAsset
-    
-    for(auto WeakAsset : IdleAssets){
-        if(auto Asset = WeakAsset.lock()){
-            if(Asset->HasCapability(EAssetCapabilityType::actBuildFootman)){
-                TrainingAsset = Asset
-                break
-            }
-        }
-    }
-    if(TrainingAsset){
-        auto PlayerCapability = CPlayerCapability::FindCapability(EAssetCapabilityType::actBuildFootman)
-        
-        if(PlayerCapability){
-            if(PlayerCapability->CanApply(TrainingAsset, DPlayerData, TrainingAsset)){
-                command.DAction = EAssetCapabilityType::actBuildFootman
-                command.DActors.push_back(TrainingAsset)
-                command.DTargetLocation = TrainingAsset->Position()
-                return true
-            }
-        }
-    }
-    return false
-}
-
-bool CAIPlayer::TrainArcher(SPlayerCommandRequest &command){
-    auto IdleAssets = DPlayerData->IdleAssets()
-    std::shared_ptr< CPlayerAsset > TrainingAsset
-    EAssetCapabilityType BuildType = EAssetCapabilityType::actBuildArcher
-    for(auto WeakAsset : IdleAssets){
-        if(auto Asset = WeakAsset.lock()){
-            if(Asset->HasCapability(EAssetCapabilityType::actBuildArcher)){
-                TrainingAsset = Asset
-                BuildType = EAssetCapabilityType::actBuildArcher
-                break
-            }
-            if(Asset->HasCapability(EAssetCapabilityType::actBuildRanger)){
-                TrainingAsset = Asset
-                BuildType = EAssetCapabilityType::actBuildRanger
-                break
-            }
-            
-        }
-    }
-    if(TrainingAsset){
-        auto PlayerCapability = CPlayerCapability::FindCapability(BuildType)
-        if(PlayerCapability){
-            if(PlayerCapability->CanApply(TrainingAsset, DPlayerData, TrainingAsset)){
-                command.DAction = BuildType
-                command.DActors.push_back(TrainingAsset)
-                command.DTargetLocation = TrainingAsset->Position()
-                return true
-            }
-        }
-    }
-    return false
 }
 
 
-void CAIPlayer::CalculateCommand(SPlayerCommandRequest &command){
-    command.DAction = EAssetCapabilityType::actNone
-    command.DActors.clear()
-    command.DTargetColor = EPlayerColor::pcNone
-    command.DTargetType = EAssetType::atNone
-    if((DCycle % DDownSample) == 0){
-        // Do decision
-        
-        if(0 == DPlayerData->FoundAssetCount(EAssetType::atGoldMine)){
-            // Search for gold mine
-            SearchMap(command)
-        }
-        else if((0 == DPlayerData->PlayerAssetCount(EAssetType::atTownHall))&&(0 == DPlayerData->PlayerAssetCount(EAssetType::atKeep))&&(0 == DPlayerData->PlayerAssetCount(EAssetType::atCastle))){
-            BuildTownHall(command)
-        }
-        else if(5 > DPlayerData->PlayerAssetCount(EAssetType::atPeasant)){
-            ActivatePeasants(command, true)
-        }
-        else if(12 > DPlayerData->VisibilityMap()->SeenPercent(100)){
-            SearchMap(command)
-        }
-        else{
-            bool CompletedAction = false
-            int BarracksCount = 0
-            int FootmanCount = DPlayerData->PlayerAssetCount(EAssetType::atFootman)
-            int ArcherCount = DPlayerData->PlayerAssetCount(EAssetType::atArcher)+DPlayerData->PlayerAssetCount(EAssetType::atRanger)
-            
-            if(!CompletedAction && (DPlayerData->FoodConsumption() >= DPlayerData->FoodProduction())){
-                CompletedAction = BuildBuilding(command, EAssetType::atFarm, EAssetType::atFarm)
-            }
-            if(!CompletedAction){
-                CompletedAction = ActivatePeasants(command, false)
-            }
-            if(!CompletedAction && (0 == (BarracksCount = DPlayerData->PlayerAssetCount(EAssetType::atBarracks)))){
-                CompletedAction = BuildBuilding(command, EAssetType::atBarracks, EAssetType::atFarm)
-            }
-            if(!CompletedAction && (5 > FootmanCount)){
-                CompletedAction = TrainFootman(command)
-            }
-            if(!CompletedAction && (0 == DPlayerData->PlayerAssetCount(EAssetType::atLumberMill))){
-                CompletedAction = BuildBuilding(command, EAssetType::atLumberMill, EAssetType::atBarracks)
-            }
-            if(!CompletedAction &&  (5 > ArcherCount)){
-                CompletedAction = TrainArcher(command)
-            }
-            if(!CompletedAction && DPlayerData->PlayerAssetCount(EAssetType::atFootman)){
-                CompletedAction = FindEnemies(command)
-            }
-            if(!CompletedAction){
-                CompletedAction = ActivateFighters(command)
-            }
-            if(!CompletedAction && ((5 <= FootmanCount) && (5 <= ArcherCount))){
-                CompletedAction = AttackEnemies(command)
-            }
-        }
-    }
-    DCycle++
-}
+
 
