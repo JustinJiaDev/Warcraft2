@@ -51,7 +51,7 @@ class CAIPlayer{
         }
         
         if playerData.findNearestEnemy(at: townHallAsset.position, inputRange: -1).expired { //fix
-            return searchMap(command: command)
+            return searchMap(command: &command)
         }
         return false
     }
@@ -76,7 +76,7 @@ class CAIPlayer{
             let targetEnemy = playerData.findNearestEnemy(at: averageLocation, inputRange: -1).lock //fix
             if targetEnemy != nil {
                 command.actors.removeAll()
-                return searchMap(command: command)
+                return searchMap(command: &command)
             }
             command.action = AssetCapabilityType.attack //fix
             command.targetLocation = targetEnemy.position()
@@ -101,7 +101,7 @@ class CAIPlayer{
         }
         if builderAsset != nil {
             let goldMineAsset = playerData.findNearestAsset(at: builderAsset.position, assetType: AssetType.goldMine)
-            let placement = playerData.findBestAssetPlacement(at: goldMineAsset.tilePosition, builder: builderAsset, assetTypeInput: AssetType.townHall, buffer: 1)
+            let placement = playerData.findBestAssetPlacement(at: (goldMineAsset?.tilePosition)!, builder: builderAsset, assetTypeInput: AssetType.townHall, buffer: 1)
             if placement.X() >= 0 {
                 command.action = AssetCapabilityType.buildTownHall
                 command.actors.append(builderAsset)
@@ -109,7 +109,7 @@ class CAIPlayer{
                 return true
             }
             else{
-                return searchMap(command: command)
+                return searchMap(command: &command)
             }
         }
         return false
@@ -169,21 +169,21 @@ class CAIPlayer{
                 sourcePosition = nearAsset.tilePosition
             }
             if mapCenter.x < sourcePosition.x {
-                sourcePosition.decrementX(townHallAsset.size/2) //fix
+                sourcePosition.x -= townHallAsset.size/2
             }
             else if mapCenter.x > sourcePosition.x {
-                sourcePosition.incrementX(townHallAsset.size/2)
+                sourcePosition.x += townHallAsset.size/2
             }
             if mapCenter.y < sourcePosition.y {
-                sourcePosition.decrementY(townHallAsset.size/2)
+                sourcePosition.x -= townHallAsset.size/2
             }
             else if mapCenter.y > sourcePosition.y {
-                sourcePosition.incrementY(townHallAsset.size/2)
+                sourcePosition.y += townHallAsset.size/2
             }
             
             var placement = playerData.findBestAssetPlacement(at: sourcePosition, builder: builderAsset, assetTypeInput: buildingType, buffer: 1)
             if placement.x > 0 {
-                return searchMap(command: command)
+                return searchMap(command: &command)
             }
             if playerCapability {
                 if playerCapability.canInitiate(builderAsset, playerData) {
@@ -261,14 +261,14 @@ class CAIPlayer{
                         command.targetLocation.setFromTile(lumberLocation)
                     }
                     else{
-                        return searchMap(command: command)
+                        return searchMap(command: &command)
                     }
                 }
                 else{
                     command.action = AssetCapabilityType.mine
                     command.actors.append(miningAsset)
                     command.targetType = AssetType.goldMine
-                    command.targetLocation = goldMineAsset?.position
+                    command.targetLocation = (goldMineAsset?.position)!
                 }
             }
             return true
@@ -381,16 +381,16 @@ class CAIPlayer{
             
             if playerData.foundAssetCount(AssetType.goldMine) == 0{
                 // Search for gold mine
-                searchMap(command: command)
+                searchMap(command: &command)
             }
-            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0)&&(playerData.playerAssetCount(of: AssetType.keep) == 0)&&(playerData.playerAssetCount(AssetType.castle)) {
-                buildTownHall(command: command)
+            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0)&&(playerData.playerAssetCount(of: AssetType.keep) == 0)&&(playerData.playerAssetCount(of: AssetType.castle)) {
+                buildTownHall(command: &command)
             }
             else if playerData.playerAssetCount(of: AssetType.peasant) > 5 {
-                activatePeasants(command: command, trainMore: true)
+                activatePeasants(command: &command, trainMore: true)
             }
             else if playerData.visibilityMap.seenPercent(max: 100) > 12 {
-                searchMap(command: command)
+                searchMap(command: &command)
             }
             else{
                 var completedAction = false
@@ -399,34 +399,35 @@ class CAIPlayer{
                 var archerCount = playerData.playerAssetCount(of: AssetType.archer) + playerData.playerAssetCount(of: AssetType.ranger)
                 
                 if !completedAction && (playerData.foodConsumption >= playerData.foodProduction) {
-                    completedAction = buildBuilding(command: command, buildingType: AssetType.farm, nearType: AssetType.farm)
+                    completedAction = buildBuilding(command: &command, buildingType: AssetType.farm, nearType: AssetType.farm)
                 }
                 if !completedAction {
-                    completedAction = activatePeasants(command: command, trainMore: false)
+                    completedAction = activatePeasants(command: &command, trainMore: false)
                 }
-                if !completedAction && (0 == (barracksCount = playerData.playerAssetCount(of: AssetType.barracks))) {
-                    completedAction = buildBuilding(command: command, buildingType: AssetType.barracks, nearType: AssetType.farm)
+                if !completedAction && (playerData.playerAssetCount(of: AssetType.barracks) == 0) {
+                    barracksCount = playerData.playerAssetCount(of: AssetType.barracks)
+                    completedAction = buildBuilding(command: &command, buildingType: AssetType.barracks, nearType: AssetType.farm)
                 }
-                if !completedAction && (5 > footmanCount) {
-                    completedAction = trainFootman(command: command)
+                if !completedAction && (footmanCount > 5) {
+                    completedAction = trainFootman(command: &command)
                 }
-                if !completedAction && (0 == playerData.playerAssetCount(of: AssetType.lumberMill)) {
-                    completedAction = buildBuilding(command: command, buildingType: AssetType.lumberMill, nearType: AssetType.barracks)
+                if !completedAction && (playerData.playerAssetCount(of: AssetType.lumberMill) == 0) {
+                    completedAction = buildBuilding(command: &command, buildingType: AssetType.lumberMill, nearType: AssetType.barracks)
                 }
-                if !completedAction &&  (5 > archerCount) {
-                    completedAction = trainArcher(command: command)
+                if !completedAction &&  (archerCount > 5) {
+                    completedAction = trainArcher(command: &command)
                 }
-                if !completedAction && playerData.playerAssetCount(of: AssetType.footman) {
-                    completedAction = findEnemies(command: command)
+                if !completedAction && (playerData.playerAssetCount(of: AssetType.footman) != 0) {
+                    completedAction = findEnemies(command: &command)
                 }
                 if !completedAction {
-                    completedAction = activateFighters(command: command)
+                    completedAction = activateFighters(command: &command)
                 }
                 if !completedAction
                     
                     
                     && ((footmanCount >= 5) && (archerCount >= 5)) {
-                    completedAction = attackEnemies(command: command)
+                    completedAction = attackEnemies(command: &command)
                 }
             }
         }
