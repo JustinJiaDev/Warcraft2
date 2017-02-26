@@ -14,7 +14,7 @@ class CAIPlayer{
     private var cycle: Int
     private var downSample: Int
     
-    private func searchMap(command: PlayerCommandRequest) -> Bool {
+    private func searchMap(command: inout PlayerCommandRequest) -> Bool {
         let idleAssets = playerData.idleAssets
         var movableAsset: PlayerAsset
         
@@ -27,7 +27,7 @@ class CAIPlayer{
             }
         }
         if movableAsset != nil {
-            let unknownPosition = playerData.playerMap.findNearestReachableTileType(movableAsset.tilePosition, TerrainMap.tileType.none)
+            let unknownPosition = playerData.playerMap.findNearestReachableTileType(at: movableAsset.tilePosition, type: TerrainMap.tileType.none)
             
             if unknownPosition.x >= 0 {
                 command.action = AssetCapabilityType.move //fix
@@ -38,7 +38,7 @@ class CAIPlayer{
         }
         return false
     }
-    private func findEnemies(command: PlayerCommandRequest) -> Bool {
+    private func findEnemies(command: inout PlayerCommandRequest) -> Bool {
         let townHallAsset: PlayerAsset
         
         for var weakAsset in playerData.assets {
@@ -55,7 +55,7 @@ class CAIPlayer{
         }
         return false
     }
-    private func attackEnemies(command: PlayerCommandRequest) -> Bool {
+    private func attackEnemies(command: inout PlayerCommandRequest) -> Bool {
         let averageLocation = Position()
         
         for var weakAsset in playerData.assets {
@@ -87,7 +87,7 @@ class CAIPlayer{
         return false
         
     }
-    private func buildTownHall(command: PlayerCommandRequest) -> Bool {
+    private func buildTownHall(command: inout PlayerCommandRequest) -> Bool {
         let idleAssets = playerData.idleAssets
         var builderAsset: PlayerAsset
         
@@ -100,8 +100,8 @@ class CAIPlayer{
             }
         }
         if builderAsset != nil {
-            let goldMineAsset = playerData.findNearestAsset(at: builderAsset.position(), assetType: AssetType.goldMine)
-            let placement = playerData.findBestAssetPlacement(goldMineAsset.tilePosition(), builderAsset, AssetType.townHall, 1)
+            let goldMineAsset = playerData.findNearestAsset(at: builderAsset.position, assetType: AssetType.goldMine)
+            let placement = playerData.findBestAssetPlacement(at: goldMineAsset.tilePosition, builder: builderAsset, assetTypeInput: AssetType.townHall, buffer: 1)
             if placement.X() >= 0 {
                 command.action = AssetCapabilityType.buildTownHall
                 command.actors.append(builderAsset)
@@ -114,7 +114,7 @@ class CAIPlayer{
         }
         return false
     }
-    private func buildBuilding(command: PlayerCommandRequest, buildingType: AssetType, nearType: AssetType) -> Bool {
+    private func buildBuilding(command: inout PlayerCommandRequest, buildingType: AssetType, nearType: AssetType) -> Bool {
         var builderAsset: PlayerAsset
         var townHallAsset: PlayerAsset
         var nearAsset: PlayerAsset
@@ -134,7 +134,7 @@ class CAIPlayer{
         
         for var weakAsset in playerData.assets {
             if let asset = weakAsset.lock {
-                if(asset.hasCapability(buildAction) && asset.interruptible()){
+                if asset.hasCapability(buildAction) && asset.interruptible() {
                     if !builderAsset || (!assetIsIdle && (AssetAction.none == asset.action )) {
                         builderAsset = asset
                         assetIsIdle = AssetAction.one == asset.action
@@ -185,8 +185,8 @@ class CAIPlayer{
             if placement.x > 0 {
                 return searchMap(command: command)
             }
-            if(playerCapability){
-                if(playerCapability.canInitiate(builderAsset, playerData)){
+            if playerCapability {
+                if playerCapability.canInitiate(builderAsset, playerData) {
                     if placement.x >= 0 {
                         command.action = buildAction
                         command.actors.append(builderAsset)
@@ -200,7 +200,7 @@ class CAIPlayer{
         return false
         
     }
-    private func activatePeasants(command: PlayerCommandRequest, trainMore: Bool) -> Bool {
+    private func activatePeasants(command: inout PlayerCommandRequest, trainMore: Bool) -> Bool {
         var miningAsset: PlayerAsset
         var interruptibleAsset: PlayerAsset
         var townHallAsset: PlayerAsset
@@ -240,7 +240,7 @@ class CAIPlayer{
         else if lumberHarvesters >= 2 && goldMiners == 0 {
             switchToGold = true
         }
-        if miningAsset != nil || (interruptibleAsset && (switchToLumber != nil || switchToGold != nil)) {
+        if miningAsset != nil || (interruptibleAsset != nil && (switchToLumber != nil || switchToGold != nil)) {
             if miningAsset != nil && (miningAsset.lumber != 0 || miningAsset.gold != 0) {
                 command.action = AssetCapabilityType.convey //fix
                 command.targetColor = townHallAsset.color
@@ -254,7 +254,7 @@ class CAIPlayer{
                 }
                 var goldMineAsset = playerData.findNearestAsset(at: miningAsset.position, assetType: AssetType.goldMine)
                 if goldMiners != 0 && ((playerData.gold > playerData.lumber * 3) || switchToLumber != nil) {
-                    var lumberLocation = playerData.playerMap.findNearestReachableTileType(at: miningAsset.tilePosition(), type: TerrainMap.tileType.tree)
+                    var lumberLocation = playerData.playerMap.findNearestReachableTileType(at: miningAsset.tilePosition, type: TerrainMap.tileType.tree)
                     if lumberLocation.x >= 0 {
                         command.action = AssetCapabilityType.mine
                         command.actors.append(miningAsset)
@@ -273,7 +273,7 @@ class CAIPlayer{
             }
             return true
         }
-        else if townHallAsset != nil && trainmore != nil {
+        else if townHallAsset != nil && trainMore != nil {
             var playerCapability = PlayerCapability.findCapability(AssetCapabilityType.buildPeasant)
             
             if playerCapability != nil {
@@ -288,13 +288,13 @@ class CAIPlayer{
         return false
         
     }
-    private func activateFighters(command: PlayerCommandRequest) -> Bool {
+    private func activateFighters(command: inout PlayerCommandRequest) -> Bool {
         var idleAssets = playerData.idleAssets
         
         for var weakAsset in idleAssets {
             if var asset = weakAsset.lock() {
-                if asset.speed && (assetTypepeasant != asset.type) {
-                    if !asset.hasAction(AssetAction.standGround) && !asset.hasActiveCapability(AssetCapabilityType.standGround)){
+                if asset.speed && (assetTypePeasant != asset.type) {
+                    if !asset.hasAction(AssetAction.standGround) && !asset.hasActiveCapability(AssetCapabilityType.standGround) {
                         command.actors.append(asset)
                     }
                 }
@@ -306,58 +306,58 @@ class CAIPlayer{
         }
         return false
     }
-    private func trainFootman(command: PlayerCommandRequest) -> Bool {
-        auto IdleAssets = playerData->IdleAssets()
-        std.shared_ptr< CPlayerAsset > TrainingAsset
+    private func trainFootman(command: inout PlayerCommandRequest) -> Bool {
+        var idleAssets = playerData.idleAssets
+        var trainingAsset: PlayerAsset
         
-        for(auto WeakAsset : IdleAssets){
-            if(auto Asset = WeakAsset.lock()){
-                if(Asset->HasCapability(AssetCapabililtyType.actBuildFootman)){
-                    TrainingAsset = Asset
+        for var weakAsset in idleAssets {
+            if let asset = weakAsset.lock() {
+                if asset.hasCapability(AssetCapabililtyType.buildFootman) {
+                    trainingAsset = asset
                     break
                 }
             }
         }
-        if(TrainingAsset){
-            auto PlayerCapability = CPlayerCapability.FindCapability(AssetCapabililtyType.actBuildFootman)
+        if trainingAsset != nil {
+            var playerCapability = PlayerCapability.findCapability(AssetCapabililtyType.buildFootman)
             
-            if(PlayerCapability){
-                if(PlayerCapability->CanApply(TrainingAsset, playerData, TrainingAsset)){
-                    command.action = AssetCapabililtyType.actBuildFootman
-                    command.actors.push_back(TrainingAsset)
-                    command.DTargetLocation = TrainingAsset->Position()
+            if playerCapability != nil {
+                if playerCapability.canApply(trainingAsset, playerData, trainingAsset) {
+                    command.action = AssetCapabililtyType.buildFootman
+                    command.actors.append(trainingAsset)
+                    command.targetLocation = trainingAsset.position
                     return true
                 }
             }
         }
         return false
     }
-    private func trainArcher(command: PlayerCommandRequest) -> Bool {
-        auto IdleAssets = playerData->IdleAssets()
-        std.shared_ptr< CPlayerAsset > TrainingAsset
-        AssetCapabililtyType BuildType = AssetCapabililtyType.actBuildArcher
-        for(auto WeakAsset : IdleAssets){
-            if(auto Asset = WeakAsset.lock()){
-                if(Asset->HasCapability(AssetCapabililtyType.actBuildArcher)){
-                    TrainingAsset = Asset
-                    BuildType = AssetCapabililtyType.actBuildArcher
+    private func trainArcher(command: inout PlayerCommandRequest) -> Bool {
+        var idleAssets = playerData.idleAssets
+        var trainingAsset: PlayerAsset
+        var buildType = AssetCapabililtyType.buildArcher
+        for var weakAsset in idleAssets {
+            if var asset = weakAsset.lock() {
+                if asset.hasCapability(AssetCapabililtyType.buildArcher) {
+                    trainingAsset = asset
+                    buildType = AssetCapabililtyType.buildArcher
                     break
                 }
-                if(Asset->HasCapability(AssetCapabililtyType.actBuildRanger)){
-                    TrainingAsset = Asset
-                    BuildType = AssetCapabililtyType.actBuildRanger
+                if asset.hasCapability(AssetCapabililtyType.buildRanger) {
+                    trainingAsset = asset
+                    buildType = AssetCapabililtyType.buildRanger
                     break
                 }
                 
             }
         }
-        if(TrainingAsset){
-            auto PlayerCapability = CPlayerCapability.FindCapability(BuildType)
-            if(PlayerCapability){
-                if(PlayerCapability->CanApply(TrainingAsset, playerData, TrainingAsset)){
-                    command.action = BuildType
-                    command.actors.push_back(TrainingAsset)
-                    command.DTargetLocation = TrainingAsset->Position()
+        if trainingAsset != nil{
+            var playerCapability = PlayerCapability.findCapability(buildType)
+            if playerCapability != nil {
+                if playerCapability.canApply(trainingAsset, playerData, trainingAsset) {
+                    command.action = buildType
+                    command.actors.append(trainingAsset)
+                    command.DTargetLocation = trainingAssetposition
                     return true
                 }
             }
@@ -371,59 +371,62 @@ class CAIPlayer{
         self.downSample = downSample
     }
     
-    func calculateCommand(command: PlayerCommandRequest) -> Void {
-        command.action = AssetCapabililtyType.actNone
-        command.actors.clear()
-        command.targetColor = EPlayerColor.pcNone
-        command.targetType = AssetType.atNone
-        if((DCycle % DDownSample) == 0){
+    func calculateCommand(command: inout PlayerCommandRequest) -> Void {
+        command.action = AssetCapabililtyType.none
+        command.actors.removeAll()
+        command.targetColor = PlayerColor.none
+        command.targetType = AssetType.none
+        if (cycle % downSample) == 0 {
             // Do decision
             
-            if(0 == playerData->FoundAssetCount(AssetType.atGoldMine)){
+            if playerData.foundAssetCount(AssetType.goldMine) == 0{
                 // Search for gold mine
-                SearchMap(command)
+                searchMap(command: command)
             }
-            else if((0 == playerData->PlayerAssetCount(AssetType.atTownHall))&&(0 == playerData->PlayerAssetCount(AssetType.atKeep))&&(0 == playerData->PlayerAssetCount(AssetType.atCastle))){
-                BuildTownHall(command)
+            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0)&&(playerData.playerAssetCount(of: AssetType.keep) == 0)&&(playerData.playerAssetCount(AssetType.castle)) {
+                buildTownHall(command: command)
             }
-            else if(5 > playerData->PlayerAssetCount(AssetType.atPeasant)){
-                ActivatePeasants(command, true)
+            else if playerData.playerAssetCount(of: AssetType.peasant) > 5 {
+                activatePeasants(command: command, trainMore: true)
             }
-            else if(12 > playerData->VisibilityMap()->SeenPercent(100)){
-                SearchMap(command)
+            else if playerData.visibilityMap.seenPercent(max: 100) > 12 {
+                searchMap(command: command)
             }
             else{
-                bool CompletedAction = false
-                int BarracksCount = 0
-                int FootmanCount = playerData->PlayerAssetCount(AssetType.atFootman)
-                int ArcherCount = playerData->PlayerAssetCount(AssetType.atArcher)+playerData->PlayerAssetCount(AssetType.atRanger)
+                var completedAction = false
+                var barracksCount = 0
+                var footmanCount = playerData.playerAssetCount(of: AssetType.footman)
+                var archerCount = playerData.playerAssetCount(of: AssetType.archer) + playerData.playerAssetCount(of: AssetType.ranger)
                 
-                if(!CompletedAction && (playerData->FoodConsumption() >= playerData->FoodProduction())){
-                    CompletedAction = BuildBuilding(command, AssetType.atFarm, AssetType.atFarm)
+                if !completedAction && (playerData.foodConsumption >= playerData.foodProduction) {
+                    completedAction = buildBuilding(command: command, buildingType: AssetType.farm, nearType: AssetType.farm)
                 }
-                if(!CompletedAction){
-                    CompletedAction = ActivatePeasants(command, false)
+                if !completedAction {
+                    completedAction = activatePeasants(command: command, trainMore: false)
                 }
-                if(!CompletedAction && (0 == (BarracksCount = playerData->PlayerAssetCount(AssetType.atBarracks)))){
-                    CompletedAction = BuildBuilding(command, AssetType.atBarracks, AssetType.atFarm)
+                if !completedAction && (0 == (barracksCount = playerData.playerAssetCount(of: AssetType.barracks))) {
+                    completedAction = buildBuilding(command: command, buildingType: AssetType.barracks, nearType: AssetType.farm)
                 }
-                if(!CompletedAction && (5 > FootmanCount)){
-                    CompletedAction = TrainFootman(command)
+                if !completedAction && (5 > footmanCount) {
+                    completedAction = trainFootman(command: command)
                 }
-                if(!CompletedAction && (0 == playerData->PlayerAssetCount(AssetType.atLumberMill))){
-                    CompletedAction = BuildBuilding(command, AssetType.atLumberMill, AssetType.atBarracks)
+                if !completedAction && (0 == playerData.playerAssetCount(of: AssetType.lumberMill)) {
+                    completedAction = buildBuilding(command: command, buildingType: AssetType.lumberMill, nearType: AssetType.barracks)
                 }
-                if(!CompletedAction &&  (5 > ArcherCount)){
-                    CompletedAction = TrainArcher(command)
+                if !completedAction &&  (5 > archerCount) {
+                    completedAction = trainArcher(command: command)
                 }
-                if(!CompletedAction && playerData->PlayerAssetCount(AssetType.atFootman)){
-                    CompletedAction = FindEnemies(command)
+                if !completedAction && playerData.playerAssetCount(of: AssetType.footman) {
+                    completedAction = findEnemies(command: command)
                 }
-                if(!CompletedAction){
-                    CompletedAction = ActivateFighters(command)
+                if !completedAction {
+                    completedAction = activateFighters(command: command)
                 }
-                if(!CompletedAction && ((5 <= FootmanCount) && (5 <= ArcherCount))){
-                    CompletedAction = AttackEnemies(command)
+                if !completedAction
+                    
+                    
+                    && ((footmanCount >= 5) && (archerCount >= 5)) {
+                    completedAction = attackEnemies(command: command)
                 }
             }
         }
