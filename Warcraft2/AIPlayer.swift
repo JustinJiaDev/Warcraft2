@@ -102,7 +102,7 @@ class CAIPlayer{
         if builderAsset != nil {
             let goldMineAsset = playerData.findNearestAsset(at: builderAsset.position, assetType: AssetType.goldMine)
             let placement = playerData.findBestAssetPlacement(at: (goldMineAsset?.tilePosition)!, builder: builderAsset, assetTypeInput: AssetType.townHall, buffer: 1)
-            if placement.X() >= 0 {
+            if placement.x >= 0 {
                 command.action = AssetCapabilityType.buildTownHall
                 command.actors.append(builderAsset)
                 command.targetLocation.setFromTile(placement)
@@ -224,7 +224,7 @@ class CAIPlayer{
                     }
                     else if asset.hasAction(AssetAction.harvestLumber) {
                         lumberHarvesters += 1
-                        if asset.interruptible && (AssetAction.none != assetaction ) {
+                        if asset.interruptible && (AssetAction.none != asset.action ) {
                             interruptibleAsset = asset
                         }
                     }
@@ -293,7 +293,7 @@ class CAIPlayer{
         
         for var weakAsset in idleAssets {
             if var asset = weakAsset.lock() {
-                if asset.speed && (assetTypePeasant != asset.type) {
+                if asset.speed && (asset.typePeasant != asset.type) {
                     if !asset.hasAction(AssetAction.standGround) && !asset.hasActiveCapability(AssetCapabilityType.standGround) {
                         command.actors.append(asset)
                     }
@@ -357,7 +357,7 @@ class CAIPlayer{
                 if playerCapability.canApply(trainingAsset, playerData, trainingAsset) {
                     command.action = buildType
                     command.actors.append(trainingAsset)
-                    command.DTargetLocation = trainingAssetposition
+                    command.targetLocation = trainingAsset.position
                     return true
                 }
             }
@@ -383,8 +383,8 @@ class CAIPlayer{
                 // Search for gold mine
                 searchMap(command: &command)
             }
-            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0)&&(playerData.playerAssetCount(of: AssetType.keep) == 0)&&(playerData.playerAssetCount(of: AssetType.castle)) {
-                buildTownHall(command: &command)
+            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0) & &(playerData.playerAssetCount(of: AssetType.keep)) == 0 && (playerData.playerAssetCount(of: AssetType.castle) == 0) {
+                self.buildTownHall(command: &command)
             }
             else if playerData.playerAssetCount(of: AssetType.peasant) > 5 {
                 activatePeasants(command: &command, trainMore: true)
