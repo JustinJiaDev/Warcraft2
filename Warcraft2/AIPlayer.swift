@@ -19,7 +19,7 @@ class CAIPlayer{
         var movableAsset: PlayerAsset
         
         for var weakAsset in idleAssets {
-            if let asset = weakAsset.lock { //fix
+            if let asset = weakAsset.lock() { //fix: no function lock
                 if asset.speed == true {
                     movableAsset = asset
                     break
@@ -30,8 +30,8 @@ class CAIPlayer{
             let unknownPosition = playerData.playerMap.findNearestReachableTileType(at: movableAsset.tilePosition, type: TerrainMap.tileType.none)
             
             if unknownPosition.x >= 0 {
-                command.action = AssetCapabilityType.move //fix
-                command.actors.append(movableAsset) //fix
+                command.action = AssetCapabilityType.move
+                command.actors.append(movableAsset)
                 command.targetLocation.setFromTile(unknownPosition)
                 return true
             }
@@ -50,7 +50,7 @@ class CAIPlayer{
             }
         }
         
-        if playerData.findNearestEnemy(at: townHallAsset.position, inputRange: -1).expired { //fix
+        if playerData.findNearestEnemy(at: townHallAsset.position, inputRange: -1).expired { //fix: no expired
             return searchMap(command: &command)
         }
         return false
@@ -319,7 +319,7 @@ class CAIPlayer{
             }
         }
         if trainingAsset != nil {
-            var playerCapability = PlayerCapability.findCapability(AssetCapabililtyType.buildFootman)
+            var playerCapability = PlayerCapability.findCapability(AssetCapabililtyType.buildFootman) // fix: no AssetCapabilityType
             
             if playerCapability != nil {
                 if playerCapability.canApply(trainingAsset, playerData, trainingAsset) {
@@ -383,7 +383,7 @@ class CAIPlayer{
                 // Search for gold mine
                 searchMap(command: &command)
             }
-            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0) & &(playerData.playerAssetCount(of: AssetType.keep)) == 0 && (playerData.playerAssetCount(of: AssetType.castle) == 0) {
+            else if (playerData.playerAssetCount(of: AssetType.townHall) == 0) & &(playerData.playerAssetCount(of: AssetType.keep)) == 0 && (playerData.playerAssetCount(of: AssetType.castle) == 0) {//fix
                 self.buildTownHall(command: &command)
             }
             else if playerData.playerAssetCount(of: AssetType.peasant) > 5 {
