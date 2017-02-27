@@ -168,8 +168,7 @@ enum AssetCapabilityType: Int {
         .armorUpgrade3,
         .longbow,
         .rangerScouting,
-        .marksmanship,
-        .max
+        .marksmanship
     ]
 }
 
