@@ -111,3 +111,8 @@ func createScene(camera: SKCameraNode, width: Int, height: Int) -> SKScene {
     scene.addChild(camera)
     return scene
 }
+
+func createTypeScene(width: Int, height: Int) -> SKScene {
+    let scene = GraphicFactory.createSurface(width: width, height: height, type: SKScene.self)
+    return scene
+}

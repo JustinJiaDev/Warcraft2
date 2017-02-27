@@ -21,6 +21,7 @@ class GameViewController: UIViewController {
 
     lazy var mainCamera = createCamera(scale: 0.25)
     lazy var scene: SKScene = createScene(camera: self.mainCamera, width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
+    lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,7 +105,8 @@ extension GameViewController {
         do {
             try gameModel.timestep()
             let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
-            try viewportRenderer.drawViewport(on: scene, typeSurface: scene, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
+            scene.removeAllChildren()
+            try viewportRenderer.drawViewport(on: scene, typeSurface: typeScene, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
         } catch {
             printError(error.localizedDescription, level: .high)
         }

@@ -113,7 +113,7 @@ class Position {
         self.y = y / Position.tileHeight
     }
 
-    func adjacentTileDirection(position: Position, objectSize: Int) -> Direction {
+    func adjacentTileDirection(position: Position, objectSize: Int = 1) -> Direction {
         if objectSize == 1 {
             let deltaX = position.x - x
             let deltaY = position.y - y

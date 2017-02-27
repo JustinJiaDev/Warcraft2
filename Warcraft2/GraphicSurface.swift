@@ -60,9 +60,9 @@ extension SKScene: GraphicSurface {
         fatalError("This method is not yet implemented.")
     }
 
+    // FIXME: MAKE CLEAR GREAT AGAIN
     func clear(x: Int, y: Int, width: Int, height: Int) throws {
         removeAllChildren()
-        //        fatalError("This method is not yet implemented.")
     }
 
     func draw(from texture: SKTexture, x: Int, y: Int, width: Int, height: Int) {

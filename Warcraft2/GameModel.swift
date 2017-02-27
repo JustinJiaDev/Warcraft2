@@ -941,7 +941,7 @@ class GameModel {
                         asset.direction = travelDirection
                     } else {
                         let tilePosition = Position(from: mapTarget)
-                        if tilePosition == asset.tilePosition || asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1) != .max {
+                        if tilePosition == asset.tilePosition || asset.tilePosition.adjacentTileDirection(position: tilePosition) != .max {
                             asset.popCommand()
                             asset.resetStep()
                             continue
