@@ -1,5 +1,6 @@
 import UIKit
 import AVFoundation
+import SpriteKit
 
 fileprivate func url(_ pathComponents: String...) -> URL {
     return pathComponents.reduce(Bundle.main.url(forResource: "data", withExtension: nil)!, { result, pathComponent in
@@ -33,6 +34,7 @@ class GameViewController: UIViewController {
     var map: AssetDecoratedMap!
     var fogRenderer: FogRenderer!
     var viewportRenderer: ViewportRenderer!
+    var unitActionRenderer: UnitActionRenderer!
     var midiPlayer: AVMIDIPlayer!
 
     private func createMidiPlayer() -> AVMIDIPlayer {
@@ -116,6 +118,23 @@ class GameViewController: UIViewController {
         }
     }
 
+    private func createUnitActionRenderer() -> UnitActionRenderer {
+        do {
+            let bevel = try Bevel(tileset: tileset("Icons"))
+            let icons = try tileset("Icons")
+
+            let unitActionRenderer = UnitActionRenderer(
+                bevel: bevel,
+                icons: icons,
+                color: gameModel.player(with: .red).color,
+                player: gameModel.player(with: .red)
+            )
+            return unitActionRenderer
+        } catch {
+            fatalError(error.localizedDescription) // TODO: Handle Error
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -148,6 +167,7 @@ class GameViewController: UIViewController {
 
         mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
         let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
+
         view.addSubview(mapView)
         view.addSubview(miniMapView)
         triggerAnimation()
@@ -168,6 +188,7 @@ class GameViewController: UIViewController {
             for asset in gameModel.actualMap.assets {
                 if asset.assetType.name == "Peasant" && asset.position.distance(position: target.position) < 64 {
                     selectedPeasant = asset
+                    showActionMenu()
                 }
             }
         }
@@ -178,6 +199,71 @@ class GameViewController: UIViewController {
         let displayLink = CADisplayLink(target: self, selector: #selector(test))
         displayLink.frameInterval = 1
         displayLink.add(to: .current, forMode: .defaultRunLoopMode)
+    }
+
+    func showActionMenu() {
+        //        unitActionRenderer = createUnitActionRenderer()
+        //        unitActionRenderer.drawUnitAction(on: layer, selectionList: [PlayerAsset.init(playerAssetType: <#T##PlayerAssetType#>)], currentAction: .none)
+
+        // Currently set to screensize's width & 1/5 height, but should set it to map container's
+        let screenSize = UIScreen.main.bounds
+        let actionMenuView = ActionMenuView(frame: CGRect(origin: CGPoint(x: 0, y: screenSize.height * 0.8), size: CGSize(width: screenSize.width, height: screenSize.height / 5)), unitActionRenderer: 1)
+        actionMenuView.backgroundColor = UIColor(white: 1, alpha: 0.3)
+        actionMenuView.tag = 1
+
+        let btn: UIButton = UIButton(frame: CGRect(x: actionMenuView.bounds.size.width - 30, y: 0, width: 30, height: 30))
+        btn.setTitle("X", for: .normal)
+        btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        btn.tag = 1
+
+        let numActions = 20
+        let iconSize = 60
+        let scrollView = UIScrollView(frame: actionMenuView.bounds)
+        var image: UIImage
+        var imageView: UIImageView
+        var xPosition = 10
+
+        scrollView.contentSize = CGSize(width: actionMenuView.bounds.size.width * 1.5, height: actionMenuView.bounds.size.height)
+
+        //        var actionViews: [UIImage]
+        //        let actionViews = splitVerticalSpriteSheet(from: URL(string: "./data/img/Icons.png")!, numSprites: 50)
+
+        for _ in 1 ... numActions {
+            image = UIImage(named: "./data/img/icon.png")!
+            imageView = UIImageView(image: image)
+            imageView.frame = CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize))
+            xPosition += 10 + iconSize
+            scrollView.addSubview(imageView)
+        }
+
+        actionMenuView.addSubview(scrollView)
+        actionMenuView.addSubview(btn)
+        view.addSubview(actionMenuView)
+    }
+
+    func buttonAction(sender: UIButton!) {
+        let btnsendtag: UIButton = sender
+        if btnsendtag.tag == 1 {
+            if let viewWithTag = self.view.viewWithTag(1) {
+                viewWithTag.removeFromSuperview()
+            }
+        }
+    }
+
+    // For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [SKTexture]
+    func splitVerticalSpriteSheet(from url: URL, numSprites: Int) -> [SKTexture] {
+        let image = UIImage(contentsOfFile: url.path)!
+        let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
+        var cropRect: CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
+        var imageSegments: [SKTexture] = []
+        for i in 0 ..< numSprites {
+            cropRect.origin.y = CGFloat(i) * segmentHeight
+            let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
+            let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
+            let currentSegmentSKTexture = SKTexture(image: currentSegmentUIImage)
+            imageSegments.append(currentSegmentSKTexture)
+        }
+        return imageSegments
     }
 
     func test() {
