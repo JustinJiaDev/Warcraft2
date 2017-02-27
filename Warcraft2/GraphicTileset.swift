@@ -69,31 +69,23 @@ class GraphicTileset {
     }
 
     @discardableResult func setTileCount(_ count: Int) -> Int {
-        //        guard count > 0, tileWidth > 0, tileHeight > 0, let surfaceTileset = surfaceTileset else {
-        //            return tileCount
-        //        }
-        //
-        //        guard count >= tileCount else {
-        //            tileCount = count
-        //            tileIndex.keys.filter { key in
-        //                return self.tileIndex[key]! >= self.tileCount
-        //            }.forEach { key in
-        //                self.tileIndex.removeValue(forKey: key)
-        //            }
-        //            updateGroupNames()
-        //            return tileCount
-        //        }
-        //
-        //        guard let newSurface = GraphicFactory.createSurface(width: tileWidth, height: tileHeight * count, format: surfaceTileset.format) else {
-        //            return tileCount
-        //        }
-        //        do {
-        //            try newSurface.copy(from: surfaceTileset, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0)
-        //        } catch {
-        //            return tileCount
-        //        }
-        //        self.surfaceTileset = newSurface
-        //        tileCount = count
+        guard count > 0, tileWidth > 0, tileHeight > 0 else {
+            return tileCount
+        }
+
+        guard count >= tileCount else {
+            tileCount = count
+            tileIndex.keys.filter { key in
+                return self.tileIndex[key]! >= self.tileCount
+            }.forEach { key in
+                self.tileIndex.removeValue(forKey: key)
+            }
+            updateGroupNames()
+            return tileCount
+        }
+
+        self.surfaceTileset?.append(contentsOf: Array(repeating: SKTexture(), count: count - tileCount))
+        tileCount = count
         return tileCount
     }
 
@@ -215,7 +207,9 @@ class GraphicTileset {
         guard let tileCountString = lineSource.readLine(), let count = Int(tileCountString) else {
             throw GameError.failedToReadTileCount
         }
-        let tileset = GraphicFactory.splitVerticalSpriteSheet(from: dataSource.containerURL.appendingPathComponent(pngPath), numSprites: count)
+        guard let tileset = GraphicFactory.loadTextures(from: dataSource.containerURL.appendingPathComponent(pngPath), count: count) else {
+            throw GameError.failedToLoadFile(path: pngPath)
+        }
         self.surfaceTileset = tileset
         self.tileCount = count
         self.tileWidth = Int(tileset[0].size().width)

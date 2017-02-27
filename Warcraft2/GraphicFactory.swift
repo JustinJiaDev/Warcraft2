@@ -20,7 +20,7 @@ class GraphicFactory {
     }
 
     static func loadSurface(from url: URL) -> GraphicSurface? {
-        let image = UIImage(contentsOfFile: url.path)!
+        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
         UIGraphicsBeginImageContext(image.size)
         let layer = CGLayer(UIGraphicsGetCurrentContext()!, size: image.size, auxiliaryInfo: nil)!
         layer.context!.draw(image.cgImage!, in: CGRect(origin: .zero, size: image.size))
@@ -28,24 +28,18 @@ class GraphicFactory {
         return layer
     }
 
-    // For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [SKTexture]
-    static func splitVerticalSpriteSheet(from url: URL, numSprites: Int) -> [SKTexture] {
-        let image = UIImage(contentsOfFile: url.path)!
-        let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
-        var cropRect: CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
+    static func loadTextures(from url: URL, count: Int) -> [SKTexture]? {
+        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
+        let segmentHeight = image.size.height / CGFloat(count)
+        var cropRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
         var imageSegments: [SKTexture] = []
-
-        for i in 0 ..< numSprites {
-
+        for i in 0 ..< count {
             cropRect.origin.y = CGFloat(i) * segmentHeight
-
             let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
             let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
             let currentSegmentSKTexture = SKTexture(image: currentSegmentUIImage)
-
             imageSegments.append(currentSegmentSKTexture)
         }
-
         return imageSegments
     }
 }
