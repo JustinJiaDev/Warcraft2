@@ -1,6 +1,6 @@
 import Foundation
 
-class Position {
+struct Position {
     var x: Int
     var y: Int
 
@@ -31,11 +31,6 @@ class Position {
     init(x: Int, y: Int) {
         self.x = x
         self.y = y
-    }
-
-    init(from position: Position) {
-        x = position.x
-        y = position.y
     }
 
     static func ==(left: Position, right: Position) -> Bool {
@@ -87,29 +82,29 @@ class Position {
         }
     }
 
-    func setFromTile(_ position: Position) {
+    mutating func setFromTile(_ position: Position) {
         x = position.x * Position.tileWidth + Position.halfTileWidth
         y = position.y * Position.tileHeight + Position.halfTileHeight
     }
 
-    func setXFromTile(_ x: Int) {
+    mutating func setXFromTile(_ x: Int) {
         self.x = x * Position.tileWidth + Position.halfTileWidth
     }
 
-    func setYFromTile(_ y: Int) {
+    mutating func setYFromTile(_ y: Int) {
         self.y = y * Position.tileHeight + Position.halfTileHeight
     }
 
-    func setToTile(_ position: Position) {
+    mutating func setToTile(_ position: Position) {
         x = position.x / Position.tileWidth
         y = position.y / Position.tileHeight
     }
 
-    func setXToTile(_ x: Int) {
+    mutating func setXToTile(_ x: Int) {
         self.x = x / Position.tileWidth
     }
 
-    func setYToTile(_ y: Int) {
+    mutating func setYToTile(_ y: Int) {
         self.y = y / Position.tileHeight
     }
 
@@ -122,8 +117,8 @@ class Position {
             }
             return Position.tileDirections[deltaY + 1][deltaX + 1]
         } else {
-            let thisPosition = Position()
-            let targetPosition = Position()
+            var thisPosition = Position()
+            var targetPosition = Position()
 
             thisPosition.setFromTile(self)
             targetPosition.setFromTile(position)
@@ -140,7 +135,7 @@ class Position {
     }
 
     func closestPosition(_ position: Position, objectSize: Int) -> Position {
-        let currentPosition = Position(from: position)
+        var currentPosition = position
         var bestPosition = Position()
         var bestDistance = -1
         for _ in 0 ..< objectSize {
@@ -148,7 +143,7 @@ class Position {
                 let currentDistance = currentPosition.distanceSquared(from: self)
                 if bestDistance == -1 || currentDistance < bestDistance {
                     bestDistance = currentDistance
-                    bestPosition = Position(from: currentPosition)
+                    bestPosition = currentPosition
                 }
                 currentPosition.x += Position.tileWidth
             }
@@ -159,7 +154,7 @@ class Position {
     }
 
     func directionTo(_ position: Position) -> Direction {
-        let delta = Position(x: position.x - x, y: position.y - y)
+        var delta = Position(x: position.x - x, y: position.y - y)
         let divX = abs(delta.x / Position.halfTileWidth)
         let divY = abs(delta.y / Position.halfTileHeight)
         let div = max(divX, divY)

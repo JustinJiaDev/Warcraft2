@@ -664,6 +664,7 @@ class AssetRenderer {
             throw GameError.missingPlayerData
         }
 
+        var position = position
         let screenRightX = rect.xPosition + rect.width - 1
         let screenBottomY = rect.yPosition + rect.height - 1
 
@@ -671,8 +672,8 @@ class AssetRenderer {
         let assetType = PlayerAssetType.findDefault(with: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
-        let tempPosition = Position()
-        let tilePosition = Position()
+        var tempPosition = Position()
+        var tilePosition = Position()
         tilePosition.setToTile(position)
         tempPosition.setFromTile(tilePosition)
 

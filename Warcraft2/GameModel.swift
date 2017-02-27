@@ -135,7 +135,7 @@ class PlayerData {
 
     func createMarker(at position: Position, addToMap: Bool) -> PlayerAsset {
         let newMarker = assetTypes["None"]!.construct()
-        let tilePosition = Position()
+        var tilePosition = Position()
         tilePosition.setToTile(position)
         newMarker.tilePosition = tilePosition
         if addToMap {
@@ -555,16 +555,16 @@ class GameModel {
                 guard let target = command.assetTarget else {
                     throw GameError.missingAssetTarget
                 }
-                var tilePosition = Position(from: target.tilePosition)
+                var tilePosition = target.tilePosition
                 var harvestDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
 
                 if actualMap.tileTypeAt(position: tilePosition) != .tree {
                     harvestDirection = .max
-                    tilePosition = Position(from: asset.tilePosition)
+                    tilePosition = asset.tilePosition
                 }
                 if harvestDirection == .max {
                     if tilePosition == asset.tilePosition {
-                        let newPosition = Position(from: players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree))
+                        var newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree)
                         asset.popCommand()
                         if newPosition.x >= 0 {
                             newPosition.setFromTile(newPosition)
@@ -611,8 +611,8 @@ class GameModel {
                 guard let target = command.assetTarget else {
                     throw GameError.missingAssetTarget
                 }
-                let closestPosition = Position(from: target.closestPosition(asset.position))
-                let tilePosition = Position()
+                let closestPosition = target.closestPosition(asset.position)
+                var tilePosition = Position()
                 let mineDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
                 tilePosition.setToTile(closestPosition)
                 if mineDirection == .max && tilePosition != asset.tilePosition {
@@ -626,7 +626,7 @@ class GameModel {
                             let newCommand = AssetCommand(action: .build, capability: .none, assetTarget: asset, activatedCapability: nil)
                             target.enqueueCommand(newCommand)
                             asset.incrementStep()
-                            asset.tilePosition = Position(from: target.tilePosition)
+                            asset.tilePosition = target.tilePosition
                         } else {
                             asset.popCommand()
                         }
@@ -713,7 +713,7 @@ class GameModel {
             } else if asset.action == .attack {
                 var currentCommand = asset.currentCommand
                 if asset.type == .none {
-                    let closestTargetPosition = Position(from: currentCommand.assetTarget!.closestPosition(asset.position))
+                    let closestTargetPosition = currentCommand.assetTarget!.closestPosition(asset.position)
                     var deltaPosition = Position(x: closestTargetPosition.x - asset.positionX, y: closestTargetPosition.y - asset.positionY)
 
                     let movement = Position.tileWidth * 5 / PlayerAsset.updateFrequency
@@ -823,7 +823,7 @@ class GameModel {
                             }
                         }
                     } else {
-                        let closestTargetPosition = Position(from: currentCommand.assetTarget!.closestPosition(asset.position))
+                        let closestTargetPosition = currentCommand.assetTarget!.closestPosition(asset.position)
                         if closestTargetPosition.distanceSquared(asset.position) > rangeToDistanceSquared(asset.effectiveRange) {
                             let nextCommand = asset.nextCommand
                             if nextCommand.action != .standGround {
@@ -849,7 +849,7 @@ class GameModel {
                                 currentEvents.append(tempEvent)
 
                                 arrowAsset.hitPoints = damage
-                                arrowAsset.position = Position(from: asset.position)
+                                arrowAsset.position = asset.position
                                 if arrowAsset.positionX < closestTargetPosition.x {
                                     arrowAsset.positionX = arrowAsset.positionX + Position.halfTileWidth
                                 } else if arrowAsset.positionX > closestTargetPosition.x {
@@ -912,7 +912,7 @@ class GameModel {
                     if asset.speed != 0 {
                         let corpseAsset = players[PlayerColor.none.index].createAsset(with: "None")
                         let decayCommand = AssetCommand(action: .decay, capability: .none, assetTarget: nil, activatedCapability: nil)
-                        corpseAsset.position = Position(from: asset.position)
+                        corpseAsset.position = asset.position
                         corpseAsset.direction = asset.direction
                         corpseAsset.pushCommand(decayCommand)
                     }
@@ -928,7 +928,7 @@ class GameModel {
                 if asset.tileAligned {
                     var command = asset.currentCommand
                     let nextCommand = asset.nextCommand
-                    let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
+                    let mapTarget = command.assetTarget!.closestPosition(asset.position)
 
                     if nextCommand.action == .attack && nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
                         asset.popCommand()
@@ -940,13 +940,13 @@ class GameModel {
                     if travelDirection != .max {
                         asset.direction = travelDirection
                     } else {
-                        let tilePosition = Position(from: mapTarget)
+                        let tilePosition = mapTarget
                         if tilePosition == asset.tilePosition || asset.tilePosition.adjacentTileDirection(position: tilePosition) != .max {
                             asset.popCommand()
                             asset.resetStep()
                             continue
                         } else if nextCommand.action == .harvestLumber {
-                            let newPosition = Position(from: players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree))
+                            var newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
                             asset.popCommand()
                             asset.popCommand()
                             if newPosition.x >= 0 {

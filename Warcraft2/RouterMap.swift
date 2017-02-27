@@ -33,9 +33,9 @@ class RouterMap {
         var tempSearch = SearchTarget()
         var currentSearch = SearchTarget()
         var bestSearch = SearchTarget()
-        let tempTile = Position()
+        var tempTile = Position()
         var currentTile = Position()
-        let targetTile = Position()
+        var targetTile = Position()
         let searchDirections: [Direction] = [.north, .east, .south, .west]
         let resMapXOffsets = [0, 1, 0, -1]
         let resMapYOffsets = [ -1, 0, 1, 0]

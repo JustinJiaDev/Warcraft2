@@ -718,9 +718,14 @@ class PlayerAsset {
     private(set) var moveRemainderX: Int = 0
     private(set) var moveRemainderY: Int = 0
 
+    private var _tilePosition = Position(x: 0, y: 0)
     var tilePosition: Position {
-        willSet {
+        set {
             position.setFromTile(newValue)
+            _tilePosition = newValue
+        }
+        get {
+            return _tilePosition
         }
     }
 
@@ -746,7 +751,7 @@ class PlayerAsset {
 
     var position: Position {
         willSet {
-            tilePosition.setToTile(newValue)
+            _tilePosition.setToTile(newValue)
         }
     }
 
@@ -941,7 +946,6 @@ class PlayerAsset {
     }
 
     init(playerAssetType: PlayerAssetType) {
-        tilePosition = Position(x: 0, y: 0)
         position = Position(x: 0, y: 0)
 
         assetType = playerAssetType
@@ -1074,7 +1078,7 @@ class PlayerAsset {
             let newY = Int(Double(speed) + PlayerAsset.deltaY[direction]! * Double(Position.tileHeight) + Double(moveRemainderY))
             var tempMoveRemainderX = newX % PlayerAsset.updateDivisor
             var tempMoveRemainderY = newY % PlayerAsset.updateDivisor
-            let newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
+            var newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
 
             if newPosition.tileOctant == direction {
                 newPosition.setToTile(newPosition)
@@ -1083,7 +1087,7 @@ class PlayerAsset {
                 tempMoveRemainderY = 0
             }
 
-            position = Position(from: newPosition)
+            position = newPosition
             moveRemainderX = tempMoveRemainderX
             moveRemainderY = tempMoveRemainderY
         }
