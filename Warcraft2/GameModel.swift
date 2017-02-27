@@ -446,25 +446,25 @@ class GameModel {
         case missingAssetTarget
     }
 
-    private var harvestTime: Int
-    private var harvestSteps: Int
-    private var mineTime: Int
-    private var mineSteps: Int
-    private var conveyTime: Int
-    private var conveySteps: Int
-    private var deathTime: Int
-    private var deathSteps: Int
-    private var decayTime: Int
-    private var decaySteps: Int
-    private var lumberPerHarvest: Int
-    private var goldPerMining: Int
-    private var randomNumberGenerator: RandomNumberGenerator
+    private let harvestTime: Int
+    private let harvestSteps: Int
+    private let mineTime: Int
+    private let mineSteps: Int
+    private let conveyTime: Int
+    private let conveySteps: Int
+    private let deathTime: Int
+    private let deathSteps: Int
+    private let decayTime: Int
+    private let decaySteps: Int
+    private let lumberPerHarvest: Int
+    private let goldPerMining: Int
+    private let randomNumberGenerator: RandomNumberGenerator
 
     private(set) var gameCycle: Int
     private(set) var actualMap: AssetDecoratedMap
-    private var routerMap: RouterMap
+    private let routerMap: RouterMap
 
-    private var players: [PlayerData]
+    private let players: [PlayerData]
 
     private var assetOccupancyMap: [[PlayerAsset?]]
     private var diagonalOccupancyMap: [[Bool]] = [[]]
@@ -488,12 +488,13 @@ class GameModel {
         randomNumberGenerator.seed(seed)
         gameCycle = 0
 
-        actualMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+        let duplicatedMap = AssetDecoratedMap.duplicateMap(at: mapIndex, newColors: newColors)
+
+        actualMap = duplicatedMap
         routerMap = RouterMap()
 
-        players = []
-        for playerColor in PlayerColor.allValues {
-            players.append(PlayerData(map: actualMap, color: playerColor))
+        players = PlayerColor.allValues.map { playerColor in
+            return PlayerData(map: duplicatedMap, color: playerColor)
         }
 
         assetOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
@@ -508,9 +509,9 @@ class GameModel {
     }
 
     func isValidAsset(_ playerAsset: PlayerAsset) -> Bool {
-        return actualMap.assets.first { asset in
+        return actualMap.assets.contains { asset in
             return asset === playerAsset
-        } != nil
+        }
     }
 
     func player(with color: PlayerColor) -> PlayerData {
@@ -929,12 +930,10 @@ class GameModel {
                     let nextCommand = asset.nextCommand
                     let mapTarget = Position(from: command.assetTarget!.closestPosition(asset.position))
 
-                    if nextCommand.action == .attack {
-                        if nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
-                            asset.popCommand()
-                            asset.resetStep()
-                            continue
-                        }
+                    if nextCommand.action == .attack && nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
+                        asset.popCommand()
+                        asset.resetStep()
+                        continue
                     }
 
                     let travelDirection = routerMap.findRoute(assetMap: players[asset.color.index].playerMap, asset: asset, target: mapTarget)
