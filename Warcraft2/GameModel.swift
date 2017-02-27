@@ -967,7 +967,7 @@ class GameModel {
                         }
                     }
                 }
-                if asset.moveStep(occupancyMap: &assetOccupancyMap, diagonals: &diagonalOccupancyMap) {
+                if !asset.moveStep(occupancyMap: &assetOccupancyMap, diagonals: &diagonalOccupancyMap) {
                     asset.direction = asset.position.tileOctant.opposite
                 }
             }
