@@ -39,10 +39,6 @@ enum PlayerColor {
         }
     }
 
-    static var numberOfColors: Int {
-        return 9
-    }
-
     init(pixelColor: UInt32) {
         switch pixelColor {
         case 0x0000ff: self = .blue
@@ -72,13 +68,7 @@ enum PlayerColor {
         }
     }
 
-    static var allValues: [PlayerColor] {
-        var values: [PlayerColor] = []
-        for i in 0 ..< PlayerColor.numberOfColors {
-            values.append(PlayerColor(index: i)!)
-        }
-        return values
-    }
+    static var allValues: [PlayerColor] = [.none, .blue, .red, .green, .purple, .orange, .yellow, .white]
 }
 
 enum AssetAction: Int {
@@ -140,7 +130,7 @@ enum AssetCapabilityType: Int {
     case marksmanship
     case max
 
-    static var allValues: [AssetCapabilityType] { return [
+    static var allValues: [AssetCapabilityType] = [
         .none,
         .buildPeasant,
         .buildFootman,
@@ -180,7 +170,7 @@ enum AssetCapabilityType: Int {
         .rangerScouting,
         .marksmanship,
         .max
-    ] }
+    ]
 }
 
 enum AssetType: Int {

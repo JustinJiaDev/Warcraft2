@@ -16,8 +16,7 @@ class Position {
     ]
 
     var TileAligned: Bool {
-        return ((x % Position.tileWidth) == Position.halfTileWidth)
-            && ((y % Position.tileHeight) == Position.halfTileHeight)
+        return (x % Position.tileWidth) == Position.halfTileWidth && (y % Position.tileHeight) == Position.halfTileHeight
     }
 
     var tileOctant: Direction {
@@ -48,57 +47,40 @@ class Position {
     }
 
     static func setTileDimensions(width: Int, height: Int) {
-        if 0 < width && 0 < height {
-            tileWidth = width
-            tileHeight = height
-            halfTileWidth = width / 2
-            halfTileHeight = height / 2
+        guard width > 0 && height > 0 else {
+            return
+        }
 
-            octant = Array(repeating: Array(repeating: Direction.max, count: tileWidth), count: tileHeight)
-            for y in 0 ..< tileHeight {
-                for x in 0 ..< tileWidth {
-                    var xDistance = x - halfTileWidth
-                    var yDistance = y - halfTileHeight
-                    let negativeX = xDistance < 0
-                    let negativeY = yDistance > 0
+        tileWidth = width
+        tileHeight = height
+        halfTileWidth = width / 2
+        halfTileHeight = height / 2
 
-                    xDistance *= xDistance
-                    yDistance *= yDistance
+        octant = Array(repeating: Array(repeating: Direction.max, count: tileWidth), count: tileHeight)
+        for y in 0 ..< tileHeight {
+            for x in 0 ..< tileWidth {
+                var xDistance = x - halfTileWidth
+                var yDistance = y - halfTileHeight
+                let isNegativeX = xDistance < 0
+                let isNegativeY = yDistance > 0
 
-                    if 0 == xDistance + yDistance {
-                        octant[y][x] = .max
-                    } else {
-                        let sinSquared = Double(yDistance) / Double(xDistance + yDistance)
-                        if 0.1464466094 > sinSquared {
-                            // East or West
-                            if negativeX {
-                                octant[y][x] = .west
-                            } else {
-                                octant[y][x] = .east
-                            }
-                        } else if 0.85355339059 > sinSquared {
-                            // NE, SE, SW, NW
-                            if negativeY {
-                                if negativeX {
-                                    octant[y][x] = .southWest
-                                } else {
-                                    octant[y][x] = .southEast
-                                }
-                            } else {
-                                if negativeX {
-                                    octant[y][x] = .northWest
-                                } else {
-                                    octant[y][x] = .northEast
-                                }
-                            }
+                xDistance *= xDistance
+                yDistance *= yDistance
+
+                if xDistance + yDistance == 0 {
+                    octant[y][x] = .max
+                } else {
+                    let sinSquared = Double(yDistance) / Double(xDistance + yDistance)
+                    if sinSquared < 0.1464466094 {
+                        octant[y][x] = isNegativeX ? .west : .east
+                    } else if sinSquared < 0.85355339059 {
+                        if isNegativeY {
+                            octant[y][x] = isNegativeX ? .southWest : .southEast
                         } else {
-                            // North or South
-                            if negativeY {
-                                octant[y][x] = .south
-                            } else {
-                                octant[y][x] = .north
-                            }
+                            octant[y][x] = isNegativeX ? .northWest : .northEast
                         }
+                    } else {
+                        octant[y][x] = isNegativeY ? .south : .north
                     }
                 }
             }
@@ -135,11 +117,9 @@ class Position {
         if objectSize == 1 {
             let deltaX = position.x - x
             let deltaY = position.y - y
-
-            if 1 < (deltaX * deltaX) || 1 < (deltaY * deltaY) {
+            if deltaX * deltaX > 0 || deltaY * deltaY > 1 {
                 return Direction.max
             }
-
             return Position.tileDirections[deltaY + 1][deltaX + 1]
         } else {
             let thisPosition = Position()
@@ -160,28 +140,28 @@ class Position {
     }
 
     func closestPosition(_ position: Position, objectSize: Int) -> Position {
-        let curPosition = Position(from: position)
+        let currentPosition = Position(from: position)
         var bestPosition = Position()
         var bestDistance = -1
         for _ in 0 ..< objectSize {
             for _ in 0 ..< objectSize {
-                let currentDistance = curPosition.distanceSquared(from: self)
-                if -1 == bestDistance || currentDistance < bestDistance {
+                let currentDistance = currentPosition.distanceSquared(from: self)
+                if bestDistance == -1 || currentDistance < bestDistance {
                     bestDistance = currentDistance
-                    bestPosition = Position(from: curPosition)
+                    bestPosition = Position(from: currentPosition)
                 }
-                curPosition.x += Position.tileWidth
+                currentPosition.x += Position.tileWidth
             }
-            curPosition.x = position.x
-            curPosition.y += Position.tileHeight
+            currentPosition.x = position.x
+            currentPosition.y += Position.tileHeight
         }
         return bestPosition
     }
 
     func directionTo(_ position: Position) -> Direction {
         let delta = Position(x: position.x - x, y: position.y - y)
-        let divX: Int = abs(delta.x / Position.halfTileWidth)
-        let divY: Int = abs(delta.y / Position.halfTileHeight)
+        let divX = abs(delta.x / Position.halfTileWidth)
+        let divY = abs(delta.y / Position.halfTileHeight)
         let div = max(divX, divY)
         if div != 0 {
             delta.x /= div
@@ -191,10 +171,10 @@ class Position {
         delta.y += Position.halfTileHeight
         delta.x = max(delta.x, 0)
         delta.y = max(delta.y, 0)
-        if Position.tileWidth <= delta.x {
+        if delta.x >= Position.tileWidth {
             delta.x = Position.tileWidth - 1
         }
-        if Position.tileHeight <= delta.y {
+        if delta.y >= Position.tileHeight {
             delta.y = Position.tileHeight - 1
         }
         return delta.tileOctant
@@ -206,8 +186,8 @@ class Position {
         return deltaX * deltaX + deltaY * deltaY
     }
 
+    // Not as efficient as original implementation
     func distance(position: Position) -> Int {
-        // Not as efficient as original implementation
         return Int(sqrt(Double(self.distanceSquared(from: position))))
     }
 }

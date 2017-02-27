@@ -492,8 +492,8 @@ class GameModel {
         routerMap = RouterMap()
 
         players = []
-        for playerIndex in 0 ..< PlayerColor.numberOfColors {
-            players.append(PlayerData(map: actualMap, color: PlayerColor(index: playerIndex)!))
+        for playerColor in PlayerColor.allValues {
+            players.append(PlayerData(map: actualMap, color: playerColor))
         }
 
         assetOccupancyMap = Array(repeating: Array(repeating: nil, count: actualMap.width), count: actualMap.height)
@@ -525,7 +525,7 @@ class GameModel {
             assetOccupancyMap[asset.tilePositionY][asset.tilePositionX] = asset
         }
 
-        for playerIndex in 1 ..< PlayerColor.numberOfColors where players[playerIndex].isAlive {
+        for playerIndex in 1 ..< PlayerColor.allValues.count where players[playerIndex].isAlive {
             players[playerIndex].updateVisibility()
         }
 
@@ -587,7 +587,7 @@ class GameModel {
                     if harvestSteps <= asset.step {
                         let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle, .lumberMill])
                         lumberAvailable[tilePosition.y][tilePosition.x] -= lumberPerHarvest
-                        if 0 >= lumberAvailable[tilePosition.y][tilePosition.x] {
+                        if lumberAvailable[tilePosition.y][tilePosition.x] <= 0 {
                             actualMap.changeTileType(at: tilePosition, to: .stump)
                         }
                         if nearestRepository != nil {
@@ -974,7 +974,7 @@ class GameModel {
             }
         }
         gameCycle += 1
-        for playerIndex in 0 ..< PlayerColor.numberOfColors {
+        for playerIndex in 0 ..< PlayerColor.allValues.count {
             players[playerIndex].incrementCycle()
             players[playerIndex].appendGameEvents(currentEvents)
         }

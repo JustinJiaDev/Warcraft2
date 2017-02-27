@@ -1056,8 +1056,8 @@ class PlayerAsset {
             .east: 0,
             .southEast: 5,
             .south: 7,
-            .southWest: -5,
-            .west: -0,
+            .southWest: 5,
+            .west: 0,
             .northWest: -5
         ]
 
@@ -1071,29 +1071,31 @@ class PlayerAsset {
         } else { // Entering
             let newX = speed + deltaX[direction]! * Position.tileWidth + moveRemainderX
             let newY = speed + deltaY[direction]! * Position.tileHeight + moveRemainderY
-            moveRemainderX = newX % PlayerAsset.updateDivisor
-            moveRemainderY = newY % PlayerAsset.updateDivisor
-            let newPosition = Position(x: positionX + newX / PlayerAsset.updateDivisor, y: positionY + newY / PlayerAsset.updateDivisor)
+            var tempMoveRemainderX = newX % PlayerAsset.updateDivisor
+            var tempMoveRemainderY = newY % PlayerAsset.updateDivisor
+            let newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
 
             if newPosition.tileOctant == direction {
                 newPosition.setToTile(newPosition)
                 newPosition.setFromTile(newPosition)
-                moveRemainderX = 0
-                moveRemainderY = 0
+                tempMoveRemainderX = 0
+                tempMoveRemainderY = 0
             }
 
             position = newPosition
+            moveRemainderX = tempMoveRemainderX
+            moveRemainderY = tempMoveRemainderY
         }
 
         tilePosition.setToTile(position)
         if currentTile != tilePosition {
-            let diagonal = (currentTile.x != tilePositionX) && (currentTile.y != tilePositionY)
-            let diagonalX = min(currentTile.x, tilePositionX)
-            let diagonalY = min(currentTile.y, tilePositionY)
+            let diagonal = (currentTile.x != tilePosition.x) && (currentTile.y != tilePosition.y)
+            let diagonalX = min(currentTile.x, tilePosition.x)
+            let diagonalY = min(currentTile.y, tilePosition.y)
 
             if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
                 var returnValue = false
-                if let occupancyMapSquare = occupancyMap[tilePositionY][tilePositionX], occupancyMapSquare.action == .walk {
+                if let occupancyMapSquare = occupancyMap[tilePosition.y][tilePosition.x], occupancyMapSquare.action == .walk {
                     returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
                 }
                 tilePosition = currentTile
@@ -1103,7 +1105,7 @@ class PlayerAsset {
             if diagonal {
                 diagonals[diagonalY][diagonalX] = true
             }
-            occupancyMap[tilePositionY][tilePositionX] = occupancyMap[currentTile.y][currentTile.x]
+            occupancyMap[tilePosition.y][tilePosition.x] = occupancyMap[currentTile.y][currentTile.x]
             occupancyMap[currentTile.y][currentTile.x] = nil
         }
 
