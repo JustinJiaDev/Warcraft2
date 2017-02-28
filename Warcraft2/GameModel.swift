@@ -100,7 +100,7 @@ class PlayerData {
         for asset in actualMap.assetInitializationList {
             if asset.color == self.color {
                 printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
-                let initAsset = createAsset(with: asset.type)
+                let initAsset = createAsset(asset.type)
                 initAsset.tilePosition = asset.tilePosition
                 if PlayerAssetType.findType(asset.type) == .goldMine {
                     initAsset.gold = self.gold
@@ -142,7 +142,7 @@ class PlayerData {
         return newMarker
     }
 
-    func createAsset(with name: String) -> PlayerAsset {
+    func createAsset(_ name: String) -> PlayerAsset {
         let newAsset = assetTypes[name]!.construct()
         newAsset.creationCycle = gameCycle
         assets.append(newAsset)
@@ -415,7 +415,7 @@ class PlayerData {
         upgrades[PlayerCapability.findType(name).rawValue] = true
     }
 
-    func hasUpgrade(with type: AssetCapabilityType) -> Bool {
+    func hasUpgrade(_ type: AssetCapabilityType) -> Bool {
         guard type.rawValue >= 0 && type.rawValue < upgrades.count else {
             return false
         }
@@ -509,7 +509,7 @@ class GameModel {
         }
     }
 
-    func player(with color: PlayerColor) -> PlayerData {
+    func player(_ color: PlayerColor) -> PlayerData {
         return players[color.index]
     }
 
@@ -837,7 +837,7 @@ class GameModel {
                             asset.direction = attackDirection
                             asset.incrementStep()
                             if asset.step == asset.attackSteps {
-                                let arrowAsset = players[PlayerColor.none.index].createAsset(with: "None")
+                                let arrowAsset = players[PlayerColor.none.index].createAsset("None")
                                 var damage = asset.effectiveBasicDamage - currentCommand.assetTarget!.effectiveArmor
                                 damage = damage < 0 ? 0 : damage
                                 damage += asset.effectivePiercingDamage
@@ -909,7 +909,7 @@ class GameModel {
                 asset.incrementStep()
                 if asset.step > deathSteps {
                     if asset.speed != 0 {
-                        let corpseAsset = players[PlayerColor.none.index].createAsset(with: "None")
+                        let corpseAsset = players[PlayerColor.none.index].createAsset("None")
                         let decayCommand = AssetCommand(action: .decay, capability: .none, assetTarget: nil, activatedCapability: nil)
                         corpseAsset.position = asset.position
                         corpseAsset.direction = asset.direction

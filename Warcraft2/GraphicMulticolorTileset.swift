@@ -8,7 +8,7 @@ class GraphicMulticolorTileset: GraphicTileset {
         return coloredTilesets.count
     }
 
-    func findColor(with colorName: String) -> Int {
+    func findColor(_ colorName: String) -> Int {
         return colorMap?.findColor(colorName) ?? -1
     }
 

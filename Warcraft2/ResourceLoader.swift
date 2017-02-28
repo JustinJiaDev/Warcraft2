@@ -76,8 +76,8 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
         fireTilesets: fireTilesets,
         buildingDeathTileset: buildingDeathTileset,
         arrowTileset: arrowTileset,
-        player: gameModel.player(with: .red),
-        map: gameModel.player(with: .red).playerMap
+        player: gameModel.player(.red),
+        map: gameModel.player(.red).playerMap
     )
     return assetRenderer
 }
