@@ -27,6 +27,7 @@ protocol GraphicSurface {
     func pixelColorAt(x: Int, y: Int) -> UInt32
 
     func clear(x: Int, y: Int, width: Int, height: Int)
+    func clear()
     func draw(from texture: SKTexture, x: Int, y: Int, width: Int, height: Int)
     func draw(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
     func copy(from surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
@@ -60,8 +61,11 @@ extension SKScene: GraphicSurface {
         fatalError("This method is not yet implemented.")
     }
 
-    // FIXME: MAKE CLEAR GREAT AGAIN
     func clear(x: Int, y: Int, width: Int, height: Int) {
+        fatalError("This method is not yet implemented.")
+    }
+
+    func clear() {
         removeAllChildren()
     }
 
@@ -118,6 +122,10 @@ extension CGLayer: GraphicSurface {
 
     func clear(x: Int, y: Int, width: Int, height: Int) {
         context!.clear(CGRect(x: x, y: y, width: width, height: height))
+    }
+
+    func clear() {
+        fatalError("This method is not yet implemented.")
     }
 
     func draw(from texture: SKTexture, x: Int, y: Int, width: Int, height: Int) {
