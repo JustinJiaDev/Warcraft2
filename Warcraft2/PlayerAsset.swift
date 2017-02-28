@@ -758,7 +758,7 @@ class PlayerAsset {
     }
 
     var tileAligned: Bool {
-        return position.TileAligned
+        return position.tileAligned
     }
 
     var commandCount: Int {

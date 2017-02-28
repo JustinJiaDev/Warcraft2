@@ -30,7 +30,7 @@ struct Position {
         [.southWest, .south, .southEast]
     ]
 
-    var TileAligned: Bool {
+    var tileAligned: Bool {
         return (x % Position.tileWidth) == Position.halfTileWidth && (y % Position.tileHeight) == Position.halfTileHeight
     }
 
