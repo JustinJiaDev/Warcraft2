@@ -432,39 +432,30 @@ class MapRenderer {
                         case .grass:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: grassIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: grassIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .dirt:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: dirtIndices[0xff])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: dirtIndices[0xff], rgb: pixelType.pixelColor)
-                            break
                         case .rock:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: rockIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: rockIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .tree:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .stump:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: treeIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: treeIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .water:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: waterIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: waterIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .wall:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .wallDamaged:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallDamagedIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallDamagedIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         case .rubble:
                             tileset.drawTile(on: surface, x: xPos, y: yPos, index: wallIndices[0x00])
                             tileset.drawClippedTile(on: typeSurface, x: xPos, y: yPos, index: wallIndices[0x00], rgb: pixelType.pixelColor)
-                            break
                         default:
                             break
                         }
