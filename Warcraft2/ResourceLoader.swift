@@ -104,12 +104,10 @@ func createCamera(scale: CGFloat) -> SKCameraNode {
     return camera
 }
 
-func createScene(camera: SKCameraNode, width: Int, height: Int) -> SKScene {
+func createScene(width: Int, height: Int) -> SKScene {
     PlayerAsset.updateFrequency = 20
     AssetRenderer.updateFrequency = 20
     let scene = GraphicFactory.createSurface(width: width, height: height, type: GameScene.self)
-    scene.camera = camera
-    scene.addChild(camera)
     return scene
 }
 
