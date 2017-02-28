@@ -79,6 +79,8 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
         player: gameModel.player(with: .red),
         map: gameModel.player(with: .red).playerMap
     )
+    PlayerAsset.updateFrequency = 5
+    assetRenderer.updateFrequency(5)
     return assetRenderer
 }
 
@@ -90,7 +92,6 @@ func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
 func createMapView(mapRenderer: MapRenderer) -> SKView {
     let mapView = SKView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)))
     mapView.isOpaque = true
-    mapView.ignoresSiblingOrder = true
     mapView.showsFPS = true
     return mapView
 }

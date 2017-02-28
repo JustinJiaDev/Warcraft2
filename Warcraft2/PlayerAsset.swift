@@ -924,8 +924,6 @@ class PlayerAsset {
         moveRemainderY = 0
         direction = .south
 
-        PlayerAsset.updateFrequency = 1
-
         tilePosition = Position()
     }
 
@@ -1028,10 +1026,6 @@ class PlayerAsset {
     }
 
     func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
-        // FIXME: HACK
-        // HACK - BEGIN
-        let speed = 1
-        // HACK - END
         let currentOctant = position.tileOctant
         let currentTile = tilePosition
         let currentPosition = position
