@@ -718,61 +718,33 @@ class PlayerAsset {
     private(set) var moveRemainderX: Int = 0
     private(set) var moveRemainderY: Int = 0
 
-    private var _tilePosition = Position(x: 0, y: 0)
+    var position: Position
+
     var tilePosition: Position {
+        get {
+            var tilePosition = Position()
+            tilePosition.setToTile(position)
+            return tilePosition
+        }
         set {
             position.setFromTile(newValue)
-            _tilePosition = newValue
-        }
-        get {
-            return _tilePosition
         }
     }
 
     var tilePositionX: Int {
-        get {
-            return tilePosition.x
-        }
-        set {
-            position.setXFromTile(newValue)
-            tilePosition.x = newValue
-        }
+        return tilePosition.x
     }
 
     var tilePositionY: Int {
-        get {
-            return tilePosition.y
-        }
-        set {
-            position.setYFromTile(newValue)
-            tilePosition.y = newValue
-        }
-    }
-
-    var position: Position {
-        willSet {
-            _tilePosition.setToTile(newValue)
-        }
+        return tilePosition.y
     }
 
     var positionX: Int {
-        get {
-            return position.x
-        }
-        set {
-            tilePosition.setXToTile(newValue)
-            position.x = newValue
-        }
+        return position.x
     }
 
     var positionY: Int {
-        get {
-            return position.y
-        }
-        set {
-            tilePosition.setYToTile(newValue)
-            position.y = newValue
-        }
+        return position.y
     }
 
     var direction: Direction
@@ -1069,10 +1041,12 @@ class PlayerAsset {
         if currentOctant == .max || currentOctant == direction { // Aligned just move
             let newX = speed * PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
             let newY = speed * PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
+            print("\(positionX), \(positionY)")
             moveRemainderX = newX % PlayerAsset.updateDivisor
             moveRemainderY = newY % PlayerAsset.updateDivisor
-            positionX += newX / PlayerAsset.updateDivisor
-            positionY += newY / PlayerAsset.updateDivisor
+            position.x += newX / PlayerAsset.updateDivisor
+            position.y += newY / PlayerAsset.updateDivisor
+            print("\(positionX), \(positionY)")
         } else { // Entering
             let newX = speed + PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
             let newY = speed + PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
@@ -1092,7 +1066,6 @@ class PlayerAsset {
             moveRemainderY = tempMoveRemainderY
         }
 
-        tilePosition.setToTile(position)
         if currentTile != tilePosition {
             let diagonal = (currentTile.x != tilePosition.x) && (currentTile.y != tilePosition.y)
             let diagonalX = min(currentTile.x, tilePosition.x)

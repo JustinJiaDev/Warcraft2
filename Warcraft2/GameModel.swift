@@ -851,15 +851,15 @@ class GameModel {
                                 arrowAsset.hitPoints = damage
                                 arrowAsset.position = asset.position
                                 if arrowAsset.positionX < closestTargetPosition.x {
-                                    arrowAsset.positionX = arrowAsset.positionX + Position.halfTileWidth
+                                    arrowAsset.position.x = arrowAsset.positionX + Position.halfTileWidth
                                 } else if arrowAsset.positionX > closestTargetPosition.x {
-                                    arrowAsset.positionX = arrowAsset.positionX - Position.halfTileWidth
+                                    arrowAsset.position.x = arrowAsset.positionX - Position.halfTileWidth
                                 }
 
                                 if arrowAsset.positionY < closestTargetPosition.y {
-                                    arrowAsset.positionY = arrowAsset.positionY + Position.halfTileHeight
+                                    arrowAsset.position.y = arrowAsset.positionY + Position.halfTileHeight
                                 } else if arrowAsset.positionY > closestTargetPosition.y {
-                                    arrowAsset.positionY = arrowAsset.positionY - Position.halfTileHeight
+                                    arrowAsset.position.y = arrowAsset.positionY - Position.halfTileHeight
                                 }
                                 arrowAsset.direction = attackDirection
                                 var attackCommand = AssetCommand(action: .construct, capability: .none, assetTarget: asset, activatedCapability: nil)
