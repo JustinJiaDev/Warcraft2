@@ -216,21 +216,20 @@ class GameViewController: UIViewController {
         btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         btn.tag = 1
 
-        let numActions = 20
+        let numActions = 9
         let iconSize = 60
-        let scrollView = UIScrollView(frame: actionMenuView.bounds)
+        let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
         var image: UIImage
         var imageView: UIImageView
         var xPosition = 10
 
         scrollView.contentSize = CGSize(width: actionMenuView.bounds.size.width * 1.5, height: actionMenuView.bounds.size.height)
 
-        //        var actionViews: [UIImage]
-        //        let actionViews = splitVerticalSpriteSheet(from: URL(string: "./data/img/Icons.png")!, numSprites: 50)
+        let actionIcons = splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
 
         for _ in 1 ... numActions {
-            image = UIImage(named: "./data/img/icon.png")!
-            imageView = UIImageView(image: image)
+            //            image = UIImage(named: "./data/img/icon.png")!
+            imageView = UIImageView(image: actionIcons[0])
             imageView.frame = CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize))
             xPosition += 10 + iconSize
             scrollView.addSubview(imageView)
@@ -251,17 +250,16 @@ class GameViewController: UIViewController {
     }
 
     // For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [SKTexture]
-    func splitVerticalSpriteSheet(from url: URL, numSprites: Int) -> [SKTexture] {
+    func splitVerticalSpriteSheetToUIImages(from url: URL, numSprites: Int) -> [UIImage] {
         let image = UIImage(contentsOfFile: url.path)!
         let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
         var cropRect: CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
-        var imageSegments: [SKTexture] = []
+        var imageSegments: [UIImage] = []
         for i in 0 ..< numSprites {
             cropRect.origin.y = CGFloat(i) * segmentHeight
             let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
             let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
-            let currentSegmentSKTexture = SKTexture(image: currentSegmentUIImage)
-            imageSegments.append(currentSegmentSKTexture)
+            imageSegments.append(currentSegmentUIImage)
         }
         return imageSegments
     }
