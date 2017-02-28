@@ -1,5 +1,3 @@
-import Foundation
-
 enum PlayerColor {
     case none
     case blue
