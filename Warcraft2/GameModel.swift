@@ -676,7 +676,7 @@ class GameModel {
                     throw GameError.missingAssetTarget
                 }
                 if currentTarget.isAlive {
-                    let repairDirection = asset.tilePosition.adjacentTileDirection(position: currentTarget.tilePosition, objectSize: currentTarget.size)
+                    let repairDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: currentTarget.tilePosition, areaLength: currentTarget.size)
                     if repairDirection == .max {
                         currentCommand.action = .walk
                         asset.pushCommand(currentCommand)
@@ -768,7 +768,7 @@ class GameModel {
                     }
                 } else if currentCommand.assetTarget!.isAlive {
                     if asset.effectiveRange == 1 {
-                        let attackDirection = asset.tilePosition.adjacentTileDirection(position: currentCommand.assetTarget!.tilePosition, objectSize: currentCommand.assetTarget!.size)
+                        let attackDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: currentCommand.assetTarget!.tilePosition, areaLength: currentCommand.assetTarget!.size)
                         if attackDirection == .max {
                             let nextCommand = asset.nextCommand
                             if nextCommand.action != .standGround {
@@ -940,7 +940,7 @@ class GameModel {
                         asset.direction = travelDirection
                     } else {
                         let tilePosition = mapTarget
-                        if tilePosition == asset.tilePosition || asset.tilePosition.adjacentTileDirection(position: tilePosition) != .max {
+                        if tilePosition == asset.tilePosition || asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition) != .max {
                             asset.popCommand()
                             asset.resetStep()
                             continue
