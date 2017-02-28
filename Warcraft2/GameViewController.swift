@@ -40,17 +40,22 @@ class GameViewController: UIViewController {
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
-        if touches.count == 1 {
-            let touch = touches.first!
-            let location = touch.location(in: scene)
-            let previousLocation = touch.previousLocation(in: scene)
-            let deltaY = location.y - previousLocation.y
-            let deltaX = location.x - previousLocation.x
-            moveCameraBy(deltaX, deltaY)
+        guard touches.count == 1 else {
+            return
         }
+        let touch = touches.first!
+        let location = touch.location(in: scene)
+        let previousLocation = touch.previousLocation(in: scene)
+        let deltaY = location.y - previousLocation.y
+        let deltaX = location.x - previousLocation.x
+        moveCameraBy(deltaX, deltaY)
+
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard touches.count == 1 else {
+            return
+        }
         let location = touches.first!.location(in: scene)
         let x = (Int(location.x) - Int(location.x) % Position.tileWidth) + Position.halfTileWidth
         let y = mapRenderer.detailedMapHeight - ((Int(location.y) - Int(location.y) % Position.tileHeight) + Position.halfTileHeight)
@@ -80,21 +85,19 @@ extension GameViewController {
     func moveCameraTo(centerX: CGFloat, centerY: CGFloat) {
         let mapWidth = CGFloat(mapRenderer.detailedMapWidth)
         let mapHeight = CGFloat(mapRenderer.detailedMapHeight)
-        // The game bounds will be applied to these variables
         var constrainedCenterX = centerX
         var constrainedCenterY = centerY
-        // Apply x bounds
+
         let minX = centerX - mapWidth / 2 * mainCamera.xScale
         let maxX = centerX + mapWidth / 2 * mainCamera.xScale
-        if minX < 0 { constrainedCenterX -= minX /* minX is negative */ }
+        if minX < 0 { constrainedCenterX -= minX }
         if maxX > mapWidth { constrainedCenterX -= maxX - mapWidth }
-        // Apply y bounds
+
         let minY = centerY - mapHeight / 2 * mainCamera.yScale
         let maxY = centerY + mapHeight / 2 * mainCamera.yScale
-        if minY < 0 { constrainedCenterY -= minY /* minY is negative */ }
+        if minY < 0 { constrainedCenterY -= minY }
         if maxY > mapHeight { constrainedCenterY -= maxY - mapHeight }
-        // Scroll to the as close to the desired position as possible
-        // within the bounds of the game board
+
         mainCamera.position.x = constrainedCenterX
         mainCamera.position.y = constrainedCenterY
     }
