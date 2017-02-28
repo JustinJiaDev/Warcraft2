@@ -286,8 +286,8 @@ class AssetRenderer {
     }
 
     func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) throws {
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
         var finalRenderList: [Data] = []
 
         for asset in playerMap.assets {
@@ -308,9 +308,9 @@ class AssetRenderer {
             let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth - 1
 
             var isOnScreen = true
-            if rightX < rect.xPosition || renderData.x > screenRightX {
+            if rightX < rect.x || renderData.x > screenRightX {
                 isOnScreen = false
-            } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+            } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                 isOnScreen = false
             }
 
@@ -318,8 +318,8 @@ class AssetRenderer {
                 continue
             }
 
-            renderData.x -= rect.xPosition
-            renderData.y -= rect.yPosition
+            renderData.x -= rect.x
+            renderData.y -= rect.y
             renderData.colorIndex = asset.color != .none ? asset.color.index - 1 : 0
             renderData.tileIndex = -1
 
@@ -428,8 +428,8 @@ class AssetRenderer {
         }
 
         let resourceContext = surface.resourceContext
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
         var rectangleColor = selfPixelColor
 
         if highlightBuilding {
@@ -457,13 +457,13 @@ class AssetRenderer {
                 let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth) - 1
                 renderData.bottomY = renderData.y + tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight) - 1
                 var onScreen = true
-                if rightX < rect.xPosition || renderData.x > screenRightX {
+                if rightX < rect.x || renderData.x > screenRightX {
                     onScreen = false
-                } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                     onScreen = false
                 }
-                renderData.x -= rect.xPosition
-                renderData.y -= rect.yPosition
+                renderData.x -= rect.x
+                renderData.y -= rect.y
                 if onScreen {
                     resourceContext.rectangle(
                         x: renderData.x,
@@ -479,8 +479,8 @@ class AssetRenderer {
 
         resourceContext.setSourceRGB(rectangleColor)
         if selectRect.width != 0 && selectRect.height != 0 {
-            let selectionX = selectRect.xPosition - rect.xPosition
-            let selectionY = selectRect.yPosition - rect.yPosition
+            let selectionX = selectRect.x - rect.x
+            let selectionY = selectRect.y - rect.y
             resourceContext.rectangle(x: selectionX, y: selectionY, width: selectRect.width, height: selectRect.height)
             resourceContext.stroke()
         }
@@ -505,14 +505,14 @@ class AssetRenderer {
                     let rightX = renderData.x + corpseTileset.tileWidth
                     renderData.bottomY = renderData.y + corpseTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                    } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                         onScreen = false
                     }
 
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
 
                     if onScreen {
                         let actionSteps = corpseIndices.count / Direction.numberOfDirections
@@ -532,14 +532,14 @@ class AssetRenderer {
                     let rightX = renderData.x + markerTileset.tileWidth
                     renderData.bottomY = renderData.y + markerTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if (renderData.bottomY < rect.yPosition) || (renderData.y > screenBottomY) {
+                    } else if (renderData.bottomY < rect.y) || (renderData.y > screenBottomY) {
                         onScreen = false
                     }
 
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
 
                     if onScreen {
                         let markerIndex = asset.step / AssetRenderer.animationDownsample
@@ -557,15 +557,15 @@ class AssetRenderer {
                 let rightX = renderData.x + rectWidth
                 renderData.bottomY = renderData.y + rectHeight
 
-                if rightX < rect.xPosition || renderData.x > screenRightX {
+                if rightX < rect.x || renderData.x > screenRightX {
                     onScreen = false
-                } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                     onScreen = false
                 } else if asset.action == AssetAction.mineGold || asset.action == AssetAction.conveyLumber || asset.action == AssetAction.conveyGold {
                     onScreen = false
                 }
-                renderData.x -= rect.xPosition
-                renderData.y -= rect.yPosition
+                renderData.x -= rect.x
+                renderData.y -= rect.y
                 if onScreen {
                     resourceContext.rectangle(x: renderData.x, y: renderData.y, width: rectWidth, height: rectHeight)
                     resourceContext.stroke()
@@ -579,8 +579,8 @@ class AssetRenderer {
             throw GameError.missingPlayerData
         }
 
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
 
         for asset in playerMap.assets {
             var renderData = Data()
@@ -594,13 +594,13 @@ class AssetRenderer {
                     let rightX = renderData.x + arrowTileset.tileWidth
                     renderData.bottomY = renderData.y + arrowTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                    } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                         onScreen = false
                     }
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
                     if onScreen {
                         let actionSteps = arrowIndices.count / Direction.numberOfDirections
                         try arrowTileset.drawTile(
@@ -640,13 +640,13 @@ class AssetRenderer {
                         renderData.bottomY = renderData.y + fireTilesets[tilesetIndex].tileHeight - 1
                         var onScreen = true
 
-                        if rightX < rect.xPosition || renderData.x > screenRightX {
+                        if rightX < rect.x || renderData.x > screenRightX {
                             onScreen = false
-                        } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                        } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                             onScreen = false
                         }
-                        renderData.x -= rect.xPosition
-                        renderData.y -= rect.yPosition
+                        renderData.x -= rect.x
+                        renderData.y -= rect.y
 
                         if onScreen {
                             try fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
@@ -666,8 +666,8 @@ class AssetRenderer {
         }
 
         var position = position
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
 
         var onScreen = true
         let assetType = PlayerAssetType.findDefault(type)
@@ -727,9 +727,9 @@ class AssetRenderer {
                 }
             }
 
-            if placementRightX <= rect.xPosition {
+            if placementRightX <= rect.x {
                 onScreen = false
-            } else if placementBottomY <= rect.yPosition {
+            } else if placementBottomY <= rect.y {
                 onScreen = false
             } else if position.x >= screenRightX {
                 onScreen = false
@@ -738,8 +738,8 @@ class AssetRenderer {
             }
 
             if onScreen {
-                position.x -= rect.xPosition
-                position.y -= position.y - rect.yPosition
+                position.x -= rect.x
+                position.y -= position.y - rect.y
                 try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
                 var x = position.x
                 var y = position.y

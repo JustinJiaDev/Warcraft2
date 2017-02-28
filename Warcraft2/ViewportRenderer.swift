@@ -91,8 +91,8 @@ class ViewportRenderer {
             viewportY = mapRenderer.detailedMapHeight - lastViewportHeight
         }
 
-        tempRectangle.xPosition = viewportX
-        tempRectangle.yPosition = viewportY
+        tempRectangle.x = viewportX
+        tempRectangle.y = viewportY
         tempRectangle.width = lastViewportWidth
         tempRectangle.height = lastViewportHeight
 
@@ -111,7 +111,7 @@ class ViewportRenderer {
         try assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: tempRectangle)
         try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
         try assetRenderer.drawOverlays(on: surface, in: tempRectangle)
-        try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.xPosition, y: selectRect.yPosition), type: placeType, builder: builder)
+        try assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
         // try fogRenderer.drawMap(on: surface, in: tempRectangle)
     }
 }

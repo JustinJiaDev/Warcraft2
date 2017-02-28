@@ -225,11 +225,11 @@
 		D0773FC41E38485500FF7DD7 /* Type */ = {
 			isa = PBXGroup;
 			children = (
-				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
 				8E1B515B1E2D58F0008E968C /* GameDataTypes.swift */,
 				D08F47421E35BE6300F7FED1 /* PixelType.swift */,
-				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
+				D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */,
 				8E1B51601E2D694C008E968C /* Position.swift */,
+				8E1B515E1E2D64DF008E968C /* Rectangle.swift */,
 			);
 			name = Type;
 			sourceTree = "<group>";

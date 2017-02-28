@@ -196,7 +196,7 @@ class PlayerData {
     func selectAssets(in selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
         var returnList: [PlayerAsset] = []
         if selectArea.width == 0 || selectArea.height == 0 {
-            if let bestAsset = selectAsset(at: Position(x: selectArea.xPosition, y: selectArea.yPosition), assetType: assetType) {
+            if let bestAsset = selectAsset(at: Position(x: selectArea.x, y: selectArea.y), assetType: assetType) {
                 returnList.append(bestAsset)
                 if selectIdentical && bestAsset.speed != 0 {
                     for asset in assets where bestAsset !== asset && asset.type == assetType {
@@ -207,10 +207,10 @@ class PlayerData {
         } else {
             var anyMovable = false
             for asset in assets {
-                if selectArea.xPosition <= asset.positionX
-                    && asset.positionX < selectArea.xPosition + selectArea.width
-                    && selectArea.yPosition <= asset.positionY
-                    && asset.positionY < selectArea.yPosition + selectArea.height {
+                if selectArea.x <= asset.positionX
+                    && asset.positionX < selectArea.x + selectArea.width
+                    && selectArea.y <= asset.positionY
+                    && asset.positionY < selectArea.y + selectArea.height {
                     if anyMovable {
                         if asset.speed != 0 {
                             returnList.append(asset)

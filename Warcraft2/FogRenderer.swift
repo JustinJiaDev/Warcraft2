@@ -92,10 +92,10 @@ class FogRenderer {
         let tileWidth = tileset.tileWidth
         let tileHeight = tileset.tileHeight
 
-        var yIndex = rectangle.yPosition / tileHeight
-        for yPosition in stride(from: -(rectangle.yPosition % tileHeight), to: rectangle.height, by: tileHeight) {
-            var xIndex = rectangle.xPosition / tileWidth
-            for xPosition in stride(from: -(rectangle.xPosition % tileWidth), to: rectangle.width, by: tileWidth) {
+        var yIndex = rectangle.y / tileHeight
+        for yPosition in stride(from: -(rectangle.y % tileHeight), to: rectangle.height, by: tileHeight) {
+            var xIndex = rectangle.x / tileWidth
+            for xPosition in stride(from: -(rectangle.x % tileWidth), to: rectangle.width, by: tileWidth) {
                 let tileType = map.tileTypeAt(x: xIndex, y: yIndex)
                 if tileType == .none {
                     try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: noneIndex)

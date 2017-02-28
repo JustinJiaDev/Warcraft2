@@ -259,10 +259,10 @@ class MapRenderer {
         if level == 0 {
             try typeSurface.clear(x: 0, y: 0, width: typeSurface.width, height: typeSurface.height)
 
-            var yIndex = rect.yPosition / tileHeight
-            for yPos in stride(from: -(rect.yPosition % tileHeight), to: rect.height, by: tileHeight) {
-                var xIndex = rect.xPosition / tileWidth
-                for xPos in stride(from: -(rect.xPosition % tileWidth), to: rect.width, by: tileWidth) {
+            var yIndex = rect.y / tileHeight
+            for yPos in stride(from: -(rect.y % tileHeight), to: rect.height, by: tileHeight) {
+                var xIndex = rect.x / tileWidth
+                for xPos in stride(from: -(rect.x % tileWidth), to: rect.width, by: tileWidth) {
                     let pixelType = PixelType(tileType: map.tileTypeAt(x: xIndex, y: yIndex))
                     let thisTileType = map.tileTypeAt(x: xIndex, y: yIndex)
 
@@ -474,10 +474,10 @@ class MapRenderer {
                 yIndex += 1
             }
         } else {
-            var yIndex = rect.yPosition / tileHeight
-            for yPos in stride(from: -(rect.yPosition % tileHeight), to: rect.height, by: tileHeight) {
-                var xIndex = rect.xPosition / tileWidth
-                for xPos in stride(from: -(rect.xPosition % tileWidth), to: rect.width, by: tileWidth) {
+            var yIndex = rect.y / tileHeight
+            for yPos in stride(from: -(rect.y % tileHeight), to: rect.height, by: tileHeight) {
+                var xIndex = rect.x / tileWidth
+                for xPos in stride(from: -(rect.x % tileWidth), to: rect.width, by: tileWidth) {
                     if (map.tileTypeAt(x: xIndex, y: yIndex + 1) == .tree) && (map.tileTypeAt(x: xIndex, y: yIndex) != .tree) {
                         let pixelType = PixelType(tileType: .tree)
                         var treeIndex = 0, treeMask = 0x1
