@@ -285,16 +285,13 @@ class PlayerData {
 
         for asset in playerMap.assets where asset.color != self.color && asset.color != .none && asset.isAlive {
             let command = asset.currentCommand
-            if command.action == .capability {
-                if let tempTarget = command.assetTarget {
-                    if tempTarget.action == .construct {
-                        continue
-                    }
-                }
+            if command.action == .capability, let target = command.assetTarget, target.action == .construct {
+                continue
             }
-            if command.action != .conveyGold && command.action != .conveyLumber && command.action != .mineGold {
+            if ![.conveyGold, .conveyLumber, .mineGold].contains(command.action) {
                 let currentDistanceSquared = squaredDistanceBetween(position, asset.closestPosition(position))
-                if range < 0 || range >= currentDistanceSquared {
+                let isOutsideRange = range < 0 || range >= currentDistanceSquared
+                if isOutsideRange {
                     if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                         bestDistanceSquared = currentDistanceSquared
                         bestAsset = asset

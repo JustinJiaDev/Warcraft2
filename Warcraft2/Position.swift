@@ -125,12 +125,12 @@ struct Position {
         } else {
             let current = Position.absolute(fromTile: self)
             let tile = Position.absolute(fromTile: tilePosition)
-            let newPosition = Position.tile(fromAbsolute: current.closestPosition(tile, objectSize: objectSize))
+            let newPosition = Position.tile(fromAbsolute: current.closestPosition(searchingFrom: tile, objectSize: objectSize))
             return adjacentTileDirection(position: newPosition, objectSize: 1)
         }
     }
 
-    func closestPosition(_ position: Position, objectSize: Int) -> Position {
+    func closestPosition(searchingFrom position: Position, objectSize: Int) -> Position {
         var currentPosition = position
         var bestPosition = Position()
         var bestDistance = -1

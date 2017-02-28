@@ -1,9 +1,9 @@
 import Foundation
 
 class ActivatedPlayerCapability {
-    var actor: PlayerAsset
-    var playerData: PlayerData
-    var target: PlayerAsset
+    private(set) var actor: PlayerAsset
+    private(set) var playerData: PlayerData
+    private(set) var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
         self.actor = actor
@@ -36,6 +36,88 @@ class PlayerCapability {
     private static var nameRegistry: [String: PlayerCapability] = [:]
     private static var typeRegistry: [Int: PlayerCapability] = [:]
 
+    private static let nameTypeTranslation: [String: AssetCapabilityType] = [
+        "None": .none,
+        "BuildPeasant": .buildPeasant,
+        "BuildFootman": .buildFootman,
+        "BuildArcher": .buildArcher,
+        "BuildRanger": .buildRanger,
+        "BuildFarm": .buildFarm,
+        "BuildTownHall": .buildTownHall,
+        "BuildBarracks": .buildBarracks,
+        "BuildLumberMill": .buildLumberMill,
+        "BuildBlacksmith": .buildBlacksmith,
+        "BuildKeep": .buildKeep,
+        "BuildCastle": .buildCastle,
+        "BuildScoutTower": .buildScoutTower,
+        "BuildGuardTower": .buildGuardTower,
+        "BuildCannonTower": .buildCannonTower,
+        "Move": .move,
+        "Repair": .repair,
+        "Mine": .mine,
+        "BuildSimple": .buildSimple,
+        "BuildAdvanced": .buildAdvanced,
+        "Convey": .convey,
+        "Cancel": .cancel,
+        "BuildWall": .buildWall,
+        "Attack": .attack,
+        "StandGround": .standGround,
+        "Patrol": .patrol,
+        "WeaponUpgrade1": .weaponUpgrade1,
+        "WeaponUpgrade2": .weaponUpgrade2,
+        "WeaponUpgrade3": .weaponUpgrade3,
+        "ArrowUpgrade1": .arrowUpgrade1,
+        "ArrowUpgrade2": .arrowUpgrade2,
+        "ArrowUpgrade3": .arrowUpgrade3,
+        "ArmorUpgrade1": .armorUpgrade1,
+        "ArmorUpgrade2": .armorUpgrade2,
+        "ArmorUpgrade3": .armorUpgrade3,
+        "Longbow": .longbow,
+        "RangerScouting": .rangerScouting,
+        "Marksmanship": .marksmanship
+    ]
+
+    private static let typeStrings = [
+        "None",
+        "BuildPeasant",
+        "BuildFootman",
+        "BuildArcher",
+        "BuildRanger",
+        "BuildFarm",
+        "BuildTownHall",
+        "BuildBarracks",
+        "BuildLumberMill",
+        "BuildBlacksmith",
+        "BuildKeep",
+        "BuildCastle",
+        "BuildScoutTower",
+        "BuildGuardTower",
+        "BuildCannonTower",
+        "Move",
+        "Repair",
+        "Mine",
+        "BuildSimple",
+        "BuildAdvanced",
+        "Convey",
+        "Cancel",
+        "BuildWall",
+        "Attack",
+        "StandGround",
+        "Patrol",
+        "WeaponUpgrade1",
+        "WeaponUpgrade2",
+        "WeaponUpgrade3",
+        "ArrowUpgrade1",
+        "ArrowUpgrade2",
+        "ArrowUpgrade3",
+        "ArmorUpgrade1",
+        "ArmorUpgrade2",
+        "ArmorUpgrade3",
+        "Longbow",
+        "RangerScouting",
+        "Marksmanship"
+    ]
+
     init(name: String = "None", targetType: TargetType = .none) {
         self.name = name
         self.assetCapabilityType = PlayerCapability.findType(with: name)
@@ -43,7 +125,7 @@ class PlayerCapability {
     }
 
     private static func register(capability: PlayerCapability) -> Bool {
-        if let _ = nameRegistry[capability.name] {
+        if nameRegistry[capability.name] != nil {
             return false
         }
         nameRegistry[capability.name] = capability
@@ -52,113 +134,19 @@ class PlayerCapability {
     }
 
     static func findCapability(with type: AssetCapabilityType) -> PlayerCapability {
-        if let value = typeRegistry[type.rawValue] {
-            return value
-        }
-        return PlayerCapability()
+        return typeRegistry[type.rawValue] ?? PlayerCapability()
     }
 
     static func findCapability(with name: String) -> PlayerCapability {
-        if let value = nameRegistry[name] {
-            return value
-        }
-        return PlayerCapability()
+        return nameRegistry[name] ?? PlayerCapability()
     }
 
     static func findType(with name: String) -> AssetCapabilityType {
-        var nameTypeTranslation: [String: AssetCapabilityType] = [:]
-        nameTypeTranslation["None"] = .none
-        nameTypeTranslation["BuildPeasant"] = .buildPeasant
-        nameTypeTranslation["BuildFootman"] = .buildFootman
-        nameTypeTranslation["BuildArcher"] = .buildArcher
-        nameTypeTranslation["BuildRanger"] = .buildRanger
-        nameTypeTranslation["BuildFarm"] = .buildFarm
-        nameTypeTranslation["BuildTownHall"] = .buildTownHall
-        nameTypeTranslation["BuildBarracks"] = .buildBarracks
-        nameTypeTranslation["BuildLumberMill"] = .buildLumberMill
-        nameTypeTranslation["BuildBlacksmith"] = .buildBlacksmith
-        nameTypeTranslation["BuildKeep"] = .buildKeep
-        nameTypeTranslation["BuildCastle"] = .buildCastle
-        nameTypeTranslation["BuildScoutTower"] = .buildScoutTower
-        nameTypeTranslation["BuildGuardTower"] = .buildGuardTower
-        nameTypeTranslation["BuildCannonTower"] = .buildCannonTower
-        nameTypeTranslation["Move"] = .move
-        nameTypeTranslation["Repair"] = .repair
-        nameTypeTranslation["Mine"] = .mine
-        nameTypeTranslation["BuildSimple"] = .buildSimple
-        nameTypeTranslation["BuildAdvanced"] = .buildAdvanced
-        nameTypeTranslation["Convey"] = .convey
-        nameTypeTranslation["Cancel"] = .cancel
-        nameTypeTranslation["BuildWall"] = .buildWall
-        nameTypeTranslation["Attack"] = .attack
-        nameTypeTranslation["StandGround"] = .standGround
-        nameTypeTranslation["Patrol"] = .patrol
-        nameTypeTranslation["WeaponUpgrade1"] = .weaponUpgrade1
-        nameTypeTranslation["WeaponUpgrade2"] = .weaponUpgrade2
-        nameTypeTranslation["WeaponUpgrade3"] = .weaponUpgrade3
-        nameTypeTranslation["ArrowUpgrade1"] = .arrowUpgrade1
-        nameTypeTranslation["ArrowUpgrade2"] = .arrowUpgrade2
-        nameTypeTranslation["ArrowUpgrade3"] = .arrowUpgrade3
-        nameTypeTranslation["ArmorUpgrade1"] = .armorUpgrade1
-        nameTypeTranslation["ArmorUpgrade2"] = .armorUpgrade2
-        nameTypeTranslation["ArmorUpgrade3"] = .armorUpgrade3
-        nameTypeTranslation["Longbow"] = .longbow
-        nameTypeTranslation["RangerScouting"] = .rangerScouting
-        nameTypeTranslation["Marksmanship"] = .marksmanship
-
-        if let value = nameTypeTranslation[name] {
-            return value
-        }
-        printError("Unknown capability name \"\(name)\"\n")
-        return .none
+        return nameTypeTranslation[name] ?? .none
     }
 
     static func findName(with type: AssetCapabilityType) -> String {
-        let typeStrings = [
-            "None",
-            "BuildPeasant",
-            "BuildFootman",
-            "BuildArcher",
-            "BuildRanger",
-            "BuildFarm",
-            "BuildTownHall",
-            "BuildBarracks",
-            "BuildLumberMill",
-            "BuildBlacksmith",
-            "BuildKeep",
-            "BuildCastle",
-            "BuildScoutTower",
-            "BuildGuardTower",
-            "BuildCannonTower",
-            "Move",
-            "Repair",
-            "Mine",
-            "BuildSimple",
-            "BuildAdvanced",
-            "Convey",
-            "Cancel",
-            "BuildWall",
-            "Attack",
-            "StandGround",
-            "Patrol",
-            "WeaponUpgrade1",
-            "WeaponUpgrade2",
-            "WeaponUpgrade3",
-            "ArrowUpgrade1",
-            "ArrowUpgrade2",
-            "ArrowUpgrade3",
-            "ArmorUpgrade1",
-            "ArmorUpgrade2",
-            "ArmorUpgrade3",
-            "Longbow",
-            "RangerScouting",
-            "Marksmanship"
-        ]
-
-        if type.rawValue < 0 || type.rawValue >= typeStrings.count {
-            return ""
-        }
-        return typeStrings[type.rawValue]
+        return type.rawValue >= 0 && type.rawValue < typeStrings.count ? typeStrings[type.rawValue] : ""
     }
 
     func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
@@ -694,7 +682,7 @@ class PlayerAsset {
     var lumber: Int = 0
     var step: Int = 0
 
-    static let deltaX: [Direction: Int] = [
+    private static let deltaX: [Direction: Int] = [
         .north: 0,
         .northEast: 5,
         .east: 7,
@@ -704,7 +692,7 @@ class PlayerAsset {
         .west: -7,
         .northWest: -5
     ]
-    static let deltaY: [Direction: Int] = [
+    private static let deltaY: [Direction: Int] = [
         .north: -7,
         .northEast: -5,
         .east: 0,
@@ -965,7 +953,7 @@ class PlayerAsset {
     }
 
     func closestPosition(_ position: Position) -> Position {
-        return position.closestPosition(self.position, objectSize: size)
+        return position.closestPosition(searchingFrom: self.position, objectSize: size)
     }
 
     func clearCommand() {
