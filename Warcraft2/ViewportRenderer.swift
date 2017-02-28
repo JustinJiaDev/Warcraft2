@@ -11,7 +11,7 @@ class ViewportRenderer {
         self.frame = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
     }
 
-    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, currentCapability: AssetCapabilityType) throws {
+    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, currentCapability: AssetCapabilityType) {
         let builder = selectionMarkerList.first ?? PlayerAsset(playerAssetType: PlayerAssetType())
         let placeType: AssetType = {
             switch currentCapability {
@@ -25,12 +25,12 @@ class ViewportRenderer {
             }
         }()
 
-        try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: frame, level: 0)
-        // try assetRenderer.drawSelections(on: surface, in: frame, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
-        try assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: frame)
-        try mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: frame, level: 1)
-        try assetRenderer.drawOverlays(on: surface, in: frame)
-        try assetRenderer.drawPlacement(on: surface, in: frame, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
+        mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: frame, level: 0)
+        // assetRenderer.drawSelections(on: surface, in: frame, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
+        assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: frame)
+        mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: frame, level: 1)
+        assetRenderer.drawOverlays(on: surface, in: frame)
+        assetRenderer.drawPlacement(on: surface, in: frame, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
         // try fogRenderer.drawMap(on: surface, in: frame)
     }
 }

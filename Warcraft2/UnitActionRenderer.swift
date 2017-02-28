@@ -140,12 +140,12 @@ class UnitActionRenderer {
             let capabilityType = displayedCommands[i]
             if capabilityType != .none {
                 let playerCapability = PlayerCapability.findCapability(capabilityType)
-                try bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
-                try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[capabilityType]!)
+                bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
+                iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[capabilityType]!)
 
                 if playerCapability.targetType != .none {
                     if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
-                        try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
+                        iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
                     }
                 }
             }

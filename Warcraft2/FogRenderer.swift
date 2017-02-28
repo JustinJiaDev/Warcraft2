@@ -74,9 +74,9 @@ class FogRenderer {
                                 }
                             }
                         }
-                        try tileset.duplicateClippedTile(destinationIndex: nextIndex, tileName: "pf-\(value)", sourceIndex: fogIndices[firstBest], clipIndex: fogIndices[bestMatch])
+                        tileset.duplicateClippedTile(destinationIndex: nextIndex, tileName: "pf-\(value)", sourceIndex: fogIndices[firstBest], clipIndex: fogIndices[bestMatch])
                         fogIndices[value] = nextIndex
-                        try tileset.duplicateClippedTile(destinationIndex: nextIndex + 1, tileName: "pb-\(value)", sourceIndex: blackIndices[firstBest], clipIndex: blackIndices[bestMatch])
+                        tileset.duplicateClippedTile(destinationIndex: nextIndex + 1, tileName: "pb-\(value)", sourceIndex: blackIndices[firstBest], clipIndex: blackIndices[bestMatch])
                         blackIndices[value] = nextIndex + 1
                         nextIndex += 2
                     }
@@ -98,13 +98,13 @@ class FogRenderer {
             for xPosition in stride(from: -(rectangle.x % tileWidth), to: rectangle.width, by: tileWidth) {
                 let tileType = map.tileTypeAt(x: xIndex, y: yIndex)
                 if tileType == .none {
-                    try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: noneIndex)
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: noneIndex)
                     continue
                 } else if tileType == .visible {
                     continue
                 }
                 if tileType == .seen || tileType == .seenPartial {
-                    try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: seenIndex)
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: seenIndex)
                 }
                 if tileType == .partialPartial || tileType == .partial {
                     var visibilityIndex = 0
@@ -128,7 +128,7 @@ class FogRenderer {
                             unknownFog[visibilityIndex] = true
                         }
                     }
-                    try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
                 }
 
                 if tileType == .partialPartial || tileType == .seenPartial {
@@ -153,7 +153,7 @@ class FogRenderer {
                             unknownBlack[visibilityIndex] = true
                         }
                     }
-                    try tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
                 }
                 xIndex += 1
             }

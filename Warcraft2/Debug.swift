@@ -11,3 +11,8 @@ func printDebug(_ message: String, level: DebugLevel = .normal) {
 func printError(_ message: String, level: DebugLevel = .normal) {
     print("[error-\(level)]: \(message)")
 }
+
+func printFatal(_ message: String) -> Never {
+    print("[fatal-\(DebugLevel.high)]: \(message)")
+    fatalError()
+}

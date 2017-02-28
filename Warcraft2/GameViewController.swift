@@ -104,13 +104,9 @@ extension GameViewController {
 
 extension GameViewController {
     func timestep() {
-        do {
-            try gameModel.timestep()
-            let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
-            scene.removeAllChildren()
-            try viewportRenderer.drawViewport(on: scene, typeSurface: typeScene, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
-        } catch {
-            printError(error.localizedDescription, level: .high)
-        }
+        gameModel.timestep()
+        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
+        scene.removeAllChildren()
+        viewportRenderer.drawViewport(on: scene, typeSurface: typeScene, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
     }
 }

@@ -513,7 +513,7 @@ class GameModel {
         return players[color.index]
     }
 
-    func timestep() throws {
+    func timestep() {
         assetOccupancyMap = Array(repeating: Array(repeating: nil, count: assetOccupancyMap[0].count), count: assetOccupancyMap.count)
         diagonalOccupancyMap = Array(repeating: Array(repeating: false, count: diagonalOccupancyMap[0].count), count: diagonalOccupancyMap.count)
 
@@ -537,19 +537,15 @@ class GameModel {
                 } else {
                     let playerCapability = PlayerCapability.findCapability(command.capability)
                     asset.popCommand()
-                    guard let target = command.assetTarget else {
-                        throw GameError.missingAssetTarget
-                    }
+                    let target = command.assetTarget!
                     guard playerCapability.canApply(actor: asset, playerData: players[asset.color.index], target: target) else {
-                        throw GameError.cannotApplyCapability
+                        printFatal("Cannot apply capability.")
                     }
                     playerCapability.applyCapability(actor: asset, playerData: players[asset.color.index], target: target)
                 }
             } else if asset.action == .harvestLumber {
                 var command = asset.currentCommand
-                guard let target = command.assetTarget else {
-                    throw GameError.missingAssetTarget
-                }
+                let target = command.assetTarget!
                 var tilePosition = target.tilePosition
                 var harvestDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition)
 
@@ -602,9 +598,7 @@ class GameModel {
                 }
             } else if asset.action == .mineGold {
                 var command = asset.currentCommand
-                guard let target = command.assetTarget else {
-                    throw GameError.missingAssetTarget
-                }
+                let target = command.assetTarget!
                 let closestPosition = target.closestPosition(asset.position)
                 let tilePosition = Position.tile(fromAbsolute: closestPosition)
                 let mineDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition)
@@ -672,9 +666,7 @@ class GameModel {
                 asset.resetStep()
             } else if asset.action == .repair {
                 var currentCommand = asset.currentCommand
-                guard let currentTarget = currentCommand.assetTarget else {
-                    throw GameError.missingAssetTarget
-                }
+                let currentTarget = currentCommand.assetTarget!
                 if currentTarget.isAlive {
                     let repairDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: currentTarget.tilePosition, areaLength: currentTarget.size)
                     if repairDirection == .max {

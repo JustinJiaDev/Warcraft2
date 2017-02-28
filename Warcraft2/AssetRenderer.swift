@@ -285,7 +285,7 @@ class AssetRenderer {
         return first.x <= second.x
     }
 
-    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) throws {
+    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) {
         let screenRightX = rect.x + rect.width - 1
         let screenBottomY = rect.y + rect.height - 1
         var finalRenderList: [Data] = []
@@ -414,19 +414,15 @@ class AssetRenderer {
 
         for renderData in finalRenderList {
             if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
-                try tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
-                try tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
+                tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
+                tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
             } else {
-                try buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
             }
         }
     }
 
-    func drawSelections(on surface: GraphicSurface, in rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) throws {
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
+    func drawSelections(on surface: GraphicSurface, in rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) {
         let resourceContext = surface.resourceContext
         let screenRightX = rect.x + rect.width - 1
         let screenBottomY = rect.y + rect.height - 1
@@ -488,7 +484,7 @@ class AssetRenderer {
         if let asset = selectionList.first {
             if asset.color == .none {
                 rectangleColor = pixelColors[.none]!
-            } else if asset.color != playerData.color {
+            } else if asset.color != playerData!.color {
                 rectangleColor = enemyPixelColor
             }
             resourceContext.setSourceRGB(rectangleColor)
@@ -523,7 +519,7 @@ class AssetRenderer {
                             }
                             renderData.tileIndex = corpseIndices[asset.direction.index * actionSteps + currentStep]
                         }
-                        try corpseTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                        corpseTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                     }
                 } else if asset.action == AssetAction.attack {
                     var onScreen = true
@@ -544,7 +540,7 @@ class AssetRenderer {
                     if onScreen {
                         let markerIndex = asset.step / AssetRenderer.animationDownsample
                         if markerIndex < markerIndices.count {
-                            try markerTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: markerIndices[markerIndex])
+                            markerTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: markerIndices[markerIndex])
                         }
                     }
                 }
@@ -574,11 +570,7 @@ class AssetRenderer {
         }
     }
 
-    func drawOverlays(on surface: GraphicSurface, in rect: Rectangle) throws {
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
+    func drawOverlays(on surface: GraphicSurface, in rect: Rectangle) {
         let screenRightX = rect.x + rect.width - 1
         let screenBottomY = rect.y + rect.height - 1
 
@@ -603,11 +595,11 @@ class AssetRenderer {
                     renderData.y -= rect.y
                     if onScreen {
                         let actionSteps = arrowIndices.count / Direction.numberOfDirections
-                        try arrowTileset.drawTile(
+                        arrowTileset.drawTile(
                             on: surface,
                             x: renderData.x,
                             y: renderData.y,
-                            index: arrowIndices[asset.direction.index * actionSteps + ((playerData.gameCycle - asset.creationCycle) % actionSteps)]
+                            index: arrowIndices[asset.direction.index * actionSteps + ((playerData!.gameCycle - asset.creationCycle) % actionSteps)]
                         )
                     }
                 }
@@ -633,7 +625,7 @@ class AssetRenderer {
 
                     if hitRange < fireTilesets.count {
                         let tilesetIndex = fireTilesets.count - 1 - hitRange
-                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
+                        renderData.tileIndex = (playerData!.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
                         renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTilesets[tilesetIndex].tileHalfWidth
                         renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTilesets[tilesetIndex].tileHeight
                         let rightX = renderData.x + fireTilesets[tilesetIndex].tileWidth - 1
@@ -649,7 +641,7 @@ class AssetRenderer {
                         renderData.y -= rect.y
 
                         if onScreen {
-                            try fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                            fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                         }
                     }
                 }
@@ -657,14 +649,10 @@ class AssetRenderer {
         }
     }
 
-    func drawPlacement(on surface: GraphicSurface, in rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) throws {
+    func drawPlacement(on surface: GraphicSurface, in rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) {
         guard type != .none else {
             return
         }
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
         var position = position
         let screenRightX = rect.x + rect.width - 1
         let screenBottomY = rect.y + rect.height - 1
@@ -740,12 +728,12 @@ class AssetRenderer {
             if onScreen {
                 position.x -= rect.x
                 position.y -= position.y - rect.y
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData!.color.index - 1)
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {
                     for cell in row {
-                        try markerTileset.drawTile(on: surface, x: x, y: y, index: cell != 0 ? placeGoodIndex : placeBadIndex)
+                        markerTileset.drawTile(on: surface, x: x, y: y, index: cell != 0 ? placeGoodIndex : placeBadIndex)
                         x += markerTileset.tileWidth
                     }
                     y += markerTileset.tileHeight
