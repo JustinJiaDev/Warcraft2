@@ -199,7 +199,7 @@ class GraphicTileset {
         // ORIGINAL - END
     }
 
-    func loadTileset(from dataSource: DataSource) throws {
+    func loadTileset(from dataSource: FileDataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
         guard let pngPath = lineSource.readLine() else {
             throw GameError.failedToGetPath

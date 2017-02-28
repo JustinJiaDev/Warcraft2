@@ -12,7 +12,7 @@ class GraphicMulticolorTileset: GraphicTileset {
         return colorMap?.findColor(colorName) ?? -1
     }
 
-    func loadTileset(colorMap: GraphicRecolorMap, from dataSource: DataSource) throws {
+    func loadTileset(colorMap: GraphicRecolorMap, from dataSource: FileDataSource) throws {
         guard let surfaceTileset = surfaceTileset else {
             throw GameError.missingTileset
         }

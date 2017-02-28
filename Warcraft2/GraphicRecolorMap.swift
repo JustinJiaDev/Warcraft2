@@ -38,7 +38,7 @@ class GraphicRecolorMap {
         // HACK - END
     }
 
-    func load(from dataSource: DataSource) throws {
+    func load(from dataSource: FileDataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
         guard let pngPath = lineSource.readLine() else {
             throw GameError.failedToGetPath

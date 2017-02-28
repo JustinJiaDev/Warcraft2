@@ -37,6 +37,7 @@
 		D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24D1E504C4300F8736B /* FileDataContainer.swift */; };
 		D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24F1E504CA600F8736B /* FileDataSink.swift */; };
 		D022B2521E504FCD00F8736B /* data in Resources */ = {isa = PBXBuildFile; fileRef = D022B2511E504FCD00F8736B /* data */; };
+		D025B1691E6564FF006AB67E /* MemoryDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D025B1681E6564FF006AB67E /* MemoryDataSource.swift */; };
 		D052840C1E60208E00D2331A /* ResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D052840B1E60208E00D2331A /* ResourceLoader.swift */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
 		D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47421E35BE6300F7FED1 /* PixelType.swift */; };
@@ -88,6 +89,7 @@
 		D022B24D1E504C4300F8736B /* FileDataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataContainer.swift; sourceTree = "<group>"; };
 		D022B24F1E504CA600F8736B /* FileDataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataSink.swift; sourceTree = "<group>"; };
 		D022B2511E504FCD00F8736B /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
+		D025B1681E6564FF006AB67E /* MemoryDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryDataSource.swift; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D052840B1E60208E00D2331A /* ResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceLoader.swift; sourceTree = "<group>"; };
 		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 				8EA067771E33C8E00059CEC2 /* FileDataSource.swift */,
 				D022B24F1E504CA600F8736B /* FileDataSink.swift */,
 				8EA067791E33C8E00059CEC2 /* LineDataSource.swift */,
+				D025B1681E6564FF006AB67E /* MemoryDataSource.swift */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 				8E1B515C1E2D58F0008E968C /* GameDataTypes.swift in Sources */,
 				D0D6FA671E26027000D92DA5 /* LaunchViewController.swift in Sources */,
 				8E0B3B171E48656000BA4832 /* FogRenderer.swift in Sources */,
+				D025B1691E6564FF006AB67E /* MemoryDataSource.swift in Sources */,
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
 				8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */,
 				C834BE931E49AA5A00941BFF /* ViewportRenderer.swift in Sources */,
