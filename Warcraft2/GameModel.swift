@@ -551,7 +551,7 @@ class GameModel {
                     throw GameError.missingAssetTarget
                 }
                 var tilePosition = target.tilePosition
-                var harvestDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
+                var harvestDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition)
 
                 if actualMap.tileTypeAt(position: tilePosition) != .tree {
                     harvestDirection = .max
@@ -607,7 +607,7 @@ class GameModel {
                 }
                 let closestPosition = target.closestPosition(asset.position)
                 let tilePosition = Position.tile(fromAbsolute: closestPosition)
-                let mineDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
+                let mineDirection = asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition)
                 if mineDirection == .max && tilePosition != asset.tilePosition {
                     var newCommand = command
                     newCommand.action = .walk

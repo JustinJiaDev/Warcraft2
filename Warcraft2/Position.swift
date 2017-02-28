@@ -114,23 +114,20 @@ struct Position {
         self = Position.absolute(fromTile: tilePosition)
     }
 
-    func adjacentTileDirection(position tilePosition: Position, objectSize: Int = 1) -> Direction {
-        if objectSize == 1 {
-            let deltaX = tilePosition.x - x
-            let deltaY = tilePosition.y - y
-            if deltaX * deltaX > 1 || deltaY * deltaY > 1 {
-                return Direction.max
-            }
-            return Position.tileDirections[deltaY + 1][deltaX + 1]
-        } else {
-            let current = Position.absolute(fromTile: self)
-            let tile = Position.absolute(fromTile: tilePosition)
-            let newPosition = Position.tile(fromAbsolute: current.closestPosition(searchingFrom: tile, areaLength: objectSize))
-            return adjacentTileDirection(position: newPosition, objectSize: 1)
+    func directionToAdjacentTile(searchingFrom targetTilePosition: Position, areaLength: Int = 1) -> Direction {
+        if areaLength == 1 {
+            let deltaX = targetTilePosition.x - x
+            let deltaY = targetTilePosition.y - y
+            let isAdjacent = deltaX * deltaX <= 1 && deltaY * deltaY <= 1
+            return isAdjacent ? Position.tileDirections[deltaY + 1][deltaX + 1] : Direction.max
         }
+        let currentAbsolutePosition = Position.absolute(fromTile: self)
+        let targetAbsolutePosition = Position.absolute(fromTile: targetTilePosition)
+        let closestTargetTilePosition = Position.tile(fromAbsolute: currentAbsolutePosition.closestPosition(searchingFrom: targetAbsolutePosition, areaLength: areaLength))
+        return directionToAdjacentTile(searchingFrom: closestTargetTilePosition, areaLength: 1)
     }
 
-    func closestPosition(searchingFrom position: Position, areaLength: Int) -> Position {
+    func closestPosition(searchingFrom position: Position, areaLength: Int = 1) -> Position {
         var currentPosition = position
         var bestPosition = Position()
         var bestDistance = -1
