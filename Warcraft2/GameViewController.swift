@@ -104,7 +104,7 @@ extension GameViewController {
     func timestep() {
         do {
             try gameModel.timestep()
-            let rectangle = Rectangle(xPosition: 0, yPosition: 0, width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+            let rectangle = Rectangle(x: 0, y: 0, width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
             scene.removeAllChildren()
             try viewportRenderer.drawViewport(on: scene, typeSurface: typeScene, selectionMarkerList: [], selectRect: rectangle, currentCapability: .none)
         } catch {
