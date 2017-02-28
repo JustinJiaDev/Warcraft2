@@ -672,17 +672,15 @@ class AssetRenderer {
         let assetType = PlayerAssetType.findDefault(with: type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
-        var tempPosition = Position()
-        var tilePosition = Position()
-        tilePosition.setToTile(position)
-        tempPosition.setFromTile(tilePosition)
+        var tilePosition = Position.tile(fromAbsolute: position)
+        var tempPosition = Position.absolute(fromTile: tilePosition)
 
         tempPosition.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
         tempPosition.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
         let placementRightX = tempPosition.x + tilesets[type.rawValue].tileWidth
         let placementBottomY = tempPosition.y + tilesets[type.rawValue].tileHeight
 
-        tilePosition.setToTile(position)
+        tilePosition = Position.tile(fromAbsolute: position)
         var xOffset = 0
         var yOffset = 0
 

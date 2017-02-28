@@ -25,7 +25,7 @@ class RouterMap {
         return normalizedAngle <= 45
     }
 
-    func findRoute(assetMap: AssetDecoratedMap, asset: PlayerAsset, target: Position) -> Direction {
+    func findRoute(assetMap: AssetDecoratedMap, asset: PlayerAsset, target targetPosition: Position) -> Direction {
         let mapWidth = assetMap.width
         let mapHeight = assetMap.height
         let startX = asset.tilePositionX
@@ -35,7 +35,7 @@ class RouterMap {
         var bestSearch = SearchTarget()
         var tempTile = Position()
         var currentTile = Position()
-        var targetTile = Position()
+        let targetTile = Position.tile(fromAbsolute: targetPosition)
         let searchDirections: [Direction] = [.north, .east, .south, .west]
         let resMapXOffsets = [0, 1, 0, -1]
         let resMapYOffsets = [ -1, 0, 1, 0]
@@ -44,7 +44,6 @@ class RouterMap {
         var lastInDirection, directionBeforeLast: Direction
         var searchQueueArray: [SearchTarget] = []
 
-        targetTile.setToTile(target)
         if map.count != mapHeight + 2 || map[0].count != mapWidth + 2 {
             let lastYIndex = mapHeight + 1
             let lastXIndex = mapWidth + 1
@@ -64,8 +63,8 @@ class RouterMap {
         }
 
         if asset.tilePosition == targetTile {
-            let deltaX = target.x - asset.positionX
-            let deltaY = target.y - asset.positionY
+            let deltaX = targetPosition.x - asset.positionX
+            let deltaY = targetPosition.y - asset.positionY
 
             if deltaX > 0 {
                 if deltaY > 0 {

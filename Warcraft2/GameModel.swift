@@ -135,9 +135,7 @@ class PlayerData {
 
     func createMarker(at position: Position, addToMap: Bool) -> PlayerAsset {
         let newMarker = assetTypes["None"]!.construct()
-        var tilePosition = Position()
-        tilePosition.setToTile(position)
-        newMarker.tilePosition = tilePosition
+        newMarker.tilePosition = Position.tile(fromAbsolute: position)
         if addToMap {
             playerMap.addAsset(newMarker)
         }
@@ -564,11 +562,10 @@ class GameModel {
                 }
                 if harvestDirection == .max {
                     if tilePosition == asset.tilePosition {
-                        var newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree)
+                        let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree)
                         asset.popCommand()
                         if newPosition.x >= 0 {
-                            newPosition.setFromTile(newPosition)
-                            command.assetTarget = self.players[asset.color.index].createMarker(at: newPosition, addToMap: false)
+                            command.assetTarget = self.players[asset.color.index].createMarker(at: Position.absolute(fromTile: newPosition), addToMap: false)
                             asset.pushCommand(command)
                             command.action = .walk
                             asset.pushCommand(command)
@@ -612,9 +609,8 @@ class GameModel {
                     throw GameError.missingAssetTarget
                 }
                 let closestPosition = target.closestPosition(asset.position)
-                var tilePosition = Position()
+                let tilePosition = Position.tile(fromAbsolute: closestPosition)
                 let mineDirection = asset.tilePosition.adjacentTileDirection(position: tilePosition, objectSize: 1)
-                tilePosition.setToTile(closestPosition)
                 if mineDirection == .max && tilePosition != asset.tilePosition {
                     var newCommand = command
                     newCommand.action = .walk
@@ -657,7 +653,13 @@ class GameModel {
                             } else {
                                 asset.popCommand()
                             }
-                            asset.tilePosition.setToTile(players[asset.color.index].playerMap.findAssetPlacement(placeAsset: asset, fromAsset: oldTarget, nextTileTarget: nextTarget))
+                            asset.tilePosition = Position.tile(
+                                fromAbsolute: players[asset.color.index].playerMap.findAssetPlacement(
+                                    placeAsset: asset,
+                                    fromAsset: oldTarget,
+                                    nextTileTarget: nextTarget
+                                )
+                            )
                         }
                     }
                 }
@@ -946,13 +948,12 @@ class GameModel {
                             asset.resetStep()
                             continue
                         } else if nextCommand.action == .harvestLumber {
-                            var newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
+                            let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
                             asset.popCommand()
                             asset.popCommand()
                             if newPosition.x >= 0 {
-                                newPosition.setFromTile(newPosition)
                                 command.action = .harvestLumber
-                                command.assetTarget = players[asset.color.index].createMarker(at: newPosition, addToMap: false)
+                                command.assetTarget = players[asset.color.index].createMarker(at: Position.absolute(fromTile: newPosition), addToMap: false)
                                 asset.pushCommand(command)
                                 command.action = .walk
                                 asset.pushCommand(command)

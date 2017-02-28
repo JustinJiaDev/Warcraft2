@@ -722,12 +722,10 @@ class PlayerAsset {
 
     var tilePosition: Position {
         get {
-            var tilePosition = Position()
-            tilePosition.setToTile(position)
-            return tilePosition
+            return Position.tile(fromAbsolute: position)
         }
         set {
-            position.setFromTile(newValue)
+            position = Position.absolute(fromTile: newValue)
         }
     }
 
@@ -1055,8 +1053,7 @@ class PlayerAsset {
             var newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
 
             if newPosition.tileOctant == direction {
-                newPosition.setToTile(newPosition)
-                newPosition.setFromTile(newPosition)
+                newPosition.normalizeToTileCenter()
                 tempMoveRemainderX = 0
                 tempMoveRemainderY = 0
             }

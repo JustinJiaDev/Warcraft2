@@ -33,6 +33,18 @@ struct Position {
         self.y = y
     }
 
+    static func tile(fromAbsolute position: Position) -> Position {
+        let x = position.x / Position.tileWidth
+        let y = position.y / Position.tileHeight
+        return Position(x: x, y: y)
+    }
+
+    static func absolute(fromTile tilePosition: Position) -> Position {
+        let x = tilePosition.x * Position.tileWidth + Position.halfTileWidth
+        let y = tilePosition.y * Position.tileHeight + Position.halfTileHeight
+        return Position(x: x, y: y)
+    }
+
     static func ==(left: Position, right: Position) -> Bool {
         return left.x == right.x && left.y == right.y
     }
@@ -82,49 +94,24 @@ struct Position {
         }
     }
 
-    mutating func setFromTile(_ position: Position) {
-        x = position.x * Position.tileWidth + Position.halfTileWidth
-        y = position.y * Position.tileHeight + Position.halfTileHeight
+    mutating func normalizeToTileCenter() {
+        let tilePosition = Position.tile(fromAbsolute: self)
+        self = Position.absolute(fromTile: tilePosition)
     }
 
-    mutating func setXFromTile(_ x: Int) {
-        self.x = x * Position.tileWidth + Position.halfTileWidth
-    }
-
-    mutating func setYFromTile(_ y: Int) {
-        self.y = y * Position.tileHeight + Position.halfTileHeight
-    }
-
-    mutating func setToTile(_ position: Position) {
-        x = position.x / Position.tileWidth
-        y = position.y / Position.tileHeight
-    }
-
-    mutating func setXToTile(_ x: Int) {
-        self.x = x / Position.tileWidth
-    }
-
-    mutating func setYToTile(_ y: Int) {
-        self.y = y / Position.tileHeight
-    }
-
-    func adjacentTileDirection(position: Position, objectSize: Int = 1) -> Direction {
+    func adjacentTileDirection(position tilePosition: Position, objectSize: Int = 1) -> Direction {
         if objectSize == 1 {
-            let deltaX = position.x - x
-            let deltaY = position.y - y
+            let deltaX = tilePosition.x - x
+            let deltaY = tilePosition.y - y
             if deltaX * deltaX > 0 || deltaY * deltaY > 1 {
                 return Direction.max
             }
             return Position.tileDirections[deltaY + 1][deltaX + 1]
         } else {
-            var thisPosition = Position()
-            var targetPosition = Position()
-
-            thisPosition.setFromTile(self)
-            targetPosition.setFromTile(position)
-
-            targetPosition.setToTile(thisPosition.closestPosition(targetPosition, objectSize: objectSize))
-            return adjacentTileDirection(position: targetPosition, objectSize: 1)
+            let current = Position.absolute(fromTile: self)
+            let tile = Position.absolute(fromTile: tilePosition)
+            let newPosition = Position.tile(fromAbsolute: current.closestPosition(tile, objectSize: objectSize))
+            return adjacentTileDirection(position: newPosition, objectSize: 1)
         }
     }
 
