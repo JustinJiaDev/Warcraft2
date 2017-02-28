@@ -49,7 +49,6 @@ class GameViewController: UIViewController {
         let deltaY = location.y - previousLocation.y
         let deltaX = location.x - previousLocation.x
         moveCameraBy(deltaX, deltaY)
-
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

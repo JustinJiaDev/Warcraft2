@@ -66,10 +66,9 @@ extension SKScene: GraphicSurface {
     }
 
     func draw(from texture: SKTexture, x: Int, y: Int, width: Int, height: Int) {
-        let node = SKSpriteNode(texture: texture)
-        node.size = CGSize(width: width, height: height)
-        node.position = CGPoint(x: x, y: self.height - y - height)
-        node.anchorPoint = .zero
+        let node = SKSpriteNode(texture: texture, size: CGSize(width: width, height: height))
+        node.position = CGPoint(x: x, y: self.height - y)
+        node.anchorPoint = CGPoint(x: 0, y: 1)
         self.addChild(node)
     }
 
