@@ -57,11 +57,8 @@ class GameViewController: UIViewController {
             return
         }
         let screenLocation = touches.first!.location(in: scene)
-        let location = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
-        let x = location.x
-        let y = viewportRenderer.lastViewportHeight - location.y
         let target = PlayerAsset(playerAssetType: PlayerAssetType())
-        target.position = Position(x: x, y: y)
+        target.position = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
         if let selected = selectedPeasant {
             selected.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
             selectedPeasant = nil
