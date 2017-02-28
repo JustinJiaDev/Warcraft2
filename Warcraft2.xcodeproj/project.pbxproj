@@ -166,10 +166,10 @@
 			isa = PBXGroup;
 			children = (
 				C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */,
+				8E0B3B161E48656000BA4832 /* FogRenderer.swift */,
 				D08F47441E35D80600F7FED1 /* MapRenderer.swift */,
 				A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */,
 				C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */,
-				8E0B3B161E48656000BA4832 /* FogRenderer.swift */,
 			);
 			name = Renderer;
 			sourceTree = "<group>";
@@ -201,10 +201,10 @@
 		D0773FC01E3847A800FF7DD7 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
-				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
-				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 				8EC6A5C71E3D68F400ACB660 /* AssetDecoratedMap.swift */,
+				8EC6A5C91E3D797000ACB660 /* RouterMap.swift */,
+				8EA0677C1E33C8E00059CEC2 /* TerrainMap.swift */,
+				8E4B67F11E36FF80001EF533 /* VisibilityMap.swift */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -213,12 +213,12 @@
 			isa = PBXGroup;
 			children = (
 				D0D4A3D71E3ED46B009460DE /* Bevel.swift */,
+				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
+				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
+				9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */,
 				8EA067781E33C8E00059CEC2 /* GraphicResourceContext.swift */,
 				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
-				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
-				9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */,
 				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
-				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
 			);
 			name = Graphic;
 			sourceTree = "<group>";
@@ -281,8 +281,8 @@
 		D0D6FA681E26028000D92DA5 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
 				D0DF813C1E3F2ECE000F9BC4 /* GameViewController.swift */,
+				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
