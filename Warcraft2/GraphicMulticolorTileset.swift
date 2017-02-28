@@ -9,7 +9,7 @@ class GraphicMulticolorTileset: GraphicTileset {
     }
 
     func findColor(with colorName: String) -> Int {
-        return colorMap?.findColor(with: colorName) ?? -1
+        return colorMap?.findColor(colorName) ?? -1
     }
 
     func loadTileset(colorMap: GraphicRecolorMap, from dataSource: DataSource) throws {

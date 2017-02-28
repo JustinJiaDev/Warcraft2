@@ -120,7 +120,7 @@ class PlayerCapability {
 
     init(name: String = "None", targetType: TargetType = .none) {
         self.name = name
-        self.assetCapabilityType = PlayerCapability.findType(with: name)
+        self.assetCapabilityType = PlayerCapability.findType(name)
         self.targetType = targetType
     }
 
@@ -129,23 +129,23 @@ class PlayerCapability {
             return false
         }
         nameRegistry[capability.name] = capability
-        typeRegistry[PlayerCapability.findType(with: capability.name).rawValue] = capability
+        typeRegistry[PlayerCapability.findType(capability.name).rawValue] = capability
         return true
     }
 
-    static func findCapability(with type: AssetCapabilityType) -> PlayerCapability {
+    static func findCapability(_ type: AssetCapabilityType) -> PlayerCapability {
         return typeRegistry[type.rawValue] ?? PlayerCapability()
     }
 
-    static func findCapability(with name: String) -> PlayerCapability {
+    static func findCapability(_ name: String) -> PlayerCapability {
         return nameRegistry[name] ?? PlayerCapability()
     }
 
-    static func findType(with name: String) -> AssetCapabilityType {
+    static func findType(_ name: String) -> AssetCapabilityType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func findName(with type: AssetCapabilityType) -> String {
+    static func findName(_ type: AssetCapabilityType) -> String {
         return type.rawValue >= 0 && type.rawValue < typeStrings.count ? typeStrings[type.rawValue] : ""
     }
 
@@ -210,9 +210,9 @@ class PlayerUpgrade {
         guard let name = lineSource.readLine() else {
             throw GameError.failedToGetName
         }
-        let upgradeType = PlayerCapability.findType(with: name)
+        let upgradeType = PlayerCapability.findType(name)
 
-        if upgradeType == .none && name != PlayerCapability.findName(with: .none) {
+        if upgradeType == .none && name != PlayerCapability.findName(.none) {
             throw GameError.unknownUpgradeType(type: name)
         }
 
@@ -275,18 +275,18 @@ class PlayerUpgrade {
         }
         for _ in 0 ..< affectedAssetCount {
             if let assetRequirementString = lineSource.readLine() {
-                playerUpgrade.affectedAssets.append(PlayerAssetType.findType(with: assetRequirementString))
+                playerUpgrade.affectedAssets.append(PlayerAssetType.findType(assetRequirementString))
             } else {
                 throw GameError.failedToReadAffectedAsset
             }
         }
     }
 
-    static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
+    static func findUpgrade(_ type: AssetCapabilityType) -> PlayerUpgrade {
         return registryByType[type.rawValue] ?? PlayerUpgrade()
     }
 
-    static func findUpgrade(with name: String) -> PlayerUpgrade {
+    static func findUpgrade(_ name: String) -> PlayerUpgrade {
         return registryByName[name] ?? PlayerUpgrade()
     }
 }
@@ -501,11 +501,11 @@ class PlayerAssetType {
         return PlayerAsset(playerAssetType: self)
     }
 
-    static func findType(with name: String) -> AssetType {
+    static func findType(_ name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func findName(with type: AssetType) -> String {
+    static func findName(_ type: AssetType) -> String {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
@@ -532,7 +532,7 @@ class PlayerAssetType {
             throw GameError.failedToGetResourceTypeName
         }
 
-        let assetType = findType(with: name)
+        let assetType = findType(name)
 
         if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
             throw GameError.unknownResourceType(type: name)
@@ -630,7 +630,7 @@ class PlayerAssetType {
         }
         for _ in 0 ..< capabilityCount {
             if let capabilityString = lineSource.readLine() {
-                playerAssetType.addCapability(PlayerCapability.findType(with: capabilityString))
+                playerAssetType.addCapability(PlayerCapability.findType(capabilityString))
             } else {
                 throw GameError.failedToReadCapability
             }
@@ -641,19 +641,19 @@ class PlayerAssetType {
         }
         for _ in 0 ..< assetRequirementCount {
             if let assetRequirementString = lineSource.readLine() {
-                playerAssetType.assetRequirements.append(findType(with: assetRequirementString))
+                playerAssetType.assetRequirements.append(findType(assetRequirementString))
             } else {
                 throw GameError.failedToReadAssetRequirement
             }
         }
     }
 
-    static func findDefault(with name: String) -> PlayerAssetType {
+    static func findDefault(_ name: String) -> PlayerAssetType {
         return registry[name] ?? PlayerAssetType()
     }
 
-    static func findDefault(with type: AssetType) -> PlayerAssetType {
-        return findDefault(with: findName(with: type))
+    static func findDefault(_ type: AssetType) -> PlayerAssetType {
+        return findDefault(findName(type))
     }
 
     static func duplicateRegistry(changeColorTo color: PlayerColor) -> [String: PlayerAssetType] {

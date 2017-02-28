@@ -24,7 +24,7 @@ class GraphicRecolorMap {
         return colors.first?.count ?? 0
     }
 
-    func findColor(with name: String) -> Int {
+    func findColor(_ name: String) -> Int {
         // FIXME: MAKE FIND COLOR GREAT AGAIN
         // HACK - START
         return 1

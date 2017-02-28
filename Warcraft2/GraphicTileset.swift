@@ -89,7 +89,7 @@ class GraphicTileset {
         return tileCount
     }
 
-    func findTile(with name: String) -> Int {
+    func findTile(_ name: String) -> Int {
         return tileIndex[name] ?? -1
     }
 

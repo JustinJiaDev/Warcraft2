@@ -66,22 +66,22 @@ class AssetRenderer {
         self.playerData = player
         self.playerMap = map
         self.pixelColors = [
-            .none: colors.colorValue(gIndex: colors.findColor(with: "none"), cIndex: 0),
-            .blue: colors.colorValue(gIndex: colors.findColor(with: "blue"), cIndex: 0),
-            .red: colors.colorValue(gIndex: colors.findColor(with: "red"), cIndex: 0),
-            .green: colors.colorValue(gIndex: colors.findColor(with: "green"), cIndex: 0),
-            .purple: colors.colorValue(gIndex: colors.findColor(with: "purple"), cIndex: 0),
-            .orange: colors.colorValue(gIndex: colors.findColor(with: "orange"), cIndex: 0),
-            .yellow: colors.colorValue(gIndex: colors.findColor(with: "yellow"), cIndex: 0),
-            .black: colors.colorValue(gIndex: colors.findColor(with: "black"), cIndex: 0),
-            .white: colors.colorValue(gIndex: colors.findColor(with: "white"), cIndex: 0)
+            .none: colors.colorValue(gIndex: colors.findColor("none"), cIndex: 0),
+            .blue: colors.colorValue(gIndex: colors.findColor("blue"), cIndex: 0),
+            .red: colors.colorValue(gIndex: colors.findColor("red"), cIndex: 0),
+            .green: colors.colorValue(gIndex: colors.findColor("green"), cIndex: 0),
+            .purple: colors.colorValue(gIndex: colors.findColor("purple"), cIndex: 0),
+            .orange: colors.colorValue(gIndex: colors.findColor("orange"), cIndex: 0),
+            .yellow: colors.colorValue(gIndex: colors.findColor("yellow"), cIndex: 0),
+            .black: colors.colorValue(gIndex: colors.findColor("black"), cIndex: 0),
+            .white: colors.colorValue(gIndex: colors.findColor("white"), cIndex: 0)
         ]
-        self.selfPixelColor = colors.colorValue(gIndex: colors.findColor(with: "self"), cIndex: 0)
-        self.enemyPixelColor = colors.colorValue(gIndex: colors.findColor(with: "enemy"), cIndex: 0)
-        self.buildingPixelColor = colors.colorValue(gIndex: colors.findColor(with: "building"), cIndex: 0)
+        self.selfPixelColor = colors.colorValue(gIndex: colors.findColor("self"), cIndex: 0)
+        self.enemyPixelColor = colors.colorValue(gIndex: colors.findColor("enemy"), cIndex: 0)
+        self.buildingPixelColor = colors.colorValue(gIndex: colors.findColor("building"), cIndex: 0)
 
         while true {
-            let index = markerTileset.findTile(with: "marker-" + String(markerIndex))
+            let index = markerTileset.findTile("marker-" + String(markerIndex))
             if index < 0 {
                 break
             }
@@ -89,18 +89,18 @@ class AssetRenderer {
             markerIndex += 1
         }
 
-        placeGoodIndex = markerTileset.findTile(with: "place-good")
-        placeBadIndex = markerTileset.findTile(with: "place-bad")
+        placeGoodIndex = markerTileset.findTile("place-good")
+        placeBadIndex = markerTileset.findTile("place-bad")
 
         var lastDirectionName = "decay-nw"
         for directionName in ["decay-n", "decay-ne", "decay-e", "decay-se", "decay-s", "decay-sw", "decay-w", "decay-nw"] {
             var stepIndex = 0
             while true {
-                var tileIndex = corpseTileset.findTile(with: directionName + String(stepIndex))
+                var tileIndex = corpseTileset.findTile(directionName + String(stepIndex))
                 if tileIndex >= 0 {
                     corpseIndices.append(tileIndex)
                 } else {
-                    tileIndex = corpseTileset.findTile(with: lastDirectionName + String(stepIndex))
+                    tileIndex = corpseTileset.findTile(lastDirectionName + String(stepIndex))
                     if tileIndex >= 0 {
                         corpseIndices.append(tileIndex)
                     } else {
@@ -115,7 +115,7 @@ class AssetRenderer {
         for directionName in ["attack-n", "attack-ne", "attack-e", "attack-se", "attack-s", "attack-sw", "attack-w", "attack-nw"] {
             var stepIndex = 0
             while true {
-                let tileIndex = arrowTileset.findTile(with: directionName + String(stepIndex))
+                let tileIndex = arrowTileset.findTile(directionName + String(stepIndex))
                 if tileIndex >= 0 {
                     arrowIndices.append(tileIndex)
                 } else {
@@ -140,7 +140,7 @@ class AssetRenderer {
             for directionName in ["walk-n", "walk-ne", "walk-e", "walk-se", "walk-s", "walk-sw", "walk-w", "walk-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         walkIndices[typeIndex].append(tileIndex)
                     } else {
@@ -152,7 +152,7 @@ class AssetRenderer {
             printDebug("Checking Construct on \(typeIndex)", level: .low)
             var stepIndex = 0
             while true {
-                let tileIndex = tileset.findTile(with: "construct-" + String(stepIndex))
+                let tileIndex = tileset.findTile("construct-" + String(stepIndex))
                 if tileIndex >= 0 {
                     constructIndices[typeIndex].append(tileIndex)
                 } else {
@@ -167,7 +167,7 @@ class AssetRenderer {
             for directionName in ["gold-n", "gold-ne", "gold-e", "gold-se", "gold-s", "gold-sw", "gold-w", "gold-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         carryGoldIndices[typeIndex].append(tileIndex)
                     } else {
@@ -180,7 +180,7 @@ class AssetRenderer {
             for directionName in ["lumber-n", "lumber-ne", "lumber-e", "lumber-se", "lumber-s", "lumber-sw", "lumber-w", "lumber-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         carryLumberIndices[typeIndex].append(tileIndex)
                     } else {
@@ -193,7 +193,7 @@ class AssetRenderer {
             for directionName in ["attack-n", "attack-ne", "attack-e", "attack-se", "attack-s", "attack-sw", "attack-w", "attack-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         attackIndices[typeIndex].append(tileIndex)
                     } else {
@@ -205,11 +205,11 @@ class AssetRenderer {
             if attackIndices[typeIndex].count == 0 {
                 var tileIndex: Int
                 for _ in 0 ..< Direction.numberOfDirections {
-                    if tileset.findTile(with: "active") >= 0 {
-                        tileIndex = tileset.findTile(with: "active")
+                    if tileset.findTile("active") >= 0 {
+                        tileIndex = tileset.findTile("active")
                         attackIndices[typeIndex].append(tileIndex)
-                    } else if tileset.findTile(with: "inactive") >= 0 {
-                        tileIndex = tileset.findTile(with: "inactive")
+                    } else if tileset.findTile("inactive") >= 0 {
+                        tileIndex = tileset.findTile("inactive")
                         attackIndices[typeIndex].append(tileIndex)
                     }
                 }
@@ -219,11 +219,11 @@ class AssetRenderer {
             for directionName in ["death-n", "death-ne", "death-e", "death-se", "death-s", "death-sw", "death-w", "death-nw"] {
                 var stepIndex = 0
                 while true {
-                    var tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    var tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         deathIndices[typeIndex].append(tileIndex)
                     } else {
-                        tileIndex = tileset.findTile(with: lastDirectionName + String(stepIndex))
+                        tileIndex = tileset.findTile(lastDirectionName + String(stepIndex))
                         if tileIndex >= 0 {
                             deathIndices[typeIndex].append(tileIndex)
                         } else {
@@ -236,13 +236,13 @@ class AssetRenderer {
             }
             printDebug("Checking None on \(typeIndex)", level: .low)
             for directionName in ["none-n", "none-ne", "none-e", "none-se", "none-s", "none-sw", "none-w", "none-nw"] {
-                var tileIndex = tileset.findTile(with: directionName)
+                var tileIndex = tileset.findTile(directionName)
                 if tileIndex >= 0 {
                     noneIndices[typeIndex].append(tileIndex)
                 } else if walkIndices[typeIndex].count != 0 {
                     noneIndices[typeIndex].append(walkIndices[typeIndex][noneIndices[typeIndex].count * (walkIndices[typeIndex].count / Direction.numberOfDirections)])
-                } else if tileset.findTile(with: "inactive") >= 0 {
-                    tileIndex = tileset.findTile(with: "inactive")
+                } else if tileset.findTile("inactive") >= 0 {
+                    tileIndex = tileset.findTile("inactive")
                     noneIndices[typeIndex].append(tileIndex)
                 }
             }
@@ -250,16 +250,16 @@ class AssetRenderer {
             for directionName in ["build-n", "build-ne", "build-e", "build-se", "build-s", "build-sw", "build-w", "build-nw"] {
                 var stepIndex = 0
                 while true {
-                    var tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    var tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         buildIndices[typeIndex].append(tileIndex)
                     } else {
                         if stepIndex != 0 {
-                            if tileset.findTile(with: "active") >= 0 {
-                                tileIndex = tileset.findTile(with: "active")
+                            if tileset.findTile("active") >= 0 {
+                                tileIndex = tileset.findTile("active")
                                 buildIndices[typeIndex].append(tileIndex)
-                            } else if tileset.findTile(with: "inactive") >= 0 {
-                                tileIndex = tileset.findTile(with: "inactive")
+                            } else if tileset.findTile("inactive") >= 0 {
+                                tileIndex = tileset.findTile("inactive")
                                 buildIndices[typeIndex].append(tileIndex)
                             }
                         }
@@ -269,7 +269,7 @@ class AssetRenderer {
                 }
             }
             printDebug("Checking Place on \(typeIndex)", level: .low)
-            placeIndices[typeIndex].append(tileset.findTile(with: "place"))
+            placeIndices[typeIndex].append(tileset.findTile("place"))
             printDebug("Done checking type \(typeIndex)", level: .low)
             typeIndex += 1
         }
@@ -670,7 +670,7 @@ class AssetRenderer {
         let screenBottomY = rect.yPosition + rect.height - 1
 
         var onScreen = true
-        let assetType = PlayerAssetType.findDefault(with: type)
+        let assetType = PlayerAssetType.findDefault(type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
         var tilePosition = Position.tile(fromAbsolute: position)
@@ -767,7 +767,7 @@ class AssetRenderer {
             }
         } else {
             for asset in playerMap.assetInitializationList {
-                let size = PlayerAssetType.findDefault(with: asset.type).size
+                let size = PlayerAssetType.findDefault(asset.type).size
                 let pixelColor = pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(x: asset.tilePosition.x, y: asset.tilePosition.y, width: size, height: size)

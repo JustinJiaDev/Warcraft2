@@ -173,7 +173,7 @@ class MapRenderer {
 
         var index = 0
         while true {
-            let value = self.tileset.findTile(with: "grass-\(index)")
+            let value = self.tileset.findTile("grass-\(index)")
             if value < 0 {
                 break
             }
@@ -182,29 +182,29 @@ class MapRenderer {
         }
 
         for index in 0 ..< 0x40 {
-            treeIndices.append(self.tileset.findTile(with: "tree-\(index)"))
+            treeIndices.append(self.tileset.findTile("tree-\(index)"))
         }
 
         for index in 0 ..< 0x100 {
-            dirtIndices.append(self.tileset.findTile(with: "dirt-\(index)"))
+            dirtIndices.append(self.tileset.findTile("dirt-\(index)"))
         }
 
         for index in 0 ..< 0x100 {
-            waterIndices.append(self.tileset.findTile(with: "water-\(index)"))
+            waterIndices.append(self.tileset.findTile("water-\(index)"))
         }
 
         waterIndices[0x00] = dirtIndices[0xff]
 
         for index in 0 ..< 0x100 {
-            rockIndices.append(self.tileset.findTile(with: "rock-\(index)"))
+            rockIndices.append(self.tileset.findTile("rock-\(index)"))
         }
 
         for index in 0 ..< 0x10 {
-            wallIndices.append(self.tileset.findTile(with: "wall-\(index)"))
+            wallIndices.append(self.tileset.findTile("wall-\(index)"))
         }
 
         for index in 0 ..< 0x10 {
-            wallDamagedIndices.append(self.tileset.findTile(with: "wall-damaged-\(index)"))
+            wallDamagedIndices.append(self.tileset.findTile("wall-damaged-\(index)"))
         }
 
         guard let secondItemCountString = lineSource.readLine(), let secondItemCount = Int(secondItemCountString) else {

@@ -102,7 +102,7 @@ class PlayerData {
                 printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
                 let initAsset = createAsset(with: asset.type)
                 initAsset.tilePosition = asset.tilePosition
-                if PlayerAssetType.findType(with: asset.type) == .goldMine {
+                if PlayerAssetType.findType(asset.type) == .goldMine {
                     initAsset.gold = self.gold
                 }
             }
@@ -303,7 +303,7 @@ class PlayerData {
     }
 
     func findBestAssetPlacement(at position: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
-        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.findName(with: assetTypeInput)]!
+        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.findName(assetTypeInput)]!
         let placementSize = assetType.size + 2 * buffer
         let maxDistance = max(playerMap.width, playerMap.height)
 
@@ -404,15 +404,15 @@ class PlayerData {
         }.count
     }
 
-    func addUpgrade(with name: String) {
-        let upgrade = PlayerUpgrade.findUpgrade(with: name)
+    func addUpgrade(_ name: String) {
+        let upgrade = PlayerUpgrade.findUpgrade(name)
         for assetType in upgrade.affectedAssets {
-            let assetName = PlayerAssetType.findName(with: assetType)
+            let assetName = PlayerAssetType.findName(assetType)
             if let assetType = assetTypes[assetName] {
                 assetType.addUpgrade(upgrade)
             }
         }
-        upgrades[PlayerCapability.findType(with: name).rawValue] = true
+        upgrades[PlayerCapability.findType(name).rawValue] = true
     }
 
     func hasUpgrade(with type: AssetCapabilityType) -> Bool {
@@ -535,7 +535,7 @@ class GameModel {
                 if let activatedCapability = command.activatedCapability {
                     activatedCapability.incrementstep()
                 } else {
-                    let playerCapability = PlayerCapability.findCapability(with: command.capability)
+                    let playerCapability = PlayerCapability.findCapability(command.capability)
                     asset.popCommand()
                     guard let target = command.assetTarget else {
                         throw GameError.missingAssetTarget

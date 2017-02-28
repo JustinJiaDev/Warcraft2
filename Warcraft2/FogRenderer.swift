@@ -11,11 +11,11 @@ class FogRenderer {
         let originalValues = [0x0b, 0x16, 0xd0, 0x68, 0x07, 0x94, 0xe0, 0x29, 0x03, 0x06, 0x14, 0x90, 0x60, 0xc0, 0x09, 0x28, 0x01, 0x02, 0x04, 0x10, 0x80, 0x40, 0x20, 0x08]
         self.tileset = tileset
         self.map = map
-        noneIndex = tileset.findTile(with: "none")
-        seenIndex = tileset.findTile(with: "seen")
-        partialIndex = tileset.findTile(with: "partial")
+        noneIndex = tileset.findTile("none")
+        seenIndex = tileset.findTile("seen")
+        partialIndex = tileset.findTile("partial")
         for index in 0 ..< 0x100 {
-            fogIndices.append(tileset.findTile(with: "pf-\(index)"))
+            fogIndices.append(tileset.findTile("pf-\(index)"))
         }
         fogIndices[0x00] = seenIndex
         fogIndices[0x03] = fogIndices[0x07]
@@ -28,7 +28,7 @@ class FogRenderer {
         fogIndices[0x28] = fogIndices[0x29]
 
         for index in 0 ..< 0x100 {
-            blackIndices.append(tileset.findTile(with: "pb-\(index)"))
+            blackIndices.append(tileset.findTile("pb-\(index)"))
         }
 
         blackIndices[0x00] = noneIndex

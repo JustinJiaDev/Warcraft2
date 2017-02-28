@@ -11,27 +11,27 @@ class Bevel {
         self.tileset = tileset
         self.width = tileset.tileWidth
 
-        topIndices = [tileset.findTile(with: "tf")]
+        topIndices = [tileset.findTile("tf")]
         for index in 1 ..< width {
-            topIndices.append(tileset.findTile(with: "t" + String(index)))
+            topIndices.append(tileset.findTile("t" + String(index)))
         }
 
-        bottomIndices = [tileset.findTile(with: "bf")]
+        bottomIndices = [tileset.findTile("bf")]
         for index in 1 ..< width {
-            bottomIndices.append(tileset.findTile(with: "b" + String(index)))
+            bottomIndices.append(tileset.findTile("b" + String(index)))
         }
 
-        leftIndices = [tileset.findTile(with: "lf")]
+        leftIndices = [tileset.findTile("lf")]
         for index in 1 ..< width {
-            leftIndices.append(tileset.findTile(with: "l" + String(index)))
+            leftIndices.append(tileset.findTile("l" + String(index)))
         }
 
-        rightIndices = [tileset.findTile(with: "rf")]
+        rightIndices = [tileset.findTile("rf")]
         for index in 1 ..< width {
-            rightIndices.append(tileset.findTile(with: "r" + String(index)))
+            rightIndices.append(tileset.findTile("r" + String(index)))
         }
 
-        cornerIndices = [tileset.findTile(with: "tl"), tileset.findTile(with: "tr"), tileset.findTile(with: "bl"), tileset.findTile(with: "br")]
+        cornerIndices = [tileset.findTile("tl"), tileset.findTile("tr"), tileset.findTile("bl"), tileset.findTile("br")]
     }
 
     func drawBevel(on surface: GraphicSurface, x: Int, y: Int, width: Int, height: Int) throws {
