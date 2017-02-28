@@ -79,8 +79,6 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
         player: gameModel.player(with: .red),
         map: gameModel.player(with: .red).playerMap
     )
-    PlayerAsset.updateFrequency = 5
-    assetRenderer.updateFrequency(5)
     return assetRenderer
 }
 
@@ -107,6 +105,8 @@ func createCamera(scale: CGFloat) -> SKCameraNode {
 }
 
 func createScene(camera: SKCameraNode, width: Int, height: Int) -> SKScene {
+    PlayerAsset.updateFrequency = 20
+    AssetRenderer.updateFrequency = 20
     let scene = GraphicFactory.createSurface(width: width, height: height, type: GameScene.self)
     scene.camera = camera
     scene.addChild(camera)

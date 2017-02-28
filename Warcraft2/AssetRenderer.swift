@@ -40,8 +40,18 @@ class AssetRenderer {
     private var selfPixelColor: UInt32
     private var enemyPixelColor: UInt32
     private var buildingPixelColor: UInt32
-    private var animationDownsample: Int = 1
-    private var targetFrequency = 10
+
+    private static var animationDownsample = 1
+    private static var targetFrequency = 10
+    private static var _updateFrequency = 1
+    static var updateFrequency: Int {
+        set {
+            animationDownsample = targetFrequency >= newValue ? 1 : newValue / targetFrequency
+        }
+        get {
+            return targetFrequency * animationDownsample
+        }
+    }
 
     init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTilesets: [GraphicTileset], buildingDeathTileset: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
         var typeIndex = 0
@@ -265,15 +275,6 @@ class AssetRenderer {
         }
     }
 
-    func updateFrequency(_ frequency: Int) -> Int {
-        if targetFrequency >= frequency {
-            animationDownsample = 1
-            return targetFrequency
-        }
-        animationDownsample = frequency / targetFrequency
-        return frequency
-    }
-
     func compareRenderData(first: Data, second: Data) -> Bool {
         if first.bottomY < second.bottomY {
             return true
@@ -326,7 +327,7 @@ class AssetRenderer {
             case .build:
                 let actionSteps = buildIndices[renderData.type.rawValue].count / Direction.numberOfDirections
                 if actionSteps > 0 {
-                    let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                    let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                     renderData.tileIndex = buildIndices[asset.type.rawValue][tileIndex]
                 }
             case .construct:
@@ -347,7 +348,7 @@ class AssetRenderer {
                     }
                 }()
                 let actionSteps = currentIndices[asset.type.rawValue].count / Direction.numberOfDirections
-                let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                 renderData.tileIndex = currentIndices[asset.type.rawValue][tileIndex]
             case .attack:
                 let currentStep = asset.step % asset.attackSteps + asset.reloadSteps
@@ -358,7 +359,7 @@ class AssetRenderer {
                 }
             case .harvestLumber:
                 let actionSteps = attackIndices[renderData.type.hashValue].count / Direction.numberOfDirections
-                let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                 renderData.tileIndex = attackIndices[asset.type.rawValue][tileIndex]
             case .standGround, .none:
                 renderData.tileIndex = noneIndices[asset.type.rawValue][asset.direction.index]
@@ -392,7 +393,7 @@ class AssetRenderer {
                     guard actionSteps > 0 else {
                         break
                     }
-                    let currentStep = min(asset.step / animationDownsample, actionSteps - 1)
+                    let currentStep = min(asset.step / AssetRenderer.animationDownsample, actionSteps - 1)
                     renderData.tileIndex = deathIndices[asset.type.rawValue][asset.direction.index * actionSteps + currentStep]
                 } else if asset.step < buildingDeathTileset.tileCount {
                     renderData.tileIndex = tilesets[asset.type.rawValue].tileCount + asset.step
@@ -516,7 +517,7 @@ class AssetRenderer {
                     if onScreen {
                         let actionSteps = corpseIndices.count / Direction.numberOfDirections
                         if actionSteps != 0 {
-                            var currentStep = asset.step / (animationDownsample * targetFrequency)
+                            var currentStep = asset.step / AssetRenderer.updateFrequency
                             if currentStep >= actionSteps {
                                 currentStep = actionSteps - 1
                             }
@@ -541,7 +542,7 @@ class AssetRenderer {
                     renderData.y -= rect.yPosition
 
                     if onScreen {
-                        let markerIndex = asset.step / animationDownsample
+                        let markerIndex = asset.step / AssetRenderer.animationDownsample
                         if markerIndex < markerIndices.count {
                             try markerTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: markerIndices[markerIndex])
                         }
