@@ -237,7 +237,7 @@ class PlayerData {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
         for asset in assets where asset.type == assetType {
-            let currentDistanceSquared = asset.position.distanceSquared(position)
+            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
             if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                 bestDistanceSquared = currentDistanceSquared
                 bestAsset = asset
@@ -251,7 +251,7 @@ class PlayerData {
         var bestDistanceSquared = -1
         for asset in assets {
             for assetType in assetTypes where asset.type == assetType && (asset.action != .construct || assetType == .keep || assetType == .castle) {
-                let currentDistanceSquared = asset.position.distanceSquared(position)
+                let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
                 if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                     bestDistanceSquared = currentDistanceSquared
                     bestAsset = asset
@@ -266,7 +266,7 @@ class PlayerData {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
         for asset in playerMap.assets where asset.type == assetType {
-            let currentDistanceSquared = asset.position.distanceSquared(position)
+            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
             if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                 bestDistanceSquared = currentDistanceSquared
                 bestAsset = asset
@@ -293,7 +293,7 @@ class PlayerData {
                 }
             }
             if command.action != .conveyGold && command.action != .conveyLumber && command.action != .mineGold {
-                let currentDistanceSquared = asset.closestPosition(position).distanceSquared(position)
+                let currentDistanceSquared = squaredDistanceBetween(position, asset.closestPosition(position))
                 if range < 0 || range >= currentDistanceSquared {
                     if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
                         bestDistanceSquared = currentDistanceSquared
@@ -342,7 +342,7 @@ class PlayerData {
                 for index in leftX ... rightX {
                     let tempPosition: Position = Position(x: index, y: topY)
                     if playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder) {
-                        let currentDistance: Int = builder.tilePosition.distanceSquared(tempPosition)
+                        let currentDistance: Int = squaredDistanceBetween(builder.tilePosition, tempPosition)
                         if (bestDistance == -1) || (bestDistance > currentDistance) {
                             bestDistance = currentDistance
                             bestPosition = tempPosition
@@ -354,7 +354,7 @@ class PlayerData {
                 for index in topY ... bottomY {
                     let tempPosition: Position = Position(x: rightX, y: index)
                     if playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder) {
-                        let currentDistance: Int = builder.tilePosition.distanceSquared(tempPosition)
+                        let currentDistance: Int = squaredDistanceBetween(builder.tilePosition, tempPosition)
                         if bestDistance == -1 || bestDistance > currentDistance {
                             bestDistance = currentDistance
                             bestPosition = tempPosition
@@ -366,7 +366,7 @@ class PlayerData {
                 for index in topY ... bottomY {
                     let tempPosition: Position = Position(x: index, y: bottomY)
                     if playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder) {
-                        let currentDistance: Int = builder.tilePosition.distanceSquared(tempPosition)
+                        let currentDistance: Int = squaredDistanceBetween(builder.tilePosition, tempPosition)
                         if bestDistance == -1 || bestDistance > currentDistance {
                             bestDistance = currentDistance
                             bestPosition = tempPosition
@@ -378,7 +378,7 @@ class PlayerData {
                 for index in topY ... bottomY {
                     let tempPosition: Position = Position(x: leftX, y: index)
                     if playerMap.canPlaceAsset(at: tempPosition, size: placementSize, ignoreAsset: builder) {
-                        let currentDistance: Int = builder.tilePosition.distanceSquared(tempPosition)
+                        let currentDistance: Int = squaredDistanceBetween(builder.tilePosition, tempPosition)
                         if bestDistance == -1 || bestDistance > currentDistance {
                             bestDistance = currentDistance
                             bestPosition = tempPosition
@@ -719,7 +719,7 @@ class GameModel {
                     var deltaPosition = Position(x: closestTargetPosition.x - asset.positionX, y: closestTargetPosition.y - asset.positionY)
 
                     let movement = Position.tileWidth * 5 / PlayerAsset.updateFrequency
-                    let targetDistance = asset.position.distance(position: closestTargetPosition)
+                    let targetDistance = distanceBetween(asset.position, closestTargetPosition)
                     let divisor = (targetDistance + movement - 1) / movement
 
                     if divisor != 0 {
@@ -728,7 +728,7 @@ class GameModel {
                     asset.position = Position(x: asset.positionX + deltaPosition.x, y: asset.positionY + deltaPosition.y)
                     asset.direction = asset.position.directionTo(closestTargetPosition)
 
-                    if Position.halfTileWidth * Position.halfTileHeight > asset.position.distanceSquared(closestTargetPosition) {
+                    if Position.halfTileWidth * Position.halfTileHeight > squaredDistanceBetween(asset.position, closestTargetPosition) {
                         let tempEvent = GameEvent(type: .missleHit, asset: asset)
                         currentEvents.append(tempEvent)
 
@@ -826,7 +826,7 @@ class GameModel {
                         }
                     } else {
                         let closestTargetPosition = currentCommand.assetTarget!.closestPosition(asset.position)
-                        if closestTargetPosition.distanceSquared(asset.position) > rangeToDistanceSquared(asset.effectiveRange) {
+                        if squaredDistanceBetween(asset.position, closestTargetPosition) > rangeToDistanceSquared(asset.effectiveRange) {
                             let nextCommand = asset.nextCommand
                             if nextCommand.action != .standGround {
                                 currentCommand.action = .walk
@@ -932,7 +932,7 @@ class GameModel {
                     let nextCommand = asset.nextCommand
                     let mapTarget = command.assetTarget!.closestPosition(asset.position)
 
-                    if nextCommand.action == .attack && nextCommand.assetTarget!.closestPosition(asset.position).distanceSquared(asset.position) <= rangeToDistanceSquared(asset.effectiveRange) {
+                    if nextCommand.action == .attack && squaredDistanceBetween(asset.position, nextCommand.assetTarget!.closestPosition(asset.position)) <= rangeToDistanceSquared(asset.effectiveRange) {
                         asset.popCommand()
                         asset.resetStep()
                         continue

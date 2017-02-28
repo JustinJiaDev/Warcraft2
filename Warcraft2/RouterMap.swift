@@ -118,7 +118,7 @@ class RouterMap {
         currentSearch.x = bestSearch.x
         currentSearch.y = bestSearch.y
         currentSearch.steps = 0
-        bestSearch.targetDistanceSquared = currentTile.distanceSquared(targetTile)
+        bestSearch.targetDistanceSquared = squaredDistanceBetween(currentTile, targetTile)
         currentSearch.targetDistanceSquared = bestSearch.targetDistanceSquared
         bestSearch.inDirection = .max
         currentSearch.inDirection = bestSearch.inDirection
@@ -143,7 +143,7 @@ class RouterMap {
                         tempSearch.y = tempTile.y
                         tempSearch.steps = currentSearch.steps + 1
                         tempSearch.tileType = currentTileType
-                        tempSearch.targetDistanceSquared = tempTile.distanceSquared(targetTile)
+                        tempSearch.targetDistanceSquared = squaredDistanceBetween(tempTile, targetTile)
                         tempSearch.inDirection = searchDirections[index]
                         searchQueueArray.append(tempSearch)
                     }

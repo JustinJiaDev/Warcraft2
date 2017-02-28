@@ -1,5 +1,20 @@
 import Foundation
 
+func isDiagonal(_ left: Position, _ right: Position) -> Bool {
+    return left.x != right.x && left.y != right.y
+}
+
+func squaredDistanceBetween(_ left: Position, _ right: Position) -> Int {
+    let deltaX = left.x - right.x
+    let deltaY = left.y - right.y
+    return deltaX * deltaX + deltaY * deltaY
+}
+
+// FIXME: Not as efficient as original implementation
+func distanceBetween(_ left: Position, _ right: Position) -> Int {
+    return Int(sqrt(Double(squaredDistanceBetween(left, right))))
+}
+
 struct Position {
     var x: Int
     var y: Int
@@ -51,10 +66,6 @@ struct Position {
 
     static func !=(left: Position, right: Position) -> Bool {
         return !(left == right)
-    }
-
-    static func isDiagonal(_ left: Position, _ right: Position) -> Bool {
-        return left.x != right.x && left.y != right.y
     }
 
     static func setTileDimensions(width: Int, height: Int) {
@@ -119,19 +130,13 @@ struct Position {
         }
     }
 
-    func distanceSquared(_ position: Position) -> Int {
-        let deltaX = position.x - x
-        let deltaY = position.y - y
-        return deltaX * deltaX + deltaY * deltaY
-    }
-
     func closestPosition(_ position: Position, objectSize: Int) -> Position {
         var currentPosition = position
         var bestPosition = Position()
         var bestDistance = -1
         for _ in 0 ..< objectSize {
             for _ in 0 ..< objectSize {
-                let currentDistance = currentPosition.distanceSquared(from: self)
+                let currentDistance = squaredDistanceBetween(self, currentPosition)
                 if bestDistance == -1 || currentDistance < bestDistance {
                     bestDistance = currentDistance
                     bestPosition = currentPosition
@@ -164,16 +169,5 @@ struct Position {
             delta.y = Position.tileHeight - 1
         }
         return delta.tileOctant
-    }
-
-    func distanceSquared(from position: Position) -> Int {
-        let deltaX = position.x - x
-        let deltaY = position.y - y
-        return deltaX * deltaX + deltaY * deltaY
-    }
-
-    // Not as efficient as original implementation
-    func distance(position: Position) -> Int {
-        return Int(sqrt(Double(self.distanceSquared(from: position))))
     }
 }

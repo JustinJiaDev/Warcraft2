@@ -61,7 +61,7 @@ class GameViewController: UIViewController {
             selectedPeasant = nil
         } else {
             selectedPeasant = gameModel.actualMap.assets.first { asset in
-                return asset.assetType.name == "Peasant" && asset.position.distance(position: target.position) < asset.size
+                return asset.assetType.name == "Peasant" && distanceBetween(asset.position, target.position) < asset.size
             }
         }
     }

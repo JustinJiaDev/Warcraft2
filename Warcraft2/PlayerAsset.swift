@@ -1037,10 +1037,9 @@ class PlayerAsset {
 
         let newTilePosition = Position.tile(fromAbsolute: newPosition)
         if tilePosition != newTilePosition {
-            let isDiagonal = Position.isDiagonal(tilePosition, newTilePosition)
             let diagonalX = min(tilePosition.x, newTilePosition.x)
             let diagonalY = min(tilePosition.y, newTilePosition.y)
-            if occupancyMap[tilePositionY][tilePositionX] != nil || (isDiagonal && diagonals[diagonalY][diagonalX]) {
+            if occupancyMap[tilePositionY][tilePositionX] != nil || (isDiagonal(tilePosition, newTilePosition) && diagonals[diagonalY][diagonalX]) {
                 if let occupancyMapSquare = occupancyMap[newTilePosition.y][newTilePosition.x], occupancyMapSquare.action == .walk, occupancyMapSquare.direction == position.tileOctant {
                     position = newPosition
                     return true
@@ -1048,7 +1047,7 @@ class PlayerAsset {
                 position = newPosition
                 return false
             }
-            diagonals[diagonalY][diagonalX] = isDiagonal
+            diagonals[diagonalY][diagonalX] = isDiagonal(tilePosition, newTilePosition)
             occupancyMap[newTilePosition.y][newTilePosition.x] = occupancyMap[tilePosition.y][tilePosition.x]
             occupancyMap[tilePosition.y][tilePosition.x] = nil
         }
