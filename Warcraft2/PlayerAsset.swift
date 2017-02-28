@@ -953,7 +953,7 @@ class PlayerAsset {
     }
 
     func closestPosition(_ position: Position) -> Position {
-        return position.closestPosition(searchingFrom: self.position, objectSize: size)
+        return position.closestPosition(searchingFrom: self.position, areaLength: size)
     }
 
     func clearCommand() {

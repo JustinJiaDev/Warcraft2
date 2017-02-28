@@ -118,24 +118,24 @@ struct Position {
         if objectSize == 1 {
             let deltaX = tilePosition.x - x
             let deltaY = tilePosition.y - y
-            if deltaX * deltaX > 0 || deltaY * deltaY > 1 {
+            if deltaX * deltaX > 1 || deltaY * deltaY > 1 {
                 return Direction.max
             }
             return Position.tileDirections[deltaY + 1][deltaX + 1]
         } else {
             let current = Position.absolute(fromTile: self)
             let tile = Position.absolute(fromTile: tilePosition)
-            let newPosition = Position.tile(fromAbsolute: current.closestPosition(searchingFrom: tile, objectSize: objectSize))
+            let newPosition = Position.tile(fromAbsolute: current.closestPosition(searchingFrom: tile, areaLength: objectSize))
             return adjacentTileDirection(position: newPosition, objectSize: 1)
         }
     }
 
-    func closestPosition(searchingFrom position: Position, objectSize: Int) -> Position {
+    func closestPosition(searchingFrom position: Position, areaLength: Int) -> Position {
         var currentPosition = position
         var bestPosition = Position()
         var bestDistance = -1
-        for _ in 0 ..< objectSize {
-            for _ in 0 ..< objectSize {
+        for _ in 0 ..< areaLength {
+            for _ in 0 ..< areaLength {
                 let currentDistance = squaredDistanceBetween(self, currentPosition)
                 if bestDistance == -1 || currentDistance < bestDistance {
                     bestDistance = currentDistance
