@@ -53,6 +53,10 @@ struct Position {
         return !(left == right)
     }
 
+    static func isDiagonal(_ left: Position, _ right: Position) -> Bool {
+        return left.x != right.x && left.y != right.y
+    }
+
     static func setTileDimensions(width: Int, height: Int) {
         guard width > 0 && height > 0 else {
             return

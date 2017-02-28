@@ -916,15 +916,12 @@ class PlayerAsset {
     }
 
     init(playerAssetType: PlayerAssetType) {
-        position = Position(x: 0, y: 0)
-
+        position = Position()
         assetType = playerAssetType
         hitPoints = playerAssetType.hitPoints
         moveRemainderX = 0
         moveRemainderY = 0
         direction = .south
-
-        tilePosition = Position()
     }
 
     @discardableResult func incrementHitPoints(_ increments: Int) -> Int {
@@ -1026,58 +1023,36 @@ class PlayerAsset {
     }
 
     func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
-        let currentOctant = position.tileOctant
-        let currentTile = tilePosition
-        let currentPosition = position
-
-        if currentOctant == .max || currentOctant == direction { // Aligned just move
-            let newX = speed * PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
-            let newY = speed * PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
-            print("\(positionX), \(positionY)")
+        let newX = speed * PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
+        let newY = speed * PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
+        var newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
+        if position.tileOctant == .max || position.tileOctant == direction || newPosition.tileOctant != direction {
             moveRemainderX = newX % PlayerAsset.updateDivisor
             moveRemainderY = newY % PlayerAsset.updateDivisor
-            position.x += newX / PlayerAsset.updateDivisor
-            position.y += newY / PlayerAsset.updateDivisor
-            print("\(positionX), \(positionY)")
-        } else { // Entering
-            let newX = speed + PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
-            let newY = speed + PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
-            var tempMoveRemainderX = newX % PlayerAsset.updateDivisor
-            var tempMoveRemainderY = newY % PlayerAsset.updateDivisor
-            var newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
-
-            if newPosition.tileOctant == direction {
-                newPosition.normalizeToTileCenter()
-                tempMoveRemainderX = 0
-                tempMoveRemainderY = 0
-            }
-
-            position = newPosition
-            moveRemainderX = tempMoveRemainderX
-            moveRemainderY = tempMoveRemainderY
+        } else {
+            moveRemainderX = 0
+            moveRemainderY = 0
+            newPosition.normalizeToTileCenter()
         }
 
-        if currentTile != tilePosition {
-            let diagonal = (currentTile.x != tilePosition.x) && (currentTile.y != tilePosition.y)
-            let diagonalX = min(currentTile.x, tilePosition.x)
-            let diagonalY = min(currentTile.y, tilePosition.y)
-
-            if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
-                var returnValue = false
-                if let occupancyMapSquare = occupancyMap[tilePosition.y][tilePosition.x], occupancyMapSquare.action == .walk {
-                    returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
+        let newTilePosition = Position.tile(fromAbsolute: newPosition)
+        if tilePosition != newTilePosition {
+            let isDiagonal = Position.isDiagonal(tilePosition, newTilePosition)
+            let diagonalX = min(tilePosition.x, newTilePosition.x)
+            let diagonalY = min(tilePosition.y, newTilePosition.y)
+            if occupancyMap[tilePositionY][tilePositionX] != nil || (isDiagonal && diagonals[diagonalY][diagonalX]) {
+                if let occupancyMapSquare = occupancyMap[newTilePosition.y][newTilePosition.x], occupancyMapSquare.action == .walk, occupancyMapSquare.direction == position.tileOctant {
+                    position = newPosition
+                    return true
                 }
-                tilePosition = currentTile
-                position = currentPosition
-                return returnValue
+                position = newPosition
+                return false
             }
-            if diagonal {
-                diagonals[diagonalY][diagonalX] = true
-            }
-            occupancyMap[tilePosition.y][tilePosition.x] = occupancyMap[currentTile.y][currentTile.x]
-            occupancyMap[currentTile.y][currentTile.x] = nil
+            diagonals[diagonalY][diagonalX] = isDiagonal
+            occupancyMap[newTilePosition.y][newTilePosition.x] = occupancyMap[tilePosition.y][tilePosition.x]
+            occupancyMap[tilePosition.y][tilePosition.x] = nil
         }
-
+        position = newPosition
         incrementStep()
         return true
     }
