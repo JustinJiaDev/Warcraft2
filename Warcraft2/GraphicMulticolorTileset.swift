@@ -12,10 +12,11 @@ class GraphicMulticolorTileset: GraphicTileset {
         return colorMap?.findColor(colorName) ?? -1
     }
 
+    // FIXME: MAKE LOAD TILESET GREAT AGAIN
     func loadTileset(colorMap: GraphicRecolorMap, from dataSource: FileDataSource) throws {
-        guard let surfaceTileset = surfaceTileset else {
-            throw GameError.missingTileset
-        }
+        //        guard let surfaceTileset = surfaceTileset else {
+        //            throw GameError.missingTileset
+        //        }
         try loadTileset(from: dataSource)
         //        coloredTilesets.removeAll()
         //        coloredTilesets.append(surfaceTileset)
