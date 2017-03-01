@@ -18,7 +18,7 @@ class PlayerCapabilityTrainNormal: PlayerCapability {
         private var gold: Int
 
         init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset, lumber: Int, gold: Int, steps: Int) {
-            let assetCommand = AssetCommand(action: .construct, capability: nil, assetTarget: actor, activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target))
+            let assetCommand = AssetCommand(action: .construct, capability: .none, assetTarget: actor, activatedCapability: nil)
 
             currentStep = 0
             totalSteps = steps
