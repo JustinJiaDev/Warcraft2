@@ -101,10 +101,10 @@ class ViewportRenderer {
             }
         }()
         let tempRectangle = Rectangle(x: viewportX, y: viewportY, width: lastViewportWidth, height: lastViewportHeight)
-        mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 0)
+        mapRenderer.drawBottomLevelMap(on: surface, typeSurface: typeSurface, in: tempRectangle)
         // assetRenderer.drawSelections(on: surface, in: tempRectangle, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
         assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: tempRectangle)
-        mapRenderer.drawMap(on: surface, typeSurface: typeSurface, in: tempRectangle, level: 1)
+        mapRenderer.drawTopLevelMap(on: surface, typeSurface: typeSurface, in: tempRectangle)
         assetRenderer.drawOverlays(on: surface, in: tempRectangle)
         assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
         // try fogRenderer.drawMap(on: surface, in: tempRectangle)
