@@ -376,7 +376,6 @@ class MapRenderer {
         let tileHeight = tileset.tileHeight
 
         var yIndex = rect.y / tileHeight
-        print(rect)
         for y in stride(from: -(rect.y % tileHeight), to: rect.height, by: tileHeight) {
             var xIndex = rect.x / tileWidth
             for x in stride(from: -(rect.x % tileWidth), to: rect.width, by: tileWidth) {
