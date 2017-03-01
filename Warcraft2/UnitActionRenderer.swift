@@ -205,6 +205,7 @@ class UnitActionRenderer {
             if capabilityType != .none {
                 actionIndices.append(commandIndices[capabilityType]!)
                 let playerCapability = PlayerCapability.findCapability(with: capabilityType)
+                // Not sure
                 if playerCapability.targetType != .none {
                     if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
                         //                                    try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)

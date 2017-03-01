@@ -213,12 +213,6 @@ class GameViewController: UIViewController {
         actionMenuView.backgroundColor = UIColor(white: 1, alpha: 0.3)
         actionMenuView.tag = 1
         let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
-        var imageView: UIImageView
-
-        let btn: UIButton = UIButton(frame: CGRect(x: actionMenuView.bounds.size.width - 30, y: 0, width: 30, height: 30))
-        btn.setTitle("X", for: .normal)
-        btn.addTarget(self, action: #selector(exitButtonAction), for: .touchUpInside)
-        btn.tag = 1
 
         let iconSize = 60
         var xPosition = 10
@@ -229,11 +223,18 @@ class GameViewController: UIViewController {
 
         for i in 0 ..< actionIndices.count {
             let actionIndex = actionIndices[i]
-            imageView = UIImageView(image: actionIcons[actionIndex])
-            imageView.frame = CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize))
-            xPosition += 10 + iconSize
-            scrollView.addSubview(imageView)
+            let actionButton = UIButton(frame: CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize)))
+            let actionImage = resizeImage(image: actionIcons[actionIndex], targetSize: CGSize(width: iconSize, height: iconSize))
+
+            actionButton.setImage(actionImage, for: .normal)
+            xPosition += (10 + iconSize)
+            scrollView.addSubview(actionButton)
         }
+
+        let btn = UIButton(frame: CGRect(x: actionMenuView.bounds.size.width - 30, y: 0, width: 30, height: 30))
+        btn.setTitle("X", for: .normal)
+        btn.addTarget(self, action: #selector(exitButtonAction), for: .touchUpInside)
+        btn.tag = 1
 
         actionMenuView.addSubview(scrollView)
         actionMenuView.addSubview(btn)
@@ -262,6 +263,32 @@ class GameViewController: UIViewController {
             imageSegments.append(currentSegmentUIImage)
         }
         return imageSegments
+    }
+
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+
+        let widthRatio = targetSize.width / image.size.width
+        let heightRatio = targetSize.height / image.size.height
+
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if widthRatio > heightRatio {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+        }
+
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
     }
 
     func test() {
