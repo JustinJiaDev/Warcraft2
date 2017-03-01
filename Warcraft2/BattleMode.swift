@@ -150,6 +150,59 @@ class BattleMode: ApplicationMode{
         //fix this line
         let componentType = context->findUIComponentType(Position(x,y))
         
+        if ApplicationData.viewPort == componentType{
+            let tempPosition = context->screenToDetaildMap(Position(x,y))
+            let viewPortPosition = context->screenToViewPort(Position(x,y))
+            let pixelType = getPixelType(context->viewPortTypeSurface,viewPortPosition)
+            if context->rightClick && context->rightDown!=nil && context->selectedPlayerAssets.size(){
+                let canMove = true
+                
+                for asset in context->selectedPlayerAssets{
+                    if lockedAsset = asset.lock{
+                        if 0 == lockedAsset->speed{
+                            canMove = false
+                            break
+                        }
+                    }
+                }
+                if canMove{
+                    if PlayerColor.none != pixelType.color(){
+                        context->playerCommands[context->playerColor].action = AssetCapabilityType.actMove
+                        context->playerCommands[context->playerColor].targetColor = pixelType.color()
+                        context->playerCommands[context->playerColor].targetType = pixelType.assetType()
+                        context->playerCommands[context->playerColor].actors = context->selectedPlayerAssets
+                        context->playerCommands[context->playerColor].targetLocation = tempPosition
+                        
+                        if pixelType.color == contextPlayerColor{
+                            let haveLumber = false
+                            let haveGold = false
+                            
+                            for asset in context->selectedPlayerAssets{
+                                if lockedAsset = asset.lock{
+                                    if lockedAsset->lumber(){
+                                        haveLumber = true
+                                    }
+                                    if lockedAsset->gold(){
+                                        haveGold = true
+                                    }
+                                }
+                            }
+                            if haveGold{
+                                if AssetType.townHall == context->playerCommands[context->playerColor].targetType || AssetType.keep == context->playerCommands[context->playerColor].targetType || AssetType.castle == context->playerCommands[context->playerColor].targetType{
+                                    context->playerCommands[context->playerColor].action = AssetCapabilityType.convey
+                                }
+                            }else if haveLumber{
+                                if AssetType.townHall == context->playerCommands[context->playerColor].targetType || AssetType.keep == context->playerCommands[context->playerColor].targetType || AssetType.castle == context->playerCommands[context->playerColor].targetType || AssetType.lumberMill == context->playerCommands[context->playerColor].targetType{
+                                    context->playerCommands[context->playerColor].action = AssetCapabilityType.convey
+                                }
+                            }else{
+                                let targetAsset = 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
 }
