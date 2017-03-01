@@ -405,7 +405,7 @@ class PlayerData {
     }
 
     func addUpgrade(_ name: String) {
-        let upgrade = PlayerUpgrade.findUpgrade(name)
+        let upgrade = PlayerUpgrade.findUpgrade(name) ?? PlayerUpgrade()
         for assetType in upgrade.affectedAssets {
             let assetName = PlayerAssetType.findName(assetType)
             if let assetType = assetTypes[assetName] {
@@ -533,9 +533,9 @@ class GameModel {
             if asset.action == .capability {
                 let command = asset.currentCommand
                 if let activatedCapability = command.activatedCapability {
-                    activatedCapability.incrementstep()
+                    activatedCapability.incrementStep()
                 } else {
-                    let playerCapability = PlayerCapability.findCapability(command.capability)
+                    let playerCapability = PlayerCapability.findCapability(command.capability!)
                     asset.popCommand()
                     let target = command.assetTarget!
                     guard playerCapability.canApply(actor: asset, playerData: players[asset.color.index], target: target) else {
@@ -895,7 +895,7 @@ class GameModel {
             } else if asset.action == .construct {
                 let command = asset.currentCommand
                 if let activatedCapability = command.activatedCapability {
-                    activatedCapability.incrementstep()
+                    activatedCapability.incrementStep()
                 }
             } else if asset.action == .death {
                 asset.incrementStep()
