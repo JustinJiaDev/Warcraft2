@@ -35,7 +35,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
             super.init(actor: actor, playerData: playerData, target: target)
             self.playerData.decrementLumber(by: self.lumber)
             self.playerData.decrementGold(by: self.gold)
-            self.upgradingType.removeCapability(PlayerCapability.findType(with: self.upgradeName))
+            self.upgradingType.removeCapability(PlayerCapability.findType(self.upgradeName))
         }
 
         override func percentComplete(max: Int) -> Int {
@@ -48,11 +48,11 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
             guard currentStep >= totalSteps else {
                 return false
             }
-            playerData.addUpgrade(with: self.upgradeName)
+            playerData.addUpgrade(self.upgradeName)
             actor.popCommand()
             if upgradeName.hasSuffix("2") {
                 let newName = upgradeName.replacingOccurrences(of: "2", with: "3")
-                upgradingType.addCapability(PlayerCapability.findType(with: newName))
+                upgradingType.addCapability(PlayerCapability.findType(newName))
             }
             return true
         }
@@ -60,7 +60,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
         override func cancel() {
             playerData.incrementLumber(by: lumber)
             playerData.incrementGold(by: gold)
-            upgradingType.addCapability(PlayerCapability.findType(with: upgradeName))
+            upgradingType.addCapability(PlayerCapability.findType(upgradeName))
             actor.popCommand()
         }
     }
@@ -73,7 +73,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        if let upgrade = PlayerUpgrade.findUpgrade(with: upgradeName) {
+        if let upgrade = PlayerUpgrade.findUpgrade(upgradeName) {
             if upgrade.lumberCost > playerData.lumber {
                 return false
             }
@@ -89,7 +89,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        guard let upgrade = PlayerUpgrade.findUpgrade(with: upgradeName) else {
+        guard let upgrade = PlayerUpgrade.findUpgrade(upgradeName) else {
             return false
         }
         actor.clearCommand()
@@ -143,7 +143,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
             self.playerData.decrementGold(by: self.gold)
             if actor.type == .lumberMill {
                 self.upgrandingType = upgradingType
-                self.upgrandingType.removeCapability(PlayerCapability.findType(with: ("Build" + self.unitName)))
+                self.upgrandingType.removeCapability(PlayerCapability.findType(("Build" + self.unitName)))
             } else if actor.type == .barracks {
                 let assetCommand = AssetCommand(action: .construct, capability: nil, assetTarget: actor, activatedCapability: nil)
                 target.pushCommand(assetCommand)
@@ -210,7 +210,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
             playerData.incrementLumber(by: lumber)
             playerData.incrementGold(by: gold)
             if actor.type == .lumberMill {
-                upgrandingType.addCapability(PlayerCapability.findType(with: "Build" + self.unitName))
+                upgrandingType.addCapability(PlayerCapability.findType("Build" + self.unitName))
             } else if actor.type == .barracks {
                 playerData.deleteAsset(target)
             }
@@ -227,7 +227,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
         if actor.type == .lumberMill {
-            if let upgrade = PlayerUpgrade.findUpgrade(with: ("Build" + unitName)) {
+            if let upgrade = PlayerUpgrade.findUpgrade(("Build" + unitName)) {
                 if upgrade.lumberCost > playerData.lumber {
                     return false
                 }
@@ -260,7 +260,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
         if actor.type == .lumberMill {
-            guard let upgrade = PlayerUpgrade.findUpgrade(with: "Build" + unitName) else {
+            guard let upgrade = PlayerUpgrade.findUpgrade("Build" + unitName) else {
                 return false
             }
             actor.clearCommand()
@@ -285,10 +285,8 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
             guard let assetType = playerData.assetTypes[unitName] else {
                 return false
             }
-            let newAsset = playerData.createAsset(with: unitName)
-            let tilePosition = Position()
-            tilePosition.setToTile(actor.position)
-            newAsset.tilePosition = tilePosition
+            let newAsset = playerData.createAsset(unitName)
+            newAsset.tilePosition = Position.tile(fromAbsolute: actor.position)
             newAsset.hitPoints = 1
             let newCommand = AssetCommand(
                 action: .capability,

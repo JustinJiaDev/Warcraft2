@@ -24,7 +24,7 @@ class GraphicRecolorMap {
         return colors.first?.count ?? 0
     }
 
-    func findColor(with name: String) -> Int {
+    func findColor(_ name: String) -> Int {
         // FIXME: MAKE FIND COLOR GREAT AGAIN
         // HACK - START
         return 1
@@ -38,7 +38,7 @@ class GraphicRecolorMap {
         // HACK - END
     }
 
-    func load(from dataSource: DataSource) throws {
+    func load(from dataSource: FileDataSource) throws {
         let lineSource = LineDataSource(dataSource: dataSource)
         guard let pngPath = lineSource.readLine() else {
             throw GameError.failedToGetPath
