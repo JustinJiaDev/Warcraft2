@@ -17,7 +17,7 @@ class BattleMode: ApplicationMode{
         currentY = context->y
         
         context->GameModel->clearGameEvents()
-        for(key in context->pressedKeys){
+        for key in context->pressedKeys {
             if(GUIKeyType.upArrow == key){
                 panningDirection = Direction.north
                 panning = true
@@ -30,10 +30,125 @@ class BattleMode: ApplicationMode{
             }else if(GUIKeyType.leftShift == key || GUIKeyType.rightShift == key){
                 shiftPressed = true
             }
-            
         }
         
-        
+        for key in context->releasedKeys {
+            if context->selectedPlayerAssets.size {
+                let canMove = true
+                for asset in context->selectedPlayerAssets{
+                    if lockedAsset = asset.lock{
+                        if 0 == lockedAsset->speed{
+                            canMove = false
+                            break
+                        }
+                    }
+                }
+                
+                if GUIKeyType.escape == key {
+                    context->currentAssetCapability = AssetCapabilityType.actNone
+                }
+                if AssetCapabilityType.actBuildSimple == context->currentAssetCapability{
+                    let keyLookUp = context->buildHotKeyMap.find(key)
+                    if keyLookUp != context->buildHotKeyMap.end() {
+                        let PlayerCapability = PlayerCapability.findCapability(keyLookUp->second)
+                        
+                        if PlayerCapability{
+                            let actorTarget = context->selectedPlayerAssets.front().lock()
+                            if PlayerCapability->canInitiate(actorTarget,context->GameModel->Player(context->PlayerColor)){
+                                var tempEvent:GameEvent
+                                tempEvent.type = EventType.buttonTick
+                                context->GameModel->Player(context->PlayerColor)->addGameEvent(tempEvent)
+                                context->currentAssetCapability = keyLookUp->second
+                            }
+                        }
+                        
+                    }
+                }else if canMove{
+                    keyLookUp = context->unitHotKeyMap.find(key)
+                    
+                    if keyLookUp != context->unitHotKeyMap.end(){
+                        let hasCapability = true
+                        for asset in context->selectedPlayerAssets{
+                            if lockedAsset = asset.lock(){
+                                if lockedAsset->hasCapability(keyLookUp->second) != nil{
+                                    hasCapability = false
+                                    break
+                                }
+                            }
+                        }
+                        if hasCapability{
+                            let PlayerCapability = PlayerCapability.findCapability(keyLookUp->second)
+                            var tempEvent:GameEvent
+                            tempEvent.type = EventType.buttonTick
+                            context->GameModel->Player(context->PlayerColor)->addGameEvent(tempEvent)
+                            
+                            if playerCapability {
+                                if PlayerCapability.TargetType.none == PlayerCapability->targetType || PlayerCapability.TargetType.player == PlayerCapability->targetType{
+                                    let actorTarget = context->selectedPlayerAssets.front.lock
+                                    if PlayerCapability->canApply(actorTarget, context->gameModel->player(context->playerColor),actorTarget){
+                                        context->playerCommands.playerColor.action = keyLookUp->second
+                                        context->playerCommands->playerColor.actors = context->selectedPlayerAssets
+                                        context->playerCommands.playerColor.targetColor = Eplayer.pcNone
+                                        context->playerCommands->playerColor.targetType = AssetType.none
+                                        context->playerCommands->playerColor.targetLocation = actorTarget->tilePosition
+                                        context->currentAssetCapability = AssetCapabilityType.actNone
+                                    }
+                                }else {
+                                    context->currentAssetCapability = keyLookUp->second
+                                }
+                            }else {
+                                context->currentAssetCapability = keyLookUp->second
+                            }
+                        }
+                    }
+                }else {
+                    let keyLookUp = context->trainHotkeyMap.find(key)
+                    
+                    if keyLookUp != context->trainHotKeyMap.end(){
+                        let hasCapability = true
+                        for asset in context->selectedPlayerAssets{
+                            if lockedAsset = asset.lock{
+                                if lockedAsset->hasCapability(keyLookUp->second)!=nil{
+                                    hasCapability = false
+                                    break
+                                }
+                            }
+                        }
+                        if hasCapability {
+                            let playerCapablity = PlayerCapability.findCapability(with:keyLookUp->second)
+                            var tempEvent:GameEvent
+                            tempEvent.type = EventType.buttonTick
+                            context->gameModel->player(context->playerColor)->addGameEvent(tempEvent)
+                            
+                            if playerCapability{
+                                if PlayerCapability.TargetType.none == playerCapablity->targetType || PlayerCapability.TargetType.player == playerCapability->targetType{
+                                    
+                                    let actorTarget = context->selectedPlayerAssets.front().lock
+                                    
+                                    if playerCapablity>canApply(actorTarget,context->gameModel->Player(context->playerColor),actorTarget){
+                                        context->playerCommands[context->playerColor].ction = keyLookUpSecond
+                                        context->playerCommands[context->playerColor].actors = context->selectedPlayerAssets
+                                        context->playerCommands[context->playerColor].targetColor = PlayerColor.none
+                                        context->playerCommands[context->playerColor].targetType = AssetType.none
+                                        context->playerCommands[context->playerColor].targetLocation = actorTarget->tilePosition
+                                        context->currentAssetCapability = AssetCapabilityType.none
+                                    }
+                                }else {
+                                    context->currentAssetCapability = keyLookUp->second
+                                }
+                            }else{
+                                context->currentAssetCapability = keyLookUp->second
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+        context->releasedKeys.clear()
+        context->menuButtonState = .none
+        //fix this line
+        let componentType = context->findUIComponentType(Position(x,y))
         
     }
     
