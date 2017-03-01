@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 class UnitActionRenderer {
     private var iconTileset: GraphicTileset
@@ -155,5 +156,63 @@ class UnitActionRenderer {
                 yOffset += fullIconHeight + bevel.width
             }
         }
+    }
+
+    func getUnitActionIndex(selectionList: [PlayerAsset], currentAction: AssetCapabilityType) -> [Int] {
+        guard !selectionList.isEmpty else {
+            return []
+        }
+        guard selectionList.first(where: { $0.color != playerColor }) == nil else {
+            return []
+        }
+
+        let firstAsset = selectionList[0]
+        let isMoveable = firstAsset.speed > 0
+        let hasCargo = selectionList.last!.lumber > 0 || selectionList.last!.gold > 0
+
+        displayedCommands = Array(repeating: .none, count: 9)
+        if currentAction == .none {
+            if isMoveable {
+                displayedCommands[0] = hasCargo ? .convey : .move
+                displayedCommands[1] = .standGround
+                displayedCommands[2] = .attack
+                displayedCommands[3] = firstAsset.hasCapability(.repair) ? .repair : .none
+                displayedCommands[3] = firstAsset.hasCapability(.patrol) ? .patrol : .none
+                displayedCommands[4] = firstAsset.hasCapability(.mine) ? .mine : .none
+                displayedCommands[6] = firstAsset.hasCapability(.buildSimple) && selectionList.count == 1 ? .buildSimple : .none
+            } else {
+                if firstAsset.action == .construct || firstAsset.action == .capability {
+                    displayedCommands[displayedCommands.count - 1] = .cancel
+                } else {
+                    for i in 0 ..< min(firstAsset.capabilities.count, displayedCommands.count) {
+                        displayedCommands[i] = firstAsset.capabilities[i]
+                    }
+                }
+            }
+        } else if currentAction == .buildSimple {
+            for i in 0 ..< min(UnitActionRenderer.capabilities.count, displayedCommands.count) where firstAsset.hasCapability(UnitActionRenderer.capabilities[i]) {
+                displayedCommands[i] = UnitActionRenderer.capabilities[i]
+            }
+            displayedCommands[displayedCommands.count - 1] = .cancel
+        } else {
+            displayedCommands[displayedCommands.count - 1] = .cancel
+        }
+
+        var actionIndices: [Int] = []
+
+        for i in 0 ..< displayedCommands.count {
+            let capabilityType = displayedCommands[i]
+            if capabilityType != .none {
+                actionIndices.append(commandIndices[capabilityType]!)
+                let playerCapability = PlayerCapability.findCapability(with: capabilityType)
+                if playerCapability.targetType != .none {
+                    if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
+                        //                                    try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
+                    }
+                }
+            }
+        }
+
+        return actionIndices
     }
 }

@@ -188,7 +188,7 @@ class GameViewController: UIViewController {
             for asset in gameModel.actualMap.assets {
                 if asset.assetType.name == "Peasant" && asset.position.distance(position: target.position) < 64 {
                     selectedPeasant = asset
-                    showActionMenu()
+                    showActionMenu(playerAsset: asset)
                 }
             }
         }
@@ -201,35 +201,35 @@ class GameViewController: UIViewController {
         displayLink.add(to: .current, forMode: .defaultRunLoopMode)
     }
 
-    func showActionMenu() {
-        //        unitActionRenderer = createUnitActionRenderer()
-        //        unitActionRenderer.drawUnitAction(on: layer, selectionList: [PlayerAsset.init(playerAssetType: <#T##PlayerAssetType#>)], currentAction: .none)
+    func showActionMenu(playerAsset: PlayerAsset) {
+        unitActionRenderer = createUnitActionRenderer()
+        let actionIndices = unitActionRenderer.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
+        guard actionIndices.count != 0 else {
+            return
+        }
 
-        // Currently set to screensize's width & 1/5 height, but should set it to map container's
         let screenSize = UIScreen.main.bounds
         let actionMenuView = ActionMenuView(frame: CGRect(origin: CGPoint(x: 0, y: screenSize.height * 0.8), size: CGSize(width: screenSize.width, height: screenSize.height / 5)), unitActionRenderer: 1)
         actionMenuView.backgroundColor = UIColor(white: 1, alpha: 0.3)
         actionMenuView.tag = 1
+        let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
+        var imageView: UIImageView
 
         let btn: UIButton = UIButton(frame: CGRect(x: actionMenuView.bounds.size.width - 30, y: 0, width: 30, height: 30))
         btn.setTitle("X", for: .normal)
-        btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(exitButtonAction), for: .touchUpInside)
         btn.tag = 1
 
-        let numActions = 9
         let iconSize = 60
-        let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
-        var image: UIImage
-        var imageView: UIImageView
         var xPosition = 10
 
         scrollView.contentSize = CGSize(width: actionMenuView.bounds.size.width * 1.5, height: actionMenuView.bounds.size.height)
 
         let actionIcons = splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
 
-        for _ in 1 ... numActions {
-            //            image = UIImage(named: "./data/img/icon.png")!
-            imageView = UIImageView(image: actionIcons[0])
+        for i in 0 ..< actionIndices.count {
+            let actionIndex = actionIndices[i]
+            imageView = UIImageView(image: actionIcons[actionIndex])
             imageView.frame = CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize))
             xPosition += 10 + iconSize
             scrollView.addSubview(imageView)
@@ -240,7 +240,7 @@ class GameViewController: UIViewController {
         view.addSubview(actionMenuView)
     }
 
-    func buttonAction(sender: UIButton!) {
+    func exitButtonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
         if btnsendtag.tag == 1 {
             if let viewWithTag = self.view.viewWithTag(1) {
@@ -249,7 +249,7 @@ class GameViewController: UIViewController {
         }
     }
 
-    // For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [SKTexture]
+    // For splitting a sprite sheet (input as UIImage) into numSprites different UIImage, returned as [UIImage]
     func splitVerticalSpriteSheetToUIImages(from url: URL, numSprites: Int) -> [UIImage] {
         let image = UIImage(contentsOfFile: url.path)!
         let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
