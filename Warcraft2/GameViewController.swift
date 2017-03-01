@@ -4,7 +4,7 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
-    private let mapIndex = 0
+    private let mapIndex = 2
 
     fileprivate var selectedPeasant: PlayerAsset?
     fileprivate var originalCameraPosition: CGPoint = .zero
