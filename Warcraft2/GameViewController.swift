@@ -28,8 +28,12 @@ class GameViewController: UIViewController {
 
         let mapView = createMapView(mapRenderer: mapRenderer)
         let miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+        let resourceBarView = createResourceBarView(miniMapView: miniMapView)
+        let assetStatsView = createAssetStatsView(miniMapView: miniMapView)
         self.view = mapView
         view.addSubview(miniMapView)
+        view.addSubview(resourceBarView)
+        view.addSubview(assetStatsView)
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
