@@ -33,7 +33,6 @@
 		9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */; };
 		A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */; };
 		C834BE931E49AA5A00941BFF /* ViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */; };
-		C8992A321E53EC1A009928E5 /* MiniMapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8992A311E53EC1A009928E5 /* MiniMapRenderer.swift */; };
 		C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */; };
 		C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */; };
 		C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */; };
@@ -89,7 +88,6 @@
 		9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicRecolorMap.swift; sourceTree = "<group>"; };
 		A90224B71E45AAB900BECE39 /* UnitActionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitActionRenderer.swift; sourceTree = "<group>"; };
 		C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewportRenderer.swift; sourceTree = "<group>"; };
-		C8992A311E53EC1A009928E5 /* MiniMapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapRenderer.swift; sourceTree = "<group>"; };
 		C8CB47CB1E3AD8C3004AFED4 /* TextFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatter.swift; sourceTree = "<group>"; };
 		C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicMulticolorTileset.swift; sourceTree = "<group>"; };
 		C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetRenderer.swift; sourceTree = "<group>"; };
@@ -163,14 +161,6 @@
 			name = LinuxPort;
 			sourceTree = "<group>";
 		};
-		8EE98F351E5FDBAD00FE1DAF /* Scenes */ = {
-			isa = PBXGroup;
-			children = (
-				8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */,
-			);
-			name = Scenes;
-			sourceTree = "<group>";
-		};
 		8E7737031E4ADBD20058A7C6 /* Capabilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +169,14 @@
 				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
+			sourceTree = "<group>";
+		};
+		8EE98F351E5FDBAD00FE1DAF /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */,
+			);
+			name = Scenes;
 			sourceTree = "<group>";
 		};
 		D02808AC1E472190001C1E0E /* Renderer */ = {
@@ -485,7 +483,6 @@
 				8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */,
 				D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */,
 				D052840C1E60208E00D2331A /* ResourceLoader.swift in Sources */,
-				C8992A321E53EC1A009928E5 /* MiniMapRenderer.swift in Sources */,
 				C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */,
 				8E7737051E4ADBE80058A7C6 /* BasicCapabilities.swift in Sources */,
 				C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */,
