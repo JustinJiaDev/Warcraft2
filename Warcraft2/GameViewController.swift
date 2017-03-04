@@ -34,6 +34,9 @@ class GameViewController: UIViewController {
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
+        // load capabilities
+        BasicCapabilities.register()
+
         mapView.presentScene(scene)
 
         CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
