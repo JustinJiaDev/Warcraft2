@@ -21,6 +21,10 @@ class GameViewController: UIViewController {
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
     lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
 
+    lazy var mapView: SKView = createMapView(mapRenderer: self.mapRenderer)
+    lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
+    lazy var actionMenuView = createActionMenuView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,10 +34,9 @@ class GameViewController: UIViewController {
 
         viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
-        let mapView = createMapView(mapRenderer: mapRenderer)
-        let miniMapView = createMiniMapView(mapRenderer: mapRenderer)
         self.view = mapView
         view.addSubview(miniMapView)
+        view.addSubview(actionMenuView)
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
@@ -73,109 +76,12 @@ class GameViewController: UIViewController {
                 return asset.assetType.name == "Peasant" && distanceBetween(asset.position, target.position) < Position.tileWidth
             }
             if let selectedPeasant = selectedPeasant {
-                showActionMenu(playerAsset: selectedPeasant)
+                actionMenuView.isHidden = false
+                unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedPeasant], currentAction: .none)
+            } else {
+                actionMenuView.isHidden = true
             }
         }
-    }
-
-    func showActionMenu(playerAsset: PlayerAsset) {
-
-        let actionIndices = unitActionRenderer.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
-        guard actionIndices.count != 0 else {
-            return
-        }
-
-        let screenSize = UIScreen.main.bounds
-        let actionMenuView = ActionMenuView(frame: CGRect(origin: CGPoint(x: 0, y: CGFloat(screenSize.height) * 0.8), size: CGSize(width: screenSize.width, height: screenSize.height / 5)), unitActionRenderer: 1)
-        actionMenuView.backgroundColor = UIColor(white: 1, alpha: 0.3)
-        actionMenuView.tag = 1
-        let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
-
-        let iconSize = 60
-        var xPosition = 10
-
-        scrollView.contentSize = CGSize(width: actionMenuView.bounds.size.width * 1.5, height: actionMenuView.bounds.size.height)
-
-        let actionIcons = splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
-
-        for i in 0 ..< actionIndices.count {
-            let actionIndex = actionIndices[i]
-            let actionButton = UIButton(frame: CGRect(x: CGFloat(xPosition), y: (scrollView.bounds.size.height - CGFloat(iconSize)) / 2, width: CGFloat(iconSize), height: CGFloat(iconSize)))
-            let actionImage = resizeImage(image: actionIcons[actionIndex], targetSize: CGSize(width: iconSize, height: iconSize))
-
-            actionButton.setImage(actionImage, for: .normal)
-            actionButton.addTarget(self, action: #selector(actionButtonHandler), for: .touchUpInside)
-            xPosition += (10 + iconSize)
-            scrollView.addSubview(actionButton)
-        }
-
-        let btn = UIButton(frame: CGRect(x: actionMenuView.bounds.size.width - 30, y: 0, width: 30, height: 30))
-        btn.setTitle("X", for: .normal)
-        btn.addTarget(self, action: #selector(exitButtonAction), for: .touchUpInside)
-        btn.tag = 1
-
-        actionMenuView.addSubview(scrollView)
-        actionMenuView.addSubview(btn)
-        view.addSubview(actionMenuView)
-    }
-
-    func actionButtonHandler(sender: UIButton!) {
-        if let selectedPeasant = selectedPeasant {
-            print("click")
-            let hardCodedGoldMine = gameModel.actualMap.assets[1]
-            let command = AssetCommand(action: .mineGold, capability: .mine, assetTarget: hardCodedGoldMine, activatedCapability: nil)
-            selectedPeasant.pushCommand(command)
-        }
-    }
-
-    func exitButtonAction(sender: UIButton!) {
-        let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {
-            if let viewWithTag = self.view.viewWithTag(1) {
-                viewWithTag.removeFromSuperview()
-            }
-        }
-    }
-
-    // For splitting a sprite sheet (input as UIImage) into numSprites different UIImage, returned as [UIImage]
-    func splitVerticalSpriteSheetToUIImages(from url: URL, numSprites: Int) -> [UIImage] {
-        let image = UIImage(contentsOfFile: url.path)!
-        let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
-        var cropRect: CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
-        var imageSegments: [UIImage] = []
-        for i in 0 ..< numSprites {
-            cropRect.origin.y = CGFloat(i) * segmentHeight
-            let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
-            let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
-            imageSegments.append(currentSegmentUIImage)
-        }
-        return imageSegments
-    }
-
-    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-        let size = image.size
-
-        let widthRatio = targetSize.width / image.size.width
-        let heightRatio = targetSize.height / image.size.height
-
-        // Figure out what our orientation is, and use that to form the rectangle
-        var newSize: CGSize
-        if widthRatio > heightRatio {
-            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
-        } else {
-            newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
-        }
-
-        // This is the rect that we've calculated out and this is what is actually used below
-        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-
-        // Actually do the resizing to the rect using the ImageContext stuff
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-        image.draw(in: rect)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return newImage!
     }
 
     override var prefersStatusBarHidden: Bool {

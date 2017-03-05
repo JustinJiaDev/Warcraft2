@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class UnitActionRenderer {
+class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
     private var iconTileset: GraphicTileset
     private var playerData: PlayerData
     private var playerColor: PlayerColor
@@ -94,7 +94,7 @@ class UnitActionRenderer {
         return .none
     }
 
-    func drawUnitAction(on surface: GraphicSurface, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) throws {
+    func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) {
         guard !selectionList.isEmpty else {
             return
         }
@@ -134,86 +134,30 @@ class UnitActionRenderer {
             displayedCommands[displayedCommands.count - 1] = .cancel
         }
 
-        var xOffset = bevel.width
-        var yOffset = bevel.width
-
-        for i in 0 ..< displayedCommands.count {
-            let capabilityType = displayedCommands[i]
-            if capabilityType != .none {
-                let playerCapability = PlayerCapability.findCapability(capabilityType)
-                bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
-                iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[capabilityType]!)
-
-                if playerCapability.targetType != .none {
-                    if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
-                        iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
-                    }
-                }
-            }
-            xOffset += fullIconWidth + bevel.width
-            if i % 3 == 0 {
-                xOffset = bevel.width
-                yOffset += fullIconHeight + bevel.width
-            }
-        }
+        view.dataSource = self
+        view.delegate = self
+        view.reloadData()
     }
 
-    func getUnitActionIndex(selectionList: [PlayerAsset], currentAction: AssetCapabilityType) -> [Int] {
-        guard !selectionList.isEmpty else {
-            return []
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ActionMenuViewCell", for: indexPath) as! ImageCell
+        let capability = displayedCommands[indexPath.row]
+        if capability != .none {
+            // bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
+            iconTileset.drawTile(on: cell.imageView, index: commandIndices[capability]!)
         }
-        guard selectionList.first(where: { $0.color != playerColor }) == nil else {
-            return []
-        }
+        return cell
+    }
 
-        let firstAsset = selectionList[0]
-        let isMoveable = firstAsset.speed > 0
-        let hasCargo = selectionList.last!.lumber > 0 || selectionList.last!.gold > 0
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return displayedCommands.count
+    }
 
-        displayedCommands = Array(repeating: .none, count: 9)
-        if currentAction == .none {
-            if isMoveable {
-                displayedCommands[0] = hasCargo ? .convey : .move
-                displayedCommands[1] = .standGround
-                displayedCommands[2] = .attack
-                displayedCommands[3] = firstAsset.hasCapability(.repair) ? .repair : .none
-                displayedCommands[3] = firstAsset.hasCapability(.patrol) ? .patrol : .none
-                displayedCommands[4] = firstAsset.hasCapability(.mine) ? .mine : .none
-                displayedCommands[6] = firstAsset.hasCapability(.buildSimple) && selectionList.count == 1 ? .buildSimple : .none
-            } else {
-                if firstAsset.action == .construct || firstAsset.action == .capability {
-                    displayedCommands[displayedCommands.count - 1] = .cancel
-                } else {
-                    for i in 0 ..< min(firstAsset.capabilities.count, displayedCommands.count) {
-                        displayedCommands[i] = firstAsset.capabilities[i]
-                    }
-                }
-            }
-        } else if currentAction == .buildSimple {
-            for i in 0 ..< min(UnitActionRenderer.capabilities.count, displayedCommands.count) where firstAsset.hasCapability(UnitActionRenderer.capabilities[i]) {
-                displayedCommands[i] = UnitActionRenderer.capabilities[i]
-            }
-            displayedCommands[displayedCommands.count - 1] = .cancel
-        } else {
-            displayedCommands[displayedCommands.count - 1] = .cancel
-        }
-
-        var actionIndices: [Int] = []
-
-        for i in 0 ..< displayedCommands.count {
-            let capabilityType = displayedCommands[i]
-            if capabilityType != .none {
-                actionIndices.append(commandIndices[capabilityType]!)
-                let playerCapability = PlayerCapability.findCapability(capabilityType)
-                // Not sure
-                if playerCapability.targetType != .none {
-                    if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
-                        //                                    try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
-                    }
-                }
-            }
-        }
-
-        return actionIndices
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let hardcodedGoldMine = playerData.playerMap.assets[0]
+        let hardcodedPeasant = playerData.playerMap.assets[1]
+        let command = AssetCommand(action: .mineGold, capability: .mine, assetTarget: hardcodedGoldMine, activatedCapability: nil)
+        hardcodedPeasant.pushCommand(command)
+        collectionView.isHidden = true
     }
 }

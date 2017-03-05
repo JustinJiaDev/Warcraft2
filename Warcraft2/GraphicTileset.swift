@@ -1,5 +1,5 @@
-import Foundation
 import SpriteKit
+import UIKit
 
 class GraphicTileset {
 
@@ -11,6 +11,7 @@ class GraphicTileset {
     }
 
     private(set) var surfaceTileset: [SKTexture]!
+    private(set) var imageTileset: [UIImage]!
 
     private var tileIndex: [String: Int] = [:]
     private var tileNames: [String] = []
@@ -109,6 +110,10 @@ class GraphicTileset {
         surface.draw(from: surfaceTileset[index], x: x, y: y, width: tileWidth, height: tileHeight)
     }
 
+    func drawTile(on view: ViewSurface, index: Int) {
+        view.draw(from: imageTileset[index])
+    }
+
     // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
     func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) {
         return
@@ -137,7 +142,11 @@ class GraphicTileset {
         guard let tileset = GraphicFactory.loadTextures(from: dataSource.containerURL.appendingPathComponent(pngPath), count: count) else {
             throw GameError.failedToLoadFile(path: pngPath)
         }
+        guard let images = GraphicFactory.loadImages(from: dataSource.containerURL.appendingPathComponent(pngPath), count: count) else {
+            throw GameError.failedToLoadFile(path: pngPath)
+        }
         self.surfaceTileset = tileset
+        self.imageTileset = images
         self.tileCount = count
         self.tileWidth = Int(tileset[0].size().width)
         self.tileHeight = Int(tileset[0].size().height)

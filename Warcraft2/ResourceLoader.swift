@@ -94,6 +94,17 @@ func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer
     return unitActionRenderer
 }
 
+func createActionMenuView() -> UICollectionView {
+    let layout = UICollectionViewFlowLayout()
+    layout.itemSize = CGSize(width: 100, height: 100)
+    var frame = UIScreen.main.bounds
+    frame.size.height /= 4
+    let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
+    actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
+    actionMenuView.isHidden = true
+    return actionMenuView
+}
+
 func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
     let fogTileset = try tileset("Fog")
     return try FogRenderer(tileset: fogTileset, map: map.createVisibilityMap())

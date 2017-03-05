@@ -1,7 +1,6 @@
-import Foundation
 import CoreGraphics
-import UIKit
 import SpriteKit
+import UIKit
 
 class GraphicFactory {
     static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
@@ -30,16 +29,27 @@ class GraphicFactory {
 
     static func loadTextures(from url: URL, count: Int) -> [SKTexture]? {
         guard let image = UIImage(contentsOfFile: url.path) else { return nil }
-        let segmentHeight = image.size.height / CGFloat(count)
-        var cropRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
-        var imageSegments: [SKTexture] = []
+        let textureHeight = image.size.height / CGFloat(count)
+        var currentRect = CGRect(x: 0, y: 0, width: image.size.width, height: textureHeight)
+        var textures: [SKTexture] = []
         for i in 0 ..< count {
-            cropRect.origin.y = CGFloat(i) * segmentHeight
-            let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
-            let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
-            let currentSegmentSKTexture = SKTexture(image: currentSegmentUIImage)
-            imageSegments.append(currentSegmentSKTexture)
+            currentRect.origin.y = CGFloat(i) * textureHeight
+            let currentCGImage = image.cgImage!.cropping(to: currentRect)!
+            textures.append(SKTexture(cgImage: currentCGImage))
         }
-        return imageSegments
+        return textures
+    }
+
+    static func loadImages(from url: URL, count: Int) -> [UIImage]? {
+        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
+        let imageHeight = image.size.height / CGFloat(count)
+        var currentRect = CGRect(x: 0, y: 0, width: image.size.width, height: imageHeight)
+        var images: [UIImage] = []
+        for i in 0 ..< count {
+            currentRect.origin.y = CGFloat(i) * imageHeight
+            let currentCGImage = image.cgImage!.cropping(to: currentRect)!
+            images.append(UIImage(cgImage: currentCGImage))
+        }
+        return images
     }
 }
