@@ -23,6 +23,11 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        BasicCapabilities.registrant.register()
+        BuildingUpgradeCapabilities.registrant.register()
+        UnitUpgradeCapabilities.registrant.register()
+
         viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
         let mapView = createMapView(mapRenderer: mapRenderer)
@@ -32,8 +37,6 @@ class GameViewController: UIViewController {
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
-
-        BasicCapabilities.registrant.register()
 
         mapView.presentScene(scene)
 

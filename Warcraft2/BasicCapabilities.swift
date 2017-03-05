@@ -1,6 +1,4 @@
-import Foundation
-
-class BasicCapabilities {
+struct BasicCapabilities {
     static let registrant = BasicCapabilities()
 
     init() {
