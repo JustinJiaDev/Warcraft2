@@ -9,6 +9,7 @@ class GameViewController: UIViewController {
     fileprivate var selectedPeasant: PlayerAsset?
     fileprivate var originalCameraPosition: CGPoint = .zero
     fileprivate var originalTranslation: CGPoint = .zero
+    let resourceBarView = createResourceBarView()
 
     lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
@@ -18,6 +19,7 @@ class GameViewController: UIViewController {
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
     lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
+    lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: PlayerData(map: self.map, color: PlayerColor.red), resourceBarView: self.resourceBarView)
 
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
     lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
@@ -27,13 +29,25 @@ class GameViewController: UIViewController {
         viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
         let mapView = createMapView(mapRenderer: mapRenderer)
+
+        let sidebarContainerView = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: self.view.bounds.size.height))
+        sidebarContainerView.backgroundColor = UIColor.black
+
+        let assetStatsView = createAssetStatsView()
+        assetStatsView.frame = CGRect(x: 0, y: 0, width: sidebarContainerView.bounds.size.width, height: sidebarContainerView.bounds.size.height / 2)
+
         let miniMapView = createMiniMapView(mapRenderer: mapRenderer)
-        let resourceBarView = createResourceBarView(miniMapView: miniMapView)
-        let assetStatsView = createAssetStatsView(miniMapView: miniMapView)
+        miniMapView.frame.origin = CGPoint(x: 0, y: assetStatsView.bounds.size.height)
+
+        sidebarContainerView.addSubview(assetStatsView)
+        sidebarContainerView.addSubview(miniMapView)
+
+        resourceBarView.frame = CGRect(x: sidebarContainerView.bounds.size.width, y: 0, width: self.view.bounds.size.width - sidebarContainerView.bounds.size.width, height: 35)
+        resourceBarView.setNeedsLayout()
+
         self.view = mapView
-        view.addSubview(miniMapView)
+        view.addSubview(sidebarContainerView)
         view.addSubview(resourceBarView)
-        view.addSubview(assetStatsView)
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
@@ -83,6 +97,7 @@ class GameViewController: UIViewController {
 extension GameViewController {
     func timestep() {
         gameModel.timestep()
+        resourceRenderer.drawResources()
         let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
         scene.removeAllChildren()
         viewportRenderer.drawViewport(

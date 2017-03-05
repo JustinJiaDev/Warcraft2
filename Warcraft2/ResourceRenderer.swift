@@ -26,14 +26,17 @@ class ResourceRenderer {
     private(set) var player: PlayerData
     private(set) var lastGoldDisplay: Int
     private(set) var lastLumberDisplay: Int
+    private(set) var resourceBar: ResourceBarView
 
-    init(loadedPlayer: PlayerData) {
+    init(loadedPlayer: PlayerData, resourceBarView: ResourceBarView) {
         player = loadedPlayer
         lastGoldDisplay = 0
         lastLumberDisplay = 0
+        resourceBar = resourceBarView
     }
 
-    func updateGold() -> Int {
+    func drawResources() {
+        // animate gold update
         var deltaGold = player.gold - lastGoldDisplay
 
         deltaGold /= 5
@@ -42,10 +45,10 @@ class ResourceRenderer {
         } else {
             lastGoldDisplay += deltaGold
         }
-        return lastGoldDisplay
-    }
 
-    func updateLumber() -> Int {
+        resourceBar.goldCount.text = String(lastGoldDisplay)
+
+        // update lumber
         var deltaLumber = player.lumber - lastLumberDisplay
 
         deltaLumber /= 5
@@ -54,18 +57,14 @@ class ResourceRenderer {
         } else {
             lastLumberDisplay += deltaLumber
         }
-        return lastLumberDisplay
-    }
+        resourceBar.lumberCount.text = String(lastLumberDisplay)
 
-    func updateFood() {
-        if player.foodConsumption > player.foodProduction {
-            // consumption/production
-        } else {
-            // print food consumption
-        }
-    }
+        // update food
 
-    func drawResources() {
-        fatalError("This is not yet implemented")
+        //        if player.foodConsumption > player.foodProduction {
+        //            // consumption/production
+        //        } else {
+        //            // print food consumption
+        //        }
     }
 }
