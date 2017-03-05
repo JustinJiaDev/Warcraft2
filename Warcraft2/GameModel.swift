@@ -164,30 +164,28 @@ class PlayerData {
     }
 
     func updateVisibility() {
-        var removeList: [PlayerAsset] = []
+        var assetsToBeRemoved: [PlayerAsset] = []
         visibilityMap.update(assets: assets)
         playerMap.updateMap(visibilityMap: visibilityMap, assetDecoratedMap: actualMap)
-        for asset in playerMap.assets {
-            if asset.type == .none && asset.action == .none {
-                asset.incrementStep()
-                if PlayerAsset.updateFrequency < asset.step * 2 {
-                    removeList.append(asset)
-                }
+        for asset in playerMap.assets where asset.type == .none && asset.action == .none {
+            asset.incrementStep()
+            if asset.step * 2 > PlayerAsset.updateFrequency {
+                assetsToBeRemoved.append(asset)
             }
         }
-        for asset in removeList {
+        for asset in assetsToBeRemoved {
             playerMap.removeAsset(asset)
         }
     }
 
     func selectAssets(in selectArea: Rectangle, assetType: AssetType, selectIdentical: Bool = false) -> [PlayerAsset] {
-        var returnList: [PlayerAsset] = []
+        var selectedAssets: [PlayerAsset] = []
         if selectArea.width == 0 || selectArea.height == 0 {
             if let bestAsset = selectAsset(at: Position(x: selectArea.x, y: selectArea.y), assetType: assetType) {
-                returnList.append(bestAsset)
+                selectedAssets.append(bestAsset)
                 if selectIdentical && bestAsset.speed != 0 {
                     for asset in assets where bestAsset !== asset && asset.type == assetType {
-                        returnList.append(asset)
+                        selectedAssets.append(asset)
                     }
                 }
             }
@@ -200,28 +198,28 @@ class PlayerData {
                     && asset.positionY < selectArea.y + selectArea.height {
                     if anyMovable {
                         if asset.speed != 0 {
-                            returnList.append(asset)
+                            selectedAssets.append(asset)
                         }
                     } else {
                         if asset.speed != 0 {
-                            returnList.removeAll()
-                            returnList.append(asset)
+                            selectedAssets.removeAll()
+                            selectedAssets.append(asset)
                             anyMovable = true
-                        } else if returnList.isEmpty {
-                            returnList.append(asset)
+                        } else if selectedAssets.isEmpty {
+                            selectedAssets.append(asset)
                         }
                     }
                 }
             }
         }
-        return returnList
+        return selectedAssets
     }
 
     func selectAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
         guard assetType != .none else {
             return nil
         }
-        var bestAsset: PlayerAsset?
+        var bestAsset: PlayerAsset? = nil
         var bestDistanceSquared = -1
         for asset in assets where asset.type == assetType {
             let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
@@ -234,7 +232,7 @@ class PlayerData {
     }
 
     func findNearestOwnedAsset(at position: Position, assetTypes: [AssetType]) -> PlayerAsset? {
-        var bestAsset: PlayerAsset?
+        var bestAsset: PlayerAsset? = nil
         var bestDistanceSquared = -1
         for asset in assets {
             for assetType in assetTypes where asset.type == assetType && (asset.action != .construct || assetType == .keep || assetType == .castle) {
@@ -250,7 +248,7 @@ class PlayerData {
     }
 
     func findNearestAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
-        var bestAsset: PlayerAsset?
+        var bestAsset: PlayerAsset? = nil
         var bestDistanceSquared = -1
         for asset in playerMap.assets where asset.type == assetType {
             let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
@@ -270,7 +268,7 @@ class PlayerData {
             range = rangeToDistanceSquared(range)
         }
 
-        for asset in playerMap.assets where asset.color != self.color && asset.color != .none && asset.isAlive {
+        for asset in playerMap.assets where asset.color != color && asset.color != .none && asset.isAlive {
             let command = asset.currentCommand
             if command.action == .capability, let target = command.assetTarget, target.action == .construct {
                 continue
