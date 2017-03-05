@@ -2,121 +2,26 @@ import UIKit
 import AVFoundation
 import SpriteKit
 
-fileprivate func url(_ pathComponents: String...) -> URL {
-    return pathComponents.reduce(Bundle.main.url(forResource: "data", withExtension: nil)!, { result, pathComponent in
-        return result.appendingPathComponent(pathComponent)
-    })
-}
-
-fileprivate func tileset(_ name: String) throws -> GraphicTileset {
-    let tilesetSource = try FileDataSource(url: url("img", name.appending(".dat")))
-    let tileset = GraphicTileset()
-    try tileset.loadTileset(from: tilesetSource)
-    return tileset
-}
-
-fileprivate func multicolorTileset(_ name: String) throws -> GraphicMulticolorTileset {
-    let tilesetSource = try FileDataSource(url: url("img", name.appending(".dat")))
-    let tileset = GraphicMulticolorTileset()
-    try tileset.loadTileset(from: tilesetSource)
-    return tileset
-}
-
 class GameViewController: UIViewController {
 
-    private let mapIndex = 0
-    private var terrainTileset: GraphicTileset!
-    private var mapConfiguration: FileDataSource!
-    private var selectedPeasant: PlayerAsset?
-    var gameModel: GameModel!
-    var mapRenderer: MapRenderer!
-    var assetRenderer: AssetRenderer!
-    var map: AssetDecoratedMap!
-    var fogRenderer: FogRenderer!
-    var viewportRenderer: ViewportRenderer!
-    var unitActionRenderer: UnitActionRenderer!
-    var midiPlayer: AVMIDIPlayer!
+    private let mapIndex = 2
 
-    private func createMidiPlayer() -> AVMIDIPlayer {
-        do {
-            return try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
+    fileprivate var selectedPeasant: PlayerAsset?
+    fileprivate var unitActionRenderer: UnitActionRenderer?
+    fileprivate var originalCameraPosition: CGPoint = .zero
+    fileprivate var originalTranslation: CGPoint = .zero
 
-    private func createAssetDecoratedMap() -> AssetDecoratedMap {
-        do {
-            let mapsContainer = try FileDataContainer(url: url("map"))
-            AssetDecoratedMap.loadMaps(from: mapsContainer)
-            return AssetDecoratedMap.map(at: self.mapIndex)
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
+    lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
-    private func createFogRenderer() -> FogRenderer {
-        do {
-            let fogTileset = try tileset("Fog")
-            return try FogRenderer(tileset: fogTileset, map: self.map.createVisibilityMap())
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
+    lazy var gameModel: GameModel = try! createGameModel(mapIndex: self.mapIndex)
+    lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
+    lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.map)
+    lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
+    lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
+    lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
 
-    private var mapView: MapView!
-
-    private func createMapRenderer() -> MapRenderer {
-        do {
-            return try MapRenderer(configuration: mapConfiguration, tileset: terrainTileset, map: self.map)
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
-
-    private func createAssetRenderer() -> AssetRenderer {
-        do {
-            let colors = GraphicRecolorMap()
-            var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
-            tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
-            tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
-            tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer")
-            tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger")
-            tilesets[AssetType.goldMine.rawValue] = try multicolorTileset("GoldMine")
-            tilesets[AssetType.townHall.rawValue] = try multicolorTileset("TownHall")
-            tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep")
-            tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle")
-            tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm")
-            tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks")
-            tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill")
-            tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith")
-            tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower")
-            tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower")
-            tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower")
-            let markerTileset = try tileset("Marker")
-            let corpseTileset = try tileset("Corpse")
-            let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
-            let buildingDeathTileset = try tileset("BuildingDeath")
-            let arrowTileset = try tileset("Arrow")
-            //            _ = PlayerData(map: self.map, color: .blue)
-            //            _ = PlayerData(map: self.map, color: .none)
-            //            _ = PlayerData(map: self.map, color: .red)
-            let assetRenderer = AssetRenderer(
-                colors: colors,
-                tilesets: tilesets,
-                markerTileset: markerTileset,
-                corpseTileset: corpseTileset,
-                fireTilesets: fireTilesets,
-                buildingDeathTileset: buildingDeathTileset,
-                arrowTileset: arrowTileset,
-                player: gameModel.player(with: .red),
-                map: gameModel.player(with: .red).playerMap
-            )
-            return assetRenderer
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
+    lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
+    lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
 
     private func createUnitActionRenderer() -> UnitActionRenderer {
         do {
@@ -126,8 +31,8 @@ class GameViewController: UIViewController {
             let unitActionRenderer = UnitActionRenderer(
                 bevel: bevel,
                 icons: icons,
-                color: gameModel.player(with: .red).color,
-                player: gameModel.player(with: .red)
+                color: gameModel.player(.blue).color,
+                player: gameModel.player(.blue)
             )
             return unitActionRenderer
         } catch {
@@ -137,79 +42,65 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
-        midiPlayer = createMidiPlayer()
+        let mapView = createMapView(mapRenderer: mapRenderer)
+        let miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+        self.view = mapView
+        view.addSubview(miniMapView)
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
-        do {
-            try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
+        mapView.presentScene(scene)
 
-        do {
-            mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
-            terrainTileset = try tileset("Terrain")
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-
-        Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
-
-        map = createAssetDecoratedMap()
-        gameModel = GameModel(mapIndex: self.mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.getAllValues())
-        mapRenderer = createMapRenderer()
-        assetRenderer = createAssetRenderer()
-        fogRenderer = createFogRenderer()
-        viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
-
-        mapView = MapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)), viewportRenderer: viewportRenderer)
-        let miniMapView = MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
-
-        view.addSubview(mapView)
-        view.addSubview(miniMapView)
-        triggerAnimation()
-        let myTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(clickHandler))
-        self.mapView.addGestureRecognizer(myTapGestureRecognizer)
+        CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
     }
 
-    func clickHandler(sender: UITapGestureRecognizer) {
+    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
+        guard touches.count == 1 else {
+            return
+        }
+        let touch = touches.first!
+        let location = touch.location(in: scene)
+        let previousLocation = touch.previousLocation(in: scene)
+        let deltaY = Int(location.y - previousLocation.y)
+        let deltaX = Int(location.x - previousLocation.x)
+        viewportRenderer.panWest(deltaX)
+        viewportRenderer.panSouth(deltaY)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard touches.count == 1 else {
+            return
+        }
+        let screenLocation = touches.first!.location(in: scene)
         let target = PlayerAsset(playerAssetType: PlayerAssetType())
-        let touchLocation = sender.location(ofTouch: 0, in: self.mapView)
-        let xLocation = (Int(touchLocation.x) - Int(touchLocation.x) % 32) + 16
-        let yLocation = (Int(touchLocation.y) - Int(touchLocation.y) % 32) + 16
-        target.position = Position(x: xLocation, y: yLocation)
-        if selectedPeasant != nil {
-            selectedPeasant!.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
+        var detailedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
+        detailedPosition.normalizeToTileCenter()
+        target.position = detailedPosition
+        if let selected = selectedPeasant {
+            selected.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
             selectedPeasant = nil
         } else {
-            for asset in gameModel.actualMap.assets {
-                if asset.assetType.name == "Peasant" && asset.position.distance(position: target.position) < 64 {
-                    selectedPeasant = asset
-                    showActionMenu(playerAsset: asset)
-                }
+            selectedPeasant = gameModel.actualMap.assets.first { asset in
+                return asset.assetType.name == "Peasant" && distanceBetween(asset.position, target.position) < Position.tileWidth
+            }
+            if let selectedPeasant = selectedPeasant {
+                showActionMenu(playerAsset: selectedPeasant)
             }
         }
     }
 
-    func triggerAnimation() {
-
-        let displayLink = CADisplayLink(target: self, selector: #selector(test))
-        displayLink.frameInterval = 1
-        displayLink.add(to: .current, forMode: .defaultRunLoopMode)
-    }
-
     func showActionMenu(playerAsset: PlayerAsset) {
         unitActionRenderer = createUnitActionRenderer()
-        let actionIndices = unitActionRenderer.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
+        let actionIndices = unitActionRenderer!.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
         guard actionIndices.count != 0 else {
             return
         }
 
         let screenSize = UIScreen.main.bounds
-        let actionMenuView = ActionMenuView(frame: CGRect(origin: CGPoint(x: 0, y: screenSize.height * 0.8), size: CGSize(width: screenSize.width, height: screenSize.height / 5)), unitActionRenderer: 1)
+        let actionMenuView = ActionMenuView(frame: CGRect(origin: CGPoint(x: 0, y: CGFloat(screenSize.height) * 0.8), size: CGSize(width: screenSize.width, height: screenSize.height / 5)), unitActionRenderer: 1)
         actionMenuView.backgroundColor = UIColor(white: 1, alpha: 0.3)
         actionMenuView.tag = 1
         let scrollView = UIScrollView(frame: CGRect(x: actionMenuView.bounds.size.width / 10, y: 0, width: actionMenuView.bounds.size.width / 5 * 4, height: actionMenuView.bounds.size.height))
@@ -227,6 +118,7 @@ class GameViewController: UIViewController {
             let actionImage = resizeImage(image: actionIcons[actionIndex], targetSize: CGSize(width: iconSize, height: iconSize))
 
             actionButton.setImage(actionImage, for: .normal)
+            actionButton.addTarget(self, action: #selector(actionButtonHandler), for: .touchUpInside)
             xPosition += (10 + iconSize)
             scrollView.addSubview(actionButton)
         }
@@ -239,6 +131,15 @@ class GameViewController: UIViewController {
         actionMenuView.addSubview(scrollView)
         actionMenuView.addSubview(btn)
         view.addSubview(actionMenuView)
+    }
+
+    func actionButtonHandler(sender: UIButton!) {
+        if let selectedPeasant = selectedPeasant {
+            print("click")
+            let hardCodedGoldMine = gameModel.actualMap.assets[1]
+            let command = AssetCommand(action: .mineGold, capability: .mine, assetTarget: hardCodedGoldMine, activatedCapability: nil)
+            selectedPeasant.pushCommand(command)
+        }
     }
 
     func exitButtonAction(sender: UIButton!) {
@@ -291,24 +192,22 @@ class GameViewController: UIViewController {
         return newImage!
     }
 
-    func test() {
-
-        let start = Date()
-
-        do {
-            try gameModel.timestep()
-        } catch {
-            fatalError("Error Thrown By Timestep")
-        }
-
-        mapView.setNeedsDisplay()
-        let finish = Date()
-
-        let time = finish.timeIntervalSince(start)
-        print(time)
-    }
-
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+}
+
+extension GameViewController {
+    func timestep() {
+        gameModel.timestep()
+        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
+        scene.removeAllChildren()
+        viewportRenderer.drawViewport(
+            on: scene,
+            typeSurface: typeScene,
+            selectionMarkerList: [],
+            selectRect: rectangle,
+            currentCapability: .none
+        )
     }
 }

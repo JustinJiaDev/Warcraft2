@@ -11,47 +11,47 @@ class Bevel {
         self.tileset = tileset
         self.width = tileset.tileWidth
 
-        topIndices = [tileset.findTile(with: "tf")]
+        topIndices = [tileset.findTile("tf")]
         for index in 1 ..< width {
-            topIndices.append(tileset.findTile(with: "t" + String(index)))
+            topIndices.append(tileset.findTile("t" + String(index)))
         }
 
-        bottomIndices = [tileset.findTile(with: "bf")]
+        bottomIndices = [tileset.findTile("bf")]
         for index in 1 ..< width {
-            bottomIndices.append(tileset.findTile(with: "b" + String(index)))
+            bottomIndices.append(tileset.findTile("b" + String(index)))
         }
 
-        leftIndices = [tileset.findTile(with: "lf")]
+        leftIndices = [tileset.findTile("lf")]
         for index in 1 ..< width {
-            leftIndices.append(tileset.findTile(with: "l" + String(index)))
+            leftIndices.append(tileset.findTile("l" + String(index)))
         }
 
-        rightIndices = [tileset.findTile(with: "rf")]
+        rightIndices = [tileset.findTile("rf")]
         for index in 1 ..< width {
-            rightIndices.append(tileset.findTile(with: "r" + String(index)))
+            rightIndices.append(tileset.findTile("r" + String(index)))
         }
 
-        cornerIndices = [tileset.findTile(with: "tl"), tileset.findTile(with: "tr"), tileset.findTile(with: "bl"), tileset.findTile(with: "br")]
+        cornerIndices = [tileset.findTile("tl"), tileset.findTile("tr"), tileset.findTile("bl"), tileset.findTile("br")]
     }
 
-    func drawBevel(on surface: GraphicSurface, x: Int, y: Int, width: Int, height: Int) throws {
+    func drawBevel(on surface: GraphicSurface, x: Int, y: Int, width: Int, height: Int) {
         let topY = y - width
         let bottomY = y + height
         let leftX = x - width
         let rightX = x + width
 
-        try tileset.drawTile(on: surface, x: leftX, y: topY, index: cornerIndices[0])
-        try tileset.drawTile(on: surface, x: rightX, y: topY, index: cornerIndices[1])
-        try tileset.drawTile(on: surface, x: leftX, y: bottomY, index: cornerIndices[2])
-        try tileset.drawTile(on: surface, x: rightX, y: bottomY, index: cornerIndices[3])
+        tileset.drawTile(on: surface, x: leftX, y: topY, index: cornerIndices[0])
+        tileset.drawTile(on: surface, x: rightX, y: topY, index: cornerIndices[1])
+        tileset.drawTile(on: surface, x: leftX, y: bottomY, index: cornerIndices[2])
+        tileset.drawTile(on: surface, x: rightX, y: bottomY, index: cornerIndices[3])
 
         for xOffset in stride(from: 0, to: width, by: width) {
             var index = 0
             if xOffset + width > width {
                 index = width - xOffset
             }
-            try tileset.drawTile(on: surface, x: x + xOffset, y: topY, index: topIndices[index])
-            try tileset.drawTile(on: surface, x: x + xOffset, y: bottomY, index: bottomIndices[index])
+            tileset.drawTile(on: surface, x: x + xOffset, y: topY, index: topIndices[index])
+            tileset.drawTile(on: surface, x: x + xOffset, y: bottomY, index: bottomIndices[index])
         }
 
         for yOffset in stride(from: 0, to: height, by: width) {
@@ -59,8 +59,8 @@ class Bevel {
             if yOffset + width > height {
                 index = height - yOffset
             }
-            try tileset.drawTile(on: surface, x: leftX, y: y + yOffset, index: leftIndices[index])
-            try tileset.drawTile(on: surface, x: rightX, y: y + yOffset, index: rightIndices[index])
+            tileset.drawTile(on: surface, x: leftX, y: y + yOffset, index: leftIndices[index])
+            tileset.drawTile(on: surface, x: rightX, y: y + yOffset, index: rightIndices[index])
         }
     }
 }

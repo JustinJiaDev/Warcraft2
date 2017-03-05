@@ -1,9 +1,9 @@
 import Foundation
 
 class ActivatedPlayerCapability {
-    var actor: PlayerAsset
-    var playerData: PlayerData
-    var target: PlayerAsset
+    private(set) var actor: PlayerAsset
+    private(set) var playerData: PlayerData
+    private(set) var target: PlayerAsset
 
     init(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) {
         self.actor = actor
@@ -12,15 +12,15 @@ class ActivatedPlayerCapability {
     }
 
     func percentComplete(max _: Int) -> Int {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 
-    func incrementstep() {
-        fatalError("You need to override this method.")
+    @discardableResult func incrementStep() -> Bool {
+        fatalError("This method should be overriden in the derived class.")
     }
 
     func cancel() {
-        fatalError("You need to override this method.")
+        fatalError("This method should be overriden in the derived class.")
     }
 }
 
@@ -36,129 +36,117 @@ class PlayerCapability {
     private static var nameRegistry: [String: PlayerCapability] = [:]
     private static var typeRegistry: [Int: PlayerCapability] = [:]
 
+    private static let nameTypeTranslation: [String: AssetCapabilityType] = [
+        "None": .none,
+        "BuildPeasant": .buildPeasant,
+        "BuildFootman": .buildFootman,
+        "BuildArcher": .buildArcher,
+        "BuildRanger": .buildRanger,
+        "BuildFarm": .buildFarm,
+        "BuildTownHall": .buildTownHall,
+        "BuildBarracks": .buildBarracks,
+        "BuildLumberMill": .buildLumberMill,
+        "BuildBlacksmith": .buildBlacksmith,
+        "BuildKeep": .buildKeep,
+        "BuildCastle": .buildCastle,
+        "BuildScoutTower": .buildScoutTower,
+        "BuildGuardTower": .buildGuardTower,
+        "BuildCannonTower": .buildCannonTower,
+        "Move": .move,
+        "Repair": .repair,
+        "Mine": .mine,
+        "BuildSimple": .buildSimple,
+        "BuildAdvanced": .buildAdvanced,
+        "Convey": .convey,
+        "Cancel": .cancel,
+        "BuildWall": .buildWall,
+        "Attack": .attack,
+        "StandGround": .standGround,
+        "Patrol": .patrol,
+        "WeaponUpgrade1": .weaponUpgrade1,
+        "WeaponUpgrade2": .weaponUpgrade2,
+        "WeaponUpgrade3": .weaponUpgrade3,
+        "ArrowUpgrade1": .arrowUpgrade1,
+        "ArrowUpgrade2": .arrowUpgrade2,
+        "ArrowUpgrade3": .arrowUpgrade3,
+        "ArmorUpgrade1": .armorUpgrade1,
+        "ArmorUpgrade2": .armorUpgrade2,
+        "ArmorUpgrade3": .armorUpgrade3,
+        "Longbow": .longbow,
+        "RangerScouting": .rangerScouting,
+        "Marksmanship": .marksmanship
+    ]
+
+    private static let typeStrings = [
+        "None",
+        "BuildPeasant",
+        "BuildFootman",
+        "BuildArcher",
+        "BuildRanger",
+        "BuildFarm",
+        "BuildTownHall",
+        "BuildBarracks",
+        "BuildLumberMill",
+        "BuildBlacksmith",
+        "BuildKeep",
+        "BuildCastle",
+        "BuildScoutTower",
+        "BuildGuardTower",
+        "BuildCannonTower",
+        "Move",
+        "Repair",
+        "Mine",
+        "BuildSimple",
+        "BuildAdvanced",
+        "Convey",
+        "Cancel",
+        "BuildWall",
+        "Attack",
+        "StandGround",
+        "Patrol",
+        "WeaponUpgrade1",
+        "WeaponUpgrade2",
+        "WeaponUpgrade3",
+        "ArrowUpgrade1",
+        "ArrowUpgrade2",
+        "ArrowUpgrade3",
+        "ArmorUpgrade1",
+        "ArmorUpgrade2",
+        "ArmorUpgrade3",
+        "Longbow",
+        "RangerScouting",
+        "Marksmanship"
+    ]
+
     init(name: String = "None", targetType: TargetType = .none) {
         self.name = name
-        self.assetCapabilityType = PlayerCapability.findType(with: name)
+        self.assetCapabilityType = PlayerCapability.findType(name)
         self.targetType = targetType
     }
 
-    private static func register(capability: PlayerCapability) -> Bool {
-        if let _ = nameRegistry[capability.name] {
+    @discardableResult static func register(capability: PlayerCapability) -> Bool {
+        if nameRegistry[capability.name] != nil {
             return false
         }
         nameRegistry[capability.name] = capability
-        typeRegistry[PlayerCapability.findType(with: capability.name).rawValue] = capability
+        typeRegistry[PlayerCapability.findType(capability.name).rawValue] = capability
         return true
     }
 
-    static func findCapability(with type: AssetCapabilityType) -> PlayerCapability {
-        if let value = typeRegistry[type.rawValue] {
-            return value
-        }
-        return PlayerCapability()
+    static func findCapability(_ type: AssetCapabilityType) -> PlayerCapability {
+        return typeRegistry[type.rawValue] ?? PlayerCapability()
     }
 
-    static func findCapability(with name: String) -> PlayerCapability {
-        if let value = nameRegistry[name] {
-            return value
-        }
-        return PlayerCapability()
+    static func findCapability(_ name: String) -> PlayerCapability {
+        return nameRegistry[name] ?? PlayerCapability()
     }
 
-    static func findType(with name: String) -> AssetCapabilityType {
-        var nameTypeTranslation: [String: AssetCapabilityType] = [:]
-        nameTypeTranslation["None"] = .none
-        nameTypeTranslation["BuildPeasant"] = .buildPeasant
-        nameTypeTranslation["BuildFootman"] = .buildFootman
-        nameTypeTranslation["BuildArcher"] = .buildArcher
-        nameTypeTranslation["BuildRanger"] = .buildRanger
-        nameTypeTranslation["BuildFarm"] = .buildFarm
-        nameTypeTranslation["BuildTownHall"] = .buildTownHall
-        nameTypeTranslation["BuildBarracks"] = .buildBarracks
-        nameTypeTranslation["BuildLumberMill"] = .buildLumberMill
-        nameTypeTranslation["BuildBlacksmith"] = .buildBlacksmith
-        nameTypeTranslation["BuildKeep"] = .buildKeep
-        nameTypeTranslation["BuildCastle"] = .buildCastle
-        nameTypeTranslation["BuildScoutTower"] = .buildScoutTower
-        nameTypeTranslation["BuildGuardTower"] = .buildGuardTower
-        nameTypeTranslation["BuildCannonTower"] = .buildCannonTower
-        nameTypeTranslation["Move"] = .move
-        nameTypeTranslation["Repair"] = .repair
-        nameTypeTranslation["Mine"] = .mine
-        nameTypeTranslation["BuildSimple"] = .buildSimple
-        nameTypeTranslation["BuildAdvanced"] = .buildAdvanced
-        nameTypeTranslation["Convey"] = .convey
-        nameTypeTranslation["Cancel"] = .cancel
-        nameTypeTranslation["BuildWall"] = .buildWall
-        nameTypeTranslation["Attack"] = .attack
-        nameTypeTranslation["StandGround"] = .standGround
-        nameTypeTranslation["Patrol"] = .patrol
-        nameTypeTranslation["WeaponUpgrade1"] = .weaponUpgrade1
-        nameTypeTranslation["WeaponUpgrade2"] = .weaponUpgrade2
-        nameTypeTranslation["WeaponUpgrade3"] = .weaponUpgrade3
-        nameTypeTranslation["ArrowUpgrade1"] = .arrowUpgrade1
-        nameTypeTranslation["ArrowUpgrade2"] = .arrowUpgrade2
-        nameTypeTranslation["ArrowUpgrade3"] = .arrowUpgrade3
-        nameTypeTranslation["ArmorUpgrade1"] = .armorUpgrade1
-        nameTypeTranslation["ArmorUpgrade2"] = .armorUpgrade2
-        nameTypeTranslation["ArmorUpgrade3"] = .armorUpgrade3
-        nameTypeTranslation["Longbow"] = .longbow
-        nameTypeTranslation["RangerScouting"] = .rangerScouting
-        nameTypeTranslation["Marksmanship"] = .marksmanship
-
-        if let value = nameTypeTranslation[name] {
-            return value
-        }
-        printError("Unknown capability name \"\(name)\"\n")
-        return .none
+    static func findType(_ name: String) -> AssetCapabilityType {
+        return nameTypeTranslation[name] ?? .none
     }
 
-    static func findName(with type: AssetCapabilityType) -> String {
-        let typeStrings = [
-            "None",
-            "BuildPeasant",
-            "BuildFootman",
-            "BuildArcher",
-            "BuildRanger",
-            "BuildFarm",
-            "BuildTownHall",
-            "BuildBarracks",
-            "BuildLumberMill",
-            "BuildBlacksmith",
-            "BuildKeep",
-            "BuildCastle",
-            "BuildScoutTower",
-            "BuildGuardTower",
-            "BuildCannonTower",
-            "Move",
-            "Repair",
-            "Mine",
-            "BuildSimple",
-            "BuildAdvanced",
-            "Convey",
-            "Cancel",
-            "BuildWall",
-            "Attack",
-            "StandGround",
-            "Patrol",
-            "WeaponUpgrade1",
-            "WeaponUpgrade2",
-            "WeaponUpgrade3",
-            "ArrowUpgrade1",
-            "ArrowUpgrade2",
-            "ArrowUpgrade3",
-            "ArmorUpgrade1",
-            "ArmorUpgrade2",
-            "ArmorUpgrade3",
-            "Longbow",
-            "RangerScouting",
-            "Marksmanship"
-        ]
-
-        if type.rawValue < 0 || type.rawValue >= typeStrings.count {
-            return ""
-        }
-        return typeStrings[type.rawValue]
+    static func findName(_ type: AssetCapabilityType) -> String {
+        return type.rawValue >= 0 && type.rawValue < typeStrings.count ? typeStrings[type.rawValue] : ""
     }
 
     func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
@@ -222,9 +210,9 @@ class PlayerUpgrade {
         guard let name = lineSource.readLine() else {
             throw GameError.failedToGetName
         }
-        let upgradeType = PlayerCapability.findType(with: name)
+        let upgradeType = PlayerCapability.findType(name)
 
-        if upgradeType == .none && name != PlayerCapability.findName(with: .none) {
+        if upgradeType == .none && name != PlayerCapability.findName(.none) {
             throw GameError.unknownUpgradeType(type: name)
         }
 
@@ -287,19 +275,19 @@ class PlayerUpgrade {
         }
         for _ in 0 ..< affectedAssetCount {
             if let assetRequirementString = lineSource.readLine() {
-                playerUpgrade.affectedAssets.append(PlayerAssetType.findType(with: assetRequirementString))
+                playerUpgrade.affectedAssets.append(PlayerAssetType.findType(assetRequirementString))
             } else {
                 throw GameError.failedToReadAffectedAsset
             }
         }
     }
 
-    static func findUpgrade(with type: AssetCapabilityType) -> PlayerUpgrade {
+    static func findUpgrade(_ type: AssetCapabilityType) -> PlayerUpgrade {
         return registryByType[type.rawValue] ?? PlayerUpgrade()
     }
 
-    static func findUpgrade(with name: String) -> PlayerUpgrade {
-        return registryByName[name] ?? PlayerUpgrade()
+    static func findUpgrade(_ name: String) -> PlayerUpgrade? {
+        return registryByName[name]
     }
 }
 
@@ -513,11 +501,11 @@ class PlayerAssetType {
         return PlayerAsset(playerAssetType: self)
     }
 
-    static func findType(with name: String) -> AssetType {
+    static func findType(_ name: String) -> AssetType {
         return nameTypeTranslation[name] ?? .none
     }
 
-    static func findName(with type: AssetType) -> String {
+    static func findName(_ type: AssetType) -> String {
         return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
     }
 
@@ -544,7 +532,7 @@ class PlayerAssetType {
             throw GameError.failedToGetResourceTypeName
         }
 
-        let assetType = findType(with: name)
+        let assetType = findType(name)
 
         if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
             throw GameError.unknownResourceType(type: name)
@@ -642,7 +630,7 @@ class PlayerAssetType {
         }
         for _ in 0 ..< capabilityCount {
             if let capabilityString = lineSource.readLine() {
-                playerAssetType.addCapability(PlayerCapability.findType(with: capabilityString))
+                playerAssetType.addCapability(PlayerCapability.findType(capabilityString))
             } else {
                 throw GameError.failedToReadCapability
             }
@@ -653,19 +641,19 @@ class PlayerAssetType {
         }
         for _ in 0 ..< assetRequirementCount {
             if let assetRequirementString = lineSource.readLine() {
-                playerAssetType.assetRequirements.append(findType(with: assetRequirementString))
+                playerAssetType.assetRequirements.append(findType(assetRequirementString))
             } else {
                 throw GameError.failedToReadAssetRequirement
             }
         }
     }
 
-    static func findDefault(with name: String) -> PlayerAssetType {
+    static func findDefault(_ name: String) -> PlayerAssetType {
         return registry[name] ?? PlayerAssetType()
     }
 
-    static func findDefault(with type: AssetType) -> PlayerAssetType {
-        return findDefault(with: findName(with: type))
+    static func findDefault(_ type: AssetType) -> PlayerAssetType {
+        return findDefault(findName(type))
     }
 
     static func duplicateRegistry(changeColorTo color: PlayerColor) -> [String: PlayerAssetType] {
@@ -681,7 +669,7 @@ class PlayerAssetType {
 
 struct AssetCommand {
     var action: AssetAction
-    var capability: AssetCapabilityType
+    var capability: AssetCapabilityType?
     var assetTarget: PlayerAsset?
     var activatedCapability: ActivatedPlayerCapability?
 }
@@ -694,59 +682,55 @@ class PlayerAsset {
     var lumber: Int = 0
     var step: Int = 0
 
+    private static let deltaX: [Direction: Int] = [
+        .north: 0,
+        .northEast: 5,
+        .east: 7,
+        .southEast: 5,
+        .south: 0,
+        .southWest: -5,
+        .west: -7,
+        .northWest: -5
+    ]
+    private static let deltaY: [Direction: Int] = [
+        .north: -7,
+        .northEast: -5,
+        .east: 0,
+        .southEast: 5,
+        .south: 7,
+        .southWest: 5,
+        .west: 0,
+        .northWest: -5
+    ]
+
     private(set) var moveRemainderX: Int = 0
     private(set) var moveRemainderY: Int = 0
 
+    var position: Position
+
     var tilePosition: Position {
-        willSet {
-            position.setFromTile(newValue)
+        get {
+            return Position.tile(fromAbsolute: position)
+        }
+        set {
+            position = Position.absolute(fromTile: newValue)
         }
     }
 
     var tilePositionX: Int {
-        get {
-            return tilePosition.x
-        }
-        set {
-            position.setXFromTile(newValue)
-            tilePosition.x = newValue
-        }
+        return tilePosition.x
     }
 
     var tilePositionY: Int {
-        get {
-            return tilePosition.y
-        }
-        set {
-            position.setYFromTile(newValue)
-            tilePosition.y = newValue
-        }
-    }
-
-    var position: Position {
-        willSet {
-            tilePosition.setToTile(newValue)
-        }
+        return tilePosition.y
     }
 
     var positionX: Int {
-        get {
-            return position.x
-        }
-        set {
-            tilePosition.setXToTile(newValue)
-            position.x = newValue
-        }
+        return position.x
     }
 
     var positionY: Int {
-        get {
-            return position.y
-        }
-        set {
-            tilePosition.setYToTile(newValue)
-            position.y = newValue
-        }
+        return position.y
     }
 
     var direction: Direction
@@ -774,7 +758,7 @@ class PlayerAsset {
     }
 
     var tileAligned: Bool {
-        return position.TileAligned
+        return position.tileAligned
     }
 
     var commandCount: Int {
@@ -920,18 +904,12 @@ class PlayerAsset {
     }
 
     init(playerAssetType: PlayerAssetType) {
-        tilePosition = Position(x: 0, y: 0)
-        position = Position(x: 0, y: 0)
-
+        position = Position()
         assetType = playerAssetType
         hitPoints = playerAssetType.hitPoints
         moveRemainderX = 0
         moveRemainderY = 0
         direction = .south
-
-        PlayerAsset.updateFrequency = 1
-
-        tilePosition = Position()
     }
 
     @discardableResult func incrementHitPoints(_ increments: Int) -> Int {
@@ -975,7 +953,7 @@ class PlayerAsset {
     }
 
     func closestPosition(_ position: Position) -> Position {
-        return position.closestPosition(self.position, objectSize: size)
+        return position.closestPosition(searchingFrom: self.position, areaLength: size)
     }
 
     func clearCommand() {
@@ -1033,79 +1011,35 @@ class PlayerAsset {
     }
 
     func moveStep(occupancyMap: inout [[PlayerAsset?]], diagonals: inout [[Bool]]) -> Bool {
-        // HACK
-        let speed = 5
-        // END HACK
-        let currentOctant = position.tileOctant
-        let currentTile = tilePosition
-        let currentPosition = position
-        let deltaX: [Direction: Int] = [
-            .north: 0,
-            .northEast: 5,
-            .east: 7,
-            .southEast: 5,
-            .south: 0,
-            .southWest: -5,
-            .west: -7,
-            .northWest: -5
-        ]
-        let deltaY: [Direction: Int] = [
-            .north: -7,
-            .northEast: -5,
-            .east: 0,
-            .southEast: 5,
-            .south: 7,
-            .southWest: -5,
-            .west: -0,
-            .northWest: -5
-        ]
-
-        if currentOctant == .max || currentOctant == direction { // Aligned just move
-            let newX = speed * deltaX[direction]! * Position.tileWidth + moveRemainderX
-            let newY = speed * deltaY[direction]! * Position.tileHeight + moveRemainderY
+        let newX = speed * PlayerAsset.deltaX[direction]! * Position.tileWidth + moveRemainderX
+        let newY = speed * PlayerAsset.deltaY[direction]! * Position.tileHeight + moveRemainderY
+        var newPosition = Position(x: position.x + newX / PlayerAsset.updateDivisor, y: position.y + newY / PlayerAsset.updateDivisor)
+        if position.tileOctant == .max || position.tileOctant == direction || newPosition.tileOctant != direction {
             moveRemainderX = newX % PlayerAsset.updateDivisor
             moveRemainderY = newY % PlayerAsset.updateDivisor
-            positionX += newX / PlayerAsset.updateDivisor
-            positionY += newY / PlayerAsset.updateDivisor
-        } else { // Entering
-            let newX = speed + deltaX[direction]! * Position.tileWidth + moveRemainderX
-            let newY = speed + deltaY[direction]! * Position.tileHeight + moveRemainderY
-            moveRemainderX = newX % PlayerAsset.updateDivisor
-            moveRemainderY = newY % PlayerAsset.updateDivisor
-            let newPosition = Position(x: positionX + newX / PlayerAsset.updateDivisor, y: positionY + newY / PlayerAsset.updateDivisor)
-
-            if newPosition.tileOctant == direction {
-                newPosition.setToTile(newPosition)
-                newPosition.setFromTile(newPosition)
-                moveRemainderX = 0
-                moveRemainderY = 0
-            }
-
-            position = newPosition
+        } else {
+            moveRemainderX = 0
+            moveRemainderY = 0
+            newPosition.normalizeToTileCenter()
         }
 
-        tilePosition.setToTile(position)
-        if currentTile != tilePosition {
-            let diagonal = (currentTile.x != tilePositionX) && (currentTile.y != tilePositionY)
-            let diagonalX = min(currentTile.x, tilePositionX)
-            let diagonalY = min(currentTile.y, tilePositionY)
-
-            if (occupancyMap[tilePositionY][tilePositionX] != nil) || (diagonal && diagonals[diagonalY][diagonalX]) {
-                var returnValue = false
-                if let occupancyMapSquare = occupancyMap[tilePositionY][tilePositionX], occupancyMapSquare.action == .walk {
-                    returnValue = occupancyMapSquare.direction == currentPosition.tileOctant
+        let newTilePosition = Position.tile(fromAbsolute: newPosition)
+        if tilePosition != newTilePosition {
+            let diagonalX = min(tilePosition.x, newTilePosition.x)
+            let diagonalY = min(tilePosition.y, newTilePosition.y)
+            if occupancyMap[tilePositionY][tilePositionX] != nil || (isDiagonal(tilePosition, newTilePosition) && diagonals[diagonalY][diagonalX]) {
+                if let occupancyMapSquare = occupancyMap[newTilePosition.y][newTilePosition.x], occupancyMapSquare.action == .walk, occupancyMapSquare.direction == position.tileOctant {
+                    position = newPosition
+                    return true
                 }
-                tilePosition = currentTile
-                position = currentPosition
-                return returnValue
+                position = newPosition
+                return false
             }
-            if diagonal {
-                diagonals[diagonalY][diagonalX] = true
-            }
-            occupancyMap[tilePositionY][tilePositionX] = occupancyMap[currentTile.y][currentTile.x]
-            occupancyMap[currentTile.y][currentTile.x] = nil
+            diagonals[diagonalY][diagonalX] = isDiagonal(tilePosition, newTilePosition)
+            occupancyMap[newTilePosition.y][newTilePosition.x] = occupancyMap[tilePosition.y][tilePosition.x]
+            occupancyMap[tilePosition.y][tilePosition.x] = nil
         }
-
+        position = newPosition
         incrementStep()
         return true
     }

@@ -40,8 +40,18 @@ class AssetRenderer {
     private var selfPixelColor: UInt32
     private var enemyPixelColor: UInt32
     private var buildingPixelColor: UInt32
-    private var animationDownsample: Int = 1
-    private var targetFrequency = 10
+
+    private static var animationDownsample = 1
+    private static var targetFrequency = 10
+    private static var _updateFrequency = 1
+    static var updateFrequency: Int {
+        set {
+            animationDownsample = targetFrequency >= newValue ? 1 : newValue / targetFrequency
+        }
+        get {
+            return targetFrequency * animationDownsample
+        }
+    }
 
     init(colors: GraphicRecolorMap, tilesets: [GraphicMulticolorTileset], markerTileset: GraphicTileset, corpseTileset: GraphicTileset, fireTilesets: [GraphicTileset], buildingDeathTileset: GraphicTileset, arrowTileset: GraphicTileset, player: PlayerData?, map: AssetDecoratedMap) {
         var typeIndex = 0
@@ -56,22 +66,22 @@ class AssetRenderer {
         self.playerData = player
         self.playerMap = map
         self.pixelColors = [
-            .none: colors.colorValue(gIndex: colors.findColor(with: "none"), cIndex: 0),
-            .blue: colors.colorValue(gIndex: colors.findColor(with: "blue"), cIndex: 0),
-            .red: colors.colorValue(gIndex: colors.findColor(with: "red"), cIndex: 0),
-            .green: colors.colorValue(gIndex: colors.findColor(with: "green"), cIndex: 0),
-            .purple: colors.colorValue(gIndex: colors.findColor(with: "purple"), cIndex: 0),
-            .orange: colors.colorValue(gIndex: colors.findColor(with: "orange"), cIndex: 0),
-            .yellow: colors.colorValue(gIndex: colors.findColor(with: "yellow"), cIndex: 0),
-            .black: colors.colorValue(gIndex: colors.findColor(with: "black"), cIndex: 0),
-            .white: colors.colorValue(gIndex: colors.findColor(with: "white"), cIndex: 0)
+            .none: colors.colorValue(gIndex: colors.findColor("none"), cIndex: 0),
+            .blue: colors.colorValue(gIndex: colors.findColor("blue"), cIndex: 0),
+            .red: colors.colorValue(gIndex: colors.findColor("red"), cIndex: 0),
+            .green: colors.colorValue(gIndex: colors.findColor("green"), cIndex: 0),
+            .purple: colors.colorValue(gIndex: colors.findColor("purple"), cIndex: 0),
+            .orange: colors.colorValue(gIndex: colors.findColor("orange"), cIndex: 0),
+            .yellow: colors.colorValue(gIndex: colors.findColor("yellow"), cIndex: 0),
+            .black: colors.colorValue(gIndex: colors.findColor("black"), cIndex: 0),
+            .white: colors.colorValue(gIndex: colors.findColor("white"), cIndex: 0)
         ]
-        self.selfPixelColor = colors.colorValue(gIndex: colors.findColor(with: "self"), cIndex: 0)
-        self.enemyPixelColor = colors.colorValue(gIndex: colors.findColor(with: "enemy"), cIndex: 0)
-        self.buildingPixelColor = colors.colorValue(gIndex: colors.findColor(with: "building"), cIndex: 0)
+        self.selfPixelColor = colors.colorValue(gIndex: colors.findColor("self"), cIndex: 0)
+        self.enemyPixelColor = colors.colorValue(gIndex: colors.findColor("enemy"), cIndex: 0)
+        self.buildingPixelColor = colors.colorValue(gIndex: colors.findColor("building"), cIndex: 0)
 
         while true {
-            let index = markerTileset.findTile(with: "marker-" + String(markerIndex))
+            let index = markerTileset.findTile("marker-" + String(markerIndex))
             if index < 0 {
                 break
             }
@@ -79,18 +89,18 @@ class AssetRenderer {
             markerIndex += 1
         }
 
-        placeGoodIndex = markerTileset.findTile(with: "place-good")
-        placeBadIndex = markerTileset.findTile(with: "place-bad")
+        placeGoodIndex = markerTileset.findTile("place-good")
+        placeBadIndex = markerTileset.findTile("place-bad")
 
         var lastDirectionName = "decay-nw"
         for directionName in ["decay-n", "decay-ne", "decay-e", "decay-se", "decay-s", "decay-sw", "decay-w", "decay-nw"] {
             var stepIndex = 0
             while true {
-                var tileIndex = corpseTileset.findTile(with: directionName + String(stepIndex))
+                var tileIndex = corpseTileset.findTile(directionName + String(stepIndex))
                 if tileIndex >= 0 {
                     corpseIndices.append(tileIndex)
                 } else {
-                    tileIndex = corpseTileset.findTile(with: lastDirectionName + String(stepIndex))
+                    tileIndex = corpseTileset.findTile(lastDirectionName + String(stepIndex))
                     if tileIndex >= 0 {
                         corpseIndices.append(tileIndex)
                     } else {
@@ -105,7 +115,7 @@ class AssetRenderer {
         for directionName in ["attack-n", "attack-ne", "attack-e", "attack-se", "attack-s", "attack-sw", "attack-w", "attack-nw"] {
             var stepIndex = 0
             while true {
-                let tileIndex = arrowTileset.findTile(with: directionName + String(stepIndex))
+                let tileIndex = arrowTileset.findTile(directionName + String(stepIndex))
                 if tileIndex >= 0 {
                     arrowIndices.append(tileIndex)
                 } else {
@@ -130,7 +140,7 @@ class AssetRenderer {
             for directionName in ["walk-n", "walk-ne", "walk-e", "walk-se", "walk-s", "walk-sw", "walk-w", "walk-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         walkIndices[typeIndex].append(tileIndex)
                     } else {
@@ -142,7 +152,7 @@ class AssetRenderer {
             printDebug("Checking Construct on \(typeIndex)", level: .low)
             var stepIndex = 0
             while true {
-                let tileIndex = tileset.findTile(with: "construct-" + String(stepIndex))
+                let tileIndex = tileset.findTile("construct-" + String(stepIndex))
                 if tileIndex >= 0 {
                     constructIndices[typeIndex].append(tileIndex)
                 } else {
@@ -157,7 +167,7 @@ class AssetRenderer {
             for directionName in ["gold-n", "gold-ne", "gold-e", "gold-se", "gold-s", "gold-sw", "gold-w", "gold-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         carryGoldIndices[typeIndex].append(tileIndex)
                     } else {
@@ -170,7 +180,7 @@ class AssetRenderer {
             for directionName in ["lumber-n", "lumber-ne", "lumber-e", "lumber-se", "lumber-s", "lumber-sw", "lumber-w", "lumber-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         carryLumberIndices[typeIndex].append(tileIndex)
                     } else {
@@ -183,7 +193,7 @@ class AssetRenderer {
             for directionName in ["attack-n", "attack-ne", "attack-e", "attack-se", "attack-s", "attack-sw", "attack-w", "attack-nw"] {
                 var stepIndex = 0
                 while true {
-                    let tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    let tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         attackIndices[typeIndex].append(tileIndex)
                     } else {
@@ -195,11 +205,11 @@ class AssetRenderer {
             if attackIndices[typeIndex].count == 0 {
                 var tileIndex: Int
                 for _ in 0 ..< Direction.numberOfDirections {
-                    if tileset.findTile(with: "active") >= 0 {
-                        tileIndex = tileset.findTile(with: "active")
+                    if tileset.findTile("active") >= 0 {
+                        tileIndex = tileset.findTile("active")
                         attackIndices[typeIndex].append(tileIndex)
-                    } else if tileset.findTile(with: "inactive") >= 0 {
-                        tileIndex = tileset.findTile(with: "inactive")
+                    } else if tileset.findTile("inactive") >= 0 {
+                        tileIndex = tileset.findTile("inactive")
                         attackIndices[typeIndex].append(tileIndex)
                     }
                 }
@@ -209,11 +219,11 @@ class AssetRenderer {
             for directionName in ["death-n", "death-ne", "death-e", "death-se", "death-s", "death-sw", "death-w", "death-nw"] {
                 var stepIndex = 0
                 while true {
-                    var tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    var tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         deathIndices[typeIndex].append(tileIndex)
                     } else {
-                        tileIndex = tileset.findTile(with: lastDirectionName + String(stepIndex))
+                        tileIndex = tileset.findTile(lastDirectionName + String(stepIndex))
                         if tileIndex >= 0 {
                             deathIndices[typeIndex].append(tileIndex)
                         } else {
@@ -226,13 +236,13 @@ class AssetRenderer {
             }
             printDebug("Checking None on \(typeIndex)", level: .low)
             for directionName in ["none-n", "none-ne", "none-e", "none-se", "none-s", "none-sw", "none-w", "none-nw"] {
-                var tileIndex = tileset.findTile(with: directionName)
+                var tileIndex = tileset.findTile(directionName)
                 if tileIndex >= 0 {
                     noneIndices[typeIndex].append(tileIndex)
                 } else if walkIndices[typeIndex].count != 0 {
                     noneIndices[typeIndex].append(walkIndices[typeIndex][noneIndices[typeIndex].count * (walkIndices[typeIndex].count / Direction.numberOfDirections)])
-                } else if tileset.findTile(with: "inactive") >= 0 {
-                    tileIndex = tileset.findTile(with: "inactive")
+                } else if tileset.findTile("inactive") >= 0 {
+                    tileIndex = tileset.findTile("inactive")
                     noneIndices[typeIndex].append(tileIndex)
                 }
             }
@@ -240,16 +250,16 @@ class AssetRenderer {
             for directionName in ["build-n", "build-ne", "build-e", "build-se", "build-s", "build-sw", "build-w", "build-nw"] {
                 var stepIndex = 0
                 while true {
-                    var tileIndex = tileset.findTile(with: directionName + String(stepIndex))
+                    var tileIndex = tileset.findTile(directionName + String(stepIndex))
                     if tileIndex >= 0 {
                         buildIndices[typeIndex].append(tileIndex)
                     } else {
                         if stepIndex != 0 {
-                            if tileset.findTile(with: "active") >= 0 {
-                                tileIndex = tileset.findTile(with: "active")
+                            if tileset.findTile("active") >= 0 {
+                                tileIndex = tileset.findTile("active")
                                 buildIndices[typeIndex].append(tileIndex)
-                            } else if tileset.findTile(with: "inactive") >= 0 {
-                                tileIndex = tileset.findTile(with: "inactive")
+                            } else if tileset.findTile("inactive") >= 0 {
+                                tileIndex = tileset.findTile("inactive")
                                 buildIndices[typeIndex].append(tileIndex)
                             }
                         }
@@ -259,19 +269,10 @@ class AssetRenderer {
                 }
             }
             printDebug("Checking Place on \(typeIndex)", level: .low)
-            placeIndices[typeIndex].append(tileset.findTile(with: "place"))
+            placeIndices[typeIndex].append(tileset.findTile("place"))
             printDebug("Done checking type \(typeIndex)", level: .low)
             typeIndex += 1
         }
-    }
-
-    func updateFrequency(_ frequency: Int) -> Int {
-        if targetFrequency >= frequency {
-            animationDownsample = 1
-            return targetFrequency
-        }
-        animationDownsample = frequency / targetFrequency
-        return frequency
     }
 
     func compareRenderData(first: Data, second: Data) -> Bool {
@@ -284,9 +285,9 @@ class AssetRenderer {
         return first.x <= second.x
     }
 
-    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) throws {
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) {
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
         var finalRenderList: [Data] = []
 
         for asset in playerMap.assets {
@@ -307,9 +308,9 @@ class AssetRenderer {
             let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth - 1
 
             var isOnScreen = true
-            if rightX < rect.xPosition || renderData.x > screenRightX {
+            if rightX < rect.x || renderData.x > screenRightX {
                 isOnScreen = false
-            } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+            } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                 isOnScreen = false
             }
 
@@ -317,8 +318,8 @@ class AssetRenderer {
                 continue
             }
 
-            renderData.x -= rect.xPosition
-            renderData.y -= rect.yPosition
+            renderData.x -= rect.x
+            renderData.y -= rect.y
             renderData.colorIndex = asset.color != .none ? asset.color.index - 1 : 0
             renderData.tileIndex = -1
 
@@ -326,7 +327,7 @@ class AssetRenderer {
             case .build:
                 let actionSteps = buildIndices[renderData.type.rawValue].count / Direction.numberOfDirections
                 if actionSteps > 0 {
-                    let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                    let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                     renderData.tileIndex = buildIndices[asset.type.rawValue][tileIndex]
                 }
             case .construct:
@@ -347,7 +348,7 @@ class AssetRenderer {
                     }
                 }()
                 let actionSteps = currentIndices[asset.type.rawValue].count / Direction.numberOfDirections
-                let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                 renderData.tileIndex = currentIndices[asset.type.rawValue][tileIndex]
             case .attack:
                 let currentStep = asset.step % asset.attackSteps + asset.reloadSteps
@@ -358,7 +359,7 @@ class AssetRenderer {
                 }
             case .harvestLumber:
                 let actionSteps = attackIndices[renderData.type.hashValue].count / Direction.numberOfDirections
-                let tileIndex = asset.direction.index * actionSteps + ((asset.step / animationDownsample) % actionSteps)
+                let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                 renderData.tileIndex = attackIndices[asset.type.rawValue][tileIndex]
             case .standGround, .none:
                 renderData.tileIndex = noneIndices[asset.type.rawValue][asset.direction.index]
@@ -392,7 +393,7 @@ class AssetRenderer {
                     guard actionSteps > 0 else {
                         break
                     }
-                    let currentStep = min(asset.step / animationDownsample, actionSteps - 1)
+                    let currentStep = min(asset.step / AssetRenderer.animationDownsample, actionSteps - 1)
                     renderData.tileIndex = deathIndices[asset.type.rawValue][asset.direction.index * actionSteps + currentStep]
                 } else if asset.step < buildingDeathTileset.tileCount {
                     renderData.tileIndex = tilesets[asset.type.rawValue].tileCount + asset.step
@@ -406,30 +407,25 @@ class AssetRenderer {
             if renderData.tileIndex >= 0 {
                 finalRenderList.append(renderData)
             }
+        }
+        finalRenderList.sort { first, second in
+            return compareRenderData(first: first, second: second)
+        }
 
-            finalRenderList.sort { first, second in
-                return compareRenderData(first: first, second: second)
-            }
-
-            for renderData in finalRenderList {
-                if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
-                    try tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
-                    try tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
-                } else {
-                    try buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
-                }
+        for renderData in finalRenderList {
+            if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
+                tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
+                tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
+            } else {
+                buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
             }
         }
     }
 
-    func drawSelections(on surface: GraphicSurface, in rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) throws {
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
+    func drawSelections(on surface: GraphicSurface, in rect: Rectangle, selectionList: [PlayerAsset], selectRect: Rectangle, highlightBuilding: Bool) {
         let resourceContext = surface.resourceContext
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
         var rectangleColor = selfPixelColor
 
         if highlightBuilding {
@@ -457,13 +453,13 @@ class AssetRenderer {
                 let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth + (2 * offset * Position.tileWidth) - 1
                 renderData.bottomY = renderData.y + tilesets[renderData.type.rawValue].tileHeight + (2 * offset * Position.tileHeight) - 1
                 var onScreen = true
-                if rightX < rect.xPosition || renderData.x > screenRightX {
+                if rightX < rect.x || renderData.x > screenRightX {
                     onScreen = false
-                } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                     onScreen = false
                 }
-                renderData.x -= rect.xPosition
-                renderData.y -= rect.yPosition
+                renderData.x -= rect.x
+                renderData.y -= rect.y
                 if onScreen {
                     resourceContext.rectangle(
                         x: renderData.x,
@@ -479,8 +475,8 @@ class AssetRenderer {
 
         resourceContext.setSourceRGB(rectangleColor)
         if selectRect.width != 0 && selectRect.height != 0 {
-            let selectionX = selectRect.xPosition - rect.xPosition
-            let selectionY = selectRect.yPosition - rect.yPosition
+            let selectionX = selectRect.x - rect.x
+            let selectionY = selectRect.y - rect.y
             resourceContext.rectangle(x: selectionX, y: selectionY, width: selectRect.width, height: selectRect.height)
             resourceContext.stroke()
         }
@@ -488,7 +484,7 @@ class AssetRenderer {
         if let asset = selectionList.first {
             if asset.color == .none {
                 rectangleColor = pixelColors[.none]!
-            } else if asset.color != playerData.color {
+            } else if asset.color != playerData!.color {
                 rectangleColor = enemyPixelColor
             }
             resourceContext.setSourceRGB(rectangleColor)
@@ -505,25 +501,25 @@ class AssetRenderer {
                     let rightX = renderData.x + corpseTileset.tileWidth
                     renderData.bottomY = renderData.y + corpseTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                    } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                         onScreen = false
                     }
 
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
 
                     if onScreen {
                         let actionSteps = corpseIndices.count / Direction.numberOfDirections
                         if actionSteps != 0 {
-                            var currentStep = asset.step / (animationDownsample * targetFrequency)
+                            var currentStep = asset.step / AssetRenderer.updateFrequency
                             if currentStep >= actionSteps {
                                 currentStep = actionSteps - 1
                             }
                             renderData.tileIndex = corpseIndices[asset.direction.index * actionSteps + currentStep]
                         }
-                        try corpseTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                        corpseTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                     }
                 } else if asset.action == AssetAction.attack {
                     var onScreen = true
@@ -532,19 +528,19 @@ class AssetRenderer {
                     let rightX = renderData.x + markerTileset.tileWidth
                     renderData.bottomY = renderData.y + markerTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if (renderData.bottomY < rect.yPosition) || (renderData.y > screenBottomY) {
+                    } else if (renderData.bottomY < rect.y) || (renderData.y > screenBottomY) {
                         onScreen = false
                     }
 
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
 
                     if onScreen {
-                        let markerIndex = asset.step / animationDownsample
+                        let markerIndex = asset.step / AssetRenderer.animationDownsample
                         if markerIndex < markerIndices.count {
-                            try markerTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: markerIndices[markerIndex])
+                            markerTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: markerIndices[markerIndex])
                         }
                     }
                 }
@@ -557,15 +553,15 @@ class AssetRenderer {
                 let rightX = renderData.x + rectWidth
                 renderData.bottomY = renderData.y + rectHeight
 
-                if rightX < rect.xPosition || renderData.x > screenRightX {
+                if rightX < rect.x || renderData.x > screenRightX {
                     onScreen = false
-                } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                     onScreen = false
                 } else if asset.action == AssetAction.mineGold || asset.action == AssetAction.conveyLumber || asset.action == AssetAction.conveyGold {
                     onScreen = false
                 }
-                renderData.x -= rect.xPosition
-                renderData.y -= rect.yPosition
+                renderData.x -= rect.x
+                renderData.y -= rect.y
                 if onScreen {
                     resourceContext.rectangle(x: renderData.x, y: renderData.y, width: rectWidth, height: rectHeight)
                     resourceContext.stroke()
@@ -574,13 +570,9 @@ class AssetRenderer {
         }
     }
 
-    func drawOverlays(on surface: GraphicSurface, in rect: Rectangle) throws {
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+    func drawOverlays(on surface: GraphicSurface, in rect: Rectangle) {
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
 
         for asset in playerMap.assets {
             var renderData = Data()
@@ -594,20 +586,20 @@ class AssetRenderer {
                     let rightX = renderData.x + arrowTileset.tileWidth
                     renderData.bottomY = renderData.y + arrowTileset.tileHeight
 
-                    if rightX < rect.xPosition || renderData.x > screenRightX {
+                    if rightX < rect.x || renderData.x > screenRightX {
                         onScreen = false
-                    } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                    } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                         onScreen = false
                     }
-                    renderData.x -= rect.xPosition
-                    renderData.y -= rect.yPosition
+                    renderData.x -= rect.x
+                    renderData.y -= rect.y
                     if onScreen {
                         let actionSteps = arrowIndices.count / Direction.numberOfDirections
-                        try arrowTileset.drawTile(
+                        arrowTileset.drawTile(
                             on: surface,
                             x: renderData.x,
                             y: renderData.y,
-                            index: arrowIndices[asset.direction.index * actionSteps + ((playerData.gameCycle - asset.creationCycle) % actionSteps)]
+                            index: arrowIndices[asset.direction.index * actionSteps + ((playerData!.gameCycle - asset.creationCycle) % actionSteps)]
                         )
                     }
                 }
@@ -633,23 +625,23 @@ class AssetRenderer {
 
                     if hitRange < fireTilesets.count {
                         let tilesetIndex = fireTilesets.count - 1 - hitRange
-                        renderData.tileIndex = (playerData.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
+                        renderData.tileIndex = (playerData!.gameCycle - asset.creationCycle) % fireTilesets[tilesetIndex].tileCount
                         renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - fireTilesets[tilesetIndex].tileHalfWidth
                         renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - fireTilesets[tilesetIndex].tileHeight
                         let rightX = renderData.x + fireTilesets[tilesetIndex].tileWidth - 1
                         renderData.bottomY = renderData.y + fireTilesets[tilesetIndex].tileHeight - 1
                         var onScreen = true
 
-                        if rightX < rect.xPosition || renderData.x > screenRightX {
+                        if rightX < rect.x || renderData.x > screenRightX {
                             onScreen = false
-                        } else if renderData.bottomY < rect.yPosition || renderData.y > screenBottomY {
+                        } else if renderData.bottomY < rect.y || renderData.y > screenBottomY {
                             onScreen = false
                         }
-                        renderData.x -= rect.xPosition
-                        renderData.y -= rect.yPosition
+                        renderData.x -= rect.x
+                        renderData.y -= rect.y
 
                         if onScreen {
-                            try fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
+                            fireTilesets[tilesetIndex].drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
                         }
                     }
                 }
@@ -657,32 +649,27 @@ class AssetRenderer {
         }
     }
 
-    func drawPlacement(on surface: GraphicSurface, in rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) throws {
+    func drawPlacement(on surface: GraphicSurface, in rect: Rectangle, position: Position, type: AssetType, builder: PlayerAsset) {
         guard type != .none else {
             return
         }
-        guard let playerData = playerData else {
-            throw GameError.missingPlayerData
-        }
-
-        let screenRightX = rect.xPosition + rect.width - 1
-        let screenBottomY = rect.yPosition + rect.height - 1
+        var position = position
+        let screenRightX = rect.x + rect.width - 1
+        let screenBottomY = rect.y + rect.height - 1
 
         var onScreen = true
-        let assetType = PlayerAssetType.findDefault(with: type)
+        let assetType = PlayerAssetType.findDefault(type)
         var placementTiles = Array(repeating: [0], count: assetType.size)
 
-        let tempPosition = Position()
-        let tilePosition = Position()
-        tilePosition.setToTile(position)
-        tempPosition.setFromTile(tilePosition)
+        var tilePosition = Position.tile(fromAbsolute: position)
+        var tempPosition = Position.absolute(fromTile: tilePosition)
 
         tempPosition.x += (assetType.size - 1) * Position.halfTileWidth - tilesets[type.rawValue].tileHalfWidth
         tempPosition.y += (assetType.size - 1) * Position.halfTileHeight - tilesets[type.rawValue].tileHalfHeight
         let placementRightX = tempPosition.x + tilesets[type.rawValue].tileWidth
         let placementBottomY = tempPosition.y + tilesets[type.rawValue].tileHeight
 
-        tilePosition.setToTile(position)
+        tilePosition = Position.tile(fromAbsolute: position)
         var xOffset = 0
         var yOffset = 0
 
@@ -728,9 +715,9 @@ class AssetRenderer {
                 }
             }
 
-            if placementRightX <= rect.xPosition {
+            if placementRightX <= rect.x {
                 onScreen = false
-            } else if placementBottomY <= rect.yPosition {
+            } else if placementBottomY <= rect.y {
                 onScreen = false
             } else if position.x >= screenRightX {
                 onScreen = false
@@ -739,14 +726,14 @@ class AssetRenderer {
             }
 
             if onScreen {
-                position.x -= rect.xPosition
-                position.y -= position.y - rect.yPosition
-                try tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData.color.index - 1)
+                position.x -= rect.x
+                position.y -= position.y - rect.y
+                tilesets[type.rawValue].drawTile(on: surface, x: position.x, y: position.y, tileIndex: placeIndices[type.rawValue][0], colorIndex: playerData!.color.index - 1)
                 var x = position.x
                 var y = position.y
                 for row in placementTiles {
                     for cell in row {
-                        try markerTileset.drawTile(on: surface, x: x, y: y, index: cell != 0 ? placeGoodIndex : placeBadIndex)
+                        markerTileset.drawTile(on: surface, x: x, y: y, index: cell != 0 ? placeGoodIndex : placeBadIndex)
                         x += markerTileset.tileWidth
                     }
                     y += markerTileset.tileHeight
@@ -768,7 +755,7 @@ class AssetRenderer {
             }
         } else {
             for asset in playerMap.assetInitializationList {
-                let size = PlayerAssetType.findDefault(with: asset.type).size
+                let size = PlayerAssetType.findDefault(asset.type).size
                 let pixelColor = pixelColors[asset.color]!
                 resourceContext.setSourceRGB(pixelColor)
                 resourceContext.rectangle(x: asset.tilePosition.x, y: asset.tilePosition.y, width: size, height: size)
