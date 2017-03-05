@@ -31,12 +31,12 @@ fileprivate func rangeToDistanceSquared(_ range: Int) -> Int {
 class PlayerData {
     var isAI: Bool
     private(set) var color: PlayerColor
-    private var actualMap: AssetDecoratedMap
+    private(set) var actualMap: AssetDecoratedMap
     private(set) var visibilityMap: VisibilityMap
     private(set) var playerMap: AssetDecoratedMap
     private(set) var assetTypes: [String: PlayerAssetType]
     private(set) var assets: [PlayerAsset]
-    private var upgrades: [Bool]
+    private(set) var upgrades: [Bool]
     private(set) var gameEvents: [GameEvent]
     private(set) var gold: Int
     private(set) var lumber: Int
@@ -72,33 +72,27 @@ class PlayerData {
         self.isAI = true
         self.color = color
         self.actualMap = map
-        self.visibilityMap = actualMap.createVisibilityMap()
-        self.playerMap = self.actualMap.createInitializeMap()
-        self.assetTypes = PlayerAssetType.duplicateRegistry(changeColorTo: self.color)
+        self.visibilityMap = map.createVisibilityMap()
+        self.playerMap = map.createInitializeMap()
+        self.assetTypes = PlayerAssetType.duplicateRegistry(changeColorTo: color)
         self.assets = []
-        self.upgrades = []
+        self.upgrades = Array(repeating: false, count: AssetCapabilityType.allValues.count)
         self.gameEvents = []
         self.gold = 0
         self.lumber = 0
         self.gameCycle = 0
 
-        upgrades = Array(repeating: false, count: AssetCapabilityType.max.rawValue)
-
-        for resource in actualMap.resourceInitializationList {
-            if resource.color == self.color {
-                gold = resource.gold
-                lumber = resource.lumber
-            }
+        for resource in actualMap.resourceInitializationList where resource.color == color {
+            self.gold = resource.gold
+            self.lumber = resource.lumber
         }
 
-        for asset in actualMap.assetInitializationList {
-            if asset.color == self.color {
-                printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
-                let initAsset = createAsset(asset.type)
-                initAsset.tilePosition = asset.tilePosition
-                if PlayerAssetType.findType(asset.type) == .goldMine {
-                    initAsset.gold = self.gold
-                }
+        for asset in actualMap.assetInitializationList where asset.color == color {
+            printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
+            let initialAsset = createAsset(asset.type)
+            initialAsset.tilePosition = asset.tilePosition
+            if PlayerAssetType.findType(asset.type) == .goldMine {
+                initialAsset.gold = self.gold
             }
         }
     }
@@ -152,20 +146,19 @@ class PlayerData {
     }
 
     func assetRequirementsIsMet(name: String) -> Bool {
-        var assetCount = Array(repeating: 0, count: AssetType.max.rawValue)
+        var assetExistence: [AssetType: Bool] = [:]
         for asset in assets where asset.action != .construct {
-            assetCount[asset.type.rawValue] += 1
+            assetExistence[asset.type] = true
         }
-        for requirement in assetTypes[name]!.assetRequirements {
-            if assetCount[requirement.rawValue] == 0 {
-                if requirement == .keep && assetCount[AssetType.castle.rawValue] != 0 {
-                    continue
-                }
-                if requirement == .townHall && (assetCount[AssetType.castle.rawValue] != 0 || assetCount[AssetType.keep.rawValue] != 0) {
-                    continue
-                }
-                return false
+
+        for requirement in assetTypes[name]!.assetRequirements where assetExistence[requirement] == nil {
+            if requirement == .keep && assetExistence[.castle] != nil {
+                continue
+             }
+            if requirement == .townHall && (assetExistence[.castle] != nil || assetExistence[.keep] != nil) {
+                continue
             }
+            return false
         }
         return true
     }
