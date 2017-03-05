@@ -48,22 +48,16 @@ class PlayerData {
 
     var foodConsumption: Int {
         var totalConsumption = 0
-        for asset in assets {
-            let assetConsumption = asset.foodConsumption
-            if assetConsumption > 0 {
-                totalConsumption += assetConsumption
-            }
+        for asset in assets where asset.foodConsumption > 0 {
+            totalConsumption += asset.foodConsumption
         }
         return totalConsumption
     }
 
     var foodProduction: Int {
         var totalProduction = 0
-        for asset in assets {
-            let assetConsumption = foodConsumption
-            if assetConsumption < 0 && (asset.action != .construct || asset.currentCommand.assetTarget == nil) {
-                totalProduction += -assetConsumption
-            }
+        for asset in assets where asset.foodConsumption < 0 && (asset.action != .construct || asset.currentCommand.assetTarget == nil) {
+            totalProduction += -asset.foodConsumption
         }
         return totalProduction
     }
