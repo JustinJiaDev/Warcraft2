@@ -1,32 +1,20 @@
 import Foundation
 
 class BasicCapabilities {
+    static let registrant = BasicCapabilities()
 
-    @discardableResult
-    static func register() -> Bool {
-        // Do not register capabilities if already registered
-        guard BasicCapabilities.registered == false else {
-            return false
-        }
-
-        // register all capabilities in this file
-        let capabilities = [
-            PlayerCapabilityMove(),
-            PlayerCapabilityMineHarvest(),
-            PlayerCapabityStandGround(),
-            PlayerCapabilityCancel(),
-            PlayerCapabilityConvey(),
-            PlayerCapabilityPatrol(),
-            PlayerCapabilityAttack(),
-            PlayerCapabilityRepair()
-        ]
-        for capability in capabilities {
-            PlayerCapability.register(capability: capability)
-        }
-        return true
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityMove())
+        PlayerCapability.register(capability: PlayerCapabilityMineHarvest())
+        PlayerCapability.register(capability: PlayerCapabityStandGround())
+        PlayerCapability.register(capability: PlayerCapabilityCancel())
+        PlayerCapability.register(capability: PlayerCapabilityConvey())
+        PlayerCapability.register(capability: PlayerCapabilityPatrol())
+        PlayerCapability.register(capability: PlayerCapabilityAttack())
+        PlayerCapability.register(capability: PlayerCapabilityRepair())
     }
 
-    private static var registered = false
+    func register() {}
 }
 
 class PlayerCapabilityMove: PlayerCapability {
@@ -34,14 +22,6 @@ class PlayerCapabilityMove: PlayerCapability {
     init() {
         super.init(name: "Move", targetType: .terrainOrAsset)
     }
-
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityMove())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -94,14 +74,6 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
     init() {
         super.init(name: "Mine", targetType: .terrainOrAsset)
     }
-
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityMineHarvest())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivateCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -171,14 +143,6 @@ class PlayerCapabityStandGround: PlayerCapability {
     init() {
         super.init(name: "StandGround", targetType: .none)
     }
-    //
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabityStandGround())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
 
@@ -233,14 +197,6 @@ class PlayerCapabilityCancel: PlayerCapability {
     init() {
         super.init(name: "Cancel", targetType: .none)
     }
-    //
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityCancel())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -295,14 +251,6 @@ class PlayerCapabilityConvey: PlayerCapability {
     init() {
         super.init(name: "Convey", targetType: .asset)
     }
-
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityConvey())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -374,14 +322,6 @@ class PlayerCapabilityPatrol: PlayerCapability {
         super.init(name: "Patrol", targetType: .terrain)
     }
 
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityPatrol())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
-
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
@@ -436,14 +376,6 @@ class PlayerCapabilityAttack: PlayerCapability {
     init() {
         super.init(name: "Attack", targetType: .asset)
     }
-
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityAttack())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -502,14 +434,6 @@ class PlayerCapabilityRepair: PlayerCapability {
     init() {
         super.init(name: "Repair", targetType: .asset)
     }
-
-    //    class Registrant {
-    //        init() {
-    //            PlayerCapability.register(capability: PlayerCapabilityRepair())
-    //        }
-    //    }
-    //
-    //    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {

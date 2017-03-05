@@ -82,6 +82,18 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
     return assetRenderer
 }
 
+func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer {
+    let bevel = try Bevel(tileset: tileset("Icons"))
+    let icons = try tileset("Icons")
+    let unitActionRenderer = UnitActionRenderer(
+        bevel: bevel,
+        icons: icons,
+        color: gameModel.player(.blue).color,
+        player: gameModel.player(.blue)
+    )
+    return unitActionRenderer
+}
+
 func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
     let fogTileset = try tileset("Fog")
     return try FogRenderer(tileset: fogTileset, map: map.createVisibilityMap())

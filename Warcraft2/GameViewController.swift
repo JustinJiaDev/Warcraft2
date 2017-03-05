@@ -7,9 +7,6 @@ class GameViewController: UIViewController {
     private let mapIndex = 2
 
     fileprivate var selectedPeasant: PlayerAsset?
-    fileprivate var unitActionRenderer: UnitActionRenderer?
-    fileprivate var originalCameraPosition: CGPoint = .zero
-    fileprivate var originalTranslation: CGPoint = .zero
 
     lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
@@ -19,26 +16,10 @@ class GameViewController: UIViewController {
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
     lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
+    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel)
 
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
     lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
-
-    private func createUnitActionRenderer() -> UnitActionRenderer {
-        do {
-            let bevel = try Bevel(tileset: tileset("Icons"))
-            let icons = try tileset("Icons")
-
-            let unitActionRenderer = UnitActionRenderer(
-                bevel: bevel,
-                icons: icons,
-                color: gameModel.player(.blue).color,
-                player: gameModel.player(.blue)
-            )
-            return unitActionRenderer
-        } catch {
-            fatalError(error.localizedDescription) // TODO: Handle Error
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,8 +33,7 @@ class GameViewController: UIViewController {
         midiPlayer.prepareToPlay()
         midiPlayer.play()
 
-        // load capabilities
-        BasicCapabilities.register()
+        BasicCapabilities.registrant.register()
 
         mapView.presentScene(scene)
 
@@ -96,8 +76,8 @@ class GameViewController: UIViewController {
     }
 
     func showActionMenu(playerAsset: PlayerAsset) {
-        unitActionRenderer = createUnitActionRenderer()
-        let actionIndices = unitActionRenderer!.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
+
+        let actionIndices = unitActionRenderer.getUnitActionIndex(selectionList: [playerAsset], currentAction: .none)
         guard actionIndices.count != 0 else {
             return
         }
