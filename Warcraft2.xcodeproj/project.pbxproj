@@ -53,6 +53,7 @@
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0A216BE1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */; };
 		D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */; };
+		D0C813871E6D656D003A10DD /* BuildCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C813861E6D656D003A10DD /* BuildCapabilities.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
 		D0D6FA5A1E26015E00D92DA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D6FA581E26015E00D92DA5 /* Main.storyboard */; };
@@ -114,6 +115,7 @@
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
 		D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildingUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
+		D0C813861E6D656D003A10DD /* BuildCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildCapabilities.swift; sourceTree = "<group>"; };
 		D0C9C782AE7DB11B514D5CD1 /* Pods-Warcraft2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.debug.xcconfig"; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
+				D0C813861E6D656D003A10DD /* BuildCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
 				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
@@ -493,6 +496,7 @@
 				D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */,
 				8E1B51611E2D694C008E968C /* Position.swift in Sources */,
 				8EA067841E33C8E00059CEC2 /* LineDataSource.swift in Sources */,
+				D0C813871E6D656D003A10DD /* BuildCapabilities.swift in Sources */,
 				8EA067871E33C8E00059CEC2 /* TerrainMap.swift in Sources */,
 				A90224B81E45AAB900BECE39 /* UnitActionRenderer.swift in Sources */,
 				8EC6A5CA1E3D797000ACB660 /* RouterMap.swift in Sources */,

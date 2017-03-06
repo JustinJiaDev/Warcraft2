@@ -174,7 +174,11 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
             }
             collectionView.isHidden = true
         default:
-            break
+            let capability = PlayerCapability.findCapability(.buildGuardTower)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.createMarker(at: Position(x: 5 * 32, y: 5 * 32), addToMap: false)
+            capability.applyCapability(actor: actor, playerData: playerData, target: target)
+            collectionView.isHidden = true
         }
     }
 }

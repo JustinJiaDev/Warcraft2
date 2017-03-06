@@ -31,6 +31,7 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
 
         BasicCapabilities.registrant.register()
+        BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
 
