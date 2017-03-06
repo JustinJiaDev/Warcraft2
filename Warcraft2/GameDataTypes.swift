@@ -126,7 +126,6 @@ enum AssetCapabilityType: Int {
     case longbow
     case rangerScouting
     case marksmanship
-    case max
 
     static var allValues: [AssetCapabilityType] = [
         .none,

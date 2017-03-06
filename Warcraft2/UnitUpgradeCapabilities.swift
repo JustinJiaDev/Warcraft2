@@ -227,7 +227,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
                 if upgrade.goldCost > playerData.gold {
                     return false
                 }
-                if playerData.assetRequirementsIsMet(name: unitName) {
+                if !playerData.assetRequirementsIsMet(name: unitName) {
                     return false
                 }
             }
