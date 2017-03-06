@@ -36,15 +36,13 @@ class GameViewController: UIViewController {
 
         viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
-        self.view = mapView
-
         let sidebarContainerView = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: self.view.bounds.size.height))
         sidebarContainerView.backgroundColor = UIColor.black
 
         let assetStatsView = createAssetStatsView()
         assetStatsView.frame = CGRect(x: 0, y: 0, width: sidebarContainerView.bounds.size.width, height: sidebarContainerView.bounds.size.height / 2)
 
-        miniMapView.frame.origin = CGPoint(x: 0, y: assetStatsView.bounds.size.height)
+        miniMapView.frame.origin = CGPoint(x: 30, y: assetStatsView.bounds.size.height + 20)
 
         sidebarContainerView.addSubview(assetStatsView)
         sidebarContainerView.addSubview(miniMapView)
@@ -52,9 +50,12 @@ class GameViewController: UIViewController {
         resourceBarView.frame = CGRect(x: sidebarContainerView.bounds.size.width, y: 0, width: self.view.bounds.size.width - sidebarContainerView.bounds.size.width, height: 35)
         resourceBarView.setNeedsLayout()
 
-        self.view = mapView
+        mapView.frame.origin = CGPoint(x: sidebarContainerView.bounds.width, y: resourceBarView.bounds.height)
+        mapView.frame.size = CGSize(width: view.bounds.width - sidebarContainerView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+
+        view.addSubview(mapView)
         view.addSubview(actionMenuView)
-        // view.addSubview(sidebarContainerView)
+        view.addSubview(sidebarContainerView)
         view.addSubview(resourceBarView)
 
         midiPlayer.prepareToPlay()

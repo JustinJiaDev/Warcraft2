@@ -96,10 +96,17 @@ func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer
 
 func createActionMenuView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
-    layout.itemSize = CGSize(width: 100, height: 100)
+    layout.sectionInset.top = 10
+    layout.sectionInset.left = 10
+    layout.sectionInset.bottom = 10
+    layout.minimumInteritemSpacing = 10
+    layout.itemSize = CGSize(width: 46, height: 46)
     var frame = UIScreen.main.bounds
-    frame.size.height /= 4
+    frame.origin.x = 150
+    frame.origin.y = CGFloat(UIScreen.main.bounds.height - 66)
+    frame.size.height = 66
     let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
+    actionMenuView.backgroundColor = UIColor.lightGray
     actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
     actionMenuView.isHidden = true
     return actionMenuView

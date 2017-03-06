@@ -99,7 +99,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         let hasCargo = selectionList.last!.lumber > 0 || selectionList.last!.gold > 0
 
         displayedCommands.removeAll()
-        if currentAction == .none {
+        if [.none, .cancel].contains(currentAction) {
             if isMoveable {
                 displayedCommands.append(hasCargo ? .convey : .move)
                 displayedCommands.append(.standGround)
@@ -151,10 +151,27 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         currentAction = displayedCommands[indexPath.row]
         switch displayedCommands[indexPath.row] {
         case .mine:
-            let hardcodedGoldMine = playerData.playerMap.assets[0]
-            let hardcodedPeasant = playerData.playerMap.assets[1]
-            let command = AssetCommand(action: .mineGold, capability: .mine, assetTarget: hardcodedGoldMine, activatedCapability: nil)
-            hardcodedPeasant.pushCommand(command)
+            let capability = PlayerCapability.findCapability(.mine)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.playerMap.assets[0]
+            if capability.canApply(actor: actor, playerData: playerData, target: target) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: target)
+            }
+            collectionView.isHidden = true
+        case .repair:
+            let capability = PlayerCapability.findCapability(.mine)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.createMarker(at: Position(x: 1 * 32, y: 3 * 32), addToMap: false)
+            if capability.canApply(actor: actor, playerData: playerData, target: target) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: target)
+            }
+            collectionView.isHidden = true
+        case .cancel:
+            let capability = PlayerCapability.findCapability(.cancel)
+            let actor = playerData.playerMap.assets[1]
+            if capability.canApply(actor: actor, playerData: playerData, target: actor) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: actor)
+            }
             collectionView.isHidden = true
         default:
             break
