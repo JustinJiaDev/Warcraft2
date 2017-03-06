@@ -1,24 +1,16 @@
 import Foundation
 
 enum MiniIconTypes: Int {
-    case mitGold
-    case mitLumber
-    case mitFood
-    case mitMax
+    case gold
+    case lumber
+    case food
 }
 
 func mitValue(mit: MiniIconTypes) -> Int {
     switch mit {
-    case .mitGold:
-        return 0
-    case .mitLumber:
-        return 1
-    case .mitFood:
-        return 2
-    case .mitMax:
-        return 3
-    default:
-        return -1
+    case .gold: return 0
+    case .lumber: return 1
+    case .food: return 2
     }
 }
 
