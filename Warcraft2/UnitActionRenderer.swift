@@ -11,6 +11,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     private let commandIndices: [AssetCapabilityType: Int]
     private let disabledIndex: Int
     private var displayedCommands: [AssetCapabilityType]
+    private var currentAction: AssetCapabilityType
 
     private static let capabilities: [AssetCapabilityType] = [
         .buildFarm,
@@ -74,6 +75,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         ]
         self.disabledIndex = iconTileset.findTile("disabled")
         self.displayedCommands = []
+        self.currentAction = .none
     }
 
     var minimumWidth: Int {
@@ -84,7 +86,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         return fullIconHeight * 3 + bevel.width * 2
     }
 
-    func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) {
+    func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset]) {
         guard !selectionList.isEmpty else {
             return
         }
@@ -146,6 +148,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        currentAction = displayedCommands[indexPath.row]
         switch displayedCommands[indexPath.row] {
         case .mine:
             let hardcodedGoldMine = playerData.playerMap.assets[0]

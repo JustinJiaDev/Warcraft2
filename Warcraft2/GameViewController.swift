@@ -96,7 +96,7 @@ class GameViewController: UIViewController {
             }
             if let selectedPeasant = selectedPeasant {
                 actionMenuView.isHidden = false
-                unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedPeasant], currentAction: .none)
+                unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedPeasant])
             } else {
                 actionMenuView.isHidden = true
             }
