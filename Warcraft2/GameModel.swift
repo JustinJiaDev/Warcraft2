@@ -656,17 +656,11 @@ class GameModel {
                         command.action = .walk
                         asset.pushCommand(command)
                         asset.resetStep()
-                        nextTarget = target.tilePosition
+                        nextTarget = command.assetTarget!.tilePosition
                     } else {
                         asset.popCommand()
                     }
-                    asset.tilePosition = Position.tile(
-                        fromAbsolute: players[asset.color.index].playerMap.findAssetPlacement(
-                            placeAsset: asset,
-                            fromAsset: oldTarget,
-                            nextTileTarget: nextTarget
-                        )
-                    )
+                    asset.tilePosition = players[asset.color.index].playerMap.findAssetPlacement(placeAsset: asset, fromAsset: oldTarget, nextTileTarget: nextTarget)
                 }
             }
         }
@@ -962,7 +956,7 @@ class GameModel {
             if travelDirection != .max {
                 asset.direction = travelDirection
             } else {
-                let tilePosition = mapTarget
+                let tilePosition = Position.tile(fromAbsolute: mapTarget)
                 if tilePosition == asset.tilePosition || asset.tilePosition.directionToAdjacentTile(searchingFrom: tilePosition) != .max {
                     asset.popCommand()
                     asset.resetStep()
