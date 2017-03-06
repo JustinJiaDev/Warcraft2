@@ -59,7 +59,7 @@ class PlayerCapabilityMove: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -73,7 +73,7 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
         super.init(name: "Mine", targetType: .terrainOrAsset)
     }
 
-    class ActivateCapability: ActivatedPlayerCapability {
+    class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
         }
@@ -129,7 +129,7 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -183,7 +183,7 @@ class PlayerCapabityStandGround: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -237,7 +237,7 @@ class PlayerCapabilityCancel: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -307,7 +307,7 @@ class PlayerCapabilityConvey: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -326,7 +326,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            let patrolCommand = AssetCommand(action: .capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target))
+            let patrolCommand = AssetCommand(action: .capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target))
             let walkCommand = AssetCommand(action: AssetAction.walk, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent = GameEvent(type: .acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -361,7 +361,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -419,7 +419,7 @@ class PlayerCapabilityAttack: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -482,7 +482,7 @@ class PlayerCapabilityRepair: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
