@@ -89,7 +89,7 @@ class GameViewController: UIViewController {
         var detailedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
         detailedPosition.normalizeToTileCenter()
         target.position = detailedPosition
-        if let selected = selectedPeasant {
+        if let selected = selectedPeasant, selected.commands.isEmpty {
             selected.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
             selectedPeasant = nil
         } else {

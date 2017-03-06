@@ -1,3 +1,9 @@
+// FIXME: HACK
+import UIKit
+import CoreAudio
+import AVFoundation
+import AVKit
+
 enum EventType {
     case none
     case workComplete
@@ -592,6 +598,13 @@ class GameModel {
             if harvestSteps <= asset.step {
                 let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle, .lumberMill])
                 lumberAvailable[tilePosition.y][tilePosition.x] -= lumberPerHarvest
+
+                // FIXME: HACK ADD SOUND
+                var blacksmithSoundID: SystemSoundID = 1
+                let blacksmithSoundCFURL = url("snd", "misc", "tree1.wav") as CFURL
+                AudioServicesCreateSystemSoundID(blacksmithSoundCFURL, &blacksmithSoundID)
+                AudioServicesPlaySystemSound(blacksmithSoundID)
+
                 if lumberAvailable[tilePosition.y][tilePosition.x] <= 0 {
                     actualMap.changeTileType(at: tilePosition, to: .stump)
                 }
@@ -641,6 +654,13 @@ class GameModel {
                     var nextTarget = Position(x: players[asset.color.index].playerMap.width - 1, y: players[asset.color.index].playerMap.height - 1)
 
                     target.decrementGold(goldPerMining)
+
+                    // FIXME: HACK ADD SOUND
+                    var blacksmithSoundID: SystemSoundID = 1
+                    let blacksmithSoundCFURL = url("snd", "buildings", "gold-mine.wav") as CFURL
+                    AudioServicesCreateSystemSoundID(blacksmithSoundCFURL, &blacksmithSoundID)
+                    AudioServicesPlaySystemSound(blacksmithSoundID)
+
                     target.popCommand()
                     if target.gold <= 0 {
                         let newCommand = AssetCommand(action: .death, capability: .none, assetTarget: nil, activatedCapability: nil)
