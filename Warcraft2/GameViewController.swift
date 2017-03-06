@@ -34,9 +34,14 @@ class GameViewController: UIViewController {
 
         viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
 
+        let resourceBarView = createResourceBarView(miniMapView: miniMapView)
+        let assetStatsView = createAssetStatsView(miniMapView: miniMapView)
+
         self.view = mapView
         view.addSubview(miniMapView)
         view.addSubview(actionMenuView)
+        view.addSubview(resourceBarView)
+        view.addSubview(assetStatsView)
 
         midiPlayer.prepareToPlay()
         midiPlayer.play()

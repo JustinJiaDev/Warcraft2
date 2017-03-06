@@ -121,6 +121,18 @@ func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
     return MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
 }
 
+func createResourceBarView(miniMapView: MiniMapView) -> ResourceBarView {
+    let resourceBarView = ResourceBarView(frame: CGRect(x: miniMapView.bounds.width, y: 0, width: UIScreen.main.bounds.width - miniMapView.bounds.width, height: UIScreen.main.bounds.height / 10))
+    resourceBarView.backgroundColor = UIColor.black
+    return resourceBarView
+}
+
+func createAssetStatsView(miniMapView: MiniMapView) -> AssetStatsView {
+    let assetStatsView = AssetStatsView(frame: CGRect(x: 0, y: miniMapView.bounds.height, width: UIScreen.main.bounds.width / 5, height: UIScreen.main.bounds.height / 2))
+    assetStatsView.backgroundColor = UIColor.black
+    return assetStatsView
+}
+
 func createCamera(scale: CGFloat) -> SKCameraNode {
     let camera = SKCameraNode()
     camera.setScale(scale)
