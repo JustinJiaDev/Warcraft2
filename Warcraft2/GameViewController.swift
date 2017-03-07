@@ -22,10 +22,12 @@ class GameViewController: UIViewController {
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
     lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
 
-    lazy var mapView: SKView = createMapView(mapRenderer: self.mapRenderer)
+    lazy var mapView: SKView = createMapView(viewportRenderer: self.viewportRenderer, width: self.view.bounds.width - self.sideView.bounds.width, height: self.view.bounds.height - self.resourceBarView.bounds.height)
     lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
-    lazy var actionMenuView = createActionMenuView()
-    lazy var resourceBarView = createResourceBarView()
+    lazy var statsView: UIView = createStatsView()
+    lazy var sideView: UIView = createSideView(size: CGSize(width: 150, height: self.view.bounds.height), miniMapView: self.miniMapView, statsView: self.statsView)
+    lazy var actionMenuView: UICollectionView = createActionMenuView()
+    lazy var resourceBarView: ResourceBarView = createResourceBarView(size: CGSize(width: self.view.bounds.width - self.sideView.bounds.width, height: 35))
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,28 +37,13 @@ class GameViewController: UIViewController {
         BuildingUpgradeCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
 
-        viewportRenderer.initViewportDimensions(width: self.view.bounds.width, height: self.view.bounds.height)
-
-        let sidebarContainerView = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: self.view.bounds.size.height))
-        sidebarContainerView.backgroundColor = UIColor.black
-
-        let assetStatsView = createAssetStatsView()
-        assetStatsView.frame = CGRect(x: 0, y: 0, width: sidebarContainerView.bounds.size.width, height: sidebarContainerView.bounds.size.height / 2)
-
-        miniMapView.frame.origin = CGPoint(x: 30, y: assetStatsView.bounds.size.height + 20)
-
-        sidebarContainerView.addSubview(assetStatsView)
-        sidebarContainerView.addSubview(miniMapView)
-
-        resourceBarView.frame = CGRect(x: sidebarContainerView.bounds.size.width, y: 0, width: self.view.bounds.size.width - sidebarContainerView.bounds.size.width, height: 35)
-        resourceBarView.setNeedsLayout()
-
-        mapView.frame.origin = CGPoint(x: sidebarContainerView.bounds.width, y: resourceBarView.bounds.height)
-        mapView.frame.size = CGSize(width: view.bounds.width - sidebarContainerView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+        sideView.frame.origin = .zero
+        resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
+        mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
 
         view.addSubview(mapView)
         view.addSubview(actionMenuView)
-        view.addSubview(sidebarContainerView)
+        view.addSubview(sideView)
         view.addSubview(resourceBarView)
 
         midiPlayer.prepareToPlay()

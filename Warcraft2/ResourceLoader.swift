@@ -94,6 +94,7 @@ func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer
     return unitActionRenderer
 }
 
+// FIXME: REMOVE HARDCODED VALUES
 func createActionMenuView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
     layout.sectionInset.top = 10
@@ -117,8 +118,9 @@ func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
     return try FogRenderer(tileset: fogTileset, map: map.createVisibilityMap())
 }
 
-func createMapView(mapRenderer: MapRenderer) -> SKView {
-    let mapView = SKView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)))
+func createMapView(viewportRenderer: ViewportRenderer, width: Int, height: Int) -> SKView {
+    viewportRenderer.initViewportDimensions(width: width, height: height)
+    let mapView = SKView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: height)))
     mapView.isOpaque = true
     mapView.showsFPS = true
     return mapView
@@ -128,16 +130,29 @@ func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
     return MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
 }
 
-func createResourceBarView() -> ResourceBarView {
+// FIXME: REMOVE HARDCODED VALUES
+func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: UIView) -> UIView {
+    let sideView = UIView(frame: CGRect(origin: .zero, size: size))
+    sideView.backgroundColor = UIColor.black
+    sideView.addSubview(statsView)
+    sideView.addSubview(miniMapView)
+    miniMapView.frame.origin = CGPoint(x: 30, y: sideView.bounds.size.height - miniMapView.bounds.size.width)
+    statsView.frame = CGRect(origin: .zero, size: CGSize(width: size.width, height: size.height / 2))
+    return sideView
+}
+
+func createResourceBarView(size: CGSize) -> ResourceBarView {
     let resourceBarView = ResourceBarView()
     resourceBarView.backgroundColor = UIColor.black
+    resourceBarView.bounds.size = size
+    resourceBarView.setNeedsLayout()
     return resourceBarView
 }
 
-func createAssetStatsView() -> AssetStatsView {
-    let assetStatsView = AssetStatsView()
-    assetStatsView.backgroundColor = UIColor.black
-    return assetStatsView
+func createStatsView() -> AssetStatsView {
+    let statsView = AssetStatsView()
+    statsView.backgroundColor = UIColor.black
+    return statsView
 }
 
 func createCamera(scale: CGFloat) -> SKCameraNode {
