@@ -38,12 +38,13 @@ class PlayerCapabilityBuildNormal: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
+            target.incrementHitPoints((target.maxHitPoints * (currentStep + 1) / totalSteps) - (target.maxHitPoints * currentStep / totalSteps))
+
             currentStep += 1
             actor.incrementStep()
             target.incrementStep()
 
-            target.incrementHitPoints((target.maxHitPoints * (currentStep + 1) / totalSteps) - (target.maxHitPoints * currentStep / totalSteps))
-            guard currentStep < totalSteps else {
+            guard currentStep >= totalSteps else {
                 return false
             }
 

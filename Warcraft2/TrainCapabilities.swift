@@ -85,7 +85,6 @@ class PlayerCapabilityTrainNormal: PlayerCapability {
         guard playerData.assetRequirementsIsMet(name: unitName) else {
             return false
         }
-
         return true
     }
 
