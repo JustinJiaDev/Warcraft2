@@ -70,7 +70,7 @@ class VisibilityMap {
             }
         }
         for asset in assets {
-            let anchor = asset.tilePosition
+            var anchor = asset.tilePosition
             let sight = asset.effectiveSight + asset.size / 2
             let sightSquared = sight * sight
             anchor.x = anchor.x + asset.size / 2

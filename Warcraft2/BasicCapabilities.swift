@@ -1,14 +1,25 @@
-import Foundation
+struct BasicCapabilities {
+    static let registrant = BasicCapabilities()
+
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityMove())
+        PlayerCapability.register(capability: PlayerCapabilityMineHarvest())
+        PlayerCapability.register(capability: PlayerCapabityStandGround())
+        PlayerCapability.register(capability: PlayerCapabilityCancel())
+        PlayerCapability.register(capability: PlayerCapabilityConvey())
+        PlayerCapability.register(capability: PlayerCapabilityPatrol())
+        PlayerCapability.register(capability: PlayerCapabilityAttack())
+        PlayerCapability.register(capability: PlayerCapabilityRepair())
+    }
+
+    func register() {}
+}
 
 class PlayerCapabilityMove: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Move", targetType: .terrainOrAsset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -44,13 +55,13 @@ class PlayerCapabilityMove: PlayerCapability {
         guard actor.tilePosition != target.tilePosition else {
             return false
         }
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -58,15 +69,11 @@ class PlayerCapabilityMove: PlayerCapability {
 
 class PlayerCapabilityMineHarvest: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Mine", targetType: .terrainOrAsset)
     }
 
-    static let registrant = Registrant()
-
-    class ActivateCapability: ActivatedPlayerCapability {
+    class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
         }
@@ -122,7 +129,7 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -131,13 +138,9 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
 
 class PlayerCapabityStandGround: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "StandGround", targetType: .none)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
 
@@ -180,7 +183,7 @@ class PlayerCapabityStandGround: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -189,13 +192,9 @@ class PlayerCapabityStandGround: PlayerCapability {
 
 class PlayerCapabilityCancel: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Cancel", targetType: .none)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -238,7 +237,7 @@ class PlayerCapabilityCancel: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -247,13 +246,9 @@ class PlayerCapabilityCancel: PlayerCapability {
 
 class PlayerCapabilityConvey: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Convey", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -312,7 +307,7 @@ class PlayerCapabilityConvey: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.pushCommand(newCommand)
         return true
@@ -321,13 +316,9 @@ class PlayerCapabilityConvey: PlayerCapability {
 
 class PlayerCapabilityPatrol: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Patrol", targetType: .terrain)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -335,7 +326,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            let patrolCommand = AssetCommand(action: .capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target))
+            let patrolCommand = AssetCommand(action: .capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target))
             let walkCommand = AssetCommand(action: AssetAction.walk, capability: nil, assetTarget: target, activatedCapability: nil)
             let tempEvent = GameEvent(type: .acknowledge, asset: actor)
             playerData.addGameEvent(tempEvent)
@@ -370,7 +361,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -380,13 +371,9 @@ class PlayerCapabilityPatrol: PlayerCapability {
 
 class PlayerCapabilityAttack: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Attack", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -432,7 +419,7 @@ class PlayerCapabilityAttack: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -442,13 +429,9 @@ class PlayerCapabilityAttack: PlayerCapability {
 
 class PlayerCapabilityRepair: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Repair", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -499,7 +482,7 @@ class PlayerCapabilityRepair: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)

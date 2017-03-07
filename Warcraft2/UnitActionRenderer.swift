@@ -1,15 +1,17 @@
 import Foundation
+import UIKit
 
-class UnitActionRenderer {
-    private var iconTileset: GraphicTileset
-    private var playerData: PlayerData
-    private var playerColor: PlayerColor
-    private var bevel: Bevel
-    private var fullIconWidth: Int
-    private var fullIconHeight: Int
+class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+    private let iconTileset: GraphicTileset
+    private let playerData: PlayerData
+    private let playerColor: PlayerColor
+    private let bevel: Bevel
+    private let fullIconWidth: Int
+    private let fullIconHeight: Int
+    private let commandIndices: [AssetCapabilityType: Int]
+    private let disabledIndex: Int
     private var displayedCommands: [AssetCapabilityType]
-    private var commandIndices: [AssetCapabilityType: Int]
-    private var disabledIndex: Int
+    private var currentAction: AssetCapabilityType
 
     private static let capabilities: [AssetCapabilityType] = [
         .buildFarm,
@@ -29,52 +31,51 @@ class UnitActionRenderer {
         self.playerData = player
         self.playerColor = color
         self.bevel = bevel
-
-        fullIconWidth = iconTileset.tileWidth + bevel.width * 2
-        fullIconHeight = iconTileset.tileHeight + bevel.width * 2
-        displayedCommands = Array(repeating: .none, count: 9)
-
-        commandIndices = [:]
-        commandIndices[.none] = -1
-        commandIndices[.buildPeasant] = iconTileset.findTile(with: "peasant")
-        commandIndices[.buildFootman] = iconTileset.findTile(with: "footman")
-        commandIndices[.buildArcher] = iconTileset.findTile(with: "archer")
-        commandIndices[.buildRanger] = iconTileset.findTile(with: "ranger")
-        commandIndices[.buildFarm] = iconTileset.findTile(with: "chicken-farm")
-        commandIndices[.buildTownHall] = iconTileset.findTile(with: "town-hall")
-        commandIndices[.buildBarracks] = iconTileset.findTile(with: "human-barracks")
-        commandIndices[.buildLumberMill] = iconTileset.findTile(with: "human-lumber-mill")
-        commandIndices[.buildBlacksmith] = iconTileset.findTile(with: "human-blacksmith")
-        commandIndices[.buildKeep] = iconTileset.findTile(with: "keep")
-        commandIndices[.buildCastle] = iconTileset.findTile(with: "castle")
-        commandIndices[.buildScoutTower] = iconTileset.findTile(with: "scout-tower")
-        commandIndices[.buildGuardTower] = iconTileset.findTile(with: "human-guard-tower")
-        commandIndices[.buildCannonTower] = iconTileset.findTile(with: "human-cannon-tower")
-        commandIndices[.move] = iconTileset.findTile(with: "human-move")
-        commandIndices[.repair] = iconTileset.findTile(with: "repair")
-        commandIndices[.mine] = iconTileset.findTile(with: "mine")
-        commandIndices[.buildSimple] = iconTileset.findTile(with: "build-simple")
-        commandIndices[.buildAdvanced] = iconTileset.findTile(with: "build-advanced")
-        commandIndices[.convey] = iconTileset.findTile(with: "human-convey")
-        commandIndices[.cancel] = iconTileset.findTile(with: "cancel")
-        commandIndices[.buildWall] = iconTileset.findTile(with: "human-wall")
-        commandIndices[.attack] = iconTileset.findTile(with: "human-weapon-1")
-        commandIndices[.standGround] = iconTileset.findTile(with: "human-armor-1")
-        commandIndices[.patrol] = iconTileset.findTile(with: "human-patrol")
-        commandIndices[.weaponUpgrade1] = iconTileset.findTile(with: "human-weapon-1")
-        commandIndices[.weaponUpgrade2] = iconTileset.findTile(with: "human-weapon-2")
-        commandIndices[.weaponUpgrade3] = iconTileset.findTile(with: "human-weapon-3")
-        commandIndices[.arrowUpgrade1] = iconTileset.findTile(with: "human-arrow-1")
-        commandIndices[.arrowUpgrade2] = iconTileset.findTile(with: "human-arrow-2")
-        commandIndices[.arrowUpgrade3] = iconTileset.findTile(with: "human-arrow-3")
-        commandIndices[.armorUpgrade1] = iconTileset.findTile(with: "human-armor-1")
-        commandIndices[.armorUpgrade2] = iconTileset.findTile(with: "human-armor-2")
-        commandIndices[.armorUpgrade3] = iconTileset.findTile(with: "human-armor-3")
-        commandIndices[.longbow] = iconTileset.findTile(with: "longbow")
-        commandIndices[.rangerScouting] = iconTileset.findTile(with: "ranger-scouting")
-        commandIndices[.marksmanship] = iconTileset.findTile(with: "marksmanship")
-
-        disabledIndex = iconTileset.findTile(with: "disabled")
+        self.fullIconWidth = iconTileset.tileWidth + bevel.width * 2
+        self.fullIconHeight = iconTileset.tileHeight + bevel.width * 2
+        self.commandIndices = [
+            .none: -1,
+            .buildPeasant: iconTileset.findTile("peasant"),
+            .buildFootman: iconTileset.findTile("footman"),
+            .buildArcher: iconTileset.findTile("archer"),
+            .buildRanger: iconTileset.findTile("ranger"),
+            .buildFarm: iconTileset.findTile("chicken-farm"),
+            .buildTownHall: iconTileset.findTile("town-hall"),
+            .buildBarracks: iconTileset.findTile("human-barracks"),
+            .buildLumberMill: iconTileset.findTile("human-lumber-mill"),
+            .buildBlacksmith: iconTileset.findTile("human-blacksmith"),
+            .buildKeep: iconTileset.findTile("keep"),
+            .buildCastle: iconTileset.findTile("castle"),
+            .buildScoutTower: iconTileset.findTile("scout-tower"),
+            .buildGuardTower: iconTileset.findTile("human-guard-tower"),
+            .buildCannonTower: iconTileset.findTile("human-cannon-tower"),
+            .move: iconTileset.findTile("human-move"),
+            .repair: iconTileset.findTile("repair"),
+            .mine: iconTileset.findTile("mine"),
+            .buildSimple: iconTileset.findTile("build-simple"),
+            .buildAdvanced: iconTileset.findTile("build-advanced"),
+            .convey: iconTileset.findTile("human-convey"),
+            .cancel: iconTileset.findTile("cancel"),
+            .buildWall: iconTileset.findTile("human-wall"),
+            .attack: iconTileset.findTile("human-weapon-1"),
+            .standGround: iconTileset.findTile("human-armor-1"),
+            .patrol: iconTileset.findTile("human-patrol"),
+            .weaponUpgrade1: iconTileset.findTile("human-weapon-1"),
+            .weaponUpgrade2: iconTileset.findTile("human-weapon-2"),
+            .weaponUpgrade3: iconTileset.findTile("human-weapon-3"),
+            .arrowUpgrade1: iconTileset.findTile("human-arrow-1"),
+            .arrowUpgrade2: iconTileset.findTile("human-arrow-2"),
+            .arrowUpgrade3: iconTileset.findTile("human-arrow-3"),
+            .armorUpgrade1: iconTileset.findTile("human-armor-1"),
+            .armorUpgrade2: iconTileset.findTile("human-armor-2"),
+            .armorUpgrade3: iconTileset.findTile("human-armor-3"),
+            .longbow: iconTileset.findTile("longbow"),
+            .rangerScouting: iconTileset.findTile("ranger-scouting"),
+            .marksmanship: iconTileset.findTile("marksmanship")
+        ]
+        self.disabledIndex = iconTileset.findTile("disabled")
+        self.displayedCommands = []
+        self.currentAction = .none
     }
 
     var minimumWidth: Int {
@@ -85,15 +86,7 @@ class UnitActionRenderer {
         return fullIconHeight * 3 + bevel.width * 2
     }
 
-    func selection(at position: Position) -> AssetCapabilityType {
-        if (position.x % (fullIconWidth + bevel.width)) < fullIconWidth && (position.y % (fullIconWidth + bevel.width)) < fullIconHeight {
-            let index = position.x / (fullIconWidth + bevel.width) + position.y / (fullIconHeight + bevel.width) * 3
-            return displayedCommands[index]
-        }
-        return .none
-    }
-
-    func drawUnitAction(on surface: GraphicSurface, selectionList: [PlayerAsset], currentAction: AssetCapabilityType) throws {
+    func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset]) {
         guard !selectionList.isEmpty else {
             return
         }
@@ -105,55 +98,87 @@ class UnitActionRenderer {
         let isMoveable = firstAsset.speed > 0
         let hasCargo = selectionList.last!.lumber > 0 || selectionList.last!.gold > 0
 
-        displayedCommands = Array(repeating: .none, count: 9)
-        if currentAction == .none {
+        displayedCommands.removeAll()
+        if [.none, .cancel].contains(currentAction) {
             if isMoveable {
-                displayedCommands[0] = hasCargo ? .convey : .move
-                displayedCommands[1] = .standGround
-                displayedCommands[2] = .attack
-                displayedCommands[3] = firstAsset.hasCapability(.repair) ? .repair : .none
-                displayedCommands[3] = firstAsset.hasCapability(.patrol) ? .patrol : .none
-                displayedCommands[4] = firstAsset.hasCapability(.mine) ? .mine : .none
-                displayedCommands[6] = firstAsset.hasCapability(.buildSimple) && selectionList.count == 1 ? .buildSimple : .none
-            } else {
-                if firstAsset.action == .construct || firstAsset.action == .capability {
-                    displayedCommands[displayedCommands.count - 1] = .cancel
-                } else {
-                    for i in 0 ..< min(firstAsset.capabilities.count, displayedCommands.count) {
-                        displayedCommands[i] = firstAsset.capabilities[i]
-                    }
+                displayedCommands.append(hasCargo ? .convey : .move)
+                displayedCommands.append(.standGround)
+                displayedCommands.append(.attack)
+                if firstAsset.hasCapability(.repair) {
+                    displayedCommands.append(.repair)
                 }
+                if firstAsset.hasCapability(.patrol) {
+                    displayedCommands.append(.patrol)
+                }
+                if firstAsset.hasCapability(.mine) {
+                    displayedCommands.append(.mine)
+                }
+                if firstAsset.hasCapability(.buildSimple) && selectionList.count == 1 {
+                    displayedCommands.append(.buildSimple)
+                }
+            } else if firstAsset.action == .construct || firstAsset.action == .capability {
+                displayedCommands.append(.cancel)
+            } else {
+                displayedCommands = firstAsset.capabilities
             }
         } else if currentAction == .buildSimple {
-            for i in 0 ..< min(UnitActionRenderer.capabilities.count, displayedCommands.count) where firstAsset.hasCapability(UnitActionRenderer.capabilities[i]) {
-                displayedCommands[i] = UnitActionRenderer.capabilities[i]
+            displayedCommands = UnitActionRenderer.capabilities.filter { capability in
+                return firstAsset.hasCapability(capability)
             }
-            displayedCommands[displayedCommands.count - 1] = .cancel
+            displayedCommands.append(.cancel)
         } else {
-            displayedCommands[displayedCommands.count - 1] = .cancel
+            displayedCommands.append(.cancel)
         }
 
-        var xOffset = bevel.width
-        var yOffset = bevel.width
+        view.dataSource = self
+        view.delegate = self
+        view.reloadData()
+    }
 
-        for i in 0 ..< displayedCommands.count {
-            let capabilityType = displayedCommands[i]
-            if capabilityType != .none {
-                let playerCapability = PlayerCapability.findCapability(with: capabilityType)
-                try bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
-                try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: commandIndices[capabilityType]!)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ActionMenuViewCell", for: indexPath) as! ImageCell
+        let capability = displayedCommands[indexPath.row]
+        // bevel.drawBevel(on: surface, x: xOffset, y: yOffset, width: iconTileset.tileWidth, height: iconTileset.tileHeight)
+        iconTileset.drawTile(on: cell.imageView, index: commandIndices[capability]!)
+        return cell
+    }
 
-                if playerCapability.targetType != .none {
-                    if !playerCapability.canInitiate(actor: firstAsset, playerData: playerData) {
-                        try iconTileset.drawTile(on: surface, x: xOffset, y: yOffset, index: disabledIndex)
-                    }
-                }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return displayedCommands.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        currentAction = displayedCommands[indexPath.row]
+        switch displayedCommands[indexPath.row] {
+        case .mine:
+            let capability = PlayerCapability.findCapability(.mine)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.playerMap.assets[0]
+            if capability.canApply(actor: actor, playerData: playerData, target: target) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: target)
             }
-            xOffset += fullIconWidth + bevel.width
-            if i % 3 == 0 {
-                xOffset = bevel.width
-                yOffset += fullIconHeight + bevel.width
+            collectionView.isHidden = true
+        case .repair:
+            let capability = PlayerCapability.findCapability(.mine)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.createMarker(at: Position(x: 1 * 32, y: 3 * 32), addToMap: false)
+            if capability.canApply(actor: actor, playerData: playerData, target: target) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: target)
             }
+            collectionView.isHidden = true
+        case .cancel:
+            let capability = PlayerCapability.findCapability(.cancel)
+            let actor = playerData.playerMap.assets[1]
+            if capability.canApply(actor: actor, playerData: playerData, target: actor) {
+                capability.applyCapability(actor: actor, playerData: playerData, target: actor)
+            }
+            collectionView.isHidden = true
+        default:
+            let capability = PlayerCapability.findCapability(.buildGuardTower)
+            let actor = playerData.playerMap.assets[1]
+            let target = playerData.createMarker(at: Position(x: 5 * 32, y: 5 * 32), addToMap: false)
+            capability.applyCapability(actor: actor, playerData: playerData, target: target)
+            collectionView.isHidden = true
         }
     }
 }
