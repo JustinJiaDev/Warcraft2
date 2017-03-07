@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */; };
+		203CCC2A1E60DBE700037C38 /* TrainCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203CCC291E60DBE700037C38 /* TrainCapabilities.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
 		6F1BAD1F1E67735000865DE9 /* AssetStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BAD1D1E67735000865DE9 /* AssetStatsView.swift */; };
 		6F1BAD201E67735000865DE9 /* ResourceBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BAD1E1E67735000865DE9 /* ResourceBarView.swift */; };
@@ -68,6 +69,7 @@
 /* Begin PBXFileReference section */
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
 		200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitUpgradeCapabilities.swift; sourceTree = "<group>"; };
+		203CCC291E60DBE700037C38 /* TrainCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainCapabilities.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		6F1BAD1D1E67735000865DE9 /* AssetStatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetStatsView.swift; sourceTree = "<group>"; };
 		6F1BAD1E1E67735000865DE9 /* ResourceBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceBarView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
 				D0C813861E6D656D003A10DD /* BuildCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
+				203CCC291E60DBE700037C38 /* TrainCapabilities.swift */,
 				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
@@ -552,6 +555,7 @@
 				8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */,
 				8E663E901E41492100FD4727 /* GameModel.swift in Sources */,
 				D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */,
+				203CCC2A1E60DBE700037C38 /* TrainCapabilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
