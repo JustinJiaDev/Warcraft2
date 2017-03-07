@@ -183,8 +183,8 @@
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
 				D0C813861E6D656D003A10DD /* BuildCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
-				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 				203CCC291E60DBE700037C38 /* TrainCapabilities.swift */,
+				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
 			sourceTree = "<group>";
