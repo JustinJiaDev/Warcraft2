@@ -22,13 +22,10 @@ class PlayerCapabilityTrainNormal: PlayerCapability {
             self.totalSteps = steps
             self.lumber = lumber
             self.gold = gold
-
-            playerData.decrementLumber(by: lumber)
-            playerData.decrementGold(by: gold)
-
-            target.pushCommand(AssetCommand(action: .construct, capability: .none, assetTarget: actor, activatedCapability: nil))
-
             super.init(actor: actor, playerData: playerData, target: target)
+            self.playerData.decrementLumber(by: lumber)
+            self.playerData.decrementGold(by: gold)
+            self.target.pushCommand(AssetCommand(action: .construct, capability: .none, assetTarget: actor, activatedCapability: nil))
         }
 
         override func percentComplete(max: Int) -> Int {
