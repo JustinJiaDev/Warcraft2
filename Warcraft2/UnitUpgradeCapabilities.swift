@@ -1,22 +1,23 @@
-import Foundation
+struct UnitUpgradeCapabilities {
+    static let registrant = UnitUpgradeCapabilities()
 
-class PlayerCapabilityUnitUpgrade: PlayerCapability {
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade2"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade3"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Longbow"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "RangerScouting"))
-            PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Marksmanship"))
-        }
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade2"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "WeaponUpgrade3"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade2"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArmorUpgrade3"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade2"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "ArrowUpgrade3"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Longbow"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "RangerScouting"))
+        PlayerCapability.register(capability: PlayerCapabilityUnitUpgrade(upgradeName: "Marksmanship"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildRanger(unitName: "Ranger"))
     }
 
-    static let registrant: Registrant = Registrant()
+    func register() {}
+}
 
+class PlayerCapabilityUnitUpgrade: PlayerCapability {
     class ActivatedCapability: ActivatedPlayerCapability {
         private var upgradingType: PlayerAssetType
         private var upgradeName: String
@@ -114,14 +115,6 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
 }
 
 class PlayerCapabilityBuildRanger: PlayerCapability {
-
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityBuildRanger(unitName: "Ranger"))
-        }
-    }
-
-    static let registrant: Registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         private var upgrandingType: PlayerAssetType
@@ -234,7 +227,7 @@ class PlayerCapabilityBuildRanger: PlayerCapability {
                 if upgrade.goldCost > playerData.gold {
                     return false
                 }
-                if playerData.assetRequirementsIsMet(name: unitName) {
+                if !playerData.assetRequirementsIsMet(name: unitName) {
                     return false
                 }
             }

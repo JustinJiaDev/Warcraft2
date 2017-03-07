@@ -1,15 +1,17 @@
-class PlayerCapabilityBuildingUpgrade: PlayerCapability {
+struct BuildingUpgradeCapabilities {
+    static let registrant = BuildingUpgradeCapabilities()
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
-        }
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
     }
 
-    static let registrant = Registrant()
+    func register() {}
+}
+
+class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
     class ActivatedCapability: ActivatedPlayerCapability {
         private var originalType: PlayerAssetType

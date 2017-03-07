@@ -82,6 +82,36 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
     return assetRenderer
 }
 
+func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer {
+    let bevel = try Bevel(tileset: tileset("Icons"))
+    let icons = try tileset("Icons")
+    let unitActionRenderer = UnitActionRenderer(
+        bevel: bevel,
+        icons: icons,
+        color: gameModel.player(.blue).color,
+        player: gameModel.player(.blue)
+    )
+    return unitActionRenderer
+}
+
+func createActionMenuView() -> UICollectionView {
+    let layout = UICollectionViewFlowLayout()
+    layout.sectionInset.top = 10
+    layout.sectionInset.left = 10
+    layout.sectionInset.bottom = 10
+    layout.minimumInteritemSpacing = 10
+    layout.itemSize = CGSize(width: 46, height: 46)
+    var frame = UIScreen.main.bounds
+    frame.origin.x = 150
+    frame.origin.y = CGFloat(UIScreen.main.bounds.height - 66)
+    frame.size.height = 66
+    let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
+    actionMenuView.backgroundColor = UIColor.lightGray
+    actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
+    actionMenuView.isHidden = true
+    return actionMenuView
+}
+
 func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
     let fogTileset = try tileset("Fog")
     return try FogRenderer(tileset: fogTileset, map: map.createVisibilityMap())
@@ -96,6 +126,18 @@ func createMapView(mapRenderer: MapRenderer) -> SKView {
 
 func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
     return MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
+}
+
+func createResourceBarView() -> ResourceBarView {
+    let resourceBarView = ResourceBarView()
+    resourceBarView.backgroundColor = UIColor.black
+    return resourceBarView
+}
+
+func createAssetStatsView() -> AssetStatsView {
+    let assetStatsView = AssetStatsView()
+    assetStatsView.backgroundColor = UIColor.black
+    return assetStatsView
 }
 
 func createCamera(scale: CGFloat) -> SKCameraNode {
