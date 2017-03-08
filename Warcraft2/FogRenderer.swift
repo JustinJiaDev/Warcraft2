@@ -43,9 +43,6 @@ class FogRenderer {
 
         var nextIndex = tileset.tileCount
         tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
-        // C++ line 137: DTileset->CreateClippingMasks(); is not implemented here
-        // GraphicTileset.drawClippedTile() isn't implemented either
-        // Do we need this???
         
         for allowedHamming in 1 ..< 8 {
             for value in 0 ..< 0x100 {
@@ -77,7 +74,6 @@ class FogRenderer {
                                 }
                             }
                         }
-                        // GraphicTileset.duplicateClippedTile is not implemented
                         tileset.duplicateClippedTile(destinationIndex: nextIndex, tileName: "pf-\(value)", sourceIndex: fogIndices[firstBest], clipIndex: fogIndices[bestMatch])
                         fogIndices[value] = nextIndex
                         tileset.duplicateClippedTile(destinationIndex: nextIndex + 1, tileName: "pb-\(value)", sourceIndex: blackIndices[firstBest], clipIndex: blackIndices[bestMatch])

@@ -6,9 +6,6 @@ struct TrainCapabilities {
         PlayerCapability.register(capability: PlayerCapabilityTrainNormal(unitName: "Footman"))
         PlayerCapability.register(capability: PlayerCapabilityTrainNormal(unitName: "Archer"))
     }
-    
-    // Does this need to be here since it's empty ?
-    func register() {}
 }
 
 class PlayerCapabilityTrainNormal: PlayerCapability {
@@ -68,8 +65,6 @@ class PlayerCapabilityTrainNormal: PlayerCapability {
     
     init(unitName: String) {
         self.unitName = unitName
-        // C++ line 63: CPlayerCapabilityTrainNormal::CPlayerCapabilityTrainNormal(const std::string &unitname) :CPlayerCapability(std::string("Build") + unitname, ETargetType::ttNone)
-        // original Swift: super.init(name: "Build", targetType: .none)
         super.init(name: "Build" + unitName, targetType: .none)
     }
     
@@ -116,14 +111,11 @@ class PlayerCapabilityTrainNormal: PlayerCapability {
                 target: newAsset,
                 lumber: assetType.lumberCost,
                 gold: assetType.goldCost,
-                // C++ line 108: CPlayerAsset::UpdateFrequency() * AssetType->BuildTime());
-                // original Swift: steps: assetType.buildTime
                 steps: PlayerAsset.updateFrequency * assetType.buildTime
             )
         )
         actor.pushCommand(newCommand)
         actor.resetStep()
-        // C++ line 112: original code always return false, not sure if that's a wrong implementation?
         return true
     }
 }
