@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
-    private let iconTileset: GraphicTileset
+    private(set) var iconTileset: GraphicTileset
     private let playerData: PlayerData
     private let playerColor: PlayerColor
     private let bevel: Bevel

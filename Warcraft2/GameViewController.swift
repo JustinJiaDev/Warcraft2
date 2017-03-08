@@ -26,7 +26,7 @@ class GameViewController: UIViewController {
     lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
     lazy var actionMenuView = createActionMenuView()
     lazy var resourceBarView = createResourceBarView()
-    lazy var assetStatsView = createAssetStatsView()
+    lazy var assetStatsView: AssetStatsView = createAssetStatsView(unitActionRenderer: self.unitActionRenderer)
 
     override func viewDidLoad() {
         super.viewDidLoad()

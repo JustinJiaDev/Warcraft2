@@ -134,8 +134,8 @@ func createResourceBarView() -> ResourceBarView {
     return resourceBarView
 }
 
-func createAssetStatsView() -> AssetStatsView {
-    let assetStatsView = AssetStatsView()
+func createAssetStatsView(unitActionRenderer: UnitActionRenderer) -> AssetStatsView {
+    let assetStatsView = AssetStatsView(icons: unitActionRenderer.iconTileset)
     assetStatsView.backgroundColor = UIColor.black
     return assetStatsView
 }

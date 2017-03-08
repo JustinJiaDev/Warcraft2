@@ -3,8 +3,8 @@ import UIKit
 class AssetStatsView: UIView {
     var asset: PlayerAsset?
 
-    let icons: [UIImage]
-    let iconVIew = UIImageView()
+    let icons: GraphicTileset
+    let iconView = UIImageView()
 
     let name = UILabel()
     let health = UILabel()
@@ -14,11 +14,11 @@ class AssetStatsView: UIView {
     let sight = UILabel()
     let speed = UILabel()
 
-    init() {
-        icons = splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
+    init(icons: GraphicTileset) {
+        self.icons = icons // splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
 
         super.init(frame: CGRect.zero)
-        self.addSubview(iconVIew)
+        self.addSubview(iconView)
         self.addSubview(name)
         self.addSubview(health)
         self.addSubview(armor)
@@ -35,8 +35,8 @@ class AssetStatsView: UIView {
     func setFrame(frame: CGRect) {
         self.frame = frame
 
-        let iconWidth = CGFloat(self.frame.size.width) * 0.3
-        iconVIew.frame = CGRect(x: 0, y: 0, width: iconWidth, height: iconWidth)
+        let iconWidth = CGFloat(self.frame.size.width) * 0.2
+        iconView.frame = CGRect(x: 0, y: 0, width: iconWidth, height: iconWidth)
 
         name.frame = CGRect(x: iconWidth, y: 0, width: self.frame.size.width - iconWidth, height: 50)
         name.textAlignment = .center
@@ -79,7 +79,7 @@ class AssetStatsView: UIView {
             for subview in self.subviews {
                 subview.isHidden = false
             }
-            // TODO: iconVIew.image = icons[?]
+            icons.drawTile(on: iconView, index: icons.findTile("peasant")) // FIXME
 
             name.text = playerAsset.assetType.name
             health.text = "Health: " + String(playerAsset.hitPoints) + " / " + String(playerAsset.maxHitPoints)
