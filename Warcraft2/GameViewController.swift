@@ -26,6 +26,7 @@ class GameViewController: UIViewController {
     lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
     lazy var actionMenuView = createActionMenuView()
     lazy var resourceBarView = createResourceBarView()
+    lazy var assetStatsView = createAssetStatsView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,13 +41,11 @@ class GameViewController: UIViewController {
         let sidebarContainerView = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: self.view.bounds.size.height))
         sidebarContainerView.backgroundColor = UIColor.black
 
-        let assetStatsView = createAssetStatsView()
-        assetStatsView.frame = CGRect(x: 0, y: 0, width: sidebarContainerView.bounds.size.width, height: sidebarContainerView.bounds.size.height / 2)
+        miniMapView.frame.origin = CGPoint(x: 30, y: 30)
+        assetStatsView.setFrame(frame: CGRect(x: 0, y: miniMapView.bounds.maxY + 20, width: sidebarContainerView.bounds.size.width, height: sidebarContainerView.bounds.size.height - miniMapView.bounds.maxY + 20))
 
-        miniMapView.frame.origin = CGPoint(x: 30, y: assetStatsView.bounds.size.height + 20)
-
-        sidebarContainerView.addSubview(assetStatsView)
         sidebarContainerView.addSubview(miniMapView)
+        sidebarContainerView.addSubview(assetStatsView)
 
         resourceBarView.frame = CGRect(x: sidebarContainerView.bounds.size.width, y: 0, width: self.view.bounds.size.width - sidebarContainerView.bounds.size.width, height: 35)
         resourceBarView.setNeedsLayout()
@@ -99,12 +98,15 @@ class GameViewController: UIViewController {
             if let selectedPeasant = selectedPeasant {
                 actionMenuView.isHidden = false
                 unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedPeasant])
+                assetStatsView.asset = selectedPeasant
+                assetStatsView.setNeedsLayout()
             } else {
                 actionMenuView.isHidden = true
+                assetStatsView.asset = nil
+                assetStatsView.setNeedsLayout()
             }
         }
     }
-
     override var prefersStatusBarHidden: Bool {
         return true
     }
