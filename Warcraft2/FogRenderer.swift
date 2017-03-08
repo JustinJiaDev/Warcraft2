@@ -43,7 +43,10 @@ class FogRenderer {
 
         var nextIndex = tileset.tileCount
         tileset.setTileCount(tileset.tileCount + (0x100 - originalValues.count) * 2)
-
+        // C++ line 137: DTileset->CreateClippingMasks(); is not implemented here
+        // GraphicTileset.drawClippedTile() isn't implemented either
+        // Do we need this???
+        
         for allowedHamming in 1 ..< 8 {
             for value in 0 ..< 0x100 {
                 if fogIndices[value] == -1 {
@@ -74,6 +77,7 @@ class FogRenderer {
                                 }
                             }
                         }
+                        // GraphicTileset.duplicateClippedTile is not implemented
                         tileset.duplicateClippedTile(destinationIndex: nextIndex, tileName: "pf-\(value)", sourceIndex: fogIndices[firstBest], clipIndex: fogIndices[bestMatch])
                         fogIndices[value] = nextIndex
                         tileset.duplicateClippedTile(destinationIndex: nextIndex + 1, tileName: "pb-\(value)", sourceIndex: blackIndices[firstBest], clipIndex: blackIndices[bestMatch])
@@ -124,7 +128,7 @@ class FogRenderer {
                     }
                     if fogIndices[visibilityIndex] == -1 {
                         if !unknownFog[visibilityIndex] {
-                            printError("Unknown fog \(visibilityIndex) @ (\(xIndex), \(yIndex))")
+                            printError("Unknown fog 0x\(visibilityIndex) @ (\(xIndex), \(yIndex))")
                             unknownFog[visibilityIndex] = true
                         }
                     }
@@ -149,7 +153,7 @@ class FogRenderer {
                     }
                     if blackIndices[visibilityIndex] == -1 {
                         if !unknownBlack[visibilityIndex] {
-                            printError("Unknown black \(visibilityIndex) @ (\(xIndex), \(yIndex))\n")
+                            printError("Unknown black 0x\(visibilityIndex) @ (\(xIndex), \(yIndex))\n")
                             unknownBlack[visibilityIndex] = true
                         }
                     }
