@@ -247,6 +247,19 @@ class PlayerData {
         return bestAsset
     }
 
+    func findNearestAsset(at position: Position, within range: Int) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
+        for asset in playerMap.assets {
+            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
+            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                bestDistanceSquared = currentDistanceSquared
+                bestAsset = asset
+            }
+        }
+        return bestDistanceSquared <= range * range ? bestAsset : nil
+    }
+
     func findNearestAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
@@ -260,7 +273,7 @@ class PlayerData {
         return bestAsset
     }
 
-    func findNearestEnemy(at position: Position, inputRange: Int) -> PlayerAsset? {
+    func findNearestEnemy(at position: Position, within inputRange: Int) -> PlayerAsset? {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
         var range = inputRange
@@ -674,7 +687,7 @@ class GameModel {
 
     private func handleStandGroundEvent(for asset: PlayerAsset) {
         var command = asset.currentCommand
-        if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, inputRange: asset.effectiveRange) {
+        if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, within: asset.effectiveRange) {
             command.action = .attack
             command.assetTarget = newTarget
         } else {
@@ -891,7 +904,7 @@ class GameModel {
             let nextCommand = asset.nextCommand
             asset.popCommand()
             if nextCommand.action != .standGround {
-                if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, inputRange: asset.effectiveSight) {
+                if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, within: asset.effectiveSight) {
                     currentCommand.assetTarget = newTarget
                     asset.pushCommand(currentCommand)
                     asset.resetStep()

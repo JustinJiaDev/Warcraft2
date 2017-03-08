@@ -389,22 +389,22 @@ class PlayerAssetType {
     }
 
     private static let names: [AssetType: String] = [
-        .none : "None",
-        .peasant : "Peasant",
-        .footman : "Footman",
-        .archer : "Archer",
-        .ranger : "Ranger",
-        .goldMine : "GoldMine",
-        .townHall : "TownHall",
-        .keep : "Keep",
-        .castle : "Castle",
-        .farm : "Farm",
-        .barracks : "Barracks",
-        .lumberMill : "LumberMill",
-        .blacksmith : "Blacksmith",
-        .scoutTower : "ScoutTower",
-        .guardTower : "GuardTower",
-        .cannonTower : "CannonTower"
+        .none: "None",
+        .peasant: "Peasant",
+        .footman: "Footman",
+        .archer: "Archer",
+        .ranger: "Ranger",
+        .goldMine: "GoldMine",
+        .townHall: "TownHall",
+        .keep: "Keep",
+        .castle: "Castle",
+        .farm: "Farm",
+        .barracks: "Barracks",
+        .lumberMill: "LumberMill",
+        .blacksmith: "Blacksmith",
+        .scoutTower: "ScoutTower",
+        .guardTower: "GuardTower",
+        .cannonTower: "CannonTower"
     ]
 
     private static let types: [String: AssetType] = [

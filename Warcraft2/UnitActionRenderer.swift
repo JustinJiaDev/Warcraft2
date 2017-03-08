@@ -12,6 +12,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     private let disabledIndex: Int
     private var displayedCommands: [AssetCapabilityType]
     private var currentAction: AssetCapabilityType
+    private(set) var unhandledAction: AssetCapabilityType
 
     private static let capabilities: [AssetCapabilityType] = [
         .buildFarm,
@@ -76,6 +77,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         self.disabledIndex = iconTileset.findTile("disabled")
         self.displayedCommands = []
         self.currentAction = .none
+        self.unhandledAction = .none
     }
 
     var minimumWidth: Int {
@@ -84,6 +86,10 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
 
     var minimumHeight: Int {
         return fullIconHeight * 3 + bevel.width * 2
+    }
+
+    func finishAction() {
+        unhandledAction = .none
     }
 
     func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset]) {
@@ -149,36 +155,7 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentAction = displayedCommands[indexPath.row]
-        switch displayedCommands[indexPath.row] {
-        case .mine:
-            let capability = PlayerCapability.findCapability(.mine)
-            let actor = playerData.playerMap.assets[1]
-            let target = playerData.playerMap.assets[0]
-            if capability.canApply(actor: actor, playerData: playerData, target: target) {
-                capability.applyCapability(actor: actor, playerData: playerData, target: target)
-            }
-            collectionView.isHidden = true
-        case .repair:
-            let capability = PlayerCapability.findCapability(.mine)
-            let actor = playerData.playerMap.assets[1]
-            let target = playerData.createMarker(at: Position(x: 1 * 32, y: 3 * 32), addToMap: false)
-            if capability.canApply(actor: actor, playerData: playerData, target: target) {
-                capability.applyCapability(actor: actor, playerData: playerData, target: target)
-            }
-            collectionView.isHidden = true
-        case .cancel:
-            let capability = PlayerCapability.findCapability(.cancel)
-            let actor = playerData.playerMap.assets[1]
-            if capability.canApply(actor: actor, playerData: playerData, target: actor) {
-                capability.applyCapability(actor: actor, playerData: playerData, target: actor)
-            }
-            collectionView.isHidden = true
-        default:
-            let capability = PlayerCapability.findCapability(.buildGuardTower)
-            let actor = playerData.playerMap.assets[1]
-            let target = playerData.createMarker(at: Position(x: 5 * 32, y: 5 * 32), addToMap: false)
-            capability.applyCapability(actor: actor, playerData: playerData, target: target)
-            collectionView.isHidden = true
-        }
+        unhandledAction = displayedCommands[indexPath.row]
+        collectionView.isHidden = true
     }
 }
