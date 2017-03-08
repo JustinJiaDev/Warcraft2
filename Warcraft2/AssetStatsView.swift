@@ -79,15 +79,15 @@ class AssetStatsView: UIView {
             for subview in self.subviews {
                 subview.isHidden = false
             }
-            // TODO iconVIew.image = icons[?]
+            // TODO: iconVIew.image = icons[?]
 
             name.text = playerAsset.assetType.name
             health.text = "Health: " + String(playerAsset.hitPoints) + " / " + String(playerAsset.maxHitPoints)
-            armor.text = "Armor: " + String(playerAsset.effectiveArmor)
-            damage.text = "Damage: " + String(playerAsset.effectiveBasicDamage) // FIXME
-            range.text = "Range: " + String(playerAsset.effectiveRange)
-            sight.text = "Sight: " + String(playerAsset.effectiveSight)
-            speed.text = "Speed: " + String(playerAsset.effectiveSpeed)
+            armor.text = "Armor: " + String(playerAsset.armor)
+            damage.text = "Damage: " + String(playerAsset.piercingDamage / 2) + " - " + String(playerAsset.piercingDamage + playerAsset.basicDamage)
+            range.text = "Range: " + String(playerAsset.range)
+            sight.text = "Sight: " + String(playerAsset.sight)
+            speed.text = "Speed: " + String(playerAsset.speed)
         } else {
             for subview in self.subviews {
                 subview.isHidden = true
