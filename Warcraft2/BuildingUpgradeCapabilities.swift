@@ -1,15 +1,17 @@
-class PlayerCapabilityBuildingUpgrade: PlayerCapability {
+struct BuildingUpgradeCapabilities {
+    static let registrant = BuildingUpgradeCapabilities()
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
-            PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
-        }
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Keep"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "Castle"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "GuardTower"))
+        PlayerCapability.register(capability: PlayerCapabilityBuildingUpgrade(buildingName: "CannonTower"))
     }
 
-    static let registrant = Registrant()
+    func register() {}
+}
+
+class PlayerCapabilityBuildingUpgrade: PlayerCapability {
 
     class ActivatedCapability: ActivatedPlayerCapability {
         private var originalType: PlayerAssetType
@@ -27,8 +29,8 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
             self.lumber = lumber
             self.gold = gold
             super.init(actor: actor, playerData: playerData, target: target)
-            self.playerData.decrementLumber(by: self.lumber)
-            self.playerData.decrementGold(by: self.gold)
+            self.playerData.decrementLumber(by: lumber)
+            self.playerData.decrementGold(by: gold)
         }
 
         override func percentComplete(max: Int) -> Int {
@@ -36,35 +38,30 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            let addHitPoints = ((upgradeType.hitPoints - originalType.hitPoints) * (currentStep + 1) / totalSteps) - ((upgradeType.hitPoints - originalType.hitPoints) * currentStep / totalSteps)
+            actor.incrementHitPoints(((upgradeType.hitPoints - originalType.hitPoints) * (currentStep + 1) / totalSteps) - ((upgradeType.hitPoints - originalType.hitPoints) * currentStep / totalSteps))
 
             if currentStep == 0 {
                 var assetCommand = actor.currentCommand
-                assetCommand.action = AssetAction.construct
+                assetCommand.action = .construct
                 actor.popCommand()
                 actor.pushCommand(assetCommand)
                 actor.changeType(to: upgradeType)
                 actor.resetStep()
             }
 
-            actor.incrementHitPoints(addHitPoints)
-
-            if actor.hitPoints > actor.maxHitPoints {
-                actor.hitPoints = actor.maxHitPoints
-            }
-
             currentStep += 1
             actor.incrementStep()
-            if currentStep >= totalSteps {
-                playerData.addGameEvent(GameEvent(type: .workComplete, asset: actor))
-                actor.popCommand()
-                if actor.range != 0 {
-                    let command = AssetCommand(action: .standGround, capability: nil, assetTarget: nil, activatedCapability: nil)
-                    actor.pushCommand(command)
-                }
-                return true
+
+            guard currentStep >= totalSteps else {
+                return false
             }
-            return false
+
+            playerData.addGameEvent(GameEvent(type: .workComplete, asset: actor))
+            actor.popCommand()
+            if actor.range > 0 {
+                actor.pushCommand(AssetCommand(action: .standGround, capability: nil, assetTarget: nil, activatedCapability: nil))
+            }
+            return true
         }
 
         override func cancel() {
@@ -83,16 +80,17 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
     }
 
     override func canInitiate(actor: PlayerAsset, playerData: PlayerData) -> Bool {
-        if let assetType = playerData.assetTypes[buildingName] {
-            if assetType.lumberCost > playerData.lumber {
-                return false
-            }
-            if assetType.goldCost > playerData.gold {
-                return false
-            }
-            if !playerData.assetRequirementsIsMet(name: buildingName) {
-                return false
-            }
+        guard let assetType = playerData.assetTypes[buildingName] else {
+            return false
+        }
+        guard assetType.lumberCost <= playerData.lumber else {
+            return false
+        }
+        guard assetType.goldCost <= playerData.gold else {
+            return false
+        }
+        guard playerData.assetRequirementsIsMet(name: buildingName) else {
+            return false
         }
         return true
     }

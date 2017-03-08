@@ -1,14 +1,25 @@
-import Foundation
+struct BasicCapabilities {
+    static let registrant = BasicCapabilities()
+
+    init() {
+        PlayerCapability.register(capability: PlayerCapabilityMove())
+        PlayerCapability.register(capability: PlayerCapabilityMineHarvest())
+        PlayerCapability.register(capability: PlayerCapabityStandGround())
+        PlayerCapability.register(capability: PlayerCapabilityCancel())
+        PlayerCapability.register(capability: PlayerCapabilityConvey())
+        PlayerCapability.register(capability: PlayerCapabilityPatrol())
+        PlayerCapability.register(capability: PlayerCapabilityAttack())
+        PlayerCapability.register(capability: PlayerCapabilityRepair())
+    }
+
+    func register() {}
+}
 
 class PlayerCapabilityMove: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Move", targetType: .terrainOrAsset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -16,14 +27,12 @@ class PlayerCapabilityMove: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            let assetCommand = AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
+            actor.clearCommand()
+            actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
-            actor.clearCommand()
-            actor.pushCommand(assetCommand)
             return true
         }
 
@@ -44,13 +53,13 @@ class PlayerCapabilityMove: PlayerCapability {
         guard actor.tilePosition != target.tilePosition else {
             return false
         }
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -58,36 +67,25 @@ class PlayerCapabilityMove: PlayerCapability {
 
 class PlayerCapabilityMineHarvest: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Mine", targetType: .terrainOrAsset)
     }
 
-    static let registrant = Registrant()
-
-    class ActivateCapability: ActivatedPlayerCapability {
+    class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
             return 0
         }
 
         override func incrementStep() -> Bool {
-            var assetCommand = AssetCommand(action: .mineGold, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            let action: AssetAction = target.type == .goldMine ? .mineGold : .harvestLumber
 
-            if target.type == .goldMine {
-                assetCommand.action = .mineGold
-            } else {
-                assetCommand.action = .harvestLumber
-            }
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
             actor.clearCommand()
-            actor.pushCommand(assetCommand)
-            assetCommand.action = .walk
+            actor.pushCommand(AssetCommand(action: action, capability: nil, assetTarget: target, activatedCapability: nil))
+            actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
-            actor.pushCommand(assetCommand)
             return true
         }
 
@@ -101,29 +99,30 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if !actor.hasCapability(.mine) {
+        guard actor.hasCapability(.mine) else {
             return false
         }
-        if actor.lumber > 0 || actor.gold > 0 {
+        guard actor.lumber == 0 && actor.gold == 0 else {
             return false
         }
+
         if target.type == .goldMine {
             return true
-        }
-        if target.type != .none {
+        } else if target.type == .none && playerData.playerMap.tileTypeAt(position: target.tilePosition) == .tree {
+            return true
+        } else {
             return false
         }
-        return playerData.playerMap.tileTypeAt(position: target.tilePosition) == .tree
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -131,13 +130,9 @@ class PlayerCapabilityMineHarvest: PlayerCapability {
 
 class PlayerCapabityStandGround: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "StandGround", targetType: .none)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
 
@@ -146,17 +141,15 @@ class PlayerCapabityStandGround: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            var assetCommand = AssetCommand(action: .standGround, capability: nil, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
 
+            let target = playerData.createMarker(at: actor.position, addToMap: false)
             actor.clearCommand()
-            actor.pushCommand(assetCommand)
+            actor.pushCommand(AssetCommand(action: .standGround, capability: nil, assetTarget: target, activatedCapability: nil))
 
             if !actor.tileAligned {
-                assetCommand.action = .walk
                 actor.direction = actor.position.tileOctant.opposite
-                actor.pushCommand(assetCommand)
+                actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
             }
             return true
         }
@@ -175,13 +168,13 @@ class PlayerCapabityStandGround: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -189,13 +182,9 @@ class PlayerCapabityStandGround: PlayerCapability {
 
 class PlayerCapabilityCancel: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Cancel", targetType: .none)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -233,13 +222,13 @@ class PlayerCapabilityCancel: PlayerCapability {
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -247,13 +236,9 @@ class PlayerCapabilityCancel: PlayerCapability {
 
 class PlayerCapabilityConvey: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Convey", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -261,22 +246,16 @@ class PlayerCapabilityConvey: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            var assetCommand = AssetCommand(action: .conveyLumber, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: EventType.acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            playerData.addGameEvent(GameEvent(type: EventType.acknowledge, asset: actor))
 
             actor.popCommand()
             if actor.lumber > 0 {
-                actor.pushCommand(assetCommand)
-                assetCommand.action = AssetAction.walk
-                actor.pushCommand(assetCommand)
+                actor.pushCommand(AssetCommand(action: .conveyLumber, capability: nil, assetTarget: target, activatedCapability: nil))
+                actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
                 actor.resetStep()
             } else if actor.gold > 0 {
-                assetCommand.action = AssetAction.conveyGold
-                assetCommand.assetTarget = target
-                actor.pushCommand(assetCommand)
-                assetCommand.action = AssetAction.walk
-                actor.pushCommand(assetCommand)
+                actor.pushCommand(AssetCommand(action: .conveyGold, capability: nil, assetTarget: target, activatedCapability: nil))
+                actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
                 actor.resetStep()
             }
             return true
@@ -292,28 +271,32 @@ class PlayerCapabilityConvey: PlayerCapability {
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.speed > 0 && (actor.lumber > 0 || actor.gold > 0) {
-            if AssetAction.construct == target.action {
-                return false
-            }
-            if target.type == .townHall || target.type == .keep || target.type == .castle {
-                return true
-            }
-            if actor.lumber > 0 && (target.type == .lumberMill) {
-                return true
-            }
+        guard actor.speed > 0 else {
+            return false
         }
-        return false
+        guard actor.lumber > 0 || actor.gold > 0 else {
+            return false
+        }
+        guard target.action != .construct else {
+            return false
+        }
+        if target.type == .townHall || target.type == .keep || target.type == .castle {
+            return true
+        } else if target.type == .lumberMill && actor.lumber > 0 {
+            return true
+        } else {
+            return false
+        }
     }
 
     override func applyCapability(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        actor.clearCommand()
         let newCommand = AssetCommand(
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
+        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
@@ -321,13 +304,9 @@ class PlayerCapabilityConvey: PlayerCapability {
 
 class PlayerCapabilityPatrol: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Patrol", targetType: .terrain)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -335,17 +314,20 @@ class PlayerCapabilityPatrol: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            let patrolCommand = AssetCommand(action: .capability, capability: AssetCapabilityType.patrol, assetTarget: playerData.createMarker(at: actor.position, addToMap: false), activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target))
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
+            let patrolCommand = AssetCommand(
+                action: .capability,
+                capability: .patrol,
+                assetTarget: playerData.createMarker(at: actor.position, addToMap: false),
+                activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
+            )
             let walkCommand = AssetCommand(action: AssetAction.walk, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
             actor.clearCommand()
             actor.pushCommand(patrolCommand)
-
+            actor.pushCommand(walkCommand)
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
-            actor.pushCommand(walkCommand)
             return true
         }
 
@@ -370,7 +352,7 @@ class PlayerCapabilityPatrol: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -380,13 +362,9 @@ class PlayerCapabilityPatrol: PlayerCapability {
 
 class PlayerCapabilityAttack: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Attack", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -394,17 +372,13 @@ class PlayerCapabilityAttack: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            var assetCommand = AssetCommand(action: .attack, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
             actor.clearCommand()
-            actor.pushCommand(assetCommand)
-
-            assetCommand.action = AssetAction.walk
+            actor.pushCommand(AssetCommand(action: .attack, capability: nil, assetTarget: target, activatedCapability: nil))
+            actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
-            actor.pushCommand(assetCommand)
             return true
         }
 
@@ -418,7 +392,7 @@ class PlayerCapabilityAttack: PlayerCapability {
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.color == target.color || PlayerColor.none == target.color {
+        guard actor.color != target.color && target.color != .none else {
             return false
         }
         return actor.speed > 0
@@ -432,7 +406,7 @@ class PlayerCapabilityAttack: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)
@@ -442,13 +416,9 @@ class PlayerCapabilityAttack: PlayerCapability {
 
 class PlayerCapabilityRepair: PlayerCapability {
 
-    class Registrant {
-        init() {
-            PlayerCapability.register(capability: PlayerCapabilityMove())
-        }
+    init() {
+        super.init(name: "Repair", targetType: .asset)
     }
-
-    static let registrant = Registrant()
 
     class ActivatedCapability: ActivatedPlayerCapability {
         override func percentComplete(max: Int) -> Int {
@@ -456,17 +426,13 @@ class PlayerCapabilityRepair: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            var assetCommand = AssetCommand(action: .repair, capability: nil, assetTarget: target, activatedCapability: nil)
-            let tempEvent = GameEvent(type: .acknowledge, asset: actor)
-            playerData.addGameEvent(tempEvent)
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
             actor.clearCommand()
-            actor.pushCommand(assetCommand)
-
-            assetCommand.action = AssetAction.walk
+            actor.pushCommand(AssetCommand(action: .repair, capability: nil, assetTarget: target, activatedCapability: nil))
+            actor.pushCommand(AssetCommand(action: .walk, capability: nil, assetTarget: target, activatedCapability: nil))
             if !actor.tileAligned {
                 actor.direction = actor.position.tileOctant.opposite
             }
-            actor.pushCommand(assetCommand)
             return true
         }
 
@@ -480,14 +446,12 @@ class PlayerCapabilityRepair: PlayerCapability {
     }
 
     override func canApply(actor: PlayerAsset, playerData: PlayerData, target: PlayerAsset) -> Bool {
-        if actor.color != target.color || target.speed == 0 {
+        guard actor.color == target.color && target.speed > 0 else {
             return false
         }
-
-        if target.hitPoints >= target.maxHitPoints {
+        guard target.hitPoints < target.maxHitPoints else {
             return false
         }
-
         return canInitiate(actor: actor, playerData: playerData)
     }
 
@@ -499,7 +463,7 @@ class PlayerCapabilityRepair: PlayerCapability {
             action: .capability,
             capability: assetCapabilityType,
             assetTarget: target,
-            activatedCapability: ActivatedPlayerCapability(actor: actor, playerData: playerData, target: target)
+            activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
         actor.clearCommand()
         actor.pushCommand(newCommand)

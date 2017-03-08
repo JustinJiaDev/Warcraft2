@@ -127,13 +127,11 @@ class AssetDecoratedMap: TerrainMap {
     func findNearestAsset(at position: Position, color: PlayerColor, type: AssetType) -> PlayerAsset {
         var bestAsset = assets[0]
         var bestDistanceSquared = -1
-        for asset in assets {
-            if asset.type == type && asset.color == color && AssetAction.construct != asset.action {
-                let currentDistance = asset.position.distanceSquared(position)
-                if bestDistanceSquared == -1 || currentDistance < bestDistanceSquared {
-                    bestDistanceSquared = currentDistance
-                    bestAsset = asset
-                }
+        for asset in assets where asset.type == type && asset.color == color && asset.action != .construct {
+            let currentDistance = squaredDistanceBetween(position, asset.position)
+            if bestDistanceSquared == -1 || currentDistance < bestDistanceSquared {
+                bestDistanceSquared = currentDistance
+                bestAsset = asset
             }
         }
         return bestAsset
@@ -192,7 +190,7 @@ class AssetDecoratedMap: TerrainMap {
                 for x in max(leftX, 0) ... toX {
                     if canPlaceAsset(at: Position(x: x, y: topY), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: x, y: topY)
-                        let currentDistance = position.distanceSquared(from: nextTileTarget)
+                        let currentDistance = squaredDistanceBetween(position, nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -207,7 +205,7 @@ class AssetDecoratedMap: TerrainMap {
                 for y in max(topY, 0) ... toY {
                     if canPlaceAsset(at: Position(x: rightX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: rightX, y: y)
-                        let currentDistance = position.distanceSquared(from: nextTileTarget)
+                        let currentDistance = squaredDistanceBetween(position, nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -222,7 +220,7 @@ class AssetDecoratedMap: TerrainMap {
                 for x in (toX ... min(rightX, width - 1)).reversed() {
                     if canPlaceAsset(at: Position(x: x, y: bottomY), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: x, y: bottomY)
-                        let currentDistance = position.distanceSquared(nextTileTarget)
+                        let currentDistance = squaredDistanceBetween(position, nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -237,7 +235,7 @@ class AssetDecoratedMap: TerrainMap {
                 for y in (toY ... min(bottomY, height - 1)).reversed() {
                     if canPlaceAsset(at: Position(x: leftX, y: y), size: placeAsset.size, ignoreAsset: placeAsset) {
                         let position = Position(x: leftX, y: y)
-                        let currentDistance = position.distanceSquared(nextTileTarget)
+                        let currentDistance = squaredDistanceBetween(position, nextTileTarget)
                         if -1 == bestDistance || currentDistance < bestDistance {
                             bestDistance = currentDistance
                             bestPosition = position
@@ -306,6 +304,7 @@ class AssetDecoratedMap: TerrainMap {
             guard let color = PlayerColor(index: playerColorIndex) else {
                 throw GameError.unknownColorIndex(index: playerColorIndex)
             }
+
             let position = Position(x: x, y: y)
             assetInitializationList.append(AssetInitialization(type: type, color: color, tilePosition: position))
         }

@@ -1,5 +1,4 @@
 class PixelType {
-
     enum AssetTerrainType {
         case none
         case grass
