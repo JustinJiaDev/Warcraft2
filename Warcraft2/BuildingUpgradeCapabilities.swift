@@ -49,6 +49,10 @@ class PlayerCapabilityBuildingUpgrade: PlayerCapability {
                 actor.resetStep()
             }
 
+            if target.hitPoints > target.maxHitPoints {
+                target.hitPoints = target.maxHitPoints
+            }
+
             currentStep += 1
             actor.incrementStep()
 
