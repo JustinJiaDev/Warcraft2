@@ -6,7 +6,11 @@ class GameViewController: UIViewController {
 
     private let mapIndex = 1
 
-    fileprivate var selectedPeasant: PlayerAsset?
+    fileprivate var selectedAsset: PlayerAsset?
+    fileprivate var selectedTarget: PlayerAsset?
+    fileprivate var selectedAction: AssetCapabilityType?
+
+    fileprivate var lastTranslation: CGPoint = .zero
 
     lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
@@ -16,7 +20,7 @@ class GameViewController: UIViewController {
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
     lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel)
+    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel, delegate: self)
     lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.gameModel.player(.blue), resourceBarView: self.resourceBarView)
 
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
@@ -35,6 +39,7 @@ class GameViewController: UIViewController {
         BasicCapabilities.registrant.register()
         BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
+        TrainCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
 
         sideView.frame.origin = .zero
@@ -51,45 +56,10 @@ class GameViewController: UIViewController {
 
         mapView.presentScene(scene)
 
+        mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
+        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
+
         CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
-    }
-
-    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent?) {
-        guard touches.count == 1 else {
-            return
-        }
-        let touch = touches.first!
-        let location = touch.location(in: scene)
-        let previousLocation = touch.previousLocation(in: scene)
-        let deltaY = Int(location.y - previousLocation.y)
-        let deltaX = Int(location.x - previousLocation.x)
-        viewportRenderer.panWest(deltaX)
-        viewportRenderer.panSouth(deltaY)
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard touches.count == 1 else {
-            return
-        }
-        let screenLocation = touches.first!.location(in: scene)
-        let target = PlayerAsset(playerAssetType: PlayerAssetType())
-        var detailedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
-        detailedPosition.normalizeToTileCenter()
-        target.position = detailedPosition
-        if let selected = selectedPeasant, selected.commands.isEmpty {
-            selected.pushCommand(AssetCommand(action: .walk, capability: .buildPeasant, assetTarget: target, activatedCapability: nil))
-            selectedPeasant = nil
-        } else {
-            selectedPeasant = gameModel.actualMap.assets.first { asset in
-                return asset.assetType.name == "Peasant" && distanceBetween(asset.position, target.position) < Position.tileWidth
-            }
-            if let selectedPeasant = selectedPeasant {
-                actionMenuView.isHidden = false
-                unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedPeasant])
-            } else {
-                actionMenuView.isHidden = true
-            }
-        }
     }
 
     override var prefersStatusBarHidden: Bool {
@@ -100,7 +70,6 @@ class GameViewController: UIViewController {
 extension GameViewController {
     func timestep() {
         gameModel.timestep()
-        resourceRenderer.drawResources()
         let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
         scene.removeAllChildren()
         viewportRenderer.drawViewport(
@@ -110,5 +79,76 @@ extension GameViewController {
             selectRect: rectangle,
             currentCapability: .none
         )
+        resourceRenderer.drawResources()
+    }
+}
+
+extension GameViewController {
+    func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
+        switch gestureRecognizer.state {
+        case .began:
+            lastTranslation = .zero
+        case .changed:
+            let currentTranslation = gestureRecognizer.translation(in: mapView)
+            let deltaX = currentTranslation.x - lastTranslation.x
+            let deltaY = currentTranslation.y - lastTranslation.y
+            viewportRenderer.panWest(Int(deltaX))
+            viewportRenderer.panNorth(Int(deltaY))
+            lastTranslation = currentTranslation
+        default:
+            break
+        }
+    }
+
+    func handleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard gestureRecognizer.state == .ended else {
+            return
+        }
+
+        let screenLocation = gestureRecognizer.location(in: gestureRecognizer.view)
+        var selectedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
+        selectedPosition.normalizeToTileCenter()
+
+        let playerData = gameModel.player(.blue)
+        if !actionMenuView.isHidden {
+            actionMenuView.isHidden = true
+        } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
+            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
+            if selectedAction != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
+                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
+            }
+            apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
+        } else if let newSelection = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) {
+            selectedAsset = newSelection
+            actionMenuView.isHidden = false
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
+        }
+    }
+}
+
+extension GameViewController: UnitActionRendererDelegate {
+    func selectedAction(_ action: AssetCapabilityType, in collectionView: UICollectionView) {
+        selectedAction = action
+        if [.buildSimple, .buildAdvanced].contains(action) {
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
+        } else {
+            collectionView.isHidden = true
+            let playerData = gameModel.player(.blue)
+            if !action.needsTarget {
+                apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
+            }
+        }
+    }
+
+    func apply(actor: PlayerAsset, target: PlayerAsset, action: AssetCapabilityType, playerData: PlayerData) {
+        let capability = PlayerCapability.findCapability(action)
+        if capability.canApply(actor: actor, playerData: playerData, target: target) {
+            capability.applyCapability(actor: actor, playerData: playerData, target: target)
+        } else {
+            PlayerCapability.findCapability(.cancel).applyCapability(actor: actor, playerData: playerData, target: target)
+        }
+        selectedAsset = nil
+        selectedTarget = nil
+        selectedAction = nil
     }
 }

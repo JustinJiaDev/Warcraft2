@@ -82,14 +82,15 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
     return assetRenderer
 }
 
-func createUnitActionRenderer(gameModel: GameModel) throws -> UnitActionRenderer {
+func createUnitActionRenderer(gameModel: GameModel, delegate: UnitActionRendererDelegate) throws -> UnitActionRenderer {
     let bevel = try Bevel(tileset: tileset("Icons"))
     let icons = try tileset("Icons")
     let unitActionRenderer = UnitActionRenderer(
         bevel: bevel,
         icons: icons,
         color: gameModel.player(.blue).color,
-        player: gameModel.player(.blue)
+        player: gameModel.player(.blue),
+        delegate: delegate
     )
     return unitActionRenderer
 }

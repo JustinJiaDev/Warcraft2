@@ -1,5 +1,5 @@
 struct BuildCapabilities {
-    static let registrant = BasicCapabilities()
+    static let registrant = BuildCapabilities()
 
     init() {
         PlayerCapability.register(capability: PlayerCapabilityBuildNormal(buildingName: "TownHall"))
@@ -115,12 +115,12 @@ class PlayerCapabilityBuildNormal: PlayerCapability {
         actor.clearCommand()
         if actor.tilePosition == target.tilePosition {
             let newAsset = playerData.createAsset(buildingName)
-            newAsset.tilePosition = Position.tile(fromAbsolute: target.position)
+            newAsset.tilePosition = target.tilePosition
             newAsset.hitPoints = 1
 
             let newCommand = AssetCommand(
                 action: .capability,
-                capability: .none,
+                capability: assetCapabilityType,
                 assetTarget: newAsset,
                 activatedCapability: ActivatedCapability(
                     actor: actor,
@@ -133,8 +133,8 @@ class PlayerCapabilityBuildNormal: PlayerCapability {
             )
             actor.pushCommand(newCommand)
         } else {
-            actor.pushCommand(AssetCommand(action: .capability, capability: .none, assetTarget: target, activatedCapability: nil))
-            actor.pushCommand(AssetCommand(action: .walk, capability: .none, assetTarget: target, activatedCapability: nil))
+            actor.pushCommand(AssetCommand(action: .capability, capability: assetCapabilityType, assetTarget: target, activatedCapability: nil))
+            actor.pushCommand(AssetCommand(action: .walk, capability: assetCapabilityType, assetTarget: target, activatedCapability: nil))
         }
         return true
     }
