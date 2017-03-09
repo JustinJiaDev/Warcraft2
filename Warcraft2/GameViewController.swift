@@ -15,13 +15,14 @@ class GameViewController: UIViewController {
     lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
     lazy var gameModel: GameModel = try! createGameModel(mapIndex: self.mapIndex)
+    lazy var playerData: PlayerData = self.gameModel.player(.blue)
     lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
-    lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.map)
-    lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
+    lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.playerData.actualMap)
+    lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(playerData: self.playerData)
     lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel, delegate: self)
-    lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.gameModel.player(.blue), resourceBarView: self.resourceBarView)
+    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(playerData: self.playerData, delegate: self)
+    lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
 
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
     lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
@@ -36,6 +37,20 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        do {
+            gameModel = try createGameModel(mapIndex: self.mapIndex)
+            playerData = self.gameModel.player(.blue)
+            map = try createAssetDecoratedMap(mapIndex: self.mapIndex)
+            mapRenderer = try createMapRenderer(map: self.playerData.actualMap)
+            assetRenderer = try createAssetRenderer(playerData: self.playerData)
+            fogRenderer = try createFogRenderer(map: self.map)
+            viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
+            unitActionRenderer = try createUnitActionRenderer(playerData: self.playerData, delegate: self)
+            resourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
+        } catch {
+            
+        }
+        
         BasicCapabilities.registrant.register()
         BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
@@ -109,7 +124,6 @@ extension GameViewController {
         var selectedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
         selectedPosition.normalizeToTileCenter()
 
-        let playerData = gameModel.player(.blue)
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
@@ -133,7 +147,6 @@ extension GameViewController: UnitActionRendererDelegate {
             unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
         } else {
             collectionView.isHidden = true
-            let playerData = gameModel.player(.blue)
             if !action.needsTarget {
                 apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
             }

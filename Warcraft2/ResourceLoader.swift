@@ -45,7 +45,7 @@ func createMapRenderer(map: AssetDecoratedMap) throws -> MapRenderer {
     return try MapRenderer(configuration: mapConfiguration, tileset: terrainTileset, map: map)
 }
 
-func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
+func createAssetRenderer(playerData: PlayerData) throws -> AssetRenderer {
     let colors = GraphicRecolorMap()
     var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
     tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
@@ -76,20 +76,20 @@ func createAssetRenderer(gameModel: GameModel) throws -> AssetRenderer {
         fireTilesets: fireTilesets,
         buildingDeathTileset: buildingDeathTileset,
         arrowTileset: arrowTileset,
-        player: gameModel.player(.blue),
-        map: gameModel.player(.blue).playerMap
+        player: playerData,
+        map: playerData.playerMap
     )
     return assetRenderer
 }
 
-func createUnitActionRenderer(gameModel: GameModel, delegate: UnitActionRendererDelegate) throws -> UnitActionRenderer {
+func createUnitActionRenderer(playerData: PlayerData, delegate: UnitActionRendererDelegate) throws -> UnitActionRenderer {
     let bevel = try Bevel(tileset: tileset("Icons"))
     let icons = try tileset("Icons")
     let unitActionRenderer = UnitActionRenderer(
         bevel: bevel,
         icons: icons,
-        color: gameModel.player(.blue).color,
-        player: gameModel.player(.blue),
+        color: playerData.color,
+        player: playerData,
         delegate: delegate
     )
     return unitActionRenderer
