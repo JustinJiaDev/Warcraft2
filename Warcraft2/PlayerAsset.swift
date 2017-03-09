@@ -903,6 +903,12 @@ class PlayerAsset {
         return commands[commands.count - 2]
     }
 
+    var activeCapability: AssetCapabilityType {
+        return commands.first { command in
+            return command.action == .capability
+        }?.capability ?? .none
+    }
+
     init(playerAssetType: PlayerAssetType) {
         position = Position()
         assetType = playerAssetType

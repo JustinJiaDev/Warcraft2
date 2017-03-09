@@ -8,8 +8,9 @@ class GameViewController: UIViewController {
 
     fileprivate var selectedAsset: PlayerAsset?
     fileprivate var selectedTarget: PlayerAsset?
+    fileprivate var selectedAction: AssetCapabilityType?
 
-    private var lastTranslation: CGPoint = .zero
+    fileprivate var lastTranslation: CGPoint = .zero
 
     lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
 
@@ -19,7 +20,7 @@ class GameViewController: UIViewController {
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
     lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel)
+    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel, delegate: self)
     lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.gameModel.player(.blue), resourceBarView: self.resourceBarView)
 
     lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
@@ -55,12 +56,34 @@ class GameViewController: UIViewController {
 
         mapView.presentScene(scene)
 
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        mapView.addGestureRecognizer(panGestureRecognizer)
+        mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
+        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
 
         CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
     }
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+}
+
+extension GameViewController {
+    func timestep() {
+        gameModel.timestep()
+        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
+        scene.removeAllChildren()
+        viewportRenderer.drawViewport(
+            on: scene,
+            typeSurface: typeScene,
+            selectionMarkerList: [],
+            selectRect: rectangle,
+            currentCapability: .none
+        )
+        resourceRenderer.drawResources()
+    }
+}
+
+extension GameViewController {
     func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
         switch gestureRecognizer.state {
         case .began:
@@ -77,73 +100,56 @@ class GameViewController: UIViewController {
         }
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard touches.count == 1 else {
+    func handleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard gestureRecognizer.state == .ended else {
             return
         }
-        let screenLocation = touches.first!.location(in: scene)
+
+        let screenLocation = gestureRecognizer.location(in: gestureRecognizer.view)
         var selectedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
         selectedPosition.normalizeToTileCenter()
 
         let playerData = gameModel.player(.blue)
-        if selectedAsset == nil {
-            selectedAsset = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
-            if let selectedAsset = selectedAsset {
-                actionMenuView.isHidden = false
-                unitActionRenderer.drawUnitAction(on: actionMenuView, selectionList: [selectedAsset])
+        if !actionMenuView.isHidden {
+            actionMenuView.isHidden = true
+        } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
+            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
+            if selectedAsset.activeCapability != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
+                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
-        } else {
-            if unitActionRenderer.unhandledAction.needsMarker {
-                selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
-                if unitActionRenderer.unhandledAction != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
-                    selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
-                }
-            } else {
-                selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
-            }
+            apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
+        } else if let newSelection = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) {
+            selectedAsset = newSelection
+            actionMenuView.isHidden = false
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
         }
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
     }
 }
 
-extension GameViewController {
-    func timestep() {
-        gameModel.timestep()
-        // determine if action from action menu should be applied to selected asset
-        let playerData = gameModel.player(.blue)
-        let unhandledAction = unitActionRenderer.unhandledAction
-        if unhandledAction != .none {
-            if !unhandledAction.needsTarget {
-                apply(actor: selectedAsset!, target: selectedAsset!, action: unhandledAction, playerData: playerData)
-            } else if selectedTarget != nil {
-                apply(actor: selectedAsset!, target: selectedTarget!, action: unhandledAction, playerData: playerData)
+extension GameViewController: UnitActionRendererDelegate {
+    func selectedAction(_ action: AssetCapabilityType, in collectionView: UICollectionView) {
+        selectedAction = action
+        if [.buildSimple, .buildAdvanced].contains(action) {
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
+        } else {
+            collectionView.isHidden = true
+            let playerData = gameModel.player(.blue)
+            if !action.needsTarget {
+                apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
             }
         }
-
-        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
-        scene.removeAllChildren()
-        viewportRenderer.drawViewport(
-            on: scene,
-            typeSurface: typeScene,
-            selectionMarkerList: [],
-            selectRect: rectangle,
-            currentCapability: .none
-        )
-        resourceRenderer.drawResources()
     }
 
     func apply(actor: PlayerAsset, target: PlayerAsset, action: AssetCapabilityType, playerData: PlayerData) {
         let capability = PlayerCapability.findCapability(action)
+
         if capability.canApply(actor: actor, playerData: playerData, target: target) {
             capability.applyCapability(actor: actor, playerData: playerData, target: target)
         } else {
             PlayerCapability.findCapability(.cancel).applyCapability(actor: actor, playerData: playerData, target: target)
         }
-        unitActionRenderer.finishAction()
         selectedAsset = nil
         selectedTarget = nil
+        selectedAction = nil
     }
 }

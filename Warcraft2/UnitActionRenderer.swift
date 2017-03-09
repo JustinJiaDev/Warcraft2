@@ -1,7 +1,12 @@
 import Foundation
 import UIKit
 
+protocol UnitActionRendererDelegate {
+    func selectedAction(_ action: AssetCapabilityType, in collectionView: UICollectionView)
+}
+
 class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+
     private let iconTileset: GraphicTileset
     private let playerData: PlayerData
     private let playerColor: PlayerColor
@@ -10,9 +15,8 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     private let fullIconHeight: Int
     private let commandIndices: [AssetCapabilityType: Int]
     private let disabledIndex: Int
+    private let delegate: UnitActionRendererDelegate
     private var displayedCommands: [AssetCapabilityType]
-    private var currentAction: AssetCapabilityType
-    private(set) var unhandledAction: AssetCapabilityType
 
     private static let capabilities: [AssetCapabilityType] = [
         .buildFarm,
@@ -27,11 +31,12 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         .buildCannonTower
     ]
 
-    init(bevel: Bevel, icons: GraphicTileset, color: PlayerColor, player: PlayerData) {
-        self.iconTileset = icons
-        self.playerData = player
-        self.playerColor = color
+    init(bevel: Bevel, icons: GraphicTileset, color: PlayerColor, player: PlayerData, delegate: UnitActionRendererDelegate) {
         self.bevel = bevel
+        self.iconTileset = icons
+        self.playerColor = color
+        self.playerData = player
+        self.delegate = delegate
         self.fullIconWidth = iconTileset.tileWidth + bevel.width * 2
         self.fullIconHeight = iconTileset.tileHeight + bevel.width * 2
         self.commandIndices = [
@@ -76,8 +81,6 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         ]
         self.disabledIndex = iconTileset.findTile("disabled")
         self.displayedCommands = []
-        self.currentAction = .none
-        self.unhandledAction = .none
     }
 
     var minimumWidth: Int {
@@ -88,21 +91,16 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         return fullIconHeight * 3 + bevel.width * 2
     }
 
-    func finishAction() {
-        unhandledAction = .none
-    }
-
-    func drawUnitAction(on view: UICollectionView, selectionList: [PlayerAsset]) {
-        guard !selectionList.isEmpty else {
+    func drawUnitAction(on view: UICollectionView, selectedAsset: PlayerAsset?, currentAction: AssetCapabilityType) {
+        guard let selectedAsset = selectedAsset else {
             return
         }
-        guard selectionList.first(where: { $0.color != playerColor }) == nil else {
+        guard selectedAsset.color == playerColor else {
             return
         }
 
-        let firstAsset = selectionList[0]
-        let isMoveable = firstAsset.speed > 0
-        let hasCargo = selectionList.last!.lumber > 0 || selectionList.last!.gold > 0
+        let isMoveable = selectedAsset.speed > 0
+        let hasCargo = selectedAsset.lumber > 0 || selectedAsset.gold > 0
 
         displayedCommands.removeAll()
         if [.none, .cancel].contains(currentAction) {
@@ -110,26 +108,26 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
                 displayedCommands.append(hasCargo ? .convey : .move)
                 displayedCommands.append(.standGround)
                 displayedCommands.append(.attack)
-                if firstAsset.hasCapability(.repair) {
+                if selectedAsset.hasCapability(.repair) {
                     displayedCommands.append(.repair)
                 }
-                if firstAsset.hasCapability(.patrol) {
+                if selectedAsset.hasCapability(.patrol) {
                     displayedCommands.append(.patrol)
                 }
-                if firstAsset.hasCapability(.mine) {
+                if selectedAsset.hasCapability(.mine) {
                     displayedCommands.append(.mine)
                 }
-                if firstAsset.hasCapability(.buildSimple) && selectionList.count == 1 {
+                if selectedAsset.hasCapability(.buildSimple) {
                     displayedCommands.append(.buildSimple)
                 }
-            } else if firstAsset.action == .construct || firstAsset.action == .capability {
+            } else if [.construct, .capability].contains(selectedAsset.action) {
                 displayedCommands.append(.cancel)
             } else {
-                displayedCommands = firstAsset.capabilities
+                displayedCommands = selectedAsset.capabilities
             }
         } else if currentAction == .buildSimple {
             displayedCommands = UnitActionRenderer.capabilities.filter { capability in
-                return firstAsset.hasCapability(capability)
+                return selectedAsset.hasCapability(capability)
             }
             displayedCommands.append(.cancel)
         } else {
@@ -154,8 +152,6 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        currentAction = displayedCommands[indexPath.row]
-        unhandledAction = displayedCommands[indexPath.row]
-        collectionView.isHidden = true
+        delegate.selectedAction(displayedCommands[indexPath.row], in: collectionView)
     }
 }

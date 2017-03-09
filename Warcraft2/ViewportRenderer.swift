@@ -50,9 +50,8 @@ class ViewportRenderer {
         viewportY(position.y - lastViewportHeight / 2)
     }
 
-    // FIXME: FIND OUT HOW TO HANDLE Y CORRECTLY GLOBALLY
     func detailedPosition(of position: Position) -> Position {
-        return Position(x: position.x + viewportX, y: lastViewportHeight - position.y + viewportY)
+        return Position(x: position.x + viewportX, y: position.y + viewportY)
     }
 
     func panNorth(_ distance: Int) {
