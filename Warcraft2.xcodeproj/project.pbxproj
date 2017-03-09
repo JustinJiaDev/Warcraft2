@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B71D4221E5FC4EE004AA783 /* BattleMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B71D4211E5FC4EE004AA783 /* BattleMode.swift */; };
 		200B39F61E567EC500FCF630 /* UnitUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */; };
+		203CCC2A1E60DBE700037C38 /* TrainCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203CCC291E60DBE700037C38 /* TrainCapabilities.swift */; };
 		49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E8B2FA1E38400D00B80211 /* Debug.swift */; };
 		6F1BAD1F1E67735000865DE9 /* AssetStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BAD1D1E67735000865DE9 /* AssetStatsView.swift */; };
 		6F1BAD201E67735000865DE9 /* ResourceBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BAD1E1E67735000865DE9 /* ResourceBarView.swift */; };
@@ -41,6 +43,7 @@
 		C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */; };
 		D004BAE81E6CC8E100931A4F /* ViewSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D004BAE71E6CC8E100931A4F /* ViewSurface.swift */; };
 		D004BAEA1E6CCB3D00931A4F /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D004BAE91E6CCB3D00931A4F /* ImageCell.swift */; };
+		D01F1DC01E6E68F4003039FC /* GameSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01F1DBF1E6E68F4003039FC /* GameSound.swift */; };
 		D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24D1E504C4300F8736B /* FileDataContainer.swift */; };
 		D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24F1E504CA600F8736B /* FileDataSink.swift */; };
 		D022B2521E504FCD00F8736B /* data in Resources */ = {isa = PBXBuildFile; fileRef = D022B2511E504FCD00F8736B /* data */; };
@@ -65,8 +68,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B71D4211E5FC4EE004AA783 /* BattleMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BattleMode.swift; sourceTree = "<group>"; };
 		1E0A15F8C5E0A27846607E01 /* Pods-Warcraft2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Warcraft2.release.xcconfig"; path = "Pods/Target Support Files/Pods-Warcraft2/Pods-Warcraft2.release.xcconfig"; sourceTree = "<group>"; };
 		200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitUpgradeCapabilities.swift; sourceTree = "<group>"; };
+		203CCC291E60DBE700037C38 /* TrainCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainCapabilities.swift; sourceTree = "<group>"; };
 		49E8B2FA1E38400D00B80211 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		6F1BAD1D1E67735000865DE9 /* AssetStatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetStatsView.swift; sourceTree = "<group>"; };
 		6F1BAD1E1E67735000865DE9 /* ResourceBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceBarView.swift; sourceTree = "<group>"; };
@@ -102,6 +107,7 @@
 		C8E5F4661E41A08400EDEC02 /* AssetRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetRenderer.swift; sourceTree = "<group>"; };
 		D004BAE71E6CC8E100931A4F /* ViewSurface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewSurface.swift; sourceTree = "<group>"; };
 		D004BAE91E6CCB3D00931A4F /* ImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		D01F1DBF1E6E68F4003039FC /* GameSound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSound.swift; sourceTree = "<group>"; };
 		D022B24D1E504C4300F8736B /* FileDataContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataContainer.swift; sourceTree = "<group>"; };
 		D022B24F1E504CA600F8736B /* FileDataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataSink.swift; sourceTree = "<group>"; };
 		D022B2511E504FCD00F8736B /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
@@ -169,6 +175,7 @@
 				D0773FC41E38485500FF7DD7 /* Type */,
 				D02808AC1E472190001C1E0E /* Renderer */,
 				D0773FC51E38485C00FF7DD7 /* Utilities */,
+				1B71D4211E5FC4EE004AA783 /* BattleMode.swift */,
 			);
 			name = LinuxPort;
 			sourceTree = "<group>";
@@ -179,6 +186,7 @@
 				8E7737041E4ADBE80058A7C6 /* BasicCapabilities.swift */,
 				D0C813861E6D656D003A10DD /* BuildCapabilities.swift */,
 				D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */,
+				203CCC291E60DBE700037C38 /* TrainCapabilities.swift */,
 				200B39F51E567EC500FCF630 /* UnitUpgradeCapabilities.swift */,
 			);
 			name = Capabilities;
@@ -190,6 +198,14 @@
 				8EE98F361E5FDBBC00FE1DAF /* GameScene.swift */,
 			);
 			name = Scenes;
+			sourceTree = "<group>";
+		};
+		D01F1DBE1E6E68D9003039FC /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				D01F1DBF1E6E68F4003039FC /* GameSound.swift */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 		D02808AC1E472190001C1E0E /* Renderer */ = {
@@ -303,6 +319,7 @@
 				8E1B515A1E2D58CA008E968C /* LinuxPort */,
 				D0D6FA681E26028000D92DA5 /* ViewControllers */,
 				8EE98F351E5FDBAD00FE1DAF /* Scenes */,
+				D01F1DBE1E6E68D9003039FC /* Sounds */,
 				D0D6FA691E26028B00D92DA5 /* Views */,
 				D0D6FA6B1E2602AE00D92DA5 /* Resources */,
 				8E1B515D1E2D5DE9008E968C /* Playground.playground */,
@@ -490,6 +507,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D01F1DC01E6E68F4003039FC /* GameSound.swift in Sources */,
 				8EA067811E33C8E00059CEC2 /* DataSink.swift in Sources */,
 				8EA067881E33C8E00059CEC2 /* Tokenizer.swift in Sources */,
 				D08F47471E35D89800F7FED1 /* GraphicTileset.swift in Sources */,
@@ -535,11 +553,13 @@
 				D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */,
 				C8CB47CC1E3AD8C3004AFED4 /* TextFormatter.swift in Sources */,
 				9204011E1E418A2800D3719F /* GraphicRecolorMap.swift in Sources */,
+				1B71D4221E5FC4EE004AA783 /* BattleMode.swift in Sources */,
 				D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */,
 				8EA067891E33C8E00059CEC2 /* GraphicSurface.swift in Sources */,
 				8EC6A5C81E3D68F400ACB660 /* AssetDecoratedMap.swift in Sources */,
 				8E663E901E41492100FD4727 /* GameModel.swift in Sources */,
 				D022B24E1E504C4300F8736B /* FileDataContainer.swift in Sources */,
+				203CCC2A1E60DBE700037C38 /* TrainCapabilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

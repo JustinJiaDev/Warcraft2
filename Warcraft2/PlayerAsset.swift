@@ -388,26 +388,26 @@ class PlayerAssetType {
         return returnValue
     }
 
-    private(set) static var typeStrings = [
-        "None",
-        "Peasant",
-        "Footman",
-        "Archer",
-        "Ranger",
-        "GoldMine",
-        "TownHall",
-        "Keep",
-        "Castle",
-        "Farm",
-        "Barracks",
-        "LumberMill",
-        "Blacksmith",
-        "ScoutTower",
-        "GuardTower",
-        "CannonTower"
+    private static let names: [AssetType: String] = [
+        .none: "None",
+        .peasant: "Peasant",
+        .footman: "Footman",
+        .archer: "Archer",
+        .ranger: "Ranger",
+        .goldMine: "GoldMine",
+        .townHall: "TownHall",
+        .keep: "Keep",
+        .castle: "Castle",
+        .farm: "Farm",
+        .barracks: "Barracks",
+        .lumberMill: "LumberMill",
+        .blacksmith: "Blacksmith",
+        .scoutTower: "ScoutTower",
+        .guardTower: "GuardTower",
+        .cannonTower: "CannonTower"
     ]
 
-    private(set) static var nameTypeTranslation: [String: AssetType] = [
+    private static let types: [String: AssetType] = [
         "None": .none,
         "Peasant": .peasant,
         "Footman": .footman,
@@ -502,11 +502,11 @@ class PlayerAssetType {
     }
 
     static func findType(_ name: String) -> AssetType {
-        return nameTypeTranslation[name] ?? .none
+        return types[name] ?? .none
     }
 
     static func findName(_ type: AssetType) -> String {
-        return typeStrings.indices.contains(type.hashValue) ? typeStrings[type.hashValue] : ""
+        return names[type] ?? ""
     }
 
     static func loadTypes(from dataContainer: DataContainer) throws {
@@ -534,7 +534,7 @@ class PlayerAssetType {
 
         let assetType = findType(name)
 
-        if assetType == .none && name != typeStrings[AssetType.none.rawValue] {
+        if assetType == .none && name != names[.none] {
             throw GameError.unknownResourceType(type: name)
         }
 
@@ -901,6 +901,12 @@ class PlayerAsset {
             return AssetCommand(action: .none, capability: .none, assetTarget: nil, activatedCapability: nil)
         }
         return commands[commands.count - 2]
+    }
+
+    var activeCapability: AssetCapabilityType {
+        return commands.first { command in
+            return command.action == .capability
+        }?.capability ?? .none
     }
 
     init(playerAssetType: PlayerAssetType) {

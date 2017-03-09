@@ -1,9 +1,3 @@
-// FIXME: HACK
-import UIKit
-import CoreAudio
-import AVFoundation
-import AVKit
-
 enum EventType {
     case none
     case workComplete
@@ -253,6 +247,19 @@ class PlayerData {
         return bestAsset
     }
 
+    func findNearestAsset(at position: Position, within range: Int) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
+        for asset in playerMap.assets {
+            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
+            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                bestDistanceSquared = currentDistanceSquared
+                bestAsset = asset
+            }
+        }
+        return bestDistanceSquared <= range * range ? bestAsset : nil
+    }
+
     func findNearestAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
@@ -266,7 +273,7 @@ class PlayerData {
         return bestAsset
     }
 
-    func findNearestEnemy(at position: Position, inputRange: Int) -> PlayerAsset? {
+    func findNearestEnemy(at position: Position, within inputRange: Int) -> PlayerAsset? {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
         var range = inputRange
@@ -599,11 +606,7 @@ class GameModel {
                 let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle, .lumberMill])
                 lumberAvailable[tilePosition.y][tilePosition.x] -= lumberPerHarvest
 
-                // FIXME: HACK ADD SOUND
-                var blacksmithSoundID: SystemSoundID = 1
-                let blacksmithSoundCFURL = url("snd", "misc", "tree1.wav") as CFURL
-                AudioServicesCreateSystemSoundID(blacksmithSoundCFURL, &blacksmithSoundID)
-                AudioServicesPlaySystemSound(blacksmithSoundID)
+                GameSound.current.play(.tree)
 
                 if lumberAvailable[tilePosition.y][tilePosition.x] <= 0 {
                     actualMap.changeTileType(at: tilePosition, to: .stump)
@@ -655,11 +658,7 @@ class GameModel {
 
                     target.decrementGold(goldPerMining)
 
-                    // FIXME: HACK ADD SOUND
-                    var blacksmithSoundID: SystemSoundID = 1
-                    let blacksmithSoundCFURL = url("snd", "buildings", "gold-mine.wav") as CFURL
-                    AudioServicesCreateSystemSoundID(blacksmithSoundCFURL, &blacksmithSoundID)
-                    AudioServicesPlaySystemSound(blacksmithSoundID)
+                    GameSound.current.play(.goldMine)
 
                     target.popCommand()
                     if target.gold <= 0 {
@@ -688,7 +687,7 @@ class GameModel {
 
     private func handleStandGroundEvent(for asset: PlayerAsset) {
         var command = asset.currentCommand
-        if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, inputRange: asset.effectiveRange) {
+        if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, within: asset.effectiveRange) {
             command.action = .attack
             command.assetTarget = newTarget
         } else {
@@ -905,7 +904,7 @@ class GameModel {
             let nextCommand = asset.nextCommand
             asset.popCommand()
             if nextCommand.action != .standGround {
-                if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, inputRange: asset.effectiveSight) {
+                if let newTarget = players[asset.color.index].findNearestEnemy(at: asset.position, within: asset.effectiveSight) {
                     currentCommand.assetTarget = newTarget
                     asset.pushCommand(currentCommand)
                     asset.resetStep()

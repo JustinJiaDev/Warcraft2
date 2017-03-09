@@ -167,6 +167,34 @@ enum AssetCapabilityType: Int {
         .rangerScouting,
         .marksmanship
     ]
+
+    var needsTarget: Bool {
+        switch self {
+        case .buildPeasant,
+             .buildFootman,
+             .buildArcher,
+             .buildRanger,
+             .standGround,
+             .weaponUpgrade1,
+             .weaponUpgrade2,
+             .weaponUpgrade3,
+             .arrowUpgrade1,
+             .arrowUpgrade2,
+             .arrowUpgrade3,
+             .armorUpgrade1,
+             .armorUpgrade2,
+             .armorUpgrade3,
+             .cancel: return false
+        default: return true
+        }
+    }
+
+    var needsMarker: Bool {
+        switch self {
+        case .move, .mine: return true
+        default: return false
+        }
+    }
 }
 
 enum AssetType: Int {

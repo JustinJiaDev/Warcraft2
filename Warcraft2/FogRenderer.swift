@@ -124,7 +124,7 @@ class FogRenderer {
                     }
                     if fogIndices[visibilityIndex] == -1 {
                         if !unknownFog[visibilityIndex] {
-                            printError("Unknown fog \(visibilityIndex) @ (\(xIndex), \(yIndex))")
+                            printError("Unknown fog 0x\(visibilityIndex) @ (\(xIndex), \(yIndex))")
                             unknownFog[visibilityIndex] = true
                         }
                     }
@@ -149,7 +149,7 @@ class FogRenderer {
                     }
                     if blackIndices[visibilityIndex] == -1 {
                         if !unknownBlack[visibilityIndex] {
-                            printError("Unknown black \(visibilityIndex) @ (\(xIndex), \(yIndex))\n")
+                            printError("Unknown black 0x\(visibilityIndex) @ (\(xIndex), \(yIndex))\n")
                             unknownBlack[visibilityIndex] = true
                         }
                     }
