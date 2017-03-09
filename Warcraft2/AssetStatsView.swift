@@ -38,7 +38,7 @@ class AssetStatsView: UIView {
         let iconWidth = CGFloat(self.frame.size.width) * 0.2
         iconView.frame = CGRect(x: 0, y: 0, width: iconWidth, height: iconWidth)
 
-        name.frame = CGRect(x: iconWidth, y: 0, width: self.frame.size.width - iconWidth, height: 50)
+        name.frame = CGRect(x: 0, y: 0, width: self.frame.size.width /*- iconWidth*/, height: 50)
         name.textAlignment = .center
         name.textColor = UIColor.white
         name.font = UIFont.systemFont(ofSize: 24)
@@ -79,7 +79,7 @@ class AssetStatsView: UIView {
             for subview in self.subviews {
                 subview.isHidden = false
             }
-            icons.drawTile(on: iconView, index: icons.findTile("peasant")) // FIXME
+            //icons.drawTile(on: iconView, index: icons.findTile("peasant")) // FIXME
 
             name.text = playerAsset.assetType.name
             health.text = "Health: " + String(playerAsset.hitPoints) + " / " + String(playerAsset.maxHitPoints)
