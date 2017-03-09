@@ -114,9 +114,9 @@ func createActionMenuView() -> UICollectionView {
     return actionMenuView
 }
 
-func createFogRenderer(map: AssetDecoratedMap) throws -> FogRenderer {
+func createFogRenderer(gameModel: GameModel) throws -> FogRenderer {
     let fogTileset = try tileset("Fog")
-    return try FogRenderer(tileset: fogTileset, map: map.createVisibilityMap())
+    return try FogRenderer(tileset: fogTileset, map: gameModel.player(.blue).visibilityMap)
 }
 
 func createMapView(viewportRenderer: ViewportRenderer, width: Int, height: Int) -> SKView {

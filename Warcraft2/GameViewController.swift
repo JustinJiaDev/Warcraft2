@@ -18,7 +18,7 @@ class GameViewController: UIViewController {
     lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
     lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.map)
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
-    lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
+    lazy var fogRenderer: FogRenderer = try! createFogRenderer(gameModel: self.gameModel)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
     lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel, delegate: self)
     lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.gameModel.player(.blue), resourceBarView: self.resourceBarView)

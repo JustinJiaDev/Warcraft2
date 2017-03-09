@@ -85,17 +85,19 @@ class FogRenderer {
         }
     }
 
-    func drawMap(on surface: GraphicSurface, in rectangle: Rectangle) throws {
+    func drawMap(on surface: GraphicSurface, in rectangle: Rectangle) {
         var unknownFog = Array(repeating: false, count: 0x100)
         var unknownBlack = Array(repeating: false, count: 0x100)
 
         let tileWidth = tileset.tileWidth
         let tileHeight = tileset.tileHeight
 
-        var yIndex = rectangle.y / tileHeight
+        var yIndex = (rectangle.y / tileHeight) - 1
         for yPosition in stride(from: -(rectangle.y % tileHeight), to: rectangle.height, by: tileHeight) {
-            var xIndex = rectangle.x / tileWidth
+            yIndex += 1
+            var xIndex = (rectangle.x / tileWidth) - 1
             for xPosition in stride(from: -(rectangle.x % tileWidth), to: rectangle.width, by: tileWidth) {
+                xIndex += 1
                 let tileType = map.tileTypeAt(x: xIndex, y: yIndex)
                 if tileType == .none {
                     tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: noneIndex)
@@ -155,9 +157,7 @@ class FogRenderer {
                     }
                     tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
                 }
-                xIndex += 1
             }
-            yIndex += 1
         }
     }
 
