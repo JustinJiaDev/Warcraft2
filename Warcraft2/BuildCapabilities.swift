@@ -1,5 +1,5 @@
 struct BuildCapabilities {
-    static let registrant = BasicCapabilities()
+    static let registrant = BuildCapabilities()
 
     init() {
         PlayerCapability.register(capability: PlayerCapabilityBuildNormal(buildingName: "TownHall"))

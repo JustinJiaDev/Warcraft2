@@ -142,7 +142,6 @@ extension GameViewController: UnitActionRendererDelegate {
 
     func apply(actor: PlayerAsset, target: PlayerAsset, action: AssetCapabilityType, playerData: PlayerData) {
         let capability = PlayerCapability.findCapability(action)
-
         if capability.canApply(actor: actor, playerData: playerData, target: target) {
             capability.applyCapability(actor: actor, playerData: playerData, target: target)
         } else {
