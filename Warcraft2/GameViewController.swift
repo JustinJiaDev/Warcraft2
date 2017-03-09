@@ -38,6 +38,7 @@ class GameViewController: UIViewController {
         BasicCapabilities.registrant.register()
         BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
+        TrainCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
 
         sideView.frame.origin = .zero

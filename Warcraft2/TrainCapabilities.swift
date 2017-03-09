@@ -6,6 +6,8 @@ struct TrainCapabilities {
         PlayerCapability.register(capability: PlayerCapabilityTrainNormal(unitName: "Footman"))
         PlayerCapability.register(capability: PlayerCapabilityTrainNormal(unitName: "Archer"))
     }
+
+    func register() {}
 }
 
 class PlayerCapabilityTrainNormal: PlayerCapability {
