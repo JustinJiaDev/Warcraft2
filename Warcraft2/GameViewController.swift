@@ -19,7 +19,7 @@ class GameViewController: UIViewController {
     lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
     lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.playerData.actualMap)
     lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(playerData: self.playerData)
-    lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
+    lazy var fogRenderer: FogRenderer = try! createFogRenderer(gameModel: self.gameModel)
     lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
     lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(playerData: self.playerData, delegate: self)
     lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
@@ -43,14 +43,13 @@ class GameViewController: UIViewController {
             map = try createAssetDecoratedMap(mapIndex: self.mapIndex)
             mapRenderer = try createMapRenderer(map: self.playerData.actualMap)
             assetRenderer = try createAssetRenderer(playerData: self.playerData)
-            fogRenderer = try createFogRenderer(map: self.map)
+            // fogRenderer = try createFogRenderer(map: self.map)
             viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
             unitActionRenderer = try createUnitActionRenderer(playerData: self.playerData, delegate: self)
             resourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
         } catch {
-            
         }
-        
+
         BasicCapabilities.registrant.register()
         BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
