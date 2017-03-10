@@ -29,37 +29,40 @@ class ResourceBarView: UIView {
 
     override func layoutSubviews() {
         let icons = splitVerticalSpriteSheetToUIImages(from: url("img", "MiniIcons.png"), numSprites: 4) // FIXME: hard-coded 4?
-        let iconSideLength = self.frame.height
+        let iconSideLength = 20
 
-        gold.frame = CGRect(x: 0, y: 0, width: self.frame.width / 3, height: self.frame.height)
+        gold.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
         goldIconView.frame = CGRect(x: 0, y: 0, width: iconSideLength, height: iconSideLength)
         goldIconView.image = icons[0]
 
-        goldCount.frame = CGRect(x: iconSideLength, y: 0, width: gold.bounds.width - iconSideLength, height: gold.bounds.height)
+        goldCount.frame = CGRect(x: iconSideLength + 4, y: 2, width: gold.bounds.width - iconSideLength, height: iconSideLength)
         goldCount.text = "0"
-        goldCount.textColor = UIColor.white
+        goldCount.textColor = .white
+        goldCount.font = UIFont(name: "Papyrus", size: 16)
 
         gold.addSubview(goldIconView)
         gold.addSubview(goldCount)
 
-        lumber.frame = CGRect(x: 0, y: 0, width: self.frame.width / 3, height: self.frame.height)
+        lumber.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
         lumberIconView.frame = CGRect(x: self.frame.width / 3, y: 0, width: iconSideLength, height: iconSideLength)
         lumberIconView.image = icons[1]
 
-        lumberCount.frame = CGRect(x: self.frame.width / 3 + iconSideLength, y: 0, width: lumber.bounds.width - iconSideLength, height: lumber.bounds.height)
+        lumberCount.frame = CGRect(x: self.frame.width / 3 + iconSideLength + 4, y: 2, width: lumber.bounds.width - iconSideLength, height: iconSideLength)
         lumberCount.text = "0"
-        lumberCount.textColor = UIColor.white
+        lumberCount.textColor = .white
+        lumberCount.font = UIFont(name: "Papyrus", size: 16)
 
         lumber.addSubview(lumberIconView)
         lumber.addSubview(lumberCount)
 
-        food.frame = CGRect(x: 0, y: 0, width: self.frame.width / 3, height: self.frame.height)
+        food.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
         foodIconView.frame = CGRect(x: (self.frame.width / 3) * 2, y: 0, width: iconSideLength, height: iconSideLength)
         foodIconView.image = icons[2]
 
-        foodCount.frame = CGRect(x: (self.frame.width / 3) * 2 + iconSideLength, y: 0, width: food.bounds.width - iconSideLength, height: food.bounds.height)
+        foodCount.frame = CGRect(x: (self.frame.width / 3) * 2 + iconSideLength + 4, y: 2, width: food.bounds.width - iconSideLength, height: iconSideLength)
         foodCount.text = "0"
-        foodCount.textColor = UIColor.white
+        foodCount.textColor = .white
+        foodCount.font = UIFont(name: "Papyrus", size: 16)
 
         food.addSubview(foodIconView)
         food.addSubview(foodCount)

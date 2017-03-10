@@ -108,7 +108,7 @@ func createActionMenuView() -> UICollectionView {
     frame.origin.y = CGFloat(UIScreen.main.bounds.height - 66)
     frame.size.height = 66
     let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
-    actionMenuView.backgroundColor = UIColor.lightGray
+    actionMenuView.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
     actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
     actionMenuView.isHidden = true
     return actionMenuView
