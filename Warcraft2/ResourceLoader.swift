@@ -152,7 +152,7 @@ func createResourceBarView(size: CGSize) -> ResourceBarView {
 
 func createStatsView(unitActionRenderer: UnitActionRenderer) -> AssetStatsView {
     let statsView = AssetStatsView(icons: unitActionRenderer.iconTileset)
-    statsView.backgroundColor = UIColor.gray
+    statsView.backgroundColor = UIColor.black
     return statsView
 }
 

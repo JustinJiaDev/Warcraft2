@@ -16,7 +16,6 @@ class AssetStatsView: UIView {
 
     init(icons: GraphicTileset) {
         self.icons = icons // splitVerticalSpriteSheetToUIImages(from: url("img", "Icons.png"), numSprites: 179)
-
         super.init(frame: CGRect.zero)
         self.addSubview(iconView)
         self.addSubview(name)
@@ -36,42 +35,42 @@ class AssetStatsView: UIView {
         self.frame = frame
 
         let iconWidth = CGFloat(self.frame.size.width) * 0.2
-        iconView.frame = CGRect(x: 0, y: 0, width: iconWidth, height: iconWidth)
+        iconView.frame = CGRect(x: 8, y: 8, width: iconWidth, height: iconWidth)
 
-        name.frame = CGRect(x: 0, y: 0, width: self.frame.size.width /* - iconWidth */, height: 50)
+        name.frame = CGRect(x: iconView.frame.maxX, y: 12, width: self.frame.size.width - iconWidth - 16, height: iconWidth)
         name.textAlignment = .center
-        name.textColor = UIColor.white
-        name.font = UIFont.systemFont(ofSize: 24)
+        name.textColor = .white
+        name.font = UIFont(name: "Papyrus", size: 20)
 
-        health.frame = CGRect(x: 0, y: 50, width: self.frame.width, height: 30)
+        health.frame = CGRect(x: 8, y: 50, width: self.frame.width - 16, height: 30)
         health.textAlignment = .center
-        health.textColor = UIColor.white
-        health.font = UIFont.systemFont(ofSize: 18)
+        health.textColor = .white
+        health.font = UIFont(name: "Papyrus", size: 16)
 
-        armor.frame = CGRect(x: 0, y: 80, width: self.frame.width, height: 30)
+        armor.frame = CGRect(x: 8, y: 80, width: self.frame.width - 16, height: 30)
         armor.textAlignment = .center
-        armor.textColor = UIColor.white
-        armor.font = UIFont.systemFont(ofSize: 18)
+        armor.textColor = .white
+        armor.font = UIFont(name: "Papyrus", size: 16)
 
-        damage.frame = CGRect(x: 0, y: 110, width: self.frame.width, height: 30)
+        damage.frame = CGRect(x: 8, y: 110, width: self.frame.width - 16, height: 30)
         damage.textAlignment = .center
-        damage.textColor = UIColor.white
-        damage.font = UIFont.systemFont(ofSize: 18)
+        damage.textColor = .white
+        damage.font = UIFont(name: "Papyrus", size: 16)
 
-        range.frame = CGRect(x: 0, y: 140, width: self.frame.width, height: 30)
+        range.frame = CGRect(x: 8, y: 140, width: self.frame.width - 16, height: 30)
         range.textAlignment = .center
-        range.textColor = UIColor.white
-        range.font = UIFont.systemFont(ofSize: 18)
+        range.textColor = .white
+        range.font = UIFont(name: "Papyrus", size: 16)
 
-        sight.frame = CGRect(x: 0, y: 170, width: self.frame.width, height: 30)
+        sight.frame = CGRect(x: 8, y: 170, width: self.frame.width - 16, height: 30)
         sight.textAlignment = .center
-        sight.textColor = UIColor.white
-        sight.font = UIFont.systemFont(ofSize: 18)
+        sight.textColor = .white
+        sight.font = UIFont(name: "Papyrus", size: 16)
 
-        speed.frame = CGRect(x: 0, y: 200, width: self.frame.width, height: 30)
+        speed.frame = CGRect(x: 8, y: 200, width: self.frame.width - 16, height: 30)
         speed.textAlignment = .center
-        speed.textColor = UIColor.white
-        speed.font = UIFont.systemFont(ofSize: 18)
+        speed.textColor = .white
+        speed.font = UIFont(name: "Papyrus", size: 16)
     }
 
     override func layoutSubviews() {
@@ -259,8 +258,6 @@ class AssetStatsView: UIView {
 
         if let playerAsset = asset {
 
-            health.font = UIFont.systemFont(ofSize: 18)
-
             name.text = playerAsset.assetType.name
             health.text = "Health: " + String(playerAsset.hitPoints) + " / " + String(playerAsset.maxHitPoints)
             armor.text = "Armor: " + String(playerAsset.armor)
@@ -279,11 +276,11 @@ class AssetStatsView: UIView {
                 range.isHidden = true
                 sight.isHidden = true
                 speed.isHidden = true
-                health.font = UIFont.systemFont(ofSize: 12)
+                health.adjustsFontSizeToFitWidth = true
             }
 
             print(playerAsset.assetType.name)
-            icons.drawTile(on: iconView, index: icons.findTile(nameToImageDictionary[name.text!]!)) // FIXME:
+            icons.drawTile(on: iconView, index: icons.findTile(nameToImageDictionary[name.text!]!))
 
         } else {
             for subview in self.subviews {
