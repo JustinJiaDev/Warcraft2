@@ -12,68 +12,94 @@ class GameViewController: UIViewController {
 
     fileprivate var lastTranslation: CGPoint = .zero
 
-    lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
+    var midiPlayer: AVMIDIPlayer!
+    var gameModel: GameModel!
+    var playerData: PlayerData!
 
-    lazy var gameModel: GameModel = try! createGameModel(mapIndex: self.mapIndex)
-    lazy var playerData: PlayerData = self.gameModel.player(.blue)
-    lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
-    lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.playerData.actualMap)
-    lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(playerData: self.playerData)
-    lazy var fogRenderer: FogRenderer = try! createFogRenderer(gameModel: self.gameModel)
-    lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(playerData: self.playerData, delegate: self)
-    lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
+    var mapRenderer: MapRenderer!
+    var assetRenderer: AssetRenderer!
+    var fogRenderer: FogRenderer!
+    var viewportRenderer: ViewportRenderer!
 
-    lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
-    lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
+    var unitActionRenderer: UnitActionRenderer!
+    var resourceRenderer: ResourceRenderer!
 
-    lazy var mapView: SKView = createMapView(viewportRenderer: self.viewportRenderer, width: self.view.bounds.width - self.sideView.bounds.width, height: self.view.bounds.height - self.resourceBarView.bounds.height)
-    lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
-    lazy var statsView: UIView = createStatsView()
-    lazy var sideView: UIView = createSideView(size: CGSize(width: 150, height: self.view.bounds.height), miniMapView: self.miniMapView, statsView: self.statsView)
-    lazy var actionMenuView: UICollectionView = createActionMenuView()
-    lazy var resourceBarView: ResourceBarView = createResourceBarView(size: CGSize(width: self.view.bounds.width - self.sideView.bounds.width, height: 35))
+    var scene: SKScene!
+    var typeScene: SKScene!
+
+    var actionMenuView: UICollectionView!
+    var miniMapView: MiniMapView!
+    var statsView: UIView!
+    var sideView: UIView!
+    var resourceBarView: ResourceBarView!
+    var mapView: SKView!
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         do {
-            gameModel = try createGameModel(mapIndex: self.mapIndex)
-            playerData = self.gameModel.player(.blue)
-            map = try createAssetDecoratedMap(mapIndex: self.mapIndex)
-            mapRenderer = try createMapRenderer(map: self.playerData.actualMap)
-            assetRenderer = try createAssetRenderer(playerData: self.playerData)
-            // fogRenderer = try createFogRenderer(map: self.map)
+            super.viewDidLoad()
+
+            let terrainTileset = try tileset("Terrain")
+            Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
+
+            PlayerAsset.updateFrequency = 20
+            AssetRenderer.updateFrequency = 20
+
+            AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
+            PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
+
+            BasicCapabilities.registrant.register()
+            BuildCapabilities.registrant.register()
+            BuildingUpgradeCapabilities.registrant.register()
+            TrainCapabilities.registrant.register()
+            UnitUpgradeCapabilities.registrant.register()
+
+            midiPlayer = try createMIDIPlayer()
+
+            gameModel = try createGameModel(mapIndex: mapIndex)
+            playerData = gameModel.player(.blue)
+
+            mapRenderer = try createMapRenderer(playerData: playerData)
+            assetRenderer = try createAssetRenderer(playerData: playerData)
+            fogRenderer = try createFogRenderer(playerData: playerData)
             viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
-            unitActionRenderer = try createUnitActionRenderer(playerData: self.playerData, delegate: self)
-            resourceRenderer = ResourceRenderer(loadedPlayer: self.playerData, resourceBarView: self.resourceBarView)
+
+            unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
+            resourceRenderer = createResourceRenderer(playerData: playerData)
+
+            actionMenuView = createActionMenuView()
+            miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+            statsView = createStatsView()
+            sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
+            resourceBarView = createResourceBarView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 35))
+            mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+
+            viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+
+            sideView.frame.origin = .zero
+            resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
+            mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
+
+            view.addSubview(mapView)
+            view.addSubview(resourceBarView)
+            view.addSubview(sideView)
+            view.addSubview(actionMenuView)
+
+            scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+            typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+
+            mapView.presentScene(scene)
+
+            mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
+            mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
+
+            midiPlayer.prepareToPlay()
+            midiPlayer.play()
+
+            CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
         } catch {
+            printError(error.localizedDescription)
+            dismiss(animated: true)
         }
-
-        BasicCapabilities.registrant.register()
-        BuildCapabilities.registrant.register()
-        BuildingUpgradeCapabilities.registrant.register()
-        TrainCapabilities.registrant.register()
-        UnitUpgradeCapabilities.registrant.register()
-
-        sideView.frame.origin = .zero
-        resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
-        mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
-
-        view.addSubview(mapView)
-        view.addSubview(actionMenuView)
-        view.addSubview(sideView)
-        view.addSubview(resourceBarView)
-
-        midiPlayer.prepareToPlay()
-        midiPlayer.play()
-
-        mapView.presentScene(scene)
-
-        mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
-        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
-
-        CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
     }
 
     override var prefersStatusBarHidden: Bool {
@@ -93,7 +119,7 @@ extension GameViewController {
             selectRect: rectangle,
             currentCapability: .none
         )
-        resourceRenderer.drawResources()
+        resourceRenderer.draw(on: resourceBarView)
     }
 }
 

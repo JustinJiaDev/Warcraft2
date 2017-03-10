@@ -509,12 +509,16 @@ class PlayerAssetType {
         return names[type] ?? ""
     }
 
-    static func loadTypes(from dataContainer: DataContainer) throws {
-        try dataContainer.contentURLs.filter { url in
+    static func loadTypes(from dataContainer: DataContainer) {
+        dataContainer.contentURLs.filter { url in
             return url.pathExtension == "dat"
         }.forEach { url in
-            try load(from: FileDataSource(url: url))
-            printDebug("Loaded type \(url.lastPathComponent).", level: .low)
+            do {
+                try load(from: FileDataSource(url: url))
+                printDebug("Loaded type \(url.lastPathComponent).", level: .low)
+            } catch {
+                printError("Failed to load type \(url.lastPathComponent). \(error.localizedDescription)")
+            }
         }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"

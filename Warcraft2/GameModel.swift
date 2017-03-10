@@ -82,17 +82,17 @@ class PlayerData {
         self.lumber = 0
         self.gameCycle = 0
 
-        for resource in actualMap.resourceInitializationList where resource.color == color {
-            self.gold = resource.gold
-            self.lumber = resource.lumber
+        for initialResource in actualMap.resourceInitializationList where initialResource.color == color {
+            self.gold = initialResource.gold
+            self.lumber = initialResource.lumber
         }
 
-        for asset in actualMap.assetInitializationList where asset.color == color {
-            printDebug("Init \(asset.type) \(asset.color) (\(asset.tilePosition.x), \(asset.tilePosition.y))", level: .low)
-            let initialAsset = createAsset(asset.type)
-            initialAsset.tilePosition = asset.tilePosition
-            if PlayerAssetType.findType(asset.type) == .goldMine {
-                initialAsset.gold = self.gold
+        for initialAsset in actualMap.assetInitializationList where initialAsset.color == color {
+            printDebug("Init \(initialAsset.type) \(initialAsset.color) (\(initialAsset.tilePosition.x), \(initialAsset.tilePosition.y))", level: .low)
+            let createdAsset = createAsset(initialAsset.type)
+            createdAsset.tilePosition = initialAsset.tilePosition
+            if PlayerAssetType.findType(initialAsset.type) == .goldMine {
+                createdAsset.gold = self.gold
             }
         }
     }

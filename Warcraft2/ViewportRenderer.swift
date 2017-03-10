@@ -106,6 +106,6 @@ class ViewportRenderer {
         mapRenderer.drawTopLevelMap(on: surface, typeSurface: typeSurface, in: tempRectangle)
         assetRenderer.drawOverlays(on: surface, in: tempRectangle)
         assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
-        fogRenderer.drawMap(on: surface, in: tempRectangle)
+        // fogRenderer.drawMap(on: surface, in: tempRectangle)
     }
 }

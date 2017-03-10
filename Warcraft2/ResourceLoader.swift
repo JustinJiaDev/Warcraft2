@@ -28,21 +28,13 @@ func createMIDIPlayer() throws -> AVMIDIPlayer {
 }
 
 func createGameModel(mapIndex: Int) throws -> GameModel {
-    try PlayerAssetType.loadTypes(from: FileDataContainer(url: url("res")))
     return GameModel(mapIndex: mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
 }
 
-func createAssetDecoratedMap(mapIndex: Int) throws -> AssetDecoratedMap {
-    let mapsContainer = try! FileDataContainer(url: url("map"))
-    AssetDecoratedMap.loadMaps(from: mapsContainer)
-    return AssetDecoratedMap.map(at: mapIndex)
-}
-
-func createMapRenderer(map: AssetDecoratedMap) throws -> MapRenderer {
+func createMapRenderer(playerData: PlayerData) throws -> MapRenderer {
     let mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
     let terrainTileset = try tileset("Terrain")
-    Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
-    return try MapRenderer(configuration: mapConfiguration, tileset: terrainTileset, map: map)
+    return try MapRenderer(configuration: mapConfiguration, tileset: terrainTileset, map: playerData.actualMap)
 }
 
 func createAssetRenderer(playerData: PlayerData) throws -> AssetRenderer {
@@ -95,6 +87,10 @@ func createUnitActionRenderer(playerData: PlayerData, delegate: UnitActionRender
     return unitActionRenderer
 }
 
+func createResourceRenderer(playerData: PlayerData) -> ResourceRenderer {
+    return ResourceRenderer(playerData: playerData)
+}
+
 // FIXME: REMOVE HARDCODED VALUES
 func createActionMenuView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
@@ -114,13 +110,12 @@ func createActionMenuView() -> UICollectionView {
     return actionMenuView
 }
 
-func createFogRenderer(gameModel: GameModel) throws -> FogRenderer {
+func createFogRenderer(playerData: PlayerData) throws -> FogRenderer {
     let fogTileset = try tileset("Fog")
-    return try FogRenderer(tileset: fogTileset, map: gameModel.player(.blue).visibilityMap)
+    return try FogRenderer(tileset: fogTileset, map: playerData.visibilityMap)
 }
 
 func createMapView(viewportRenderer: ViewportRenderer, width: Int, height: Int) -> SKView {
-    viewportRenderer.initViewportDimensions(width: width, height: height)
     let mapView = SKView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: height)))
     mapView.isOpaque = true
     mapView.showsFPS = true
@@ -156,15 +151,7 @@ func createStatsView() -> AssetStatsView {
     return statsView
 }
 
-func createCamera(scale: CGFloat) -> SKCameraNode {
-    let camera = SKCameraNode()
-    camera.setScale(scale)
-    return camera
-}
-
 func createScene(width: Int, height: Int) -> SKScene {
-    PlayerAsset.updateFrequency = 20
-    AssetRenderer.updateFrequency = 20
     let scene = GraphicFactory.createSurface(width: width, height: height, type: GameScene.self)
     return scene
 }

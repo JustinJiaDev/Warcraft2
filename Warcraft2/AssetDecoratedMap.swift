@@ -11,7 +11,7 @@ class AssetDecoratedMap: TerrainMap {
         case failedToReadAssetCount
         case failedToReadAsset(index: Int)
         case tooFewTokensForAsset(index: Int)
-        case invalidAssetPosition(x: Int, y: Int)
+        case invalidAssetTilePosition(x: Int, y: Int)
         case unknownColorIndex(index: Int)
     }
 
@@ -295,18 +295,17 @@ class AssetDecoratedMap: TerrainMap {
             }
 
             let tokens = Tokenizer.tokenize(data: currentLine)
-            guard tokens.count >= 4, let type = tokens.first, let playerColorIndex = Int(tokens[1]), let x = Int(tokens[2]), let y = Int(tokens[3]) else {
+            guard tokens.count >= 4, let type = tokens.first, let playerColorIndex = Int(tokens[1]), let tileX = Int(tokens[2]), let tileY = Int(tokens[3]) else {
                 throw GameError.tooFewTokensForAsset(index: index)
             }
-            guard x >= 0, y >= 0, x < width, y < width else {
-                throw GameError.invalidAssetPosition(x: x, y: y)
+            guard tileX >= 0, tileY >= 0, tileX < width, tileY < width else {
+                throw GameError.invalidAssetTilePosition(x: tileX, y: tileY)
             }
             guard let color = PlayerColor(index: playerColorIndex) else {
                 throw GameError.unknownColorIndex(index: playerColorIndex)
             }
 
-            let position = Position(x: x, y: y)
-            assetInitializationList.append(AssetInitialization(type: type, color: color, tilePosition: position))
+            assetInitializationList.append(AssetInitialization(type: type, color: color, tilePosition: Position(x: tileX, y: tileY)))
         }
     }
 
