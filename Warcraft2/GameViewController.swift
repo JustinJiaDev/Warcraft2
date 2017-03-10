@@ -34,6 +34,8 @@ class GameViewController: UIViewController {
     var resourceBarView: ResourceBarView!
     var mapView: SKView!
 
+    var displayLink: CADisplayLink!
+
     override func viewDidLoad() {
         do {
             super.viewDidLoad()
@@ -95,7 +97,8 @@ class GameViewController: UIViewController {
             midiPlayer.prepareToPlay()
             midiPlayer.play()
 
-            CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
+            displayLink = CADisplayLink(target: self, selector: #selector(timestep))
+            displayLink.add(to: .current, forMode: .defaultRunLoopMode)
         } catch {
             printError(error.localizedDescription)
             dismiss(animated: true)
@@ -120,6 +123,11 @@ extension GameViewController {
             currentCapability: .none
         )
         resourceRenderer.draw(on: resourceBarView)
+        if gameModel.player(.red).assets.isEmpty {
+            let alertController = UIAlertController(title: "Victory!", message: "You defeated the computer.", preferredStyle: .alert)
+            present(alertController, animated: true)
+            displayLink.remove(from: .current, forMode: .defaultRunLoopMode)
+        }
     }
 }
 
@@ -153,7 +161,7 @@ extension GameViewController {
             actionMenuView.isHidden = true
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
             selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
-            if selectedAction != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
+            if (selectedAction == .mine && selectedTarget!.type != .goldMine) || selectedTarget == nil {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
             apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
@@ -182,8 +190,6 @@ extension GameViewController: UnitActionRendererDelegate {
         let capability = PlayerCapability.findCapability(action)
         if capability.canApply(actor: actor, playerData: playerData, target: target) {
             capability.applyCapability(actor: actor, playerData: playerData, target: target)
-        } else {
-            PlayerCapability.findCapability(.cancel).applyCapability(actor: actor, playerData: playerData, target: target)
         }
         selectedAsset = nil
         selectedTarget = nil
