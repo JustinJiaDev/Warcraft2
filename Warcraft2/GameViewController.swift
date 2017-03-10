@@ -48,6 +48,7 @@ class GameViewController: UIViewController {
 
             AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
             PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
+            PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
 
             BasicCapabilities.registrant.register()
             BuildCapabilities.registrant.register()
