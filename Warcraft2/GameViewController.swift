@@ -22,74 +22,75 @@ class GameViewController: UIViewController {
     var viewportRenderer: ViewportRenderer!
 
     var unitActionRenderer: UnitActionRenderer!
-    var resourceRenderer: ResourceRenderer!
 
     var scene: SKScene!
     var typeScene: SKScene!
 
     var actionMenuView: UICollectionView!
     var miniMapView: MiniMapView!
-    var statsView: UIView!
+    var statsView: StatsView!
     var sideView: UIView!
-    var resourceBarView: ResourceBarView!
+    var resourceView: ResourceView!
     var mapView: SKView!
 
     var displayLink: CADisplayLink!
 
+    private func loadGame() throws {
+        super.viewDidLoad()
+
+        let terrainTileset = try tileset("Terrain")
+        Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
+
+        PlayerAsset.updateFrequency = 20
+        AssetRenderer.updateFrequency = 20
+
+        AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
+        PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
+        PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
+
+        BasicCapabilities.registrant.register()
+        BuildCapabilities.registrant.register()
+        BuildingUpgradeCapabilities.registrant.register()
+        TrainCapabilities.registrant.register()
+        UnitUpgradeCapabilities.registrant.register()
+
+        midiPlayer = try createMIDIPlayer()
+
+        gameModel = try createGameModel(mapIndex: mapIndex)
+        playerData = gameModel.player(.blue)
+
+        mapRenderer = try createMapRenderer(playerData: playerData)
+        assetRenderer = try createAssetRenderer(playerData: playerData)
+        fogRenderer = try createFogRenderer(playerData: playerData)
+        viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
+
+        unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
+
+        actionMenuView = createActionMenuView()
+        miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+        statsView = try createStatsView(size: CGSize(width: 150, height: 230))
+        sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
+        resourceView = try createResourceView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 32), playerData: playerData)
+        mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
+
+        viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
+
+        sideView.frame.origin = .zero
+        resourceView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
+        mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceView.bounds.height)
+
+        view.addSubview(mapView)
+        view.addSubview(resourceView)
+        view.addSubview(sideView)
+        view.addSubview(actionMenuView)
+
+        scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+        typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+    }
+
     override func viewDidLoad() {
         do {
-            super.viewDidLoad()
-
-            let terrainTileset = try tileset("Terrain")
-            Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
-
-            PlayerAsset.updateFrequency = 20
-            AssetRenderer.updateFrequency = 20
-
-            AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
-            PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
-            PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
-
-            BasicCapabilities.registrant.register()
-            BuildCapabilities.registrant.register()
-            BuildingUpgradeCapabilities.registrant.register()
-            TrainCapabilities.registrant.register()
-            UnitUpgradeCapabilities.registrant.register()
-
-            midiPlayer = try createMIDIPlayer()
-
-            gameModel = try createGameModel(mapIndex: mapIndex)
-            playerData = gameModel.player(.blue)
-
-            mapRenderer = try createMapRenderer(playerData: playerData)
-            assetRenderer = try createAssetRenderer(playerData: playerData)
-            fogRenderer = try createFogRenderer(playerData: playerData)
-            viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
-
-            unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
-            resourceRenderer = createResourceRenderer(playerData: playerData)
-
-            actionMenuView = createActionMenuView()
-            miniMapView = createMiniMapView(mapRenderer: mapRenderer)
-            statsView = createStatsView()
-            sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
-            resourceBarView = createResourceBarView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 35))
-            mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
-
-            viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
-
-            sideView.frame.origin = .zero
-            resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
-            mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
-
-            view.addSubview(mapView)
-            view.addSubview(resourceBarView)
-            view.addSubview(sideView)
-            view.addSubview(actionMenuView)
-
-            scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
-            typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
-
+            try loadGame()
             mapView.presentScene(scene)
 
             mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
@@ -123,7 +124,8 @@ extension GameViewController {
             selectRect: rectangle,
             currentCapability: .none
         )
-        resourceRenderer.draw(on: resourceBarView)
+        resourceView.updateResourceInfo()
+        statsView.displayAssetInfo(selectedAsset)
         if gameModel.player(.red).assets.isEmpty {
             let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
@@ -162,7 +164,7 @@ extension GameViewController {
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
-            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
+            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
             if (selectedAction == .mine && selectedTarget!.type != .goldMine) || selectedTarget == nil {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }

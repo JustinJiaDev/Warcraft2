@@ -87,10 +87,6 @@ func createUnitActionRenderer(playerData: PlayerData, delegate: UnitActionRender
     return unitActionRenderer
 }
 
-func createResourceRenderer(playerData: PlayerData) -> ResourceRenderer {
-    return ResourceRenderer(playerData: playerData)
-}
-
 // FIXME: REMOVE HARDCODED VALUES
 func createActionMenuView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
@@ -104,7 +100,7 @@ func createActionMenuView() -> UICollectionView {
     frame.origin.y = CGFloat(UIScreen.main.bounds.height - 66)
     frame.size.height = 66
     let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
-    actionMenuView.backgroundColor = UIColor.lightGray
+    actionMenuView.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
     actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
     actionMenuView.isHidden = true
     return actionMenuView
@@ -127,27 +123,25 @@ func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
 }
 
 // FIXME: REMOVE HARDCODED VALUES
-func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: UIView) -> UIView {
+func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView) -> UIView {
     let sideView = UIView(frame: CGRect(origin: .zero, size: size))
     sideView.backgroundColor = UIColor.black
     sideView.addSubview(statsView)
     sideView.addSubview(miniMapView)
-    miniMapView.frame.origin = CGPoint(x: 30, y: sideView.bounds.size.height - miniMapView.bounds.size.width)
-    statsView.frame = CGRect(origin: .zero, size: CGSize(width: size.width, height: size.height / 2))
+    miniMapView.frame.origin = CGPoint(x: 30, y: 8)
+    statsView.frame.origin = CGPoint(x: 0, y: miniMapView.bounds.height + 8)
     return sideView
 }
 
-func createResourceBarView(size: CGSize) -> ResourceBarView {
-    let resourceBarView = ResourceBarView()
-    resourceBarView.backgroundColor = UIColor.black
-    resourceBarView.bounds.size = size
-    resourceBarView.setNeedsLayout()
-    return resourceBarView
+func createResourceView(size: CGSize, playerData: PlayerData) throws -> ResourceView {
+    let resourceView = ResourceView(icons: try tileset("MiniIcons"), playerData: playerData)
+    resourceView.bounds.size = size
+    return resourceView
 }
 
-func createStatsView() -> AssetStatsView {
-    let statsView = AssetStatsView()
-    statsView.backgroundColor = UIColor.black
+func createStatsView(size: CGSize) throws -> StatsView {
+    let statsView = StatsView(icons: try tileset("Icons"))
+    statsView.bounds.size = size
     return statsView
 }
 
