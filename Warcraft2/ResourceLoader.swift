@@ -128,8 +128,8 @@ func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView
     sideView.backgroundColor = UIColor.black
     sideView.addSubview(statsView)
     sideView.addSubview(miniMapView)
-    miniMapView.frame.origin = CGPoint(x: 30, y: sideView.bounds.size.height - miniMapView.bounds.size.width)
-    statsView.frame = CGRect(origin: .zero, size: CGSize(width: size.width, height: size.height - miniMapView.bounds.size.height - 60))
+    miniMapView.frame.origin = CGPoint(x: 30, y: 8)
+    statsView.frame.origin = CGPoint(x: 0, y: miniMapView.bounds.height + 8)
     return sideView
 }
 

@@ -37,68 +37,68 @@ class GameViewController: UIViewController {
 
     private func loadGame() throws {
         super.viewDidLoad()
-        
+
         let terrainTileset = try tileset("Terrain")
         Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
-        
+
         PlayerAsset.updateFrequency = 20
         AssetRenderer.updateFrequency = 20
-        
+
         AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
         PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
         PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
-        
+
         BasicCapabilities.registrant.register()
         BuildCapabilities.registrant.register()
         BuildingUpgradeCapabilities.registrant.register()
         TrainCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
-        
+
         midiPlayer = try createMIDIPlayer()
-        
+
         gameModel = try createGameModel(mapIndex: mapIndex)
         playerData = gameModel.player(.blue)
-        
+
         mapRenderer = try createMapRenderer(playerData: playerData)
         assetRenderer = try createAssetRenderer(playerData: playerData)
         fogRenderer = try createFogRenderer(playerData: playerData)
         viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
-        
+
         unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
-        
+
         actionMenuView = createActionMenuView()
         miniMapView = createMiniMapView(mapRenderer: mapRenderer)
         statsView = try createStatsView(size: CGSize(width: 150, height: 230))
         sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
         resourceView = try createResourceView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 32), playerData: playerData)
         mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
-        
+
         viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
-        
+
         sideView.frame.origin = .zero
         resourceView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
         mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceView.bounds.height)
-        
+
         view.addSubview(mapView)
         view.addSubview(resourceView)
         view.addSubview(sideView)
         view.addSubview(actionMenuView)
-        
+
         scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
         typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
     }
-    
+
     override func viewDidLoad() {
         do {
             try loadGame()
             mapView.presentScene(scene)
-            
+
             mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
             mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
-            
+
             midiPlayer.prepareToPlay()
             midiPlayer.play()
-            
+
             displayLink = CADisplayLink(target: self, selector: #selector(timestep))
             displayLink.add(to: .current, forMode: .defaultRunLoopMode)
         } catch {
@@ -110,7 +110,6 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
-    
 }
 
 extension GameViewController {
