@@ -254,7 +254,7 @@ class AssetRenderer {
                     if tileIndex >= 0 {
                         buildIndices[typeIndex].append(tileIndex)
                     } else {
-                        if stepIndex != 0 {
+                        if stepIndex == 0 {
                             if tileset.findTile("active") >= 0 {
                                 tileIndex = tileset.findTile("active")
                                 buildIndices[typeIndex].append(tileIndex)
