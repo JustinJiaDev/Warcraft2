@@ -12,55 +12,98 @@ class GameViewController: UIViewController {
 
     fileprivate var lastTranslation: CGPoint = .zero
 
-    lazy var midiPlayer: AVMIDIPlayer = try! createMIDIPlayer()
+    var midiPlayer: AVMIDIPlayer!
+    var gameModel: GameModel!
+    var playerData: PlayerData!
 
-    lazy var gameModel: GameModel = try! createGameModel(mapIndex: self.mapIndex)
-    lazy var map: AssetDecoratedMap = try! createAssetDecoratedMap(mapIndex: self.mapIndex)
-    lazy var mapRenderer: MapRenderer = try! createMapRenderer(map: self.map)
-    lazy var assetRenderer: AssetRenderer = try! createAssetRenderer(gameModel: self.gameModel)
-    lazy var fogRenderer: FogRenderer = try! createFogRenderer(map: self.map)
-    lazy var viewportRenderer: ViewportRenderer = ViewportRenderer(mapRenderer: self.mapRenderer, assetRenderer: self.assetRenderer, fogRenderer: self.fogRenderer)
-    lazy var unitActionRenderer: UnitActionRenderer = try! createUnitActionRenderer(gameModel: self.gameModel, delegate: self)
-    lazy var resourceRenderer: ResourceRenderer = ResourceRenderer(loadedPlayer: self.gameModel.player(.blue), resourceBarView: self.resourceBarView)
+    var mapRenderer: MapRenderer!
+    var assetRenderer: AssetRenderer!
+    var fogRenderer: FogRenderer!
+    var viewportRenderer: ViewportRenderer!
 
-    lazy var scene: SKScene = createScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
-    lazy var typeScene: SKScene = createTypeScene(width: self.viewportRenderer.lastViewportWidth, height: self.viewportRenderer.lastViewportHeight)
+    var unitActionRenderer: UnitActionRenderer!
+    var resourceRenderer: ResourceRenderer!
 
-    lazy var mapView: SKView = createMapView(viewportRenderer: self.viewportRenderer, width: self.view.bounds.width - self.sideView.bounds.width, height: self.view.bounds.height - self.resourceBarView.bounds.height)
-    lazy var miniMapView: MiniMapView = createMiniMapView(mapRenderer: self.mapRenderer)
+    var scene: SKScene!
+    var typeScene: SKScene!
 
-    lazy var statsView: AssetStatsView = createStatsView(unitActionRenderer: self.unitActionRenderer)
-    lazy var sideView: UIView = createSideView(size: CGSize(width: 150, height: self.view.bounds.height), miniMapView: self.miniMapView, statsView: self.statsView)
-    lazy var actionMenuView: UICollectionView = createActionMenuView()
-    lazy var resourceBarView: ResourceBarView = createResourceBarView(size: CGSize(width: self.view.bounds.width - self.sideView.bounds.width, height: 35))
+    var actionMenuView: UICollectionView!
+    var miniMapView: MiniMapView!
+    var statsView: UIView!
+    var sideView: UIView!
+    var resourceBarView: ResourceBarView!
+    var mapView: SKView!
+
+    var displayLink: CADisplayLink!
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+        do {
+            super.viewDidLoad()
 
-        BasicCapabilities.registrant.register()
-        BuildCapabilities.registrant.register()
-        BuildingUpgradeCapabilities.registrant.register()
-        TrainCapabilities.registrant.register()
-        UnitUpgradeCapabilities.registrant.register()
+            let terrainTileset = try tileset("Terrain")
+            Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
 
-        sideView.frame.origin = .zero
-        resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
-        mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
+            PlayerAsset.updateFrequency = 20
+            AssetRenderer.updateFrequency = 20
 
-        view.addSubview(mapView)
-        view.addSubview(actionMenuView)
-        view.addSubview(sideView)
-        view.addSubview(resourceBarView)
+            AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
+            PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
+            PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
 
-        midiPlayer.prepareToPlay()
-        midiPlayer.play()
+            BasicCapabilities.registrant.register()
+            BuildCapabilities.registrant.register()
+            BuildingUpgradeCapabilities.registrant.register()
+            TrainCapabilities.registrant.register()
+            UnitUpgradeCapabilities.registrant.register()
 
-        mapView.presentScene(scene)
+            midiPlayer = try createMIDIPlayer()
 
-        mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
-        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
+            gameModel = try createGameModel(mapIndex: mapIndex)
+            playerData = gameModel.player(.blue)
 
-        CADisplayLink(target: self, selector: #selector(timestep)).add(to: .current, forMode: .defaultRunLoopMode)
+            mapRenderer = try createMapRenderer(playerData: playerData)
+            assetRenderer = try createAssetRenderer(playerData: playerData)
+            fogRenderer = try createFogRenderer(playerData: playerData)
+            viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
+
+            unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
+            resourceRenderer = createResourceRenderer(playerData: playerData)
+
+            actionMenuView = createActionMenuView()
+            miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+            statsView = createStatsView()
+            sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
+            resourceBarView = createResourceBarView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 35))
+            mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+
+            viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
+
+            sideView.frame.origin = .zero
+            resourceBarView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
+            mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceBarView.bounds.height)
+
+            view.addSubview(mapView)
+            view.addSubview(resourceBarView)
+            view.addSubview(sideView)
+            view.addSubview(actionMenuView)
+
+            scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+            typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+
+            mapView.presentScene(scene)
+
+            mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
+            mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))
+
+            midiPlayer.prepareToPlay()
+            midiPlayer.play()
+
+            displayLink = CADisplayLink(target: self, selector: #selector(timestep))
+            displayLink.add(to: .current, forMode: .defaultRunLoopMode)
+        } catch {
+            printError(error.localizedDescription)
+            dismiss(animated: true)
+        }
     }
     override var prefersStatusBarHidden: Bool {
         return true
@@ -79,7 +122,13 @@ extension GameViewController {
             selectRect: rectangle,
             currentCapability: .none
         )
-        resourceRenderer.drawResources()
+        resourceRenderer.draw(on: resourceBarView)
+        if gameModel.player(.red).assets.isEmpty {
+            let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
+            present(alertController, animated: true)
+            displayLink.remove(from: .current, forMode: .defaultRunLoopMode)
+        }
     }
 }
 
@@ -109,12 +158,11 @@ extension GameViewController {
         var selectedPosition = viewportRenderer.detailedPosition(of: Position(x: Int(screenLocation.x), y: Int(screenLocation.y)))
         selectedPosition.normalizeToTileCenter()
 
-        let playerData = gameModel.player(.blue)
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
             selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
-            if selectedAction != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
+            if (selectedAction == .mine && selectedTarget!.type != .goldMine) || selectedTarget == nil {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
             apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
@@ -133,7 +181,6 @@ extension GameViewController: UnitActionRendererDelegate {
             unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
         } else {
             collectionView.isHidden = true
-            let playerData = gameModel.player(.blue)
             if !action.needsTarget {
                 apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
             }
@@ -145,7 +192,9 @@ extension GameViewController: UnitActionRendererDelegate {
         if capability.canApply(actor: actor, playerData: playerData, target: target) {
             capability.applyCapability(actor: actor, playerData: playerData, target: target)
         } else {
-            PlayerCapability.findCapability(.cancel).applyCapability(actor: actor, playerData: playerData, target: target)
+            let alertController = UIAlertController(title: nil, message: "Action can't be completed.", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
+            present(alertController, animated: true)
         }
         selectedAsset = nil
         selectedTarget = nil

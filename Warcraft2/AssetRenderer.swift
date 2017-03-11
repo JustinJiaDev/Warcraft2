@@ -388,7 +388,7 @@ class AssetRenderer {
                     renderData.tileIndex = noneIndices[asset.type.rawValue][asset.direction.index]
                 }
             case .death:
-                let actionSteps = asset.speed > 0 ? deathIndices[asset.type.rawValue].count : deathIndices[asset.type.rawValue].count / Direction.numberOfDirections
+                let actionSteps = asset.speed > 0 ? deathIndices[asset.type.rawValue].count / Direction.numberOfDirections : deathIndices[asset.type.rawValue].count
                 if asset.speed > 0 {
                     guard actionSteps > 0 else {
                         break

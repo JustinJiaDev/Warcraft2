@@ -180,7 +180,7 @@ class PlayerUpgrade {
         case failedToReadAffectedAsset
     }
 
-    private(set) var name = ""
+    private(set) var name = "None"
     private(set) var armor = -1
     private(set) var sight = -1
     private(set) var speed = -1
@@ -194,12 +194,16 @@ class PlayerUpgrade {
     static var registryByName: [String: PlayerUpgrade] = [:]
     static var registryByType: [Int: PlayerUpgrade] = [:]
 
-    static func loadUpgrades(from dataContainer: DataContainer) throws {
-        try dataContainer.contentURLs.filter { url in
+    static func loadUpgrades(from dataContainer: DataContainer) {
+        dataContainer.contentURLs.filter { url in
             return url.pathExtension == "dat"
         }.forEach { url in
-            try load(from: FileDataSource(url: url))
-            printDebug("Loaded upgrade \(url.lastPathComponent).", level: .low)
+            do {
+                try load(from: FileDataSource(url: url))
+                printDebug("Loaded upgrade \(url.lastPathComponent).", level: .low)
+            } catch {
+                printError("Failed to load upgrade \(url.lastPathComponent). \(error.localizedDescription)")
+            }
         }
         printDebug("Upgrades loaded.", level: .low)
     }
@@ -509,12 +513,16 @@ class PlayerAssetType {
         return names[type] ?? ""
     }
 
-    static func loadTypes(from dataContainer: DataContainer) throws {
-        try dataContainer.contentURLs.filter { url in
+    static func loadTypes(from dataContainer: DataContainer) {
+        dataContainer.contentURLs.filter { url in
             return url.pathExtension == "dat"
         }.forEach { url in
-            try load(from: FileDataSource(url: url))
-            printDebug("Loaded type \(url.lastPathComponent).", level: .low)
+            do {
+                try load(from: FileDataSource(url: url))
+                printDebug("Loaded type \(url.lastPathComponent).", level: .low)
+            } catch {
+                printError("Failed to load type \(url.lastPathComponent). \(error.localizedDescription)")
+            }
         }
         let playerAssetType = PlayerAssetType()
         playerAssetType.name = "None"

@@ -51,13 +51,12 @@ class PlayerCapabilityBuildNormal: PlayerCapability {
             playerData.addGameEvent(GameEvent(type: .workComplete, asset: actor))
             target.popCommand()
             actor.popCommand()
-            actor.tilePosition = Position.tile(
-                fromAbsolute: playerData.playerMap.findAssetPlacement(
-                    placeAsset: actor,
-                    fromAsset: target,
-                    nextTileTarget: Position(x: playerData.playerMap.width - 1, y: playerData.playerMap.height - 1)
-                )
+            actor.tilePosition = playerData.playerMap.findAssetPlacement(
+                placeAsset: actor,
+                fromAsset: target,
+                nextTileTarget: Position(x: playerData.playerMap.width - 1, y: playerData.playerMap.height - 1)
             )
+
             actor.resetStep()
             target.resetStep()
             return true
