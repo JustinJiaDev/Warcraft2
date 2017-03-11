@@ -125,7 +125,8 @@ extension GameViewController {
         )
         resourceRenderer.draw(on: resourceBarView)
         if gameModel.player(.red).assets.isEmpty {
-            let alertController = UIAlertController(title: "Victory!", message: "You defeated the computer.", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
             present(alertController, animated: true)
             displayLink.remove(from: .current, forMode: .defaultRunLoopMode)
         }
@@ -191,6 +192,10 @@ extension GameViewController: UnitActionRendererDelegate {
         let capability = PlayerCapability.findCapability(action)
         if capability.canApply(actor: actor, playerData: playerData, target: target) {
             capability.applyCapability(actor: actor, playerData: playerData, target: target)
+        } else {
+            let alertController = UIAlertController(title: nil, message: "Action can't be completed.", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
+            present(alertController, animated: true)
         }
         selectedAsset = nil
         selectedTarget = nil
