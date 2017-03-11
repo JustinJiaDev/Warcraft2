@@ -112,21 +112,16 @@ extension GameViewController {
         let playerData = gameModel.player(.blue)
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
-            statsView.isHidden = true
-            statsView.asset = nil
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
-            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 2)
+            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
             if selectedAction != .mine || selectedTarget == nil || selectedTarget!.type != .goldMine {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
             apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
-        } else if let newSelection = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth * 3) {
+        } else if let newSelection = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) {
             selectedAsset = newSelection
             actionMenuView.isHidden = false
             unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
-            statsView.isHidden = false
-            statsView.asset = selectedAsset
-            statsView.setNeedsLayout()
         }
     }
 }
