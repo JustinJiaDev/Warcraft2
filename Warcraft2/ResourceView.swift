@@ -1,6 +1,6 @@
 import UIKit
 
-class ResourceBarView: UIView {
+class ResourceView: UIView {
 
     private let icons: GraphicTileset
     private var playerData: PlayerData

@@ -133,10 +133,10 @@ func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView
     return sideView
 }
 
-func createResourceBarView(size: CGSize, playerData: PlayerData) throws -> ResourceBarView {
-    let resourceBarView = ResourceBarView(icons: try tileset("MiniIcons"), playerData: playerData)
-    resourceBarView.bounds.size = size
-    return resourceBarView
+func createResourceView(size: CGSize, playerData: PlayerData) throws -> ResourceView {
+    let resourceView = ResourceView(icons: try tileset("MiniIcons"), playerData: playerData)
+    resourceView.bounds.size = size
+    return resourceView
 }
 
 func createStatsView(size: CGSize) throws -> StatsView {
