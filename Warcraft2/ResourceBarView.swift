@@ -1,74 +1,83 @@
 import UIKit
 
-// UTILITY FUNCTION: For splitting a sprite sheet (input as UIImage) into numSprites different textures, returned as [UIImage]
-func splitVerticalSpriteSheetToUIImages(from url: URL, numSprites: Int) -> [UIImage] {
-    let image = UIImage(contentsOfFile: url.path)!
-    let segmentHeight: CGFloat = image.size.height / CGFloat(numSprites)
-    var cropRect: CGRect = CGRect(x: 0, y: 0, width: image.size.width, height: segmentHeight)
-    var imageSegments: [UIImage] = []
-    for i in 0 ..< numSprites {
-        cropRect.origin.y = CGFloat(i) * segmentHeight
-        let currentSegmentCGImage = image.cgImage!.cropping(to: cropRect)
-        let currentSegmentUIImage = UIImage(cgImage: currentSegmentCGImage!)
-        imageSegments.append(currentSegmentUIImage)
-    }
-    return imageSegments
-}
-
 class ResourceBarView: UIView {
 
-    var gold = UIView()
-    var goldIconView = UIImageView()
-    var goldCount = UILabel()
-    var lumber = UIView()
-    var lumberIconView = UIImageView()
-    var lumberCount = UILabel()
-    var food = UIView()
-    var foodIconView = UIImageView()
-    var foodCount = UILabel()
+    private let icons: GraphicTileset
+    private var playerData: PlayerData
+    private var lastGoldDisplay = 0
+    private var lastLumberDisplay = 0
+
+    var goldImageView = UIImageView()
+    var lumberImageView = UIImageView()
+    var foodImageView = UIImageView()
+    var goldLabel = UILabel()
+    var lumberLabel = UILabel()
+    var foodLabel = UILabel()
+
+    init(icons: GraphicTileset, playerData: PlayerData) {
+        self.icons = icons
+        self.playerData = playerData
+        super.init(frame: .zero)
+        backgroundColor = .black
+        addSubview(goldImageView)
+        addSubview(goldLabel)
+        addSubview(lumberImageView)
+        addSubview(lumberLabel)
+        addSubview(foodImageView)
+        addSubview(foodLabel)
+        icons.drawTile(on: goldImageView, index: 0)
+        icons.drawTile(on: lumberImageView, index: 1)
+        icons.drawTile(on: foodImageView, index: 2)
+        for subview in subviews where subview is UILabel {
+            let label = subview as! UILabel
+            label.textAlignment = .center
+            label.textColor = .white
+            label.font = UIFont(name: "Papyrus", size: 16)
+        }
+    }
+
+    override init(frame: CGRect) {
+        fatalError("View can't be initialized using this method.")
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("View can't be initialized using this method.")
+    }
 
     override func layoutSubviews() {
-        let icons = splitVerticalSpriteSheetToUIImages(from: url("img", "MiniIcons.png"), numSprites: 4) // FIXME: hard-coded 4?
-        let iconSideLength = 20
+        let iconLength = max(icons.tileWidth, icons.tileHeight)
+        goldImageView.frame = CGRect(x: 0, y: 8, width: iconLength, height: iconLength)
+        lumberImageView.frame = CGRect(x: bounds.width / 3, y: 8, width: iconLength, height: iconLength)
+        foodImageView.frame = CGRect(x: (self.frame.width / 3) * 2, y: 8, width: iconLength, height: iconLength)
+        goldLabel.frame = CGRect(x: iconLength + 4, y: 10, width: bounds.width / 3 - iconLength, height: iconLength)
+        lumberLabel.frame = CGRect(x: bounds.width / 3 + iconLength + 4, y: 10, width: bounds.width / 3 - iconLength, height: iconLength)
+        foodLabel.frame = CGRect(x: (bounds.width / 3) * 2 + iconLength + 4, y: 10, width: bounds.width / 3 - iconLength, height: iconLength)
+    }
 
-        gold.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
-        goldIconView.frame = CGRect(x: 0, y: 0, width: iconSideLength, height: iconSideLength)
-        goldIconView.image = icons[0]
+    func updateResourceInfo() {
+        // animate gold update
+        let deltaGold = (playerData.gold - lastGoldDisplay) / 5
+        lastGoldDisplay = (-3 ... 3).contains(deltaGold) ? playerData.gold : lastGoldDisplay + deltaGold
+        goldLabel.text = String(lastGoldDisplay)
 
-        goldCount.frame = CGRect(x: iconSideLength + 4, y: 2, width: gold.bounds.width - iconSideLength, height: iconSideLength)
-        goldCount.text = "0"
-        goldCount.textColor = .white
-        goldCount.font = UIFont(name: "Papyrus", size: 16)
+        // animate lumber update
+        let deltaLumber = (playerData.lumber - lastLumberDisplay) / 5
+        lastLumberDisplay = (-3 ... 3).contains(deltaLumber) ? playerData.lumber : lastLumberDisplay + deltaLumber
+        lumberLabel.text = String(lastLumberDisplay)
 
-        gold.addSubview(goldIconView)
-        gold.addSubview(goldCount)
-
-        lumber.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
-        lumberIconView.frame = CGRect(x: self.frame.width / 3, y: 0, width: iconSideLength, height: iconSideLength)
-        lumberIconView.image = icons[1]
-
-        lumberCount.frame = CGRect(x: self.frame.width / 3 + iconSideLength + 4, y: 2, width: lumber.bounds.width - iconSideLength, height: iconSideLength)
-        lumberCount.text = "0"
-        lumberCount.textColor = .white
-        lumberCount.font = UIFont(name: "Papyrus", size: 16)
-
-        lumber.addSubview(lumberIconView)
-        lumber.addSubview(lumberCount)
-
-        food.frame = CGRect(x: 0, y: 8, width: self.frame.width / 3, height: self.frame.height)
-        foodIconView.frame = CGRect(x: (self.frame.width / 3) * 2, y: 0, width: iconSideLength, height: iconSideLength)
-        foodIconView.image = icons[2]
-
-        foodCount.frame = CGRect(x: (self.frame.width / 3) * 2 + iconSideLength + 4, y: 2, width: food.bounds.width - iconSideLength, height: iconSideLength)
-        foodCount.text = "0"
-        foodCount.textColor = .white
-        foodCount.font = UIFont(name: "Papyrus", size: 16)
-
-        food.addSubview(foodIconView)
-        food.addSubview(foodCount)
-
-        self.addSubview(gold)
-        self.addSubview(lumber)
-        self.addSubview(food)
+        // display food
+        if playerData.foodConsumption > playerData.foodProduction {
+            let foodInfo = NSMutableAttributedString(string: "\(playerData.foodConsumption) / \(playerData.foodProduction)")
+            foodInfo.addAttribute(
+                NSForegroundColorAttributeName,
+                value: UIColor.red,
+                range: NSRange(location: 0, length: String(playerData.foodConsumption).characters.count)
+            )
+            foodLabel.text = nil
+            foodLabel.attributedText = foodInfo
+        } else {
+            foodLabel.attributedText = nil
+            foodLabel.text = "\(playerData.foodConsumption) / \(playerData.foodProduction)"
+        }
     }
 }

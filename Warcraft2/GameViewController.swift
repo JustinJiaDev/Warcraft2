@@ -22,14 +22,13 @@ class GameViewController: UIViewController {
     var viewportRenderer: ViewportRenderer!
 
     var unitActionRenderer: UnitActionRenderer!
-    var resourceRenderer: ResourceRenderer!
 
     var scene: SKScene!
     var typeScene: SKScene!
 
     var actionMenuView: UICollectionView!
     var miniMapView: MiniMapView!
-    var statsView: UIView!
+    var statsView: StatsView!
     var sideView: UIView!
     var resourceBarView: ResourceBarView!
     var mapView: SKView!
@@ -67,13 +66,12 @@ class GameViewController: UIViewController {
             viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
 
             unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
-            resourceRenderer = createResourceRenderer(playerData: playerData)
 
             actionMenuView = createActionMenuView()
             miniMapView = createMiniMapView(mapRenderer: mapRenderer)
-            statsView = createStatsView()
+            statsView = try createStatsView(size: CGSize(width: 150, height: 230))
             sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
-            resourceBarView = createResourceBarView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 35))
+            resourceBarView = try createResourceBarView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 32), playerData: playerData)
             mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
 
             viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceBarView.bounds.height)
@@ -122,7 +120,8 @@ extension GameViewController {
             selectRect: rectangle,
             currentCapability: .none
         )
-        resourceRenderer.draw(on: resourceBarView)
+        resourceBarView.updateResourceInfo()
+        statsView.displayAssetInfo(selectedAsset)
         if gameModel.player(.red).assets.isEmpty {
             let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })

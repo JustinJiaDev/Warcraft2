@@ -87,10 +87,6 @@ func createUnitActionRenderer(playerData: PlayerData, delegate: UnitActionRender
     return unitActionRenderer
 }
 
-func createResourceRenderer(playerData: PlayerData) -> ResourceRenderer {
-    return ResourceRenderer(playerData: playerData)
-}
-
 // FIXME: REMOVE HARDCODED VALUES
 func createActionMenuView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
@@ -127,27 +123,25 @@ func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
 }
 
 // FIXME: REMOVE HARDCODED VALUES
-func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: AssetStatsView) -> UIView {
+func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView) -> UIView {
     let sideView = UIView(frame: CGRect(origin: .zero, size: size))
     sideView.backgroundColor = UIColor.black
     sideView.addSubview(statsView)
     sideView.addSubview(miniMapView)
     miniMapView.frame.origin = CGPoint(x: 30, y: sideView.bounds.size.height - miniMapView.bounds.size.width)
-    statsView.setFrame(frame: CGRect(origin: .zero, size: CGSize(width: size.width, height: size.height - miniMapView.bounds.size.height - 60)))
+    statsView.frame = CGRect(origin: .zero, size: CGSize(width: size.width, height: size.height - miniMapView.bounds.size.height - 60))
     return sideView
 }
 
-func createResourceBarView(size: CGSize) -> ResourceBarView {
-    let resourceBarView = ResourceBarView()
-    resourceBarView.backgroundColor = UIColor.black
+func createResourceBarView(size: CGSize, playerData: PlayerData) throws -> ResourceBarView {
+    let resourceBarView = ResourceBarView(icons: try tileset("MiniIcons"), playerData: playerData)
     resourceBarView.bounds.size = size
-    resourceBarView.setNeedsLayout()
     return resourceBarView
 }
 
-func createStatsView(unitActionRenderer: UnitActionRenderer) -> AssetStatsView {
-    let statsView = AssetStatsView(icons: unitActionRenderer.iconTileset)
-    statsView.backgroundColor = UIColor.black
+func createStatsView(size: CGSize) throws -> StatsView {
+    let statsView = StatsView(icons: try tileset("Icons"))
+    statsView.bounds.size = size
     return statsView
 }
 
