@@ -247,6 +247,19 @@ class PlayerData {
         return bestAsset
     }
 
+    func findNearestOwnedAsset(at position: Position, within range: Int) -> PlayerAsset? {
+        var bestAsset: PlayerAsset?
+        var bestDistanceSquared = -1
+        for asset in assets {
+            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
+            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+                bestDistanceSquared = currentDistanceSquared
+                bestAsset = asset
+            }
+        }
+        return bestDistanceSquared <= range * range ? bestAsset : nil
+    }
+
     func findNearestAsset(at position: Position, within range: Int) -> PlayerAsset? {
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
@@ -258,19 +271,6 @@ class PlayerData {
             }
         }
         return bestDistanceSquared <= range * range ? bestAsset : nil
-    }
-
-    func findNearestAsset(at position: Position, assetType: AssetType) -> PlayerAsset? {
-        var bestAsset: PlayerAsset?
-        var bestDistanceSquared = -1
-        for asset in playerMap.assets where asset.type == assetType {
-            let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
-            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
-                bestDistanceSquared = currentDistanceSquared
-                bestAsset = asset
-            }
-        }
-        return bestAsset
     }
 
     func findNearestEnemy(at position: Position, within inputRange: Int) -> PlayerAsset? {

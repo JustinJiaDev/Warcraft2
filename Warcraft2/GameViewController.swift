@@ -169,7 +169,7 @@ extension GameViewController {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
             apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
-        } else if let newSelection = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) {
+        } else if let newSelection = playerData.findNearestOwnedAsset(at: selectedPosition, within: Position.tileWidth) {
             selectedAsset = newSelection
             actionMenuView.isHidden = false
             unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
