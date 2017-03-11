@@ -357,7 +357,7 @@ class AssetRenderer {
                     let tileIndex = asset.direction.index * actionSteps + (currentStep * actionSteps) / asset.attackSteps
                     renderData.tileIndex = attackIndices[asset.type.rawValue][tileIndex]
                 }
-            case .harvestLumber:
+            case .repair, .harvestLumber:
                 let actionSteps = attackIndices[renderData.type.hashValue].count / Direction.numberOfDirections
                 let tileIndex = asset.direction.index * actionSteps + ((asset.step / AssetRenderer.animationDownsample) % actionSteps)
                 renderData.tileIndex = attackIndices[asset.type.rawValue][tileIndex]
