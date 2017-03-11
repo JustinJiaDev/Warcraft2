@@ -165,7 +165,7 @@ extension GameViewController {
             actionMenuView.isHidden = true
         } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
             selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
-            if (selectedAction == .mine && selectedTarget!.type != .goldMine) || selectedTarget == nil {
+            if (selectedAction == .mine && selectedTarget != nil && selectedTarget!.type != .goldMine) || selectedTarget == nil {
                 selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
             }
             apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
