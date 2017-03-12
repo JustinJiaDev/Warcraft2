@@ -6,14 +6,14 @@ class GameViewController: UIViewController {
 
     private let mapIndex = 1
 
-    fileprivate var selectedAsset: PlayerAsset?
-    fileprivate var selectedTarget: PlayerAsset?
     fileprivate var selectedAction: AssetCapabilityType?
+    fileprivate var selectedActor: PlayerAsset?
 
     fileprivate var lastTranslation: CGPoint = .zero
 
     var midiPlayer: AVMIDIPlayer!
     var gameModel: GameModel!
+    var ai: AIPlayer!
     var playerData: PlayerData!
 
     var mapRenderer: MapRenderer!
@@ -23,6 +23,7 @@ class GameViewController: UIViewController {
 
     var unitActionRenderer: UnitActionRenderer!
 
+    // FIXME: Currently type scene is never used.
     var scene: SKScene!
     var typeScene: SKScene!
 
@@ -41,8 +42,8 @@ class GameViewController: UIViewController {
         let terrainTileset = try tileset("Terrain")
         Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
 
-        PlayerAsset.updateFrequency = 20
-        AssetRenderer.updateFrequency = 20
+        PlayerAsset.updateFrequency = 5
+        AssetRenderer.updateFrequency = 5
 
         AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
         PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
@@ -57,6 +58,7 @@ class GameViewController: UIViewController {
         midiPlayer = try createMIDIPlayer()
 
         gameModel = try createGameModel(mapIndex: mapIndex)
+        ai = createAI(playerData: gameModel.player(.red))
         playerData = gameModel.player(.blue)
 
         mapRenderer = try createMapRenderer(playerData: playerData)
@@ -114,19 +116,17 @@ class GameViewController: UIViewController {
 
 extension GameViewController {
     func timestep() {
+        ai.calculateCommand()
         gameModel.timestep()
-        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
         scene.removeAllChildren()
-        viewportRenderer.drawViewport(
-            on: scene,
-            typeSurface: typeScene,
-            selectionMarkerList: [],
-            selectRect: rectangle,
-            currentCapability: .none
-        )
+        viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)
         resourceView.updateResourceInfo()
-        statsView.displayAssetInfo(selectedAsset)
-        if gameModel.player(.red).assets.isEmpty {
+        statsView.displayAssetInfo(selectedActor)
+        checkVictoryCondition()
+    }
+
+    private func checkVictoryCondition() {
+        if ai.playerData.assets.isEmpty {
             let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
             present(alertController, animated: true)
@@ -163,16 +163,16 @@ extension GameViewController {
 
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
-        } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
-            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
-            if (selectedAction == .mine && selectedTarget != nil && selectedTarget!.type != .goldMine) || selectedTarget == nil {
-                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
+        } else if let selectedAsset = selectedActor, let selectionAction = selectedAction {
+            var selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) ?? playerData.createMarker(at: selectedPosition, addToMap: false)
+            if selectedAction == .mine && selectedTarget.type != .goldMine {
+                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: false)
             }
-            apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
+            apply(actor: selectedAsset, target: selectedTarget, action: selectionAction, playerData: playerData)
         } else if let newSelection = playerData.findNearestOwnedAsset(at: selectedPosition, within: Position.tileWidth) {
-            selectedAsset = newSelection
+            selectedActor = newSelection
             actionMenuView.isHidden = false
-            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedActor, currentAction: selectedActor?.activeCapability ?? .none)
         }
     }
 }
@@ -181,11 +181,11 @@ extension GameViewController: UnitActionRendererDelegate {
     func selectedAction(_ action: AssetCapabilityType, in collectionView: UICollectionView) {
         selectedAction = action
         if [.buildSimple, .buildAdvanced].contains(action) {
-            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedActor, currentAction: action)
         } else {
             collectionView.isHidden = true
-            if !action.needsTarget {
-                apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
+            if let selectedActor = selectedActor, !action.needsTarget {
+                apply(actor: selectedActor, target: selectedActor, action: action, playerData: playerData)
             }
         }
     }
@@ -199,8 +199,7 @@ extension GameViewController: UnitActionRendererDelegate {
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
             present(alertController, animated: true)
         }
-        selectedAsset = nil
-        selectedTarget = nil
+        selectedActor = nil
         selectedAction = nil
     }
 }

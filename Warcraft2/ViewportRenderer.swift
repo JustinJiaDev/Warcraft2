@@ -76,36 +76,20 @@ class ViewportRenderer {
         }
     }
 
-    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface, selectionMarkerList: [PlayerAsset], selectRect: Rectangle, currentCapability: AssetCapabilityType) {
+    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface) {
         lastViewportWidth = surface.width
         lastViewportHeight = surface.height
-
         if viewportX + lastViewportWidth >= mapRenderer.detailedMapWidth {
             viewportX = mapRenderer.detailedMapWidth - lastViewportWidth
         }
         if viewportY + lastViewportHeight >= mapRenderer.detailedMapHeight {
             viewportY = mapRenderer.detailedMapHeight - lastViewportHeight
         }
-
-        let builder = selectionMarkerList.first ?? PlayerAsset(playerAssetType: PlayerAssetType())
-        let placeType: AssetType = {
-            switch currentCapability {
-            case .buildFarm: return .farm
-            case .buildTownHall: return .townHall
-            case .buildBarracks: return .barracks
-            case .buildLumberMill: return .lumberMill
-            case .buildBlacksmith: return .blacksmith
-            case .buildScoutTower: return .scoutTower
-            default: return .none
-            }
-        }()
-        let tempRectangle = Rectangle(x: viewportX, y: viewportY, width: lastViewportWidth, height: lastViewportHeight)
-        mapRenderer.drawBottomLevelMap(on: surface, typeSurface: typeSurface, in: tempRectangle)
-        // assetRenderer.drawSelections(on: surface, in: tempRectangle, selectionList: selectionMarkerList, selectRect: selectRect, highlightBuilding: placeType != .none)
-        assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: tempRectangle)
-        mapRenderer.drawTopLevelMap(on: surface, typeSurface: typeSurface, in: tempRectangle)
-        assetRenderer.drawOverlays(on: surface, in: tempRectangle)
-        assetRenderer.drawPlacement(on: surface, in: tempRectangle, position: Position(x: selectRect.x, y: selectRect.y), type: placeType, builder: builder)
-        fogRenderer.drawMap(on: surface, in: tempRectangle)
+        let bounds = Rectangle(x: viewportX, y: viewportY, width: lastViewportWidth, height: lastViewportHeight)
+        mapRenderer.drawBottomLevelMap(on: surface, typeSurface: typeSurface, in: bounds)
+        assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: bounds)
+        mapRenderer.drawTopLevelMap(on: surface, typeSurface: typeSurface, in: bounds)
+        assetRenderer.drawOverlays(on: surface, in: bounds)
+        fogRenderer.drawMap(on: surface, in: bounds)
     }
 }

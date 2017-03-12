@@ -174,6 +174,10 @@ enum AssetCapabilityType: Int {
              .buildFootman,
              .buildArcher,
              .buildRanger,
+             .buildKeep,
+             .buildCastle,
+             .buildGuardTower,
+             .buildCannonTower,
              .standGround,
              .weaponUpgrade1,
              .weaponUpgrade2,
@@ -184,6 +188,9 @@ enum AssetCapabilityType: Int {
              .armorUpgrade1,
              .armorUpgrade2,
              .armorUpgrade3,
+             .longbow,
+             .rangerScouting,
+             .marksmanship,
              .cancel: return false
         default: return true
         }

@@ -79,7 +79,7 @@ class GraphicRecolorMap {
             throw GameError.indexOutOfBound(index: index)
         }
         state = index
-        guard let recoloredSurface = GraphicFactory.createSurface(width: surface.width, height: surface.height, format: surface.format) else {
+        guard let recoloredSurface = GraphicFactory.createSurface(width: surface.width, height: surface.height) else {
             throw GameError.cannotCreateSurface
         }
         try recoloredSurface.transform(from: surface, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0, callData: self, callback: recolorPixels)

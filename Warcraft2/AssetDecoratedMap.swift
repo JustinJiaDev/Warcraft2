@@ -382,7 +382,7 @@ class AssetDecoratedMap: TerrainMap {
         }
     }
 
-    func findNearestReachableTileType(at position: Position, type: TileType) -> Position {
+    func findNearestReachableTilePosition(from position: Position, type: TileType) -> Position {
         var searchQueueArray: [SearchTile] = []
         var currentSearch = SearchTile(x: 0, y: 0)
         var tempSearch = SearchTile(x: 0, y: 0)

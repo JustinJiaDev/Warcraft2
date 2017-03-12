@@ -393,8 +393,13 @@ class MapRenderer {
                         treeMask <<= 1
                     }
                 }
-                tileset.drawTile(on: surface, x: x, y: y, index: treeIndices[treeIndex])
-                tileset.drawClippedTile(on: typeSurface, x: x, y: y, index: treeIndices[treeIndex], rgb: pixelColor)
+                // FIXME: Sometimes treeIndices[treeIndex] out of bound (-1).
+                // To fix the crash, we check if the index is valid.
+                // Figure out why treeIndices[treeIndex] is -1.
+                if treeIndices[treeIndex] >= 0 {
+                    tileset.drawTile(on: surface, x: x, y: y, index: treeIndices[treeIndex])
+                    tileset.drawClippedTile(on: typeSurface, x: x, y: y, index: treeIndices[treeIndex], rgb: pixelColor)
+                }
                 xIndex += 1
             }
             yIndex += 1
