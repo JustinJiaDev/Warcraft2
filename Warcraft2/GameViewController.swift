@@ -115,15 +115,8 @@ class GameViewController: UIViewController {
 extension GameViewController {
     func timestep() {
         gameModel.timestep()
-        let rectangle = Rectangle(x: 0, y: 0, width: mapRenderer.detailedMapWidth, height: mapRenderer.detailedMapHeight)
         scene.removeAllChildren()
-        viewportRenderer.drawViewport(
-            on: scene,
-            typeSurface: typeScene,
-            selectionMarkerList: [],
-            selectRect: rectangle,
-            currentCapability: .none
-        )
+        viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)
         resourceView.updateResourceInfo()
         statsView.displayAssetInfo(selectedAsset)
         if gameModel.player(.red).assets.isEmpty {
