@@ -23,6 +23,7 @@ class GameViewController: UIViewController {
 
     var unitActionRenderer: UnitActionRenderer!
 
+    // FIXME: Currently type scene is never used.
     var scene: SKScene!
     var typeScene: SKScene!
 

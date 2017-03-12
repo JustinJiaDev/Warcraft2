@@ -11,15 +11,10 @@ enum GraphicSurfaceError: Error {
     case missingSourceContext
 }
 
-enum GraphicSurfaceFormat {
-    case argb32, rgb24, a8, a1
-}
-
 protocol GraphicSurface {
 
     var width: Int { get }
     var height: Int { get }
-    var format: GraphicSurfaceFormat { get }
     var resourceContext: GraphicResourceContext { get }
 
     func duplicate() -> GraphicSurface
@@ -43,10 +38,6 @@ extension SKScene: GraphicSurface {
 
     var height: Int {
         return Int(size.height)
-    }
-
-    var format: GraphicSurfaceFormat {
-        return .a1
     }
 
     var resourceContext: GraphicResourceContext {
@@ -101,11 +92,6 @@ extension CGLayer: GraphicSurface {
 
     var height: Int {
         return Int(size.height)
-    }
-
-    // FIXME: MAKE FORMAT GREAT AGAIN
-    var format: GraphicSurfaceFormat {
-        return .a1
     }
 
     var resourceContext: GraphicResourceContext {

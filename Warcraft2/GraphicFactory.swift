@@ -3,7 +3,7 @@ import SpriteKit
 import UIKit
 
 class GraphicFactory {
-    static func createSurface(width: Int, height: Int, format: GraphicSurfaceFormat) -> GraphicSurface? {
+    static func createSurface(width: Int, height: Int) -> GraphicSurface? {
         let size = CGSize(width: width, height: height)
         UIGraphicsBeginImageContext(size)
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
