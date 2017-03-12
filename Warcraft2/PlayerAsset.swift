@@ -1008,7 +1008,7 @@ class PlayerAsset {
             return false
         case .capability:
             if let assetTarget = command.assetTarget {
-                return AssetAction.construct != assetTarget.action
+                return assetTarget.action != .construct
             }
             return true
         default:

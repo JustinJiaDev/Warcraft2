@@ -285,15 +285,11 @@ class PlayerData {
         }
         return bestAsset
     }
-    
-    func findNearestEnemy(at position: Position, within inputRange: Int) -> PlayerAsset? {
+
+    func findNearestEnemy(at position: Position, within range: Int) -> PlayerAsset? {
+        let range = range > 0 ? rangeToDistanceSquared(range) : range
         var bestAsset: PlayerAsset?
         var bestDistanceSquared = -1
-        var range = inputRange
-        if range > 0 {
-            range = rangeToDistanceSquared(range)
-        }
-
         for asset in playerMap.assets where asset.color != color && asset.color != .none && asset.isAlive {
             let command = asset.currentCommand
             if command.action == .capability, let target = command.assetTarget, target.action == .construct {
@@ -595,7 +591,7 @@ class GameModel {
         }
         if harvestDirection == .max {
             if tilePosition == asset.tilePosition {
-                let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: tilePosition, type: .tree)
+                let newPosition = players[asset.color.index].playerMap.findNearestReachableTilePosition(from: tilePosition, type: .tree)
                 asset.popCommand()
                 if newPosition.x >= 0 {
                     command.assetTarget = self.players[asset.color.index].createMarker(at: Position.absolute(fromTile: newPosition), addToMap: false)
@@ -994,7 +990,7 @@ class GameModel {
                     asset.resetStep()
                     return
                 } else if nextCommand.action == .harvestLumber {
-                    let newPosition = players[asset.color.index].playerMap.findNearestReachableTileType(at: asset.tilePosition, type: .tree)
+                    let newPosition = players[asset.color.index].playerMap.findNearestReachableTilePosition(from: asset.tilePosition, type: .tree)
                     asset.popCommand()
                     asset.popCommand()
                     if newPosition.x >= 0 {
