@@ -41,8 +41,8 @@ class GameViewController: UIViewController {
         let terrainTileset = try tileset("Terrain")
         Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
 
-        PlayerAsset.updateFrequency = 20
-        AssetRenderer.updateFrequency = 20
+        PlayerAsset.updateFrequency = 5
+        AssetRenderer.updateFrequency = 5
 
         AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
         PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))

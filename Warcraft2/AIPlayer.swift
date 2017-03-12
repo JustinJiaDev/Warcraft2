@@ -1,190 +1,147 @@
-//
-//  AIPlayer.swift
-//  Warcraft2
-//
-//  Created by Jeffrey Wang on 2/23/17.
-//  Copyright © 2017 UC Davis. All rights reserved.
-//
-
-import Foundation
-
-
 class AIPlayer{
     private var playerData: PlayerData
     private var cycle: Int
     private var downSample: Int
     
     private func searchMap(command: inout PlayerCommandRequest) -> Bool {
-        let idleAssets = playerData.idleAssets
-        var movableAsset: PlayerAsset
-        
-        for var asset in idleAssets {
-            if asset.speed != 0 {
-                movableAsset = asset
-                break
-            }
+        guard let movableAsset = playerData.idleAssets.first(where: { $0.speed > 0 }) else {
+            return false
         }
-        if movableAsset != nil {
-            let unknownPosition = playerData.playerMap.findNearestReachableTileType(at: movableAsset.tilePosition, type: TerrainMap.tileType.none) //fix
-            
-            if unknownPosition.x >= 0 {
-                command.action = AssetCapabilityType.move
-                command.actors.append(movableAsset)
-                command.targetLocation.setFromTile(unknownPosition)
-                return true
-            }
+        let unknownPosition = playerData.playerMap.findNearestReachableTileType(at: movableAsset.tilePosition, type: .none)
+        guard unknownPosition.x >= 0 else {
+            return false
         }
-        return false
+        command.action = .move
+        command.actors.append(movableAsset)
+        command.targetLocation = Position.absolute(fromTile: unknownPosition)
+        return true
     }
+    
     private func findEnemies(command: inout PlayerCommandRequest) -> Bool {
-        let townHallAsset: PlayerAsset
+        let townHallAsset = playerData.assets.first(where: { $0.hasCapability(.buildPeasant) })!
+        guard playerData.findNearestEnemy(at: townHallAsset.position, within: -1) != nil else {
+            return false
+        }
+        return searchMap(command: &command)
+    }
+    
+    private func attackEnemies(command: inout PlayerCommandRequest) -> Bool {
+        var averageLocation = Position(x: 0, y: 0)
         
-        for var asset in playerData.assets {
-            if asset.hasCapability(AssetCapabilityType.buildPeasant) {
-                townHallAsset = asset
-                break
-            }
+        for asset in playerData.assets where [.footman, .ranger, .archer].contains(asset.type) && asset.hasAction(.attack) {
+            command.actors.append(asset)
+            averageLocation.x += asset.positionX
+            averageLocation.y += asset.positionY
         }
         
-        if playerData.findNearestEnemy(at: townHallAsset.position, inputRange: -1).expired { //fix: no expired
+        guard command.actors.count > 0 else {
+            return false
+        }
+        
+        averageLocation.x = averageLocation.x / command.actors.count
+        averageLocation.y = averageLocation.y / command.actors.count
+        
+        guard let targetEnemy = playerData.findNearestEnemy(at: averageLocation, within: -1) else {
+            command.actors.removeAll()
             return searchMap(command: &command)
         }
-        return false
-    }
-    private func attackEnemies(command: inout PlayerCommandRequest) -> Bool {
-        let averageLocation = Position()
         
-        for var asset in playerData.assets {
-            if ( AssetType.footman == asset.type ) || (AssetType.archer == asset.type)||(AssetType.ranger == asset.type) {
-                if asset.hasAction(AssetAction.attack) != true { //fix
-                    command.actors.append(asset)
-                    averageLocation.x += asset.positionX
-                    averageLocation.y += asset.positionY
-                }
-            }
-        }
-        if command.actors.count != 0 {
-            averageLocation.x = averageLocation.x / command.actors.count
-            averageLocation.y = averageLocation.y / command.actors.count
-            
-            let targetEnemy = playerData.findNearestEnemy(at: averageLocation, inputRange: -1) //fix
-            if targetEnemy != nil {
-                command.actors.removeAll()
-                return searchMap(command: &command)
-            }
-            command.action = AssetCapabilityType.attack //fix
-            command.targetLocation = targetEnemy!.position
-            command.targetColor = targetEnemy!.color
-            command.targetType = targetEnemy!.type
-            return true
-        }
-        return false
-        
+        command.action = .attack
+        command.targetLocation = targetEnemy.position
+        command.targetColor = targetEnemy.color
+        command.targetType = targetEnemy.type
+        return true
     }
+    
     private func buildTownHall(command: inout PlayerCommandRequest) -> Bool {
-        let idleAssets = playerData.idleAssets
-        var builderAsset: PlayerAsset
+        guard let builder = playerData.idleAssets.first(where: { $0.hasCapability(.buildTownHall) }) else {
+            return false
+        }
         
-        for var asset in idleAssets {
-            if asset.hasCapability(AssetCapabilityType.buildTownHall) {
-                builderAsset = asset
-                break
-            }
+        guard let goldMine = playerData.findNearestAsset(at: builder.position, assetType: .goldMine) else {
+            return false
         }
-        if builderAsset != nil {
-            let goldMineAsset = playerData.findNearestAsset(at: builderAsset.position, assetType: AssetType.goldMine)
-            let placement = playerData.findBestAssetPlacement(at: (goldMineAsset?.tilePosition)!, builder: builderAsset, assetTypeInput: AssetType.townHall, buffer: 1)
-            if placement.x >= 0 {
-                command.action = AssetCapabilityType.buildTownHall
-                command.actors.append(builderAsset)
-                command.targetLocation.setFromTile(placement)
-                return true
-            }
-            else{
-                return searchMap(command: &command)
-            }
+        let placement = playerData.findBestAssetPlacement(at: goldMine.tilePosition, builder: builder, assetTypeInput: .townHall, buffer: 1)
+        guard placement.x >= 0 else {
+            return searchMap(command: &command)
         }
-        return false
+        
+        command.action = .buildTownHall
+        command.actors.append(builder)
+        command.targetLocation = Position.absolute(fromTile: placement)
+        return true
+
     }
     private func buildBuilding(command: inout PlayerCommandRequest, buildingType: AssetType, nearType: AssetType) -> Bool {
-        var builderAsset: PlayerAsset
-        var townHallAsset: PlayerAsset
-        var nearAsset: PlayerAsset
-        var buildAction: AssetCapabilityType
+        let buildAction: AssetCapabilityType = {
+            switch (buildingType) {
+            case .barracks:    return .buildBarracks
+            case .lumberMill:  return .buildLumberMill
+            case .blacksmith:  return .buildBlacksmith
+            default:            return .buildFarm
+            }
+        }()
+        
+        var builder: PlayerAsset?
+        var townHall: PlayerAsset?
+        var nearAsset: PlayerAsset?
         var assetIsIdle = false
         
-        switch(buildingType){
-        case .barracks:    buildAction = AssetCapabilityType.buildBarracks
-            
-        case .lumberMill:  buildAction = AssetCapabilityType.buildLumberMill
-            
-        case .blacksmith:  buildAction = AssetCapabilityType.buildBlacksmith
-            
-        default:            buildAction = AssetCapabilityType.buildFarm
-            
-        }
-        
-        for var asset in playerData.assets {
-            
+        for asset in playerData.assets {
             if asset.hasCapability(buildAction) && asset.interruptible() {
-                if builderAsset != nil || (!assetIsIdle && (AssetAction.none == asset.action )) {
-                    builderAsset = asset
-                    assetIsIdle = AssetAction.none == asset.action
+                if builder == nil || (!assetIsIdle && asset.action == .none) {
+                    builder = asset
+                    assetIsIdle = (asset.action == .none)
                 }
             }
-            if asset.hasCapability(AssetCapabilityType.buildPeasant) {
-                townHallAsset = asset
+            if asset.hasCapability(.buildPeasant) {
+                townHall = asset
             }
             if asset.hasActiveCapability(buildAction) {
                 return false
             }
-            if (nearType == asset.type ) && (AssetAction.construct != asset.action ) {
+            if asset.type == nearType && asset.action != .construct {
                 nearAsset = asset
             }
-            if buildingType == asset.type {
-                if AssetAction.construct == asset.action {
-                    return false
-                }
+            if asset.type == buildingType && asset.action == .construct {
+                return false
             }
         }
-        if (buildingType != nearType) && nearAsset != nil {
+        
+        if buildingType != nearType && nearAsset == nil {
             return false
         }
-        if builderAsset != nil {
-            var playerCapability = PlayerCapability.findCapability(buildAction) //fix
-            var sourcePosition = townHallAsset.tilePosition
-            var mapCenter = Position(x: playerData.playerMap.width/2, y: playerData.playerMap.height/2)
+        if let builder = builder {
+            let townHall = townHall!
+            let playerCapability = PlayerCapability.findCapability(buildAction)
+            let mapCenter = Position(x: playerData.playerMap.width/2, y: playerData.playerMap.height/2)
             
-            
-            if nearAsset != nil {
+            var sourcePosition = townHall.tilePosition
+            if let nearAsset = nearAsset {
                 sourcePosition = nearAsset.tilePosition
             }
             if mapCenter.x < sourcePosition.x {
-                sourcePosition.x -= townHallAsset.size/2
+                sourcePosition.x -= townHall.size / 2
             }
             else if mapCenter.x > sourcePosition.x {
-                sourcePosition.x += townHallAsset.size/2
+                sourcePosition.x += townHall.size/2
             }
             if mapCenter.y < sourcePosition.y {
-                sourcePosition.x -= townHallAsset.size/2
+                sourcePosition.x -= townHall.size/2
             }
             else if mapCenter.y > sourcePosition.y {
-                sourcePosition.y += townHallAsset.size/2
+                sourcePosition.y += townHall.size/2
             }
             
-            var placement = playerData.findBestAssetPlacement(at: sourcePosition, builder: builderAsset, assetTypeInput: buildingType, buffer: 1)
+            let placement = playerData.findBestAssetPlacement(at: sourcePosition, builder: builder, assetTypeInput: buildingType, buffer: 1)
             if placement.x > 0 {
                 return searchMap(command: &command)
             }
-            if playerCapability {
-                if playerCapability.canInitiate(builderAsset, playerData) {
-                    if placement.x >= 0 {
-                        command.action = buildAction
-                        command.actors.append(builderAsset)
-                        command.targetLocation.setFromTile(placement)
-                        return true
-                    }
-                }
+            if playerCapability.canInitiate(actor: builder, playerData: playerData) && placement.x >= 0 {
+                command.action = buildAction
+                command.actors.append(builder)
+                command.targetLocation = Position.absolute(fromTile: placement)
+                return true
             }
         }
         
@@ -192,17 +149,16 @@ class AIPlayer{
         
     }
     private func activatePeasants(command: inout PlayerCommandRequest, trainMore: Bool) -> Bool {
-        var miningAsset: PlayerAsset
-        var interruptibleAsset: PlayerAsset
-        var townHallAsset: PlayerAsset
+        var miningAsset: PlayerAsset?
+        var interruptibleAsset: PlayerAsset?
+        var townHallAsset: PlayerAsset?
         var goldMiners = 0
         var lumberHarvesters = 0
         var switchToGold = false
         var switchToLumber = false
         
-        for var asset in playerData.assets {
-            
-            if asset.hasCapability(AssetCapabilityType.mine) {
+        for asset in playerData.assets {
+            if asset.hasCapability(.mine) {
                 if miningAsset != nil && (AssetAction.none == asset.action ){
                     miningAsset = asset
                 }

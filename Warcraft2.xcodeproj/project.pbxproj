@@ -46,6 +46,7 @@
 		D022B2501E504CA600F8736B /* FileDataSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D022B24F1E504CA600F8736B /* FileDataSink.swift */; };
 		D022B2521E504FCD00F8736B /* data in Resources */ = {isa = PBXBuildFile; fileRef = D022B2511E504FCD00F8736B /* data */; };
 		D025B1691E6564FF006AB67E /* MemoryDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D025B1681E6564FF006AB67E /* MemoryDataSource.swift */; };
+		D02BD24A1E73B7CB000A018B /* AIPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02BD2491E73B7CB000A018B /* AIPlayer.swift */; };
 		D052840C1E60208E00D2331A /* ResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D052840B1E60208E00D2331A /* ResourceLoader.swift */; };
 		D0773FBE1E38475800FF7DD7 /* PlayerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */; };
 		D08F47431E35BE6300F7FED1 /* PixelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47421E35BE6300F7FED1 /* PixelType.swift */; };
@@ -108,6 +109,7 @@
 		D022B24F1E504CA600F8736B /* FileDataSink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDataSink.swift; sourceTree = "<group>"; };
 		D022B2511E504FCD00F8736B /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		D025B1681E6564FF006AB67E /* MemoryDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryDataSource.swift; sourceTree = "<group>"; };
+		D02BD2491E73B7CB000A018B /* AIPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIPlayer.swift; sourceTree = "<group>"; };
 		D037B9441E260CF200831CFF /* Overlay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Overlay.framework; path = ../Carthage/Build/iOS/Overlay.framework; sourceTree = "<group>"; };
 		D052840B1E60208E00D2331A /* ResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceLoader.swift; sourceTree = "<group>"; };
 		D0773FBD1E38475800FF7DD7 /* PlayerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCommand.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		8E1B515A1E2D58CA008E968C /* LinuxPort */ = {
 			isa = PBXGroup;
 			children = (
+				D02BD24B1E73B7CF000A018B /* AIPlayer */,
 				D0773FBF1E38477F00FF7DD7 /* Data */,
 				49F506811E41924100DB1362 /* Game */,
 				8E7737031E4ADBD20058A7C6 /* Capabilities */,
@@ -213,6 +216,14 @@
 				C834BE921E49AA5A00941BFF /* ViewportRenderer.swift */,
 			);
 			name = Renderer;
+			sourceTree = "<group>";
+		};
+		D02BD24B1E73B7CF000A018B /* AIPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				D02BD2491E73B7CB000A018B /* AIPlayer.swift */,
+			);
+			name = AIPlayer;
 			sourceTree = "<group>";
 		};
 		D037B9431E260CF200831CFF /* Frameworks */ = {
@@ -518,6 +529,7 @@
 				6F1BAD201E67735000865DE9 /* ResourceView.swift in Sources */,
 				D052840C1E60208E00D2331A /* ResourceLoader.swift in Sources */,
 				C8E5F4671E41A08500EDEC02 /* AssetRenderer.swift in Sources */,
+				D02BD24A1E73B7CB000A018B /* AIPlayer.swift in Sources */,
 				8E7737051E4ADBE80058A7C6 /* BasicCapabilities.swift in Sources */,
 				C8E5F4651E419CFF00EDEC02 /* GraphicMulticolorTileset.swift in Sources */,
 				D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */,
