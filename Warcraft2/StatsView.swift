@@ -80,11 +80,11 @@ class StatsView: UIView {
 
         nameLabel.text = asset.assetType.name
         healthLabel.text = "Health: \(asset.hitPoints) / \(asset.maxHitPoints)"
-        armorLabel.text = "Armor: \(asset.armor)"
-        damageLabel.text = "Damage: \(asset.piercingDamage / 2) - \(asset.piercingDamage + asset.basicDamage)"
-        rangeLabel.text = "Range: \(asset.range)"
-        sightLabel.text = "Sight: \(asset.sight)"
-        speedLabel.text = "Speed: \(asset.speed)"
+        armorLabel.text = "Armor: \(asset.effectiveArmor)"
+        damageLabel.text = "Damage: \(asset.effectiveBasicDamage) + \(asset.effectivePiercingDamage)"
+        rangeLabel.text = "Range: \(asset.effectiveRange)"
+        sightLabel.text = "Sight: \(asset.effectiveSight)"
+        speedLabel.text = "Speed: \(asset.effectiveSpeed)"
 
         if asset.speed == 0 {
             armorLabel.isHidden = true
