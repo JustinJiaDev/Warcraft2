@@ -31,6 +31,10 @@ func createGameModel(mapIndex: Int) throws -> GameModel {
     return GameModel(mapIndex: mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
 }
 
+func createAI(playerData: PlayerData) -> AIPlayer {
+    return AIPlayer(playerData: playerData, downSample: PlayerAsset.updateFrequency)
+}
+
 func createMapRenderer(playerData: PlayerData) throws -> MapRenderer {
     let mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
     let terrainTileset = try tileset("Terrain")

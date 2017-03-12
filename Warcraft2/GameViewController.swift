@@ -4,7 +4,7 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
-    private let mapIndex = 1
+    private let mapIndex = 0
 
     fileprivate var selectedAsset: PlayerAsset?
     fileprivate var selectedTarget: PlayerAsset?
@@ -14,6 +14,7 @@ class GameViewController: UIViewController {
 
     var midiPlayer: AVMIDIPlayer!
     var gameModel: GameModel!
+    var ai: AIPlayer!
     var playerData: PlayerData!
 
     var mapRenderer: MapRenderer!
@@ -57,11 +58,12 @@ class GameViewController: UIViewController {
         midiPlayer = try createMIDIPlayer()
 
         gameModel = try createGameModel(mapIndex: mapIndex)
+        ai = createAI(playerData: gameModel.player(.red))
         playerData = gameModel.player(.blue)
 
-        mapRenderer = try createMapRenderer(playerData: playerData)
-        assetRenderer = try createAssetRenderer(playerData: playerData)
-        fogRenderer = try createFogRenderer(playerData: playerData)
+        mapRenderer = try createMapRenderer(playerData: ai.playerData)
+        assetRenderer = try createAssetRenderer(playerData: ai.playerData)
+        fogRenderer = try createFogRenderer(playerData: ai.playerData)
         viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
 
         unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
@@ -114,12 +116,17 @@ class GameViewController: UIViewController {
 
 extension GameViewController {
     func timestep() {
+        ai.calculateCommand()
         gameModel.timestep()
         scene.removeAllChildren()
         viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)
         resourceView.updateResourceInfo()
         statsView.displayAssetInfo(selectedAsset)
-        if gameModel.player(.red).assets.isEmpty {
+        checkVictoryCondition()
+    }
+
+    private func checkVictoryCondition() {
+        if ai.playerData.assets.isEmpty {
             let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
             present(alertController, animated: true)

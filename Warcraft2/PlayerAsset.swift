@@ -917,6 +917,15 @@ class PlayerAsset {
         }?.capability ?? .none
     }
 
+    var isInterruptible: Bool {
+        let command = currentCommand
+        switch currentCommand.action {
+        case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay: return false
+        case .capability where command.assetTarget != nil: return command.assetTarget!.action != .construct
+        default: return true
+        }
+    }
+
     init(playerAssetType: PlayerAssetType) {
         position = Position()
         assetType = playerAssetType
@@ -999,21 +1008,6 @@ class PlayerAsset {
         return commands.first { command in
             return command.action == .capability && command.capability == capability
         } != nil
-    }
-
-    func interruptible() -> Bool {
-        let command = currentCommand
-        switch command.action {
-        case .construct, .build, .mineGold, .conveyLumber, .conveyGold, .death, .decay:
-            return false
-        case .capability:
-            if let assetTarget = command.assetTarget {
-                return assetTarget.action != .construct
-            }
-            return true
-        default:
-            return true
-        }
     }
 
     func changeType(to type: PlayerAssetType) {

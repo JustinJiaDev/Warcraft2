@@ -309,9 +309,8 @@ class PlayerData {
         return bestAsset
     }
 
-    func findBestAssetPlacement(at position: Position, builder: PlayerAsset, assetTypeInput: AssetType, buffer: Int) -> Position {
-        let assetType: PlayerAssetType = assetTypes[PlayerAssetType.findName(assetTypeInput)]!
-        let placementSize = assetType.size + 2 * buffer
+    func findBestAssetPlacementTilePosition(from position: Position, builder: PlayerAsset, assetType: AssetType, buffer: Int) -> Position {
+        let placementSize = assetTypes[PlayerAssetType.findName(assetType)]!.size + 2 * buffer
         let maxDistance = max(playerMap.width, playerMap.height)
 
         for distance in 0 ..< maxDistance {
