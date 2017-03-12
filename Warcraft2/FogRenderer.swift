@@ -98,6 +98,7 @@ class FogRenderer {
             var xIndex = (rectangle.x / tileWidth) - 1
             for xPosition in stride(from: -(rectangle.x % tileWidth), to: rectangle.width, by: tileWidth) {
                 xIndex += 1
+
                 let tileType = map.tileTypeAt(x: xIndex, y: yIndex)
                 if tileType == .none {
                     tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: noneIndex)
@@ -130,7 +131,9 @@ class FogRenderer {
                             unknownFog[visibilityIndex] = true
                         }
                     }
-                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
+                    if fogIndices[visibilityIndex] <= 35 && fogIndices[visibilityIndex] >= 0 {
+                        tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
+                    }
                 }
 
                 if tileType == .partialPartial || tileType == .seenPartial {
@@ -155,7 +158,9 @@ class FogRenderer {
                             unknownBlack[visibilityIndex] = true
                         }
                     }
-                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
+                    if fogIndices[visibilityIndex] <= 35 && fogIndices[visibilityIndex] >= 0 {
+                        tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
+                    }
                 }
             }
         }
