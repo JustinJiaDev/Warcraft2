@@ -97,39 +97,34 @@ class AIPlayer {
     @discardableResult private func activatePeasant() -> Bool {
         let miningAsset = playerData.idleAssets.first(where: { $0.hasCapability(.mine) })
         let interruptibleAsset = playerData.assets.first(where: { $0.hasCapability(.mine) && $0.isInterruptible && $0.action != .none })
-        let townHall = playerData.idleAssets.first(where: { $0.hasCapability(.buildPeasant) })
         let goldMiners = playerData.assets.filter({ $0.hasAction(.mineGold) }).count
         let lumberHarvesters = playerData.assets.filter({ $0.hasAction(.harvestLumber) }).count
-
         let switchToGold = lumberHarvesters >= 2 && goldMiners == 0
         let switchToLumber = goldMiners >= 2 && lumberHarvesters == 0
-
-        if miningAsset != nil || (interruptibleAsset != nil && (switchToLumber || switchToGold)) {
-            if let miningAsset = miningAsset, (miningAsset.lumber != 0 || miningAsset.gold != 0) {
-                action = .convey
-                actor = miningAsset
-                target = townHall
-            } else {
-                let miningAsset = (miningAsset ?? interruptibleAsset)!
-                let goldMine = playerData.findNearestAsset(at: miningAsset.position, assetType: .goldMine)
-                if goldMiners != 0 && ((playerData.gold > playerData.lumber * 3) || switchToLumber) {
-                    let lumberTileLocation = playerData.playerMap.findNearestReachableTilePosition(from: miningAsset.tilePosition, type: .tree)
-                    guard lumberTileLocation.x >= 0 && lumberTileLocation.y >= 0 else {
-                        return searchMap()
-                    }
-                    action = .mine
-                    actor = miningAsset
-                    target = playerData.createMarker(at: Position.absolute(fromTile: lumberTileLocation), addToMap: false)
-                } else {
-                    action = .mine
-                    actor = miningAsset
-                    target = goldMine
-                }
-            }
-            return true
-        } else {
+        guard miningAsset != nil || (interruptibleAsset != nil && (switchToLumber || switchToGold)) else {
             return false
         }
+        if let miningAsset = miningAsset, (miningAsset.lumber > 0 || miningAsset.gold > 0) {
+            action = .convey
+            actor = miningAsset
+            target = playerData.idleAssets.first(where: { $0.hasCapability(.buildPeasant) })
+        } else {
+            let miningAsset = (miningAsset ?? interruptibleAsset)!
+            if goldMiners > 0 && (playerData.gold > playerData.lumber * 3 || switchToLumber) {
+                let lumberTileLocation = playerData.playerMap.findNearestReachableTilePosition(from: miningAsset.tilePosition, type: .tree)
+                guard lumberTileLocation.x >= 0 && lumberTileLocation.y >= 0 else {
+                    return searchMap()
+                }
+                action = .mine
+                actor = miningAsset
+                target = playerData.createMarker(at: Position.absolute(fromTile: lumberTileLocation), addToMap: false)
+            } else {
+                action = .mine
+                actor = miningAsset
+                target = playerData.findNearestAsset(at: miningAsset.position, assetType: .goldMine)
+            }
+        }
+        return true
     }
 
     @discardableResult private func activateFighter() -> Bool {
@@ -177,10 +172,11 @@ class AIPlayer {
             if playerData.assetCount(of: .goldMine) == 0 {
                 searchMap()
             } else if playerData.playerAssetCount(of: .townHall) == 0 && playerData.playerAssetCount(of: .keep) == 0 && playerData.playerAssetCount(of: .castle) == 0 {
-                self.buildTownHall()
+                buildTownHall()
             } else if playerData.playerAssetCount(of: AssetType.peasant) < 5 {
-                activatePeasant()
-                trainPeasant()
+                if !trainPeasant() {
+                    activatePeasant()
+                }
             } else if playerData.visibilityMap.seenPercent(max: 100) < 12 {
                 searchMap()
             } else {
@@ -222,6 +218,9 @@ class AIPlayer {
                     capability.applyCapability(actor: actor, playerData: playerData, target: target)
                 }
             }
+            action = nil
+            actor = nil
+            target = nil
         }
         cycle += 1
     }

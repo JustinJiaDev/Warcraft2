@@ -150,7 +150,7 @@ func createStatsView(size: CGSize) throws -> StatsView {
 }
 
 func createScene(width: Int, height: Int) -> SKScene {
-    let scene = GraphicFactory.createSurface(width: width, height: height, type: GameScene.self)
+    let scene = GraphicFactory.createSurface(width: width, height: height, type: SKScene.self)
     return scene
 }
 

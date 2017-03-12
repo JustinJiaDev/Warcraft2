@@ -400,7 +400,7 @@ class PlayerData {
 
     func playerAssetCount(of type: AssetType) -> Int {
         return playerMap.assets.filter { asset in
-            return asset.type == type && asset.color == self.color
+            return asset.type == type && asset.color == color
         }.count
     }
 

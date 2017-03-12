@@ -6,9 +6,8 @@ class GameViewController: UIViewController {
 
     private let mapIndex = 0
 
-    fileprivate var selectedAsset: PlayerAsset?
-    fileprivate var selectedTarget: PlayerAsset?
     fileprivate var selectedAction: AssetCapabilityType?
+    fileprivate var selectedActor: PlayerAsset?
 
     fileprivate var lastTranslation: CGPoint = .zero
 
@@ -61,9 +60,9 @@ class GameViewController: UIViewController {
         ai = createAI(playerData: gameModel.player(.red))
         playerData = gameModel.player(.blue)
 
-        mapRenderer = try createMapRenderer(playerData: ai.playerData)
-        assetRenderer = try createAssetRenderer(playerData: ai.playerData)
-        fogRenderer = try createFogRenderer(playerData: ai.playerData)
+        mapRenderer = try createMapRenderer(playerData: playerData)
+        assetRenderer = try createAssetRenderer(playerData: playerData)
+        fogRenderer = try createFogRenderer(playerData: playerData)
         viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
 
         unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
@@ -121,7 +120,7 @@ extension GameViewController {
         scene.removeAllChildren()
         viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)
         resourceView.updateResourceInfo()
-        statsView.displayAssetInfo(selectedAsset)
+        statsView.displayAssetInfo(selectedActor)
         checkVictoryCondition()
     }
 
@@ -163,16 +162,16 @@ extension GameViewController {
 
         if !actionMenuView.isHidden {
             actionMenuView.isHidden = true
-        } else if let selectedAsset = selectedAsset, let selectionAction = selectedAction {
-            selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth)
-            if (selectedAction == .mine && selectedTarget != nil && selectedTarget!.type != .goldMine) || selectedTarget == nil {
-                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: true)
+        } else if let selectedAsset = selectedActor, let selectionAction = selectedAction {
+            var selectedTarget = playerData.findNearestAsset(at: selectedPosition, within: Position.tileWidth) ?? playerData.createMarker(at: selectedPosition, addToMap: false)
+            if selectedAction == .mine && selectedTarget.type != .goldMine {
+                selectedTarget = playerData.createMarker(at: selectedPosition, addToMap: false)
             }
-            apply(actor: selectedAsset, target: selectedTarget!, action: selectionAction, playerData: playerData)
+            apply(actor: selectedAsset, target: selectedTarget, action: selectionAction, playerData: playerData)
         } else if let newSelection = playerData.findNearestOwnedAsset(at: selectedPosition, within: Position.tileWidth) {
-            selectedAsset = newSelection
+            selectedActor = newSelection
             actionMenuView.isHidden = false
-            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: selectedAsset?.activeCapability ?? .none)
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedActor, currentAction: selectedActor?.activeCapability ?? .none)
         }
     }
 }
@@ -181,11 +180,11 @@ extension GameViewController: UnitActionRendererDelegate {
     func selectedAction(_ action: AssetCapabilityType, in collectionView: UICollectionView) {
         selectedAction = action
         if [.buildSimple, .buildAdvanced].contains(action) {
-            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedAsset, currentAction: action)
+            unitActionRenderer.drawUnitAction(on: actionMenuView, selectedAsset: selectedActor, currentAction: action)
         } else {
             collectionView.isHidden = true
-            if !action.needsTarget {
-                apply(actor: selectedAsset!, target: selectedAsset!, action: action, playerData: playerData)
+            if let selectedActor = selectedActor, !action.needsTarget {
+                apply(actor: selectedActor, target: selectedActor, action: action, playerData: playerData)
             }
         }
     }
@@ -199,8 +198,7 @@ extension GameViewController: UnitActionRendererDelegate {
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
             present(alertController, animated: true)
         }
-        selectedAsset = nil
-        selectedTarget = nil
+        selectedActor = nil
         selectedAction = nil
     }
 }
