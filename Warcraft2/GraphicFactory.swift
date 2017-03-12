@@ -14,7 +14,6 @@ class GraphicFactory {
 
     static func createSurface<T: SKScene>(width: Int, height: Int, type: T.Type) -> T {
         let scene = type.init(size: CGSize(width: width, height: height))
-        scene.backgroundColor = UIColor.yellow
         return scene
     }
 
