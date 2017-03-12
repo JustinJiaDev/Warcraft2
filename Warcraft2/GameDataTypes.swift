@@ -174,6 +174,8 @@ enum AssetCapabilityType: Int {
              .buildFootman,
              .buildArcher,
              .buildRanger,
+             .buildKeep,
+             .buildCastle,
              .buildGuardTower,
              .buildCannonTower,
              .standGround,
