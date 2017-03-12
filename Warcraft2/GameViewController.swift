@@ -4,7 +4,7 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
-    private let mapIndex = 0
+    private let mapIndex = 1
 
     fileprivate var selectedAction: AssetCapabilityType?
     fileprivate var selectedActor: PlayerAsset?
