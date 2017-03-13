@@ -197,9 +197,7 @@ extension GameViewController {
 
     private func checkVictoryCondition() {
         if ai.playerData.assets.isEmpty {
-            let alertController = UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in alertController.dismiss(animated: true) })
-            present(alertController, animated: true)
+            present(UIAlertController(title: "Victory!", message: nil, preferredStyle: .alert), animated: true)
             displayLink.remove(from: .current, forMode: .defaultRunLoopMode)
         }
     }
