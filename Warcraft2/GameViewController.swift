@@ -116,7 +116,7 @@ class GameViewController: UIViewController {
 
 extension GameViewController {
     func timestep() {
-        ai.calculateCommand()
+        // ai.calculateCommand()
         gameModel.timestep()
         scene.removeAllChildren()
         viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)

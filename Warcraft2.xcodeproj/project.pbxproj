@@ -395,6 +395,7 @@
 				TargetAttributes = {
 					D0D6FA4A1E26015E00D92DA5 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 4UY7T7255Z;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -672,7 +673,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 4UY7T7255Z;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -689,7 +690,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 4UY7T7255Z;
 				INFOPLIST_FILE = Warcraft2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

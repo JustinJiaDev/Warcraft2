@@ -1,3 +1,5 @@
+import SpriteKit
+
 class GraphicRecolorMap {
 
     enum GameError: Error {
@@ -10,11 +12,10 @@ class GraphicRecolorMap {
         case indexOutOfBound(index: Int)
     }
 
-    private var state: Int = -1
-    private var mapping: [String: Int] = [:]
-    private var colorNames: [String] = []
+    private var firstColorSetColumns: [UInt32: Int] = [:]
+    private var colorIndices: [String: Int] = [:]
+    private var colorNames: [Int: String] = [:]
     private var colors: [[UInt32]] = [[]]
-    private var originalColors: [[UInt32]] = [[]]
 
     var groupCount: Int {
         return colors.count
@@ -25,17 +26,11 @@ class GraphicRecolorMap {
     }
 
     func findColor(_ name: String) -> Int {
-        // FIXME: MAKE FIND COLOR GREAT AGAIN
-        // HACK - START
-        return 1
-        // HACK - END
+        return colorIndices[name] ?? -1
     }
 
     func colorValue(gIndex: Int, cIndex: Int) -> UInt32 {
-        // FIXME: MAKE COLOR VALUE GREAT AGAIN
-        // HACK - START
-        return 1
-        // HACK - END
+        return colors[gIndex][cIndex]
     }
 
     func load(from dataSource: FileDataSource) throws {
@@ -43,46 +38,68 @@ class GraphicRecolorMap {
         guard let pngPath = lineSource.readLine() else {
             throw GameError.failedToGetPath
         }
-        guard let colorSurface = GraphicFactory.loadSurface(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
-            throw GameError.failedToLoadFile(path: pngPath)
-        }
-        colors = Array(repeating: Array(repeating: 0, count: colorSurface.width), count: colorSurface.height)
-        originalColors = Array(repeating: Array(repeating: 0, count: colorSurface.width), count: colorSurface.height)
-        state = 0
-        try colorSurface.transform(from: colorSurface, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0, callData: self, callback: observePixels)
-        guard let colorCountString = lineSource.readLine(), let colorCount = Int(colorCountString) else {
+        guard let colorCountString = lineSource.readLine(), let count = Int(colorCountString) else {
             throw GameError.failedToGetColorCount
         }
-        guard colorCount == colors.count else {
-            throw GameError.unmatchedColorCount
+        guard let colorSet = GraphicFactory.loadImage(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
+            throw GameError.failedToLoadFile(path: pngPath)
         }
-        colorNames = Array(repeating: "", count: colorCount)
-        for i in 0 ..< colorCount {
+        colors = Array(repeating: Array(repeating: 0, count: Int(colorSet.size.width / (colorSet.size.height / CGFloat(count)))), count: count)
+        firstColorSetColumns = [:]
+        processPixels(in: colorSet.cgImage!)
+        colorIndices = [:]
+        colorNames = [:]
+        for i in 0 ..< count {
             guard let colorName = lineSource.readLine() else {
                 throw GameError.failedToGetColorName(index: i)
             }
-            mapping[colorName] = i
+            colorIndices[colorName] = i
             colorNames[i] = colorName
         }
     }
 
-    func observePixels() -> UInt32 {
-        fatalError("This method is not yet implemented.")
+    func processPixels(in image: CGImage) {
+        let context = CGContext(
+            data: nil,
+            width: image.width,
+            height: image.height,
+            bitsPerComponent: 8,
+            bytesPerRow: image.width * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        )!
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        let pixelBuffer = context.data!.bindMemory(to: UInt32.self, capacity: image.width * image.height)
+        for row in 0 ..< Int(image.height) {
+            for column in 0 ..< Int(image.width) {
+                colors[row][column] = pixelBuffer[row * image.width + column]
+            }
+        }
+        for column in 0 ..< Int(image.width) {
+            firstColorSetColumns[colors[0][column]] = column
+        }
     }
 
-    func recolorPixels() -> UInt32 {
-        fatalError("This method is not yet implemented")
-    }
-
-    func recolorSurface(at index: Int, on surface: GraphicSurface) throws -> GraphicSurface {
-        guard index >= 0 && index < colors.count else {
-            throw GameError.indexOutOfBound(index: index)
+    func recolorPixels(in image: CGImage, index: Int) -> CGImage {
+        let context = CGContext(
+            data: nil,
+            width: image.width,
+            height: image.height,
+            bitsPerComponent: 8,
+            bytesPerRow: image.width * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        )!
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        let pixelBuffer = context.data!.bindMemory(to: UInt32.self, capacity: image.width * image.height)
+        for row in 0 ..< Int(image.height) {
+            for column in 0 ..< Int(image.width) {
+                let offset = row * image.width + column
+                if let j = firstColorSetColumns[pixelBuffer[offset]] {
+                    pixelBuffer[offset] = colors[index][j]
+                }
+            }
         }
-        state = index
-        guard let recoloredSurface = GraphicFactory.createSurface(width: surface.width, height: surface.height) else {
-            throw GameError.cannotCreateSurface
-        }
-        try recoloredSurface.transform(from: surface, dx: 0, dy: 0, width: -1, height: -1, sx: 0, sy: 0, callData: self, callback: recolorPixels)
-        return recoloredSurface
+        return context.makeImage()!
     }
 }

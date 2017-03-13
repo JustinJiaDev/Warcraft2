@@ -12,8 +12,9 @@ class GraphicTileset {
 
     private(set) var surfaceTileset: [SKTexture]!
     private(set) var imageTileset: [UIImage]!
+    private(set) var originalImage: UIImage!
 
-    private var tileIndex: [String: Int] = [:]
+    private var tileIndices: [String: Int] = [:]
     private var tileNames: [Int: String] = [:]
     private var groupSteps: [String: Int] = [:]
     private var groupNames: [String] = []
@@ -73,10 +74,10 @@ class GraphicTileset {
 
         guard count >= tileCount else {
             tileCount = count
-            tileIndex.keys.filter { key in
-                return self.tileIndex[key]! >= self.tileCount
+            tileIndices.keys.filter { key in
+                return self.tileIndices[key]! >= self.tileCount
             }.forEach { key in
-                self.tileIndex.removeValue(forKey: key)
+                self.tileIndices.removeValue(forKey: key)
             }
             updateGroupNames()
             return tileCount
@@ -88,7 +89,7 @@ class GraphicTileset {
     }
 
     func findTile(_ name: String) -> Int {
-        return tileIndex[name] ?? -1
+        return tileIndices[name] ?? -1
     }
 
     func groupName(at index: Int) -> String {
@@ -122,7 +123,7 @@ class GraphicTileset {
     func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) {
         surfaceTileset[destinationIndex] = SKTexture(rect: CGRect(origin: .zero, size: surfaceTileset[sourceIndex].size()), in: surfaceTileset[sourceIndex])
         tileNames[destinationIndex] = tileName
-        tileIndex[tileName] = destinationIndex
+        tileIndices[tileName] = destinationIndex
     }
 
     func duplicateClippedTile(destinationIndex: Int, tileName: String, sourceIndex: Int, clipIndex: Int) {
@@ -130,7 +131,7 @@ class GraphicTileset {
         let maskTexture = surfaceTileset[clipIndex]
         let maskedImage = sourceTexture.cgImage().masking(monoColorCGImage(image: maskTexture.cgImage(), size: maskTexture.size()))!
         surfaceTileset[destinationIndex] = SKTexture(cgImage: maskedImage)
-        tileIndex[tileName] = destinationIndex
+        tileIndices[tileName] = destinationIndex
         tileNames[destinationIndex] = tileName
     }
 
@@ -148,8 +149,12 @@ class GraphicTileset {
         guard let images = GraphicFactory.loadImages(from: dataSource.containerURL.appendingPathComponent(pngPath), count: count) else {
             throw GameError.failedToLoadFile(path: pngPath)
         }
+        guard let originalImage = GraphicFactory.loadImage(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
+            throw GameError.failedToLoadFile(path: pngPath)
+        }
         self.surfaceTileset = tileset
         self.imageTileset = images
+        self.originalImage = originalImage
         self.tileCount = count
         self.tileWidth = Int(tileset[0].size().width)
         self.tileHeight = Int(tileset[0].size().height)
@@ -158,7 +163,7 @@ class GraphicTileset {
                 throw GameError.failedToReadTileName
             }
             tileNames[i] = tileName
-            tileIndex[tileName] = i
+            tileIndices[tileName] = i
         }
         updateGroupNames()
     }

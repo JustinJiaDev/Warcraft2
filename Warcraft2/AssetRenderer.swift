@@ -38,8 +38,6 @@ class AssetRenderer {
     private var placeIndices: [[Int]] = []
     private var pixelColors: [PlayerColor: UInt32]
     private var selfPixelColor: UInt32
-    private var enemyPixelColor: UInt32
-    private var buildingPixelColor: UInt32
 
     private static var animationDownsample = 1
     private static var targetFrequency = 10
@@ -77,8 +75,6 @@ class AssetRenderer {
             .white: colors.colorValue(gIndex: colors.findColor("white"), cIndex: 0)
         ]
         self.selfPixelColor = colors.colorValue(gIndex: colors.findColor("self"), cIndex: 0)
-        self.enemyPixelColor = colors.colorValue(gIndex: colors.findColor("enemy"), cIndex: 0)
-        self.buildingPixelColor = colors.colorValue(gIndex: colors.findColor("building"), cIndex: 0)
 
         while true {
             let index = markerTileset.findTile("marker-" + String(markerIndex))
