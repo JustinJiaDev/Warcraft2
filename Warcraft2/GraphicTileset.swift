@@ -14,7 +14,7 @@ class GraphicTileset {
     private(set) var imageTileset: [UIImage]!
 
     private var tileIndex: [String: Int] = [:]
-    private var tileNames: [String] = []
+    private var tileNames: [Int: String] = [:]
     private var groupSteps: [String: Int] = [:]
     private var groupNames: [String] = []
 
@@ -53,7 +53,7 @@ class GraphicTileset {
     private func updateGroupNames() {
         groupSteps.removeAll()
         groupNames.removeAll()
-        for tileName in tileNames {
+        for tileName in tileNames.values {
             guard let (groupName, groupStep) = GraphicTileset.parseGroupName(tileName) else {
                 continue
             }
@@ -120,15 +120,18 @@ class GraphicTileset {
     }
 
     func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) {
-        surfaceTileset[destinationIndex] = SKTexture(rect: CGRect(origin: .zero, size: CGSize(width: tileWidth, height: tileHeight)), in: surfaceTileset[sourceIndex])
-        tileIndex[tileNames[destinationIndex]] = nil
+        surfaceTileset[destinationIndex] = SKTexture(rect: CGRect(origin: .zero, size: surfaceTileset[sourceIndex].size()), in: surfaceTileset[sourceIndex])
         tileNames[destinationIndex] = tileName
         tileIndex[tileName] = destinationIndex
     }
 
-    // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
     func duplicateClippedTile(destinationIndex: Int, tileName: String, sourceIndex: Int, clipIndex: Int) {
-        return
+        let sourceTexture = surfaceTileset[sourceIndex]
+        let maskTexture = surfaceTileset[clipIndex]
+        let maskedImage = sourceTexture.cgImage().masking(monoColorCGImage(image: maskTexture.cgImage(), size: maskTexture.size()))!
+        surfaceTileset[destinationIndex] = SKTexture(cgImage: maskedImage)
+        tileIndex[tileName] = destinationIndex
+        tileNames[destinationIndex] = tileName
     }
 
     func loadTileset(from dataSource: FileDataSource) throws {
@@ -154,9 +157,25 @@ class GraphicTileset {
             guard let tileName = lineSource.readLine() else {
                 throw GameError.failedToReadTileName
             }
-            tileNames.append(tileName)
+            tileNames[i] = tileName
             tileIndex[tileName] = i
         }
         updateGroupNames()
+    }
+
+    private func monoColorCGImage(image: CGImage, size: CGSize) -> CGImage {
+        let rect = CGRect(origin: .zero, size: size)
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let context = CGContext(
+            data: nil,
+            width: rect.width,
+            height: rect.height,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.alphaOnly.rawValue).rawValue
+        )
+        context!.draw(image, in: rect)
+        return context!.makeImage()!
     }
 }

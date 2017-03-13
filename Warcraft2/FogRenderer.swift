@@ -131,9 +131,7 @@ class FogRenderer {
                             unknownFog[visibilityIndex] = true
                         }
                     }
-                    if fogIndices[visibilityIndex] <= 35 && fogIndices[visibilityIndex] >= 0 {
-                        tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
-                    }
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: fogIndices[visibilityIndex])
                 }
 
                 if tileType == .partialPartial || tileType == .seenPartial {
@@ -158,9 +156,7 @@ class FogRenderer {
                             unknownBlack[visibilityIndex] = true
                         }
                     }
-                    if fogIndices[visibilityIndex] <= 35 && fogIndices[visibilityIndex] >= 0 {
-                        tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
-                    }
+                    tileset.drawTile(on: surface, x: xPosition, y: yPosition, index: blackIndices[visibilityIndex])
                 }
             }
         }
