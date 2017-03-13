@@ -14,10 +14,10 @@ class ResourceView: UIView {
     var lumberLabel = UILabel()
     var foodLabel = UILabel()
 
-    init(icons: GraphicTileset, playerData: PlayerData) {
+    init(size: CGSize, icons: GraphicTileset, playerData: PlayerData) {
         self.icons = icons
         self.playerData = playerData
-        super.init(frame: .zero)
+        super.init(frame: CGRect(origin: .zero, size: size))
         backgroundColor = .black
         addSubview(goldImageView)
         addSubview(goldLabel)
@@ -34,6 +34,8 @@ class ResourceView: UIView {
             label.textColor = .white
             label.font = UIFont(name: "Papyrus", size: 16)
         }
+        layer.borderColor = UIColor.white.cgColor
+        layer.borderWidth = 1
     }
 
     override init(frame: CGRect) {

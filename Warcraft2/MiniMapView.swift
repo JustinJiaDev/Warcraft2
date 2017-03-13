@@ -53,5 +53,9 @@ class MiniMapView: UIView {
         let miniMapViewportHeight = (viewportRenderer.lastViewportHeight * visibleHeight) / mapRenderer.detailedMapHeight
         resourceContext.rectangle(x: miniMapViewportX, y: miniMapViewportY, width: miniMapViewportWidth, height: miniMapViewportHeight)
         resourceContext.stroke()
+
+        // draw mini map border
+        resourceContext.rectangle(x: rect.x, y: rect.y, width: rect.width, height: rect.height)
+        resourceContext.stroke()
     }
 }

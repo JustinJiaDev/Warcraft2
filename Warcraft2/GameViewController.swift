@@ -37,8 +37,36 @@ class GameViewController: UIViewController {
     private func loadGame() throws {
         super.viewDidLoad()
 
-        let terrainTileset = try tileset("Terrain")
-        Position.setTileDimensions(width: terrainTileset.tileWidth, height: terrainTileset.tileHeight)
+        let mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
+        let colors = try colorMap("Colors")
+        let assetColor = try colorMap("AssetColor")
+        var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
+        tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant", colors)
+        tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman", colors)
+        tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer", colors)
+        tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger", colors)
+        tilesets[AssetType.goldMine.rawValue] = try multicolorTileset("GoldMine", colors)
+        tilesets[AssetType.townHall.rawValue] = try multicolorTileset("TownHall", colors)
+        tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep", colors)
+        tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle", colors)
+        tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm", colors)
+        tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks", colors)
+        tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill", colors)
+        tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith", colors)
+        tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower", colors)
+        tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower", colors)
+        tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower", colors)
+        let terrain = try tileset("Terrain")
+        let fog = try tileset("Fog")
+        let marker = try tileset("Marker")
+        let corpse = try tileset("Corpse")
+        let fire = [try tileset("FireSmall"), try tileset("FireLarge")]
+        let buildingDeath = try tileset("BuildingDeath")
+        let arrow = try tileset("Arrow")
+        let icons = try tileset("Icons")
+        let miniIcons = try tileset("MiniIcons")
+
+        Position.setTileDimensions(width: terrain.tileWidth, height: terrain.tileHeight)
 
         PlayerAsset.updateFrequency = 40
         AssetRenderer.updateFrequency = 40
@@ -53,30 +81,44 @@ class GameViewController: UIViewController {
         TrainCapabilities.registrant.register()
         UnitUpgradeCapabilities.registrant.register()
 
-        midiPlayer = try createMIDIPlayer()
+        midiPlayer = try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
 
-        gameModel = try createGameModel(mapIndex: mapIndex)
-        ai = createAI(playerData: gameModel.player(.red))
+        gameModel = GameModel(mapIndex: mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
+        ai = AIPlayer(playerData: gameModel.player(.red), downSample: PlayerAsset.updateFrequency)
         playerData = gameModel.player(.blue)
 
-        mapRenderer = try createMapRenderer(playerData: playerData)
-        assetRenderer = try createAssetRenderer(playerData: playerData)
-        fogRenderer = try createFogRenderer(playerData: playerData)
+        mapRenderer = try MapRenderer(configuration: mapConfiguration, tileset: terrain, map: playerData.actualMap)
+        assetRenderer = AssetRenderer(
+            colors: assetColor,
+            tilesets: tilesets,
+            markerTileset: marker,
+            corpseTileset: corpse,
+            fireTilesets: fire,
+            buildingDeathTileset: buildingDeath,
+            arrowTileset: arrow,
+            player: playerData,
+            map: playerData.playerMap
+        )
+        fogRenderer = try FogRenderer(tileset: fog, map: playerData.visibilityMap)
         viewportRenderer = ViewportRenderer(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer)
 
-        unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
+        unitActionRenderer = UnitActionRenderer(icons: icons, color: playerData.color, player: playerData, delegate: self)
 
         actionMenuView = createActionMenuView()
         miniMapView = MiniMapView(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer, viewportRenderer: viewportRenderer)
-        statsView = try createStatsView(size: CGSize(width: 150, height: 230))
+        statsView = StatsView(size: CGSize(width: 150, height: 230), icons: icons)
         sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
-        resourceView = try createResourceView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 32), playerData: playerData)
-        mapView = createMapView(viewportRenderer: viewportRenderer, width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
+        resourceView = ResourceView(size: CGSize(width: view.bounds.width - sideView.bounds.width + 1, height: 32), icons: miniIcons, playerData: playerData)
+        mapView = SKView(frame: CGRect(origin: .zero, size: CGSize(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)))
+
+        mapView.isOpaque = true
+        resourceView.isOpaque = true
+        sideView.isOpaque = true
 
         viewportRenderer.initViewportDimensions(width: view.bounds.width - sideView.bounds.width, height: view.bounds.height - resourceView.bounds.height)
 
         sideView.frame.origin = .zero
-        resourceView.frame.origin = CGPoint(x: sideView.bounds.size.width, y: 0)
+        resourceView.frame.origin = CGPoint(x: sideView.bounds.size.width - 1, y: 0)
         mapView.frame.origin = CGPoint(x: sideView.bounds.width, y: resourceView.bounds.height)
 
         view.addSubview(mapView)
@@ -84,7 +126,7 @@ class GameViewController: UIViewController {
         view.addSubview(sideView)
         view.addSubview(actionMenuView)
 
-        scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
+        scene = GraphicFactory.createSurface(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
     }
 
     override func viewDidLoad() {
@@ -109,11 +151,43 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+
+    private func createActionMenuView() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset.top = 10
+        layout.sectionInset.left = 10
+        layout.sectionInset.bottom = 10
+        layout.minimumInteritemSpacing = 10
+        layout.itemSize = CGSize(width: 46, height: 46)
+        var frame = UIScreen.main.bounds
+        frame.origin.x = 150
+        frame.origin.y = CGFloat(UIScreen.main.bounds.height - 66)
+        frame.size.height = 66
+        let actionMenuView = UICollectionView(frame: frame, collectionViewLayout: layout)
+        actionMenuView.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
+        actionMenuView.register(ImageCell.self, forCellWithReuseIdentifier: "ActionMenuViewCell")
+        actionMenuView.isHidden = true
+        return actionMenuView
+    }
+
+    private func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView) -> UIView {
+        let sideView = UIView(frame: CGRect(origin: .zero, size: size))
+        sideView.backgroundColor = .black
+        sideView.layer.borderColor = UIColor.white.cgColor
+        sideView.layer.borderWidth = 1
+        sideView.addSubview(statsView)
+        sideView.addSubview(miniMapView)
+        let scale = size.width / miniMapView.bounds.size.width
+        miniMapView.transform = CGAffineTransform(scaleX: scale, y: scale)
+        miniMapView.frame.origin = .zero
+        statsView.frame.origin = CGPoint(x: 0, y: miniMapView.bounds.height + 40)
+        return sideView
+    }
 }
 
 extension GameViewController {
     func timestep() {
-        // ai.calculateCommand()
+        ai.calculateCommand()
         gameModel.timestep()
         scene.clear()
         viewportRenderer.drawViewport(on: scene)

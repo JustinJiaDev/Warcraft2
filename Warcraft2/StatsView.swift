@@ -30,9 +30,9 @@ class StatsView: UIView {
     let sightLabel = UILabel()
     let speedLabel = UILabel()
 
-    init(icons: GraphicTileset) {
+    init(size: CGSize, icons: GraphicTileset) {
         self.icons = icons
-        super.init(frame: .zero)
+        super.init(frame: CGRect(origin: .zero, size: size))
         backgroundColor = .black
         self.addSubview(iconImageView)
         self.addSubview(nameLabel)

@@ -10,9 +10,6 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
     private(set) var iconTileset: GraphicTileset
     private let playerData: PlayerData
     private let playerColor: PlayerColor
-    private let bevel: Bevel
-    private let fullIconWidth: Int
-    private let fullIconHeight: Int
     private let commandIndices: [AssetCapabilityType: Int]
     private let disabledIndex: Int
     private let delegate: UnitActionRendererDelegate
@@ -31,14 +28,11 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         .buildCannonTower
     ]
 
-    init(bevel: Bevel, icons: GraphicTileset, color: PlayerColor, player: PlayerData, delegate: UnitActionRendererDelegate) {
-        self.bevel = bevel
+    init(icons: GraphicTileset, color: PlayerColor, player: PlayerData, delegate: UnitActionRendererDelegate) {
         self.iconTileset = icons
         self.playerColor = color
         self.playerData = player
         self.delegate = delegate
-        self.fullIconWidth = iconTileset.tileWidth + bevel.width * 2
-        self.fullIconHeight = iconTileset.tileHeight + bevel.width * 2
         self.commandIndices = [
             .none: -1,
             .buildPeasant: iconTileset.findTile("peasant"),
@@ -81,14 +75,6 @@ class UnitActionRenderer: NSObject, UICollectionViewDataSource, UICollectionView
         ]
         self.disabledIndex = iconTileset.findTile("disabled")
         self.displayedCommands = []
-    }
-
-    var minimumWidth: Int {
-        return fullIconWidth * 3 + bevel.width * 2
-    }
-
-    var minimumHeight: Int {
-        return fullIconHeight * 3 + bevel.width * 2
     }
 
     func drawUnitAction(on view: UICollectionView, selectedAsset: PlayerAsset?, currentAction: AssetCapabilityType) {
