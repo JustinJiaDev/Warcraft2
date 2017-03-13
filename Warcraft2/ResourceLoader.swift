@@ -3,10 +3,19 @@ import UIKit
 import SpriteKit
 import AVFoundation
 
+let globalColorMap = try! colorMap("Colors")
+
 func url(_ pathComponents: String...) -> URL {
     return pathComponents.reduce(Bundle.main.url(forResource: "data", withExtension: nil)!, { result, pathComponent in
         return result.appendingPathComponent(pathComponent)
     })
+}
+
+func colorMap(_ name: String) throws -> GraphicRecolorMap {
+    let colorMapSource = try FileDataSource(url: url("img", name.appending(".dat")))
+    let colorMap = GraphicRecolorMap()
+    try colorMap.load(from: colorMapSource)
+    return colorMap
 }
 
 func tileset(_ name: String) throws -> GraphicTileset {
@@ -19,7 +28,7 @@ func tileset(_ name: String) throws -> GraphicTileset {
 func multicolorTileset(_ name: String) throws -> GraphicMulticolorTileset {
     let tilesetSource = try FileDataSource(url: url("img", name.appending(".dat")))
     let tileset = GraphicMulticolorTileset()
-    try tileset.loadTileset(from: tilesetSource)
+    try tileset.loadTileset(colorMap: globalColorMap, from: tilesetSource)
     return tileset
 }
 
@@ -45,20 +54,20 @@ func createAssetRenderer(playerData: PlayerData) throws -> AssetRenderer {
     let colors = GraphicRecolorMap()
     var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
     tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
-    tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
-    tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer")
-    tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger")
+    //    tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
+    //    tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer")
+    //    tilesets[AssetType.ranger.rawValue] = try multicolorTileset("Ranger")
     tilesets[AssetType.goldMine.rawValue] = try multicolorTileset("GoldMine")
     tilesets[AssetType.townHall.rawValue] = try multicolorTileset("TownHall")
-    tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep")
-    tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle")
-    tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm")
-    tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks")
-    tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill")
-    tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith")
-    tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower")
-    tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower")
-    tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower")
+    //    tilesets[AssetType.keep.rawValue] = try multicolorTileset("Keep")
+    //    tilesets[AssetType.castle.rawValue] = try multicolorTileset("Castle")
+    //    tilesets[AssetType.farm.rawValue] = try multicolorTileset("Farm")
+    //    tilesets[AssetType.barracks.rawValue] = try multicolorTileset("Barracks")
+    //    tilesets[AssetType.lumberMill.rawValue] = try multicolorTileset("LumberMill")
+    //    tilesets[AssetType.blacksmith.rawValue] = try multicolorTileset("Blacksmith")
+    //    tilesets[AssetType.scoutTower.rawValue] = try multicolorTileset("ScoutTower")
+    //    tilesets[AssetType.guardTower.rawValue] = try multicolorTileset("GuardTower")
+    //    tilesets[AssetType.cannonTower.rawValue] = try multicolorTileset("CannonTower")
     let markerTileset = try tileset("Marker")
     let corpseTileset = try tileset("Corpse")
     let fireTilesets = [try tileset("FireSmall"), try tileset("FireLarge")]
