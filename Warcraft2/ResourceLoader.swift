@@ -51,7 +51,6 @@ func createMapRenderer(playerData: PlayerData) throws -> MapRenderer {
 }
 
 func createAssetRenderer(playerData: PlayerData) throws -> AssetRenderer {
-    let colors = GraphicRecolorMap()
     var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
     tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant")
     tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman")
@@ -74,7 +73,7 @@ func createAssetRenderer(playerData: PlayerData) throws -> AssetRenderer {
     let buildingDeathTileset = try tileset("BuildingDeath")
     let arrowTileset = try tileset("Arrow")
     let assetRenderer = AssetRenderer(
-        colors: colors,
+        colors: try colorMap("AssetColor"),
         tilesets: tilesets,
         markerTileset: markerTileset,
         corpseTileset: corpseTileset,

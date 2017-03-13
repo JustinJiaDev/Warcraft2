@@ -26,17 +26,11 @@ class GraphicRecolorMap {
     }
 
     func findColor(_ name: String) -> Int {
-        // FIXME: MAKE FIND COLOR GREAT AGAIN
-        // HACK - START
-        return 1
-        // HACK - END
+        return colorIndices[name] ?? -1
     }
 
     func colorValue(gIndex: Int, cIndex: Int) -> UInt32 {
-        // FIXME: MAKE COLOR VALUE GREAT AGAIN
-        // HACK - START
-        return 1
-        // HACK - END
+        return colors[gIndex][cIndex]
     }
 
     func load(from dataSource: FileDataSource) throws {
