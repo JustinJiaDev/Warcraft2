@@ -252,7 +252,7 @@ class PlayerData {
         var bestDistanceSquared = -1
         for asset in assets {
             let currentDistanceSquared = squaredDistanceBetween(asset.position, position)
-            if bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared {
+            if (bestDistanceSquared == -1 || currentDistanceSquared < bestDistanceSquared) && !(asset.currentCommand.activatedCapability is PlayerCapabilityBuildNormal.ActivatedCapability) {
                 bestDistanceSquared = currentDistanceSquared
                 bestAsset = asset
             }

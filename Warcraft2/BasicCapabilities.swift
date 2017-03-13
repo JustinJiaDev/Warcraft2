@@ -228,7 +228,6 @@ class PlayerCapabilityCancel: PlayerCapability {
             assetTarget: target,
             activatedCapability: ActivatedCapability(actor: actor, playerData: playerData, target: target)
         )
-        actor.clearCommand()
         actor.pushCommand(newCommand)
         return true
     }
