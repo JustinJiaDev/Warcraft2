@@ -14,8 +14,6 @@ class MiniMapView: UIView {
             return
         }
         let context = UIGraphicsGetCurrentContext()!
-        let layer = CGLayer(context, size: bounds.size, auxiliaryInfo: nil)!
-        mapRenderer.drawMiniMap(on: layer)
-        context.draw(layer, in: rect)
+        mapRenderer.drawMiniMap(on: context)
     }
 }

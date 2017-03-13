@@ -251,13 +251,13 @@
 			isa = PBXGroup;
 			children = (
 				D0D4A3D71E3ED46B009460DE /* Bevel.swift */,
-				D004BAE71E6CC8E100931A4F /* ViewSurface.swift */,
 				D08F47491E36062C00F7FED1 /* GraphicFactory.swift */,
 				C8E5F4641E419CFF00EDEC02 /* GraphicMulticolorTileset.swift */,
 				9204011D1E418A2800D3719F /* GraphicRecolorMap.swift */,
 				8EA067781E33C8E00059CEC2 /* GraphicResourceContext.swift */,
 				8EA0677E1E33C8E00059CEC2 /* GraphicSurface.swift */,
 				D08F47461E35D89800F7FED1 /* GraphicTileset.swift */,
+				D004BAE71E6CC8E100931A4F /* ViewSurface.swift */,
 			);
 			name = Graphic;
 			sourceTree = "<group>";

@@ -494,8 +494,7 @@ class AssetRenderer {
         }
     }
 
-    func drawMiniAssets(on surface: GraphicSurface) {
-        let resourceContext = surface.resourceContext
+    func drawMiniAssets(on resourceContext: GraphicResourceContext) {
         if let playerData = playerData {
             for asset in playerMap.assets {
                 let size = asset.size

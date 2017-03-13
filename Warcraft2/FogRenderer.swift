@@ -162,9 +162,7 @@ class FogRenderer {
         }
     }
 
-    func drawMiniMap(on surface: GraphicSurface) {
-        let resourceContext = surface.resourceContext
-
+    func drawMiniMap(on resourceContext: GraphicResourceContext) {
         resourceContext.setLineWidth(1)
         resourceContext.setLineCap(.square)
         for yPosition in 0 ..< map.height {
