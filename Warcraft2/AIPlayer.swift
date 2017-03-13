@@ -1,15 +1,17 @@
 class AIPlayer {
     private(set) var playerData: PlayerData
     private(set) var downSample: Int
+    private(set) var aiLevel: Int
     private(set) var cycle: Int
 
     private var action: AssetCapabilityType?
     private var actor: PlayerAsset?
     private var target: PlayerAsset?
 
-    init(playerData: PlayerData, downSample: Int) {
+    init(playerData: PlayerData, downSample: Int, aiLevel: Int) {
         self.playerData = playerData
         self.downSample = downSample
+        self.aiLevel = aiLevel
         self.cycle = 0
     }
 
@@ -168,6 +170,9 @@ class AIPlayer {
     }
 
     func calculateCommand() {
+        guard aiLevel != 0 else {
+            return
+        }
         if cycle % downSample == 0 {
             if playerData.assetCount(of: .goldMine) == 0 {
                 searchMap()

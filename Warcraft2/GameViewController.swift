@@ -4,8 +4,6 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
-    private let mapIndex = 1
-
     fileprivate var selectedAction: AssetCapabilityType?
     fileprivate var selectedActor: PlayerAsset?
 
@@ -84,7 +82,7 @@ class GameViewController: UIViewController {
         midiPlayer = try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
 
         gameModel = GameModel(mapIndex: mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
-        ai = AIPlayer(playerData: gameModel.player(.red), downSample: PlayerAsset.updateFrequency)
+        ai = AIPlayer(playerData: gameModel.player(.red), downSample: PlayerAsset.updateFrequency, aiLevel: aiLevel)
         playerData = gameModel.player(.blue)
 
         mapRenderer = try MapRenderer(configuration: mapConfiguration, tileset: terrain, map: playerData.actualMap)

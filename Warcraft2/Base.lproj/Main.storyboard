@@ -43,17 +43,13 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Warcraft 2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1c4-C2-Vct">
-                                <rect key="frame" x="268" y="40" width="132.5" height="45"/>
+                                <rect key="frame" x="267" y="40" width="133" height="45"/>
                                 <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="29"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TZO-F5-Ucp">
-                                <rect key="frame" x="273" y="147" width="120" height="80"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="nEb-cO-6Cc"/>
-                                    <constraint firstAttribute="width" constant="120" id="rYC-bz-dxB"/>
-                                </constraints>
+                                <rect key="frame" x="277" y="164" width="112" height="46"/>
                                 <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="22"/>
                                 <state key="normal" title="Start Game">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -62,24 +58,55 @@
                                     <segue destination="wcZ-S5-Xs2" kind="presentation" id="C5I-jL-FfQ"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7wg-a3-sVd">
+                                <rect key="frame" x="238.5" y="293" width="50" height="42"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="5eo-mw-qzF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="20"/>
+                                <state key="normal" title="No AI">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonTappedWithAiButton:" destination="wfB-tJ-xR5" eventType="touchUpInside" id="fQU-Rk-mFB"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZ9-zb-0oy">
+                                <rect key="frame" x="345" y="292" width="117" height="43"/>
+                                <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="20"/>
+                                <state key="normal" title="2 Player Map">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonTappedWithMapButton:" destination="wfB-tJ-xR5" eventType="touchUpInside" id="OZh-vd-Z6k"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Dov-hc-uEB" firstAttribute="top" secondItem="9So-if-AcC" secondAttribute="bottom" id="1dO-iM-z3k"/>
-                            <constraint firstAttribute="trailing" secondItem="9So-if-AcC" secondAttribute="trailing" id="2el-vZ-2D4"/>
-                            <constraint firstItem="TZO-F5-Ucp" firstAttribute="centerY" secondItem="GL3-G1-BI9" secondAttribute="centerY" id="Ceb-RD-AbT"/>
-                            <constraint firstItem="9So-if-AcC" firstAttribute="top" secondItem="GL3-G1-BI9" secondAttribute="top" id="H4R-Hl-gbS"/>
-                            <constraint firstItem="9So-if-AcC" firstAttribute="leading" secondItem="GL3-G1-BI9" secondAttribute="leading" id="Xna-Le-LHj"/>
-                            <constraint firstItem="1c4-C2-Vct" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" constant="40" id="bYn-aO-QkJ"/>
-                            <constraint firstItem="TZO-F5-Ucp" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" id="uZF-7p-fd7"/>
-                            <constraint firstItem="1c4-C2-Vct" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" id="yia-WH-Gzw"/>
+                            <constraint firstItem="9So-if-AcC" firstAttribute="bottom" secondItem="Dov-hc-uEB" secondAttribute="top" id="4gJ-4U-pIa"/>
+                            <constraint firstItem="7wg-a3-sVd" firstAttribute="bottom" secondItem="iZ9-zb-0oy" secondAttribute="bottom" id="D73-Kx-HK7"/>
+                            <constraint firstItem="9So-if-AcC" firstAttribute="leading" secondItem="GL3-G1-BI9" secondAttribute="leading" id="Hnb-Cg-UiD"/>
+                            <constraint firstItem="1c4-C2-Vct" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" constant="40" id="NhP-Ty-o1b"/>
+                            <constraint firstItem="Dov-hc-uEB" firstAttribute="top" secondItem="7wg-a3-sVd" secondAttribute="bottom" constant="40" id="Nto-yx-V0r"/>
+                            <constraint firstAttribute="trailing" secondItem="9So-if-AcC" secondAttribute="trailing" id="aWC-4J-rne"/>
+                            <constraint firstItem="9So-if-AcC" firstAttribute="centerX" secondItem="TZO-F5-Ucp" secondAttribute="centerX" id="ec7-Tr-fMe"/>
+                            <constraint firstItem="9So-if-AcC" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" id="hQr-pz-7Wn"/>
+                            <constraint firstItem="1c4-C2-Vct" firstAttribute="centerX" secondItem="TZO-F5-Ucp" secondAttribute="centerX" id="k5G-0Y-tIf"/>
+                            <constraint firstItem="iZ9-zb-0oy" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" constant="70" id="kKs-Dl-QpT"/>
+                            <constraint firstItem="9So-if-AcC" firstAttribute="centerY" secondItem="TZO-F5-Ucp" secondAttribute="centerY" id="qYI-R0-Xi4"/>
+                            <constraint firstItem="7wg-a3-sVd" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" constant="-70" id="yGb-R2-8Er"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
+                    <connections>
+                        <outlet property="aiButton" destination="7wg-a3-sVd" id="1UU-Mq-Ruq"/>
+                        <outlet property="mapButton" destination="iZ9-zb-0oy" id="7U9-1E-V5O"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XqC-2d-UZA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-208" y="521"/>
+            <point key="canvasLocation" x="-208.24587706146929" y="520.79999999999995"/>
         </scene>
     </scenes>
     <resources>
