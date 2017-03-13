@@ -16,8 +16,10 @@ class GraphicMulticolorTileset: GraphicTileset {
         try loadTileset(from: dataSource)
         coloredTilesets.removeAll()
         coloredTilesets.append(surfaceTileset)
-        for colorIndex in 1 ..< colorMap.groupCount {
-            coloredTilesets.append(colorMap.recolorTextures(surfaceTileset, at: colorIndex))
+        for colorIndex in 1 ..< colorMap.colorCount {
+            let recoloredImage = colorMap.recolorPixels(in: originalImage!.cgImage!, index: colorIndex)
+            let textures = GraphicFactory.loadTextures(from: UIImage(cgImage: recoloredImage), count: tileCount)
+            coloredTilesets.append(textures)
         }
         self.colorMap = colorMap
     }

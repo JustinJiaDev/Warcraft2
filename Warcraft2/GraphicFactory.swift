@@ -45,6 +45,10 @@ class GraphicFactory {
 
     static func loadTextures(from url: URL, count: Int) -> [SKTexture]? {
         guard let image = UIImage(contentsOfFile: url.path) else { return nil }
+        return loadTextures(from: image, count: count)
+    }
+
+    static func loadTextures(from image: UIImage, count: Int) -> [SKTexture] {
         let textureHeight = image.size.height / CGFloat(count)
         var currentRect = CGRect(x: 0, y: 0, width: image.size.width, height: textureHeight)
         var textures: [SKTexture] = []

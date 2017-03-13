@@ -12,6 +12,7 @@ class GraphicTileset {
 
     private(set) var surfaceTileset: [SKTexture]!
     private(set) var imageTileset: [UIImage]!
+    private(set) var originalImage: UIImage!
 
     private var tileIndices: [String: Int] = [:]
     private var tileNames: [Int: String] = [:]
@@ -148,8 +149,12 @@ class GraphicTileset {
         guard let images = GraphicFactory.loadImages(from: dataSource.containerURL.appendingPathComponent(pngPath), count: count) else {
             throw GameError.failedToLoadFile(path: pngPath)
         }
+        guard let originalImage = GraphicFactory.loadImage(from: dataSource.containerURL.appendingPathComponent(pngPath)) else {
+            throw GameError.failedToLoadFile(path: pngPath)
+        }
         self.surfaceTileset = tileset
         self.imageTileset = images
+        self.originalImage = originalImage
         self.tileCount = count
         self.tileWidth = Int(tileset[0].size().width)
         self.tileHeight = Int(tileset[0].size().height)
