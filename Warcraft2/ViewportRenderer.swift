@@ -76,7 +76,7 @@ class ViewportRenderer {
         }
     }
 
-    func drawViewport(on surface: GraphicSurface, typeSurface: GraphicSurface) {
+    func drawViewport(on surface: GraphicSurface) {
         lastViewportWidth = surface.width
         lastViewportHeight = surface.height
         if viewportX + lastViewportWidth >= mapRenderer.detailedMapWidth {
@@ -86,9 +86,9 @@ class ViewportRenderer {
             viewportY = mapRenderer.detailedMapHeight - lastViewportHeight
         }
         let bounds = Rectangle(x: viewportX, y: viewportY, width: lastViewportWidth, height: lastViewportHeight)
-        mapRenderer.drawBottomLevelMap(on: surface, typeSurface: typeSurface, in: bounds)
-        assetRenderer.drawAssets(on: surface, typeSurface: typeSurface, in: bounds)
-        mapRenderer.drawTopLevelMap(on: surface, typeSurface: typeSurface, in: bounds)
+        mapRenderer.drawBottomLevelMap(on: surface, in: bounds)
+        assetRenderer.drawAssets(on: surface, in: bounds)
+        mapRenderer.drawTopLevelMap(on: surface, in: bounds)
         assetRenderer.drawOverlays(on: surface, in: bounds)
         fogRenderer.drawMap(on: surface, in: bounds)
     }

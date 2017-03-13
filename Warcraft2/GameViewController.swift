@@ -23,9 +23,7 @@ class GameViewController: UIViewController {
 
     var unitActionRenderer: UnitActionRenderer!
 
-    // FIXME: Currently type scene is never used.
     var scene: SKScene!
-    var typeScene: SKScene!
 
     var actionMenuView: UICollectionView!
     var miniMapView: MiniMapView!
@@ -87,7 +85,6 @@ class GameViewController: UIViewController {
         view.addSubview(actionMenuView)
 
         scene = createScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
-        typeScene = createTypeScene(width: viewportRenderer.lastViewportWidth, height: viewportRenderer.lastViewportHeight)
     }
 
     override func viewDidLoad() {
@@ -118,8 +115,8 @@ extension GameViewController {
     func timestep() {
         // ai.calculateCommand()
         gameModel.timestep()
-        scene.removeAllChildren()
-        viewportRenderer.drawViewport(on: scene, typeSurface: typeScene)
+        scene.clear()
+        viewportRenderer.drawViewport(on: scene)
         resourceView.updateResourceInfo()
         statsView.displayAssetInfo(selectedActor)
         checkVictoryCondition()

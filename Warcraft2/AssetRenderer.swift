@@ -11,7 +11,6 @@ class AssetRenderer {
         var bottomY = -1
         var tileIndex = -1
         var colorIndex = -1
-        var pixelColor: UInt32 = 0
     }
 
     private var playerData: PlayerData?
@@ -281,7 +280,7 @@ class AssetRenderer {
         return first.x <= second.x
     }
 
-    func drawAssets(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) {
+    func drawAssets(on surface: GraphicSurface, in rect: Rectangle) {
         let screenRightX = rect.x + rect.width - 1
         let screenBottomY = rect.y + rect.height - 1
         var finalRenderList: [Data] = []
@@ -299,7 +298,6 @@ class AssetRenderer {
             renderData.x = asset.positionX + (asset.size - 1) * Position.halfTileWidth - tilesets[asset.type.rawValue].tileHalfWidth
             renderData.y = asset.positionY + (asset.size - 1) * Position.halfTileHeight - tilesets[asset.type.rawValue].tileHalfHeight
             renderData.bottomY = renderData.y + tilesets[asset.type.rawValue].tileHeight - 1
-            renderData.pixelColor = PixelType(playerAsset: asset).pixelColor
 
             let rightX = renderData.x + tilesets[renderData.type.rawValue].tileWidth - 1
 
@@ -411,7 +409,6 @@ class AssetRenderer {
         for renderData in finalRenderList {
             if renderData.tileIndex < tilesets[renderData.type.rawValue].tileCount {
                 tilesets[renderData.type.rawValue].drawTile(on: surface, x: renderData.x, y: renderData.y, tileIndex: renderData.tileIndex, colorIndex: renderData.colorIndex)
-                tilesets[renderData.type.rawValue].drawClippedTile(on: typeSurface, x: renderData.x, y: renderData.y, index: renderData.tileIndex, rgb: renderData.pixelColor)
             } else {
                 buildingDeathTileset.drawTile(on: surface, x: renderData.x, y: renderData.y, index: renderData.tileIndex)
             }

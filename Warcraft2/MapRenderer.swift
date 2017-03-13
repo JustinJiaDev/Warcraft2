@@ -246,7 +246,7 @@ class MapRenderer {
         }
     }
 
-    func drawBottomLevelMap(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) {
+    func drawBottomLevelMap(on surface: GraphicSurface, in rect: Rectangle) {
         unknownTree = Array(repeating: false, count: 0x100)
         unknownWater = Array(repeating: false, count: 0x100)
         unknownDirt = Array(repeating: false, count: 0x100)
@@ -260,13 +260,11 @@ class MapRenderer {
         let tileHeight = tileset.tileHeight
 
         var displayIndex = -1
-        typeSurface.clear()
         var yIndex = rect.y / tileHeight
         for y in stride(from: -(rect.y % tileHeight), to: rect.height, by: tileHeight) {
             var xIndex = rect.x / tileWidth
             for x in stride(from: -(rect.x % tileWidth), to: rect.width, by: tileWidth) {
                 let tileType = map.tileTypeAt(x: xIndex, y: yIndex)
-                let pixelColor = PixelType(tileType: tileType).pixelColor
                 switch tileType {
                 case .tree:
                     let (treeIndex, unknownMask) = findIndexAndUnknownMask(types: [.tree], x: xIndex, y: yIndex, yRange: [0, 1], xRange: [ -1, 0, 1], checkZeros: false)
@@ -363,7 +361,6 @@ class MapRenderer {
                 }
                 if displayIndex != -1 {
                     tileset.drawTile(on: surface, x: x, y: y, index: displayIndex)
-                    tileset.drawClippedTile(on: typeSurface, x: x, y: y, index: displayIndex, rgb: pixelColor)
                 }
                 xIndex += 1
             }
@@ -371,7 +368,7 @@ class MapRenderer {
         }
     }
 
-    func drawTopLevelMap(on surface: GraphicSurface, typeSurface: GraphicSurface, in rect: Rectangle) {
+    func drawTopLevelMap(on surface: GraphicSurface, in rect: Rectangle) {
         let tileWidth = tileset.tileWidth
         let tileHeight = tileset.tileHeight
 
@@ -383,7 +380,6 @@ class MapRenderer {
                     xIndex += 1
                     continue
                 }
-                let pixelColor = PixelType(tileType: .tree).pixelColor
                 var treeIndex = 0, treeMask = 0x1
                 for yOffset in 0 ..< 2 {
                     for xOffset in -1 ..< 2 {
@@ -398,7 +394,6 @@ class MapRenderer {
                 // Figure out why treeIndices[treeIndex] is -1.
                 if treeIndices[treeIndex] >= 0 {
                     tileset.drawTile(on: surface, x: x, y: y, index: treeIndices[treeIndex])
-                    tileset.drawClippedTile(on: typeSurface, x: x, y: y, index: treeIndices[treeIndex], rgb: pixelColor)
                 }
                 xIndex += 1
             }
