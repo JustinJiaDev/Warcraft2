@@ -115,11 +115,6 @@ class GraphicTileset {
         view.draw(from: imageTileset[index])
     }
 
-    // FIXME: MAKE DRAW CLIPPED TILE GREAT AGAIN
-    func drawClippedTile(on surface: GraphicSurface, x: Int, y: Int, index: Int, rgb: UInt32) {
-        return
-    }
-
     func duplicateTile(destinationIndex: Int, tileName: String, sourceIndex: Int) {
         surfaceTileset[destinationIndex] = SKTexture(rect: CGRect(origin: .zero, size: surfaceTileset[sourceIndex].size()), in: surfaceTileset[sourceIndex])
         tileNames[destinationIndex] = tileName

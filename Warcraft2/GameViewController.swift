@@ -23,7 +23,7 @@ class GameViewController: UIViewController {
 
     var unitActionRenderer: UnitActionRenderer!
 
-    var scene: SKScene!
+    var scene: GraphicSurface!
 
     var actionMenuView: UICollectionView!
     var miniMapView: MiniMapView!
@@ -90,7 +90,7 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         do {
             try loadGame()
-            mapView.presentScene(scene)
+            mapView.presentScene(scene as? SKScene)
 
             mapView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture)))
             mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapGesture)))

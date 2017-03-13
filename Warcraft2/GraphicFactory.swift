@@ -1,29 +1,10 @@
-import CoreGraphics
 import SpriteKit
 import UIKit
 
 class GraphicFactory {
-    static func createSurface(width: Int, height: Int) -> GraphicSurface? {
-        let size = CGSize(width: width, height: height)
-        UIGraphicsBeginImageContext(size)
-        guard let context = UIGraphicsGetCurrentContext() else { return nil }
-        let layer = CGLayer(context, size: size, auxiliaryInfo: nil)
-        UIGraphicsEndImageContext()
-        return layer
-    }
 
-    static func createSurface<T: SKScene>(width: Int, height: Int, type: T.Type) -> T {
-        let scene = type.init(size: CGSize(width: width, height: height))
-        return scene
-    }
-
-    static func loadSurface(from url: URL) -> GraphicSurface? {
-        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
-        UIGraphicsBeginImageContext(image.size)
-        let layer = CGLayer(UIGraphicsGetCurrentContext()!, size: image.size, auxiliaryInfo: nil)!
-        layer.context!.draw(image.cgImage!, in: CGRect(origin: .zero, size: image.size))
-        UIGraphicsEndImageContext()
-        return layer
+    static func createSurface(width: Int, height: Int) -> GraphicSurface {
+        return SKScene(size: CGSize(width: width, height: height))
     }
 
     static func loadImage(from url: URL) -> UIImage? {
