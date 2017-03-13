@@ -67,7 +67,7 @@ class GameViewController: UIViewController {
         unitActionRenderer = try createUnitActionRenderer(playerData: playerData, delegate: self)
 
         actionMenuView = createActionMenuView()
-        miniMapView = createMiniMapView(mapRenderer: mapRenderer)
+        miniMapView = MiniMapView(mapRenderer: mapRenderer, assetRenderer: assetRenderer, fogRenderer: fogRenderer, viewportRenderer: viewportRenderer)
         statsView = try createStatsView(size: CGSize(width: 150, height: 230))
         sideView = createSideView(size: CGSize(width: 150, height: view.bounds.height), miniMapView: miniMapView, statsView: statsView)
         resourceView = try createResourceView(size: CGSize(width: view.bounds.width - sideView.bounds.width, height: 32), playerData: playerData)
@@ -119,6 +119,7 @@ extension GameViewController {
         viewportRenderer.drawViewport(on: scene)
         resourceView.updateResourceInfo()
         statsView.displayAssetInfo(selectedActor)
+        miniMapView.setNeedsDisplay()
         checkVictoryCondition()
     }
 

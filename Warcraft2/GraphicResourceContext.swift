@@ -6,30 +6,22 @@ typealias GraphicResourceContextLineCap = CGLineCap
 typealias GraphicResourceContextLineJoin = CGLineJoin
 
 protocol GraphicResourceContext {
-
     func setSourceRGB(_ rgb: UInt32)
     func setSourceRGB(r: Double, g: Double, b: Double)
     func setSourceRGBA(_ rgba: UInt32)
     func setSourceRGBA(r: Double, g: Double, b: Double, a: Double)
-    func setSourceSurface(_ surface: GraphicSurface, x: Int, y: Int)
     func setLineWidth(_ width: Double)
     func setLineCap(_ cap: GraphicResourceContextLineCap)
     func setLineJoin(_ join: GraphicResourceContextLineJoin)
     func scale(x: Double, y: Double)
-    func paint()
-    func paintWithAlpha(_ alpha: Double)
     func fill()
     func stroke()
     func rectangle(x: Int, y: Int, width: Int, height: Int)
     func moveTo(x: Int, y: Int)
     func lineTo(x: Int, y: Int)
     func clip()
-    func maskSurface(surface: GraphicSurface, x: Int, y: Int)
-    func getTarget() -> GraphicSurface
     func save()
     func restore()
-    func drawSurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
-    func copySurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int)
 }
 
 extension CGContext: GraphicResourceContext {
@@ -55,24 +47,12 @@ extension CGContext: GraphicResourceContext {
         setFillColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
     }
 
-    func setSourceSurface(_ surface: GraphicSurface, x: Int, y: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
     func setLineWidth(_ width: Double) {
         setLineWidth(CGFloat(width))
     }
 
     func scale(x: Double, y: Double) {
         scaleBy(x: CGFloat(x), y: CGFloat(y))
-    }
-
-    func paint() {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func paintWithAlpha(_ alpha: Double) {
-        fatalError("This method is not yet implemented.")
     }
 
     func fill() {
@@ -99,27 +79,11 @@ extension CGContext: GraphicResourceContext {
         clip(using: .winding)
     }
 
-    func maskSurface(surface: GraphicSurface, x: Int, y: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func getTarget() -> GraphicSurface {
-        fatalError("This method is not yet implemented.")
-    }
-
     func save() {
         saveGState()
     }
 
     func restore() {
         restoreGState()
-    }
-
-    func drawSurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) {
-        fatalError("This method is not yet implemented.")
-    }
-
-    func copySurface(surface: GraphicSurface, dx: Int, dy: Int, width: Int, height: Int, sx: Int, sy: Int) {
-        fatalError("This method is not yet implemented.")
     }
 }

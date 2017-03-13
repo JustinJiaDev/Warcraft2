@@ -130,17 +130,14 @@ func createMapView(viewportRenderer: ViewportRenderer, width: Int, height: Int) 
     return mapView
 }
 
-func createMiniMapView(mapRenderer: MapRenderer) -> MiniMapView {
-    return MiniMapView(frame: CGRect(origin: .zero, size: CGSize(width: mapRenderer.mapWidth, height: mapRenderer.mapHeight)), mapRenderer: mapRenderer)
-}
-
-// FIXME: REMOVE HARDCODED VALUES
 func createSideView(size: CGSize, miniMapView: MiniMapView, statsView: StatsView) -> UIView {
     let sideView = UIView(frame: CGRect(origin: .zero, size: size))
     sideView.backgroundColor = UIColor.black
     sideView.addSubview(statsView)
     sideView.addSubview(miniMapView)
-    miniMapView.frame.origin = CGPoint(x: 30, y: 8)
+    let scale = size.width / miniMapView.bounds.size.width
+    miniMapView.transform = CGAffineTransform(scaleX: scale, y: scale)
+    miniMapView.frame.origin = .zero
     statsView.frame.origin = CGPoint(x: 0, y: miniMapView.bounds.height + 8)
     return sideView
 }
