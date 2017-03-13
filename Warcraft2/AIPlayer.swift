@@ -178,19 +178,18 @@ class AIPlayer {
                 searchMap()
             } else if playerData.playerAssetCount(of: .townHall) == 0 && playerData.playerAssetCount(of: .keep) == 0 && playerData.playerAssetCount(of: .castle) == 0 {
                 buildTownHall()
+            } else if playerData.idleAssets.contains(where: { $0.type == .peasant }) {
+                activatePeasant()
             } else if playerData.playerAssetCount(of: AssetType.peasant) < 5 {
-                if !trainPeasant() {
-                    activatePeasant()
-                }
+                trainPeasant()
             } else if playerData.visibilityMap.seenPercent(max: 100) < 12 {
                 searchMap()
             } else {
                 var completedAction = false
-                let footmanCount = playerData.playerAssetCount(of: AssetType.footman)
-                let archerCount = playerData.playerAssetCount(of: AssetType.archer) + playerData.playerAssetCount(of: AssetType.ranger)
-
+                let footmanCount = playerData.playerAssetCount(of: .footman)
+                let archerCount = playerData.playerAssetCount(of: .archer) + playerData.playerAssetCount(of: .ranger)
                 if !completedAction && (playerData.foodConsumption >= playerData.foodProduction) {
-                    completedAction = buildBuilding(buildingType: AssetType.farm, nearType: AssetType.farm)
+                    completedAction = buildBuilding(buildingType: .farm, nearType: .farm)
                 }
                 if !completedAction {
                     completedAction = activatePeasant()
@@ -202,12 +201,12 @@ class AIPlayer {
                     completedAction = trainFootman()
                 }
                 if !completedAction && playerData.playerAssetCount(of: AssetType.lumberMill) == 0 {
-                    completedAction = buildBuilding(buildingType: AssetType.lumberMill, nearType: AssetType.barracks)
+                    completedAction = buildBuilding(buildingType: .lumberMill, nearType: .barracks)
                 }
                 if !completedAction && archerCount < 5 {
                     completedAction = trainArcher()
                 }
-                if !completedAction && playerData.playerAssetCount(of: AssetType.footman) != 0 {
+                if !completedAction && playerData.playerAssetCount(of: .footman) != 0 {
                     completedAction = findEnemies()
                 }
                 if !completedAction {
