@@ -93,6 +93,21 @@ class StatsView: UIView {
             sightLabel.isHidden = true
             speedLabel.isHidden = true
             healthLabel.adjustsFontSizeToFitWidth = true
+
+            for command in asset.commands {
+                if command.action == .capability && command.capability == .buildPeasant {
+                    if let trainProcess = command.activatedCapability as? PlayerCapabilityTrainNormal.ActivatedCapability {
+                        if let unit = command.assetTarget {
+                            armorLabel.isHidden = false
+                            armorLabel.text = "Unit: \(unit.assetType.name)"
+                            damageLabel.isHidden = false
+                            damageLabel.text = "Training Progress:"
+                            rangeLabel.isHidden = false
+                            rangeLabel.text = "\(trainProcess.currentStep) / \(trainProcess.totalSteps)"
+                        }
+                    }
+                }
+            }
         }
 
         icons.drawTile(on: iconImageView, index: icons.findTile(iconName[asset.assetType.type] ?? "disabled"))

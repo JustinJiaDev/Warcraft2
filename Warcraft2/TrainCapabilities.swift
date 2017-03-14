@@ -12,8 +12,8 @@ struct TrainCapabilities {
 
 class PlayerCapabilityTrainNormal: PlayerCapability {
     class ActivatedCapability: ActivatedPlayerCapability {
-        private var currentStep: Int
-        private var totalSteps: Int
+        private(set) var currentStep: Int
+        private(set) var totalSteps: Int
         private var lumber: Int
         private var gold: Int
 
