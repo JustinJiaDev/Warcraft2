@@ -21,8 +21,8 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
     class ActivatedCapability: ActivatedPlayerCapability {
         private var upgradingType: PlayerAssetType
         private var upgradeName: String
-        private var currentStep: Int
-        private var totalSteps: Int
+        private(set) var currentStep: Int
+        private(set) var totalSteps: Int
         private var lumber: Int
         private var gold: Int
 
@@ -107,7 +107,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
                 upgradeName: upgradeName,
                 lumber: upgrade.lumberCost,
                 gold: upgrade.goldCost,
-                steps: upgrade.researchTime
+                steps: upgrade.researchTime * PlayerAsset.updateFrequency
             )
         )
         actor.pushCommand(newCommand)
