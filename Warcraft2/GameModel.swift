@@ -1,7 +1,5 @@
 enum EventType {
-    case none
     case workComplete
-    case selection
     case acknowledge
     case ready
     case death
@@ -9,10 +7,20 @@ enum EventType {
     case missleFire
     case missleHit
     case harvest
-    case meleeHist
-    case placeAction
-    case buttonTick
-    case max
+
+    var soundName: GameSound.SoundName {
+        let index = Int(RandomNumberGenerator().random() % 4)
+        switch self {
+        case .workComplete: return .workCompleted
+        case .acknowledge: return [GameSound.SoundName.acknowledge1, .acknowledge2, .acknowledge3, .acknowledge4][index]
+        case .ready: return .ready
+        case .death: return .death
+        case .attacked: return [GameSound.SoundName.annoyed1, .annoyed2, .annoyed3, .annoyed4][index]
+        case .missleFire: return .bowfire
+        case .missleHit: return .bowhit
+        case .harvest: return [GameSound.SoundName.tree1, .tree2, .tree3, .tree4][index]
+        }
+    }
 }
 
 struct GameEvent {
@@ -433,6 +441,7 @@ class PlayerData {
     }
 
     func addGameEvent(_ event: GameEvent) {
+        GameSound.current.play(event.type.soundName)
         gameEvents.append(event)
     }
 
@@ -613,9 +622,6 @@ class GameModel {
             if harvestSteps <= asset.step {
                 let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle, .lumberMill])
                 lumberAvailable[tilePosition.y][tilePosition.x] -= lumberPerHarvest
-
-                GameSound.current.play(.tree)
-
                 if lumberAvailable[tilePosition.y][tilePosition.x] <= 0 {
                     actualMap.changeTileType(at: tilePosition, to: .stump)
                 }
@@ -663,11 +669,7 @@ class GameModel {
                     let oldTarget = target
                     let nearestRepository = players[asset.color.index].findNearestOwnedAsset(at: asset.position, assetTypes: [.townHall, .keep, .castle])
                     var nextTarget = Position(x: players[asset.color.index].playerMap.width - 1, y: players[asset.color.index].playerMap.height - 1)
-
                     target.decrementGold(goldPerMining)
-
-                    GameSound.current.play(.goldMine)
-
                     target.popCommand()
                     if target.gold <= 0 {
                         let newCommand = AssetCommand(action: .death, capability: .none, assetTarget: nil, activatedCapability: nil)

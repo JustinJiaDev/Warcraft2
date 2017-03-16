@@ -245,7 +245,7 @@ class PlayerCapabilityConvey: PlayerCapability {
         }
 
         override func incrementStep() -> Bool {
-            playerData.addGameEvent(GameEvent(type: EventType.acknowledge, asset: actor))
+            playerData.addGameEvent(GameEvent(type: .acknowledge, asset: actor))
 
             actor.popCommand()
             if actor.lumber > 0 {
