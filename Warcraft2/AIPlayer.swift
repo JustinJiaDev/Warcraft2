@@ -124,6 +124,7 @@ class AIPlayer {
                 }
                 action = .mine
                 actor = miningAsset
+                // FIXME: The peasant (maybe under some condition) can't go to the target location and collect lumber.
                 target = playerData.createMarker(at: Position.absolute(fromTile: lumberTileLocation), addToMap: false)
             } else {
                 action = .mine
