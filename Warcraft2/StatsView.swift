@@ -93,29 +93,23 @@ class StatsView: UIView {
             sightLabel.isHidden = true
             speedLabel.isHidden = true
             healthLabel.adjustsFontSizeToFitWidth = true
-
-            for command in asset.commands {
-                if command.action == .capability {
-                    if command.capability == .buildPeasant || command.capability == .buildFootman || command.capability == .buildArcher || command.capability == .buildRanger {
-                        if let trainProcess = command.activatedCapability as? PlayerCapabilityTrainNormal.ActivatedCapability {
-                            if let unit = command.assetTarget {
-                                armorLabel.isHidden = false
-                                armorLabel.text = "Unit: \(unit.assetType.name)"
-                                damageLabel.isHidden = false
-                                damageLabel.text = "Training Progress:"
-                                rangeLabel.isHidden = false
-                                rangeLabel.text = "\(trainProcess.currentStep) / \(trainProcess.totalSteps)"
-                            }
-                        }
-                    } else if command.capability == .weaponUpgrade1 || command.capability == .weaponUpgrade2 || command.capability == .weaponUpgrade3 || command.capability == .arrowUpgrade1 || command.capability == .arrowUpgrade2 || command.capability == .arrowUpgrade3 || command.capability == .armorUpgrade1 || command.capability == .armorUpgrade2 || command.capability == .armorUpgrade3 || command.capability == .longbow || command.capability == .rangerScouting || command.capability == .marksmanship {
-                        if let upgradeProcess = command.activatedCapability as? PlayerCapabilityUnitUpgrade.ActivatedCapability {
+            let command = asset.currentCommand
+            if let capability = command.capability, command.action == .capability {
+                if AssetCapabilityType.trains.contains(capability) {
+                    if let trainProcess = command.activatedCapability as? PlayerCapabilityTrainNormal.ActivatedCapability {
+                        if let unit = command.assetTarget {
+                            armorLabel.isHidden = false
+                            armorLabel.text = "Training \(unit.assetType.name)"
                             damageLabel.isHidden = false
-                            damageLabel.text = "Upgrade"
-                            rangeLabel.isHidden = false
-                            rangeLabel.text = "Progress:"
-                            sightLabel.isHidden = false
-                            sightLabel.text = "\(upgradeProcess.currentStep) / \(upgradeProcess.totalSteps)"
+                            damageLabel.text = "\(trainProcess.percentComplete(max: 100))%"
                         }
+                    }
+                } else if AssetCapabilityType.upgrades.contains(capability) {
+                    if let upgradeProcess = command.activatedCapability as? PlayerCapabilityUnitUpgrade.ActivatedCapability {
+                        armorLabel.isHidden = false
+                        armorLabel.text = "Upgrading"
+                        damageLabel.isHidden = false
+                        damageLabel.text = "\(upgradeProcess.percentComplete(max: 100))%"
                     }
                 }
             }
