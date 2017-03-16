@@ -107,7 +107,7 @@ class PlayerCapabilityUnitUpgrade: PlayerCapability {
                 upgradeName: upgradeName,
                 lumber: upgrade.lumberCost,
                 gold: upgrade.goldCost,
-                steps: upgrade.researchTime
+                steps: upgrade.researchTime * PlayerAsset.updateFrequency
             )
         )
         actor.pushCommand(newCommand)

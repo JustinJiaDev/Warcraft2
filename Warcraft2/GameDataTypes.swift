@@ -127,7 +127,7 @@ enum AssetCapabilityType: Int {
     case rangerScouting
     case marksmanship
 
-    static var allValues: [AssetCapabilityType] = [
+    static let allValues: [AssetCapabilityType] = [
         .none,
         .buildPeasant,
         .buildFootman,
@@ -154,6 +154,28 @@ enum AssetCapabilityType: Int {
         .attack,
         .standGround,
         .patrol,
+        .weaponUpgrade1,
+        .weaponUpgrade2,
+        .weaponUpgrade3,
+        .arrowUpgrade1,
+        .arrowUpgrade2,
+        .arrowUpgrade3,
+        .armorUpgrade1,
+        .armorUpgrade2,
+        .armorUpgrade3,
+        .longbow,
+        .rangerScouting,
+        .marksmanship
+    ]
+
+    static let trains: [AssetCapabilityType] = [
+        .buildPeasant,
+        .buildFootman,
+        .buildArcher,
+        .buildRanger
+    ]
+
+    static let upgrades: [AssetCapabilityType] = [
         .weaponUpgrade1,
         .weaponUpgrade2,
         .weaponUpgrade3,
