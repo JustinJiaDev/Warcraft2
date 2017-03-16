@@ -42,6 +42,9 @@ class AssetDecoratedMap: TerrainMap {
     private(set) var searchMap: [[SearchStatus]] = []
     private(set) static var mapIndices: [String: Int] = [:]
     private(set) static var all: [AssetDecoratedMap] = []
+    private static let searchXOffsets = [0, 1, 0, -1]
+    private static let searchYOffsets = [ -1, 0, 1, 0]
+
     static var currentMapIndex = 0
 
     override var playerCount: Int {
@@ -384,59 +387,35 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     func findNearestReachableTilePosition(from position: Position, type: TileType) -> Position {
-        var searchQueueArray: [SearchTile] = []
-        var currentSearch = SearchTile(x: 0, y: 0)
-        var tempSearch = SearchTile(x: 0, y: 0)
-        let mapWidth = width
-        let mapHeight = height
-        let searchXOffsets = [0, 1, 0, -1]
-        let searchYOffsets = [ -1, 0, 1, 0]
-
-        if searchMap.count != map.count {
-            searchMap = Array(repeating: Array(repeating: .unvisited, count: map[0].count), count: map.count)
-            let lastYIndex = map.count - 1
-            let lastXIndex = map[0].count - 1
-            for index in 0 ..< map.count {
-                searchMap[index][0] = .visited
-                searchMap[index][lastXIndex] = .visited
-            }
-            for index in 1 ..< lastXIndex {
-                searchMap[0][index] = .visited
-                searchMap[lastYIndex][index] = .visited
-            }
-        }
-        for y in 0 ..< mapHeight {
-            for x in 0 ..< mapWidth {
+        searchMap = Array(repeating: Array(repeating: .visited, count: map[0].count), count: map.count)
+        for y in 0 ..< height {
+            for x in 0 ..< width {
                 searchMap[y + 1][x + 1] = .unvisited
             }
         }
-        for asset in assets {
-            if asset.tilePosition != position {
-                for y in 0 ..< asset.size {
-                    for x in 0 ..< asset.size {
-                        searchMap[asset.tilePositionY + y + 1][asset.tilePositionX + x + 1] = .visited
-                    }
+        for asset in assets where asset.tilePosition != position {
+            for y in 0 ..< asset.size {
+                for x in 0 ..< asset.size {
+                    searchMap[asset.tilePositionY + y + 1][asset.tilePositionX + x + 1] = .visited
                 }
             }
         }
-        currentSearch.x = position.x + 1
-        currentSearch.y = position.y + 1
-        searchQueueArray.append(currentSearch)
+
+        var currentSearch = SearchTile(x: position.x + 1, y: position.y + 1)
+        var searchQueueArray = [currentSearch]
         while searchQueueArray.count > 0 {
-            currentSearch = searchQueueArray[0]
-            searchQueueArray.remove(at: 0)
+            currentSearch = searchQueueArray.remove(at: 0)
             searchMap[currentSearch.y][currentSearch.x] = .visited
-            for index in 0 ..< searchXOffsets.count {
-                tempSearch.x = currentSearch.x + searchXOffsets[index]
-                tempSearch.y = currentSearch.y + searchYOffsets[index]
-                if searchMap[tempSearch.y][tempSearch.x] == .unvisited {
-                    let tileType = map[tempSearch.y][tempSearch.x]
-                    searchMap[tempSearch.y][tempSearch.x] = .queued
-                    if type == tileType {
-                        return Position(x: tempSearch.x, y: tempSearch.y)
+            for index in 0 ..< AssetDecoratedMap.searchXOffsets.count {
+                let nextSearch = SearchTile(x: currentSearch.x + AssetDecoratedMap.searchXOffsets[index], y: currentSearch.y + AssetDecoratedMap.searchYOffsets[index])
+                if searchMap[nextSearch.y][nextSearch.x] == .unvisited {
+                    let tileType = map[nextSearch.y][nextSearch.x]
+                    searchMap[nextSearch.y][nextSearch.x] = .queued
+                    if tileType == type {
+                        return Position(x: nextSearch.x, y: nextSearch.y)
                     }
-                    if tileType == .grass || tileType == .dirt || tileType == .stump || tileType == .rubble || tileType == .none {
-                        searchQueueArray.append(tempSearch)
+                    if [.grass, .dirt, .stump, .rubble, .none].contains(tileType) {
+                        searchQueueArray.append(nextSearch)
                     }
                 }
             }

@@ -105,17 +105,20 @@ class AIPlayer {
         let lumberHarvesters = playerData.assets.filter({ $0.hasAction(.harvestLumber) }).count
         let switchToGold = lumberHarvesters >= 2 && goldMiners == 0
         let switchToLumber = goldMiners >= 2 && lumberHarvesters == 0
+        guard let townhall = playerData.idleAssets.first(where: { $0.hasCapability(.buildPeasant) }) else {
+            return false
+        }
         guard miningAsset != nil || (interruptibleAsset != nil && (switchToLumber || switchToGold)) else {
             return false
         }
         if let miningAsset = miningAsset, (miningAsset.lumber > 0 || miningAsset.gold > 0) {
             action = .convey
             actor = miningAsset
-            target = playerData.idleAssets.first(where: { $0.hasCapability(.buildPeasant) })
+            target = townhall
         } else {
             let miningAsset = (miningAsset ?? interruptibleAsset)!
             if goldMiners > 0 && (playerData.gold > playerData.lumber * 3 || switchToLumber) {
-                let lumberTileLocation = playerData.playerMap.findNearestReachableTilePosition(from: miningAsset.tilePosition, type: .tree)
+                let lumberTileLocation = playerData.playerMap.findNearestReachableTilePosition(from: townhall.tilePosition, type: .tree)
                 guard lumberTileLocation.x >= 0 && lumberTileLocation.y >= 0 else {
                     return searchMap()
                 }
@@ -193,9 +196,6 @@ class AIPlayer {
                 if !completedAction && (playerData.foodConsumption >= playerData.foodProduction) {
                     completedAction = buildBuilding(buildingType: .farm, nearType: .farm)
                 }
-                if !completedAction {
-                    completedAction = activatePeasant()
-                }
                 if !completedAction && playerData.playerAssetCount(of: .barracks) == 0 {
                     completedAction = buildBuilding(buildingType: .barracks, nearType: .farm)
                 }
@@ -220,6 +220,8 @@ class AIPlayer {
             }
             if let action = action, let actor = actor, let target = target {
                 let capability = PlayerCapability.findCapability(action)
+                if action == .mine && target.type == .none {
+                }
                 if capability.canApply(actor: actor, playerData: playerData, target: target) {
                     capability.applyCapability(actor: actor, playerData: playerData, target: target)
                 }

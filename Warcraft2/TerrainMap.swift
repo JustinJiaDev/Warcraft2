@@ -62,8 +62,7 @@ class TerrainMap {
     private(set) var playerCount: Int = 0
     private(set) var mapName: String = ""
 
-    init() {
-    }
+    init() {}
 
     init(terrainMap: TerrainMap) {
         map = terrainMap.map
@@ -77,7 +76,7 @@ class TerrainMap {
     }
 
     var height: Int {
-        return max(0, map.count - 2)
+        return map.count - 2
     }
 
     func tileTypeAt(x: Int, y: Int) -> TileType {
