@@ -4,6 +4,8 @@ class AIPlayer {
     private(set) var aiLevel: Int
     private(set) var cycle: Int
 
+    static var level: Int = 0
+
     private var action: AssetCapabilityType?
     private var actor: PlayerAsset?
     private var target: PlayerAsset?

@@ -3,7 +3,6 @@ import AVFoundation
 import SpriteKit
 
 class GameViewController: UIViewController {
-
     fileprivate var selectedAction: AssetCapabilityType?
     fileprivate var selectedActor: PlayerAsset?
 
@@ -66,23 +65,10 @@ class GameViewController: UIViewController {
 
         Position.setTileDimensions(width: terrain.tileWidth, height: terrain.tileHeight)
 
-        PlayerAsset.updateFrequency = 40
-        AssetRenderer.updateFrequency = 40
-
-        AssetDecoratedMap.loadMaps(from: try FileDataContainer(url: url("map")))
-        PlayerAssetType.loadTypes(from: try FileDataContainer(url: url("res")))
-        PlayerUpgrade.loadUpgrades(from: try FileDataContainer(url: url("upg")))
-
-        BasicCapabilities.registrant.register()
-        BuildCapabilities.registrant.register()
-        BuildingUpgradeCapabilities.registrant.register()
-        TrainCapabilities.registrant.register()
-        UnitUpgradeCapabilities.registrant.register()
-
         midiPlayer = try AVMIDIPlayer(contentsOf: url("snd", "music", "intro.mid"), soundBankURL: url("snd", "generalsoundfont.sf2"))
 
-        gameModel = GameModel(mapIndex: mapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
-        ai = AIPlayer(playerData: gameModel.player(.red), downSample: PlayerAsset.updateFrequency, aiLevel: aiLevel)
+        gameModel = GameModel(mapIndex: AssetDecoratedMap.currentMapIndex, seed: 0x123_4567_89ab_cdef, newColors: PlayerColor.allValues)
+        ai = AIPlayer(playerData: gameModel.player(.red), downSample: PlayerAsset.updateFrequency, aiLevel: AIPlayer.level)
         playerData = gameModel.player(.blue)
 
         mapRenderer = try MapRenderer(configuration: mapConfiguration, tileset: terrain, map: playerData.actualMap)

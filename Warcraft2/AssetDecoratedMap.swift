@@ -39,9 +39,10 @@ class AssetDecoratedMap: TerrainMap {
     private(set) var assets: [PlayerAsset] = []
     private(set) var assetInitializationList: [AssetInitialization] = []
     private(set) var resourceInitializationList: [ResourceInitialization] = []
-    private var searchMap: [[SearchStatus]] = []
-    private static var mapNameTranslation: [String: Int] = [:]
-    private static var all: [AssetDecoratedMap] = []
+    private(set) var searchMap: [[SearchStatus]] = []
+    private(set) static var mapIndices: [String: Int] = [:]
+    private(set) static var all: [AssetDecoratedMap] = []
+    static var currentMapIndex = 0
 
     override var playerCount: Int {
         return resourceInitializationList.count - 1
@@ -86,7 +87,7 @@ class AssetDecoratedMap: TerrainMap {
             do {
                 let map = AssetDecoratedMap()
                 try map.loadMap(from: FileDataSource(url: url))
-                mapNameTranslation[map.mapName] = all.count
+                mapIndices[map.mapName] = all.count
                 all.append(map)
                 printDebug("Loaded map \(url.lastPathComponent).", level: .low)
             } catch {
@@ -97,7 +98,7 @@ class AssetDecoratedMap: TerrainMap {
     }
 
     static func mapIndex(of name: String) -> Int {
-        return mapNameTranslation[name] ?? -1
+        return mapIndices[name] ?? -1
     }
 
     static func map(at index: Int) -> AssetDecoratedMap {

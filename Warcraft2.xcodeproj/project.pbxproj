@@ -52,6 +52,7 @@
 		D08F474A1E36062C00F7FED1 /* GraphicFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F47491E36062C00F7FED1 /* GraphicFactory.swift */; };
 		D0A216BE1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */; };
 		D0A3C7221E47FA6F00B24AC5 /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */; };
+		D0B826471E7A464200240AEA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B826461E7A464200240AEA /* MapViewController.swift */; };
 		D0C813871E6D656D003A10DD /* BuildCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C813861E6D656D003A10DD /* BuildCapabilities.swift */; };
 		D0D4A3D81E3ED46B009460DE /* Bevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D4A3D71E3ED46B009460DE /* Bevel.swift */; };
 		D0D6FA4F1E26015E00D92DA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D6FA4E1E26015E00D92DA5 /* AppDelegate.swift */; };
@@ -110,6 +111,7 @@
 		D08F47491E36062C00F7FED1 /* GraphicFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicFactory.swift; sourceTree = "<group>"; };
 		D0A216BD1E5BD7D20069C2A3 /* BuildingUpgradeCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildingUpgradeCapabilities.swift; sourceTree = "<group>"; };
 		D0A3C7211E47FA6F00B24AC5 /* MiniMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
+		D0B826461E7A464200240AEA /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		D0C813861E6D656D003A10DD /* BuildCapabilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildCapabilities.swift; sourceTree = "<group>"; };
 		D0D4A3D71E3ED46B009460DE /* Bevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bevel.swift; sourceTree = "<group>"; };
 		D0D6FA4B1E26015E00D92DA5 /* Warcraft2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Warcraft2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -303,6 +305,7 @@
 			isa = PBXGroup;
 			children = (
 				D0DF813C1E3F2ECE000F9BC4 /* GameViewController.swift */,
+				D0B826461E7A464200240AEA /* MapViewController.swift */,
 				D0D6FA661E26027000D92DA5 /* LaunchViewController.swift */,
 			);
 			name = ViewControllers;
@@ -464,6 +467,7 @@
 				8EA067821E33C8E00059CEC2 /* FileDataSource.swift in Sources */,
 				8EA0677F1E33C8E00059CEC2 /* DataSource.swift in Sources */,
 				C834BE931E49AA5A00941BFF /* ViewportRenderer.swift in Sources */,
+				D0B826471E7A464200240AEA /* MapViewController.swift in Sources */,
 				49E8B2FB1E38400D00B80211 /* Debug.swift in Sources */,
 				8E1B515F1E2D64DF008E968C /* Rectangle.swift in Sources */,
 				D08F47451E35D80600F7FED1 /* MapRenderer.swift in Sources */,

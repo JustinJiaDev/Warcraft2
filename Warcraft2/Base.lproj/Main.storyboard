@@ -24,7 +24,70 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hhk-Mp-Sqb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="540" y="521"/>
+            <point key="canvasLocation" x="915" y="-343"/>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="7gR-kK-OSi">
+            <objects>
+                <tableViewController id="xfu-g2-UeI" customClass="MapViewController" customModule="Warcraft2" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="MyO-Sf-ZnW">
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableFooterView" contentMode="scaleToFill" id="YsC-Fn-Hcg">
+                            <rect key="frame" x="0.0" y="72" width="667" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M6f-AU-kfX">
+                                    <rect key="frame" x="0.0" y="0.0" width="667" height="44"/>
+                                    <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="22"/>
+                                    <state key="normal" title="Back">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="buttonTappedWithBackButton:" destination="xfu-g2-UeI" eventType="touchUpInside" id="Lu2-3D-JwA"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="M6f-AU-kfX" secondAttribute="bottom" id="6b8-2w-nOj"/>
+                                <constraint firstAttribute="trailing" secondItem="M6f-AU-kfX" secondAttribute="trailing" id="Cmn-zM-Sxk"/>
+                                <constraint firstItem="M6f-AU-kfX" firstAttribute="leading" secondItem="YsC-Fn-Hcg" secondAttribute="leading" id="ZjG-Im-aMb"/>
+                                <constraint firstItem="M6f-AU-kfX" firstAttribute="top" secondItem="YsC-Fn-Hcg" secondAttribute="top" id="sWI-ae-AWl"/>
+                            </constraints>
+                        </view>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MapCell" textLabel="PSv-Nm-4td" style="IBUITableViewCellStyleDefault" id="abH-UK-28V">
+                                <rect key="frame" x="0.0" y="28" width="667" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="abH-UK-28V" id="fJi-w6-dW9">
+                                    <rect key="frame" x="0.0" y="0.0" width="667" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PSv-Nm-4td">
+                                            <rect key="frame" x="15" y="0.0" width="637" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="xfu-g2-UeI" id="SXu-6p-5it"/>
+                            <outlet property="delegate" destination="xfu-g2-UeI" id="sMW-hO-ccw"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <segue destination="wcZ-S5-Xs2" kind="presentation" identifier="GameSegue" modalTransitionStyle="flipHorizontal" id="3K9-yX-8ng"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WRi-x3-zSh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="158.77061469265368" y="-343.19999999999999"/>
         </scene>
         <!--Launch View Controller-->
         <scene sceneID="QYi-ZE-SG3">
@@ -55,58 +118,27 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="wcZ-S5-Xs2" kind="presentation" id="C5I-jL-FfQ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7wg-a3-sVd">
-                                <rect key="frame" x="238.5" y="293" width="50" height="42"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="42" id="5eo-mw-qzF"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="20"/>
-                                <state key="normal" title="No AI">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="buttonTappedWithAiButton:" destination="wfB-tJ-xR5" eventType="touchUpInside" id="fQU-Rk-mFB"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZ9-zb-0oy">
-                                <rect key="frame" x="345" y="292" width="117" height="43"/>
-                                <fontDescription key="fontDescription" name="Papyrus" family="Papyrus" pointSize="20"/>
-                                <state key="normal" title="2 Player Map">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="buttonTappedWithMapButton:" destination="wfB-tJ-xR5" eventType="touchUpInside" id="OZh-vd-Z6k"/>
+                                    <segue destination="xfu-g2-UeI" kind="presentation" modalTransitionStyle="flipHorizontal" id="yT2-MG-5hY"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="9So-if-AcC" firstAttribute="bottom" secondItem="Dov-hc-uEB" secondAttribute="top" id="4gJ-4U-pIa"/>
-                            <constraint firstItem="7wg-a3-sVd" firstAttribute="bottom" secondItem="iZ9-zb-0oy" secondAttribute="bottom" id="D73-Kx-HK7"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="leading" secondItem="GL3-G1-BI9" secondAttribute="leading" id="Hnb-Cg-UiD"/>
                             <constraint firstItem="1c4-C2-Vct" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" constant="40" id="NhP-Ty-o1b"/>
-                            <constraint firstItem="Dov-hc-uEB" firstAttribute="top" secondItem="7wg-a3-sVd" secondAttribute="bottom" constant="40" id="Nto-yx-V0r"/>
                             <constraint firstAttribute="trailing" secondItem="9So-if-AcC" secondAttribute="trailing" id="aWC-4J-rne"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="centerX" secondItem="TZO-F5-Ucp" secondAttribute="centerX" id="ec7-Tr-fMe"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="top" secondItem="rY7-mw-86S" secondAttribute="bottom" id="hQr-pz-7Wn"/>
                             <constraint firstItem="1c4-C2-Vct" firstAttribute="centerX" secondItem="TZO-F5-Ucp" secondAttribute="centerX" id="k5G-0Y-tIf"/>
-                            <constraint firstItem="iZ9-zb-0oy" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" constant="70" id="kKs-Dl-QpT"/>
                             <constraint firstItem="9So-if-AcC" firstAttribute="centerY" secondItem="TZO-F5-Ucp" secondAttribute="centerY" id="qYI-R0-Xi4"/>
-                            <constraint firstItem="7wg-a3-sVd" firstAttribute="centerX" secondItem="GL3-G1-BI9" secondAttribute="centerX" constant="-70" id="yGb-R2-8Er"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
-                    <connections>
-                        <outlet property="aiButton" destination="7wg-a3-sVd" id="1UU-Mq-Ruq"/>
-                        <outlet property="mapButton" destination="iZ9-zb-0oy" id="7U9-1E-V5O"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XqC-2d-UZA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-208.24587706146929" y="520.79999999999995"/>
+            <point key="canvasLocation" x="-591" y="-343"/>
         </scene>
     </scenes>
     <resources>
