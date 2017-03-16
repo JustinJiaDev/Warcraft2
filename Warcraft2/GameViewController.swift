@@ -37,7 +37,7 @@ class GameViewController: UIViewController {
         let mapConfiguration = try FileDataSource(url: url("img", "MapRendering.dat"))
         let colors = try colorMap("Colors")
         let assetColor = try colorMap("AssetColor")
-        var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.max.rawValue)
+        var tilesets: [GraphicMulticolorTileset] = Array(repeating: GraphicMulticolorTileset(), count: AssetType.allValues.count)
         tilesets[AssetType.peasant.rawValue] = try multicolorTileset("Peasant", colors)
         tilesets[AssetType.footman.rawValue] = try multicolorTileset("Footman", colors)
         tilesets[AssetType.archer.rawValue] = try multicolorTileset("Archer", colors)

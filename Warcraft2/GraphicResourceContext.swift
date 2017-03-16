@@ -1,6 +1,4 @@
-import Foundation
 import CoreGraphics
-import UIKit
 
 typealias GraphicResourceContextLineCap = CGLineCap
 typealias GraphicResourceContextLineJoin = CGLineJoin

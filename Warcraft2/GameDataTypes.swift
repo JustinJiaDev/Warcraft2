@@ -243,7 +243,25 @@ enum AssetType: Int {
     case scoutTower
     case guardTower
     case cannonTower
-    case max
+
+    static let allValues: [AssetType] = [
+        none,
+        peasant,
+        footman,
+        archer,
+        ranger,
+        goldMine,
+        townHall,
+        keep,
+        castle,
+        farm,
+        barracks,
+        lumberMill,
+        blacksmith,
+        scoutTower,
+        guardTower,
+        cannonTower
+    ]
 }
 
 enum Direction {

@@ -1,5 +1,3 @@
-import Foundation
-
 class ActivatedPlayerCapability {
     private(set) var actor: PlayerAsset
     private(set) var playerData: PlayerData

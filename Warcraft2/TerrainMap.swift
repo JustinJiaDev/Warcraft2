@@ -1,5 +1,3 @@
-import Foundation
-
 enum TerrainMapError: Error {
 
     case unknownMapFile

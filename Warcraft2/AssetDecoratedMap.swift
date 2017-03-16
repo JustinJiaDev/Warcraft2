@@ -1,6 +1,3 @@
-import Foundation
-import os.log
-
 class AssetDecoratedMap: TerrainMap {
 
     enum GameError: Error {

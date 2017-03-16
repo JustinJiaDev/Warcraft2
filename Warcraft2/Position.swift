@@ -1,5 +1,3 @@
-import Foundation
-
 func isDiagonal(_ left: Position, _ right: Position) -> Bool {
     return left.x != right.x && left.y != right.y
 }
@@ -10,9 +8,8 @@ func squaredDistanceBetween(_ left: Position, _ right: Position) -> Int {
     return deltaX * deltaX + deltaY * deltaY
 }
 
-// FIXME: Not as efficient as original implementation
 func distanceBetween(_ left: Position, _ right: Position) -> Int {
-    return Int(sqrt(Double(squaredDistanceBetween(left, right))))
+    return Int(Double(squaredDistanceBetween(left, right)).squareRoot())
 }
 
 struct Position {

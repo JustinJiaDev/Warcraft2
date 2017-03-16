@@ -1,6 +1,3 @@
-import Foundation
-import CoreGraphics
-import UIKit
 import SpriteKit
 
 protocol GraphicSurface {
