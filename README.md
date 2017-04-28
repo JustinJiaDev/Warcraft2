@@ -1,6 +1,6 @@
 # Warcraft 2 for iOS
 
-ECS 160 Project (iOS Version)
+![](docs/Screenshot.png)
 
 ## Getting Started
 
@@ -9,3 +9,4 @@ Make sure you have the latest version of [Xcode](https://developer.apple.com/xco
 ```bash
 > open Warcraft2.xcodeproj
 ```
+
