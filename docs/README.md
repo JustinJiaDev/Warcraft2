@@ -1,5 +1,7 @@
 # iOS Porting Documentation
 
+Note: The original Linux source code was written by [Professor Nitta](https://github.com/cjnitta) and is not available publicly.
+
 ## Completed
 
 | name.h | name.cpp | name.swift | notes |
