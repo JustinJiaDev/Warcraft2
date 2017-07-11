@@ -71,7 +71,7 @@ class ResourceView: UIView {
         if playerData.foodConsumption > playerData.foodProduction {
             let foodInfo = NSMutableAttributedString(string: "\(playerData.foodConsumption) / \(playerData.foodProduction)")
             foodInfo.addAttribute(
-                NSForegroundColorAttributeName,
+                .foregroundColor,
                 value: UIColor.red,
                 range: NSRange(location: 0, length: String(playerData.foodConsumption).characters.count)
             )

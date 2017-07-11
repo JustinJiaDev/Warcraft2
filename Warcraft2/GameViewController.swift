@@ -170,7 +170,7 @@ class GameViewController: UIViewController {
 }
 
 extension GameViewController {
-    func timestep() {
+    @objc func timestep() {
         ai.calculateCommand()
         gameModel.timestep()
         scene.clear()
@@ -190,7 +190,7 @@ extension GameViewController {
 }
 
 extension GameViewController {
-    func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
         switch gestureRecognizer.state {
         case .began:
             lastTranslation = .zero
@@ -206,7 +206,7 @@ extension GameViewController {
         }
     }
 
-    func handleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+    @objc func handleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
         guard gestureRecognizer.state == .ended else {
             return
         }
